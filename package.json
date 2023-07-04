@@ -1,0 +1,16 @@
+{
+    "workspaces": [
+        "./packages/*",
+        "./packages/sha/*"
+    ],
+    "name": "rengin-erp",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "git@github.com:shammasov-max/rengin-erp.git",
+    "author": "Max Shammasov <miramaxis@gmail.com>",
+    "license": "MIT",
+    "packageManager": "yarn@3.6.1",
+    "dependencies": {
+        "antd": "^5.6.3"
+    }
+}
