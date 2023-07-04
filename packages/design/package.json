@@ -13,6 +13,7 @@
     "vite-plugin-git-revision": "^0.1.9"
   },
   "scripts": {
+    "start": "yarn front:start",
     "front:start": "vite --host",
     "front:local": "cross-env STONES_SERVICE_API=http://localhost:9102 vite --host",
     "front:demo": "cross-env STONES_SERVICE_API=https://demo.stroy-monitoring.ru vite --host",

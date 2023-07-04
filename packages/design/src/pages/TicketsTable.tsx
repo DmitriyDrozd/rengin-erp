@@ -18,10 +18,10 @@ const columns: ColumnsType<DataType> = [
     render: (text) => <a>{text}</a>,
   },
   {
-    title: 'Статус заявки',
+    title: 'Объект',
     dataIndex: 'status',
     key: 'status',
-    render: (text) => <a>{text}</a>,
+    render: (text) => <a>Новосибирск, ул. Первая, д 16 б.</a>,
   },
   {
     title: 'Заказчик',
@@ -49,7 +49,7 @@ const columns: ColumnsType<DataType> = [
     render: (text) => <a>12,234</a>,
   },
   {
-    title: 'Tags',
+    title: 'Статус',
     key: 'tags',
     dataIndex: 'tags',
     render: (_, { tags }) => (
@@ -69,12 +69,12 @@ const columns: ColumnsType<DataType> = [
     ),
   },
   {
-    title: 'Action',
+    title: 'Действия',
     key: 'action',
     render: (_, record) => (
         <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
+          <a>Редактировать</a>
+
         </Space>
     ),
   },
