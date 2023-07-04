@@ -30,7 +30,7 @@ const columns: ColumnsType<DataType> = [
     render: (text) => <a>Иванов И.И.</a>,
   },
   {
-    title: 'Плановая дата выполнения',
+    title: 'Плановая дата',
     dataIndex: 'address',
     key: 'address',
     render: (text) => <span>13 мая 2023 </span>,
@@ -41,18 +41,7 @@ const columns: ColumnsType<DataType> = [
     key: 'address',
     render: (text) => <a>Иванов И.И.</a>,
   },
-  {
-    title: 'Менеджер',
-    dataIndex: 'address',
-    key: 'address',
-    render: (text) => <a>Иванов И.И.</a>,
-  },
-  {
-    title: 'Техник',
-    dataIndex: 'tech',
-    key: 'tech',
-    render: (text) => <span>нет</span>,
-  },
+
   {
     title: 'Смета',
     dataIndex: 'amount',
