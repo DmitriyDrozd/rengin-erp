@@ -1,0 +1,19 @@
+{
+  "name": "@sha/router",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git"
+  },
+  "main": "src/",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "homepage": "",
+  "dependencies": {
+    "@sha/fsa": "0.1.0",
+    "@sha/random": "0.1.0",
+    "@sha/react-fp": "0.1.0",
+    "@sha/utils": "0.1.0"
+  }
+}

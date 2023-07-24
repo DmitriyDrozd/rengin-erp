@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "stroi-monitroing",
+  "private_key_id": "1590ca45292b5d1b3fe6375f7f37baf57734c0ab",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDOKf/wAxvaCu+b\nH2fEzGJOYJ2LagN+hJB9ldrdKq8CZ20YBvizjv0WV92ezud5j1F3FjTVoDsAYfb0\nzCfEaQj/KVqw5sra+3ptqsPkZUZxeujyfHbP/+Re5/Ed1gmnrCtljb4cRbPmKi0v\nDkmMILVe/m93EOGZ3+1p2y/SpRtbS9DVRBOWCD1NP5m4XLmoCZ1Yr5AWizzQW6Py\nx1uXMWeWMPpl9KVD2qnvauGD3vRRygLdeahI6HQODIdvl5KlZBRzqhEQHRtgaGo1\nOl/bwPKkPIJiBZgUsw9Bpq8kwp1BqJKA8JfpWYMZBKXFAlb94i4QvdkMsE4QB2Vr\nkzFxIsETAgMBAAECggEAIbVdSwV/Gs4Z8i+W3GcclbsXV1Gso5WSOG51nB7cAZUe\nkcSmClnRSMNyEYK79zS3ObTwS5OIwh3CbrEouWUBGxNMaEs8FMT0dhTrNZ9Xfrt9\ndhRiqsyortnWoy25Y2hzqgWcdWvyJ6pyu9Rmsxov/Ym1eO7SLEIgQ+QaNCNZzznR\nYDJLg0yDaKc9tzlzCQZ51itCsiSaWvY2MXSwu3HxxNCzYSHDxS+BAO0/XDrw9r1Z\nj9M2IEPOoLqOf95hul0HBNravMW/d6K6YDZSmD5i/Q+VzHoTL3MmJe7koDGt2vgB\nEc6mMOLIHK0/YqA+WC+V4H6ifvw7ig4GAIWAwNaWcQKBgQD4MyLJl3/3lH5bMW/B\nD7KL8ZVuEEbGV0ynxaKJnzQAeKDMOjMJx6VTp/XvzwI3q7JNoCaXvr8dk5IofF3S\nKLhRU0Tha8A4jIEneDeb9xS7EMVGrj9O2lqYW8OTKHmZePynswCo0S1HTgONpHQE\nr/CKlSCy6nFL//3mbn8FjkBw4wKBgQDUpKuZTAVb1BgW/SgL4Bt207HRVhEiQcMX\nwQqhrrmbqB4cIzMym0WEtlPD4oKRrVwcj/SjWSCn9+9q5a60xlTjAurQ7LQ5dTtq\nR1tO+I/mshFg/ni7swJWHjtxiSYlLe9xcc9MpjcUeFJ55w9hHku0a14yh7dSFuFY\ns+nj8YVWEQKBgD9noM1q/G/c6WKWgHwLbIs/jfLuCYaFqrl5TYpmtzwflMRXYc5v\nyBZU5Aj9Ew3xuL0H2pQNUHlXx5C8JKOZb2ynHwOPKS3JBv10QpB/UDZxlFP4E4gr\nU9V0K8QeJOJF/BVDLznxJeX/Uf0PM+w2nfZpHk9WgNbvcIc7VwuuSVwNAoGAfQWk\nbqknrWnyD/IgDXtiKmck8TNtN3r6vYieO5mDP2WE7n4zp9lq8jBQ56bRpd0Lfy+U\nYkYQ0TEQ7wTDxz2kwyP/8354KCApIr95i+DQmo6vcRus2I7THNcBlCtS5iEv2r9T\nZnmDgOGNfGbBwBQT5qwJ4iOxQO5657BAH+jswEECgYAHR0s7oYJp0rHvg8/BEThZ\nGV+j0y5uXxrQmf2nbkOG0+a2V7lQ9PP6EcIeRVZLuNHT/qHwt39sRNyUz6v1EXkj\nCzRzdKa0A2hABUFGoqZnkMrDJFfv4NLoFPMXapZzWYscN3F3mRkwZF7yX31+xPiH\noMnt/Nr4/XCKX3lz1ZZyDg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "dev-stroi-monitoring@stroi-monitroing.iam.gserviceaccount.com",
+  "client_id": "113623874236862389830",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dev-stroi-monitoring%40stroi-monitroing.iam.gserviceaccount.com"
+}

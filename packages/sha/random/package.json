@@ -1,0 +1,11 @@
+{
+  "name": "@sha/random",
+  "version": "0.1.0",
+  "main": "src/",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@sha/utils": "0.1.0"
+  }
+}

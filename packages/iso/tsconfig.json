@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": ["./src"],
+
+  },
+  "include": ["src", "./webpack.config/", "src/**/*.module.css", "../app-service/src"]
+}

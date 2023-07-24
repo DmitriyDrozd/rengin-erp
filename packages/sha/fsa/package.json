@@ -1,0 +1,13 @@
+{
+  "name": "@sha/fsa",
+  "version": "0.1.0",
+  "main": "src/",
+  "files": [
+    "src"
+  ],
+  "typings": "src",
+  "dependencies": {
+    "@sha/random": "0.1.0",
+    "uuid": "^3.3.2"
+  }
+}

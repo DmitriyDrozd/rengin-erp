@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "ts-node": {
+    "transpileOnly": true
+
+  },
+  "compilerOptions": {
+"downlevelIteration": false,
+    "rootDirs": ["./", "../front/src", "../sha/fsa/src"],
+    "module": "CommonJS",
+    "target": "ES2018",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  }
+}

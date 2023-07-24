@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.base.json",
+
+  "compilerOptions": {
+    "rootDir": "./src",
+    "sourceRoot": "./src",
+   /* "paths": {
+      "@sha/utils": ["../utils"],
+      "@sha/fsa": ["../fsa"],
+      "@sha/random": ["../random"],
+      "@sha/react-fp": ["../react-fp"]
+    }*/
+  },
+  /*
+  "references": [
+    {"path": "../utils"},
+    {"path": "../fsa"},
+    {"path": "../random"},
+    {"path": "../react-fp"}
+
+  ],*/
+  "include": ["./src/"]
+}

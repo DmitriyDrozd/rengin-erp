@@ -1,0 +1,16 @@
+{
+  "name": "@sha/react-fp",
+  "version": "0.1.0",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "main": "src/",
+  "typings": "src",
+  "scripts": {
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@sha/fsa": "0.1.0"
+  }
+}

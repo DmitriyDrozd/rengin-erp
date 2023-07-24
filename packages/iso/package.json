@@ -1,0 +1,19 @@
+{
+  "repository": {
+    "type": "git"
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "name": "iso",
+  "version": "0.1.0",
+  "homepage": "",
+  "dependencies": {
+    "@sha/fsa": "0.1.0",
+    "@sha/random": "0.1.0",
+    "@sha/utils": "0.1.0",
+    "scene": "0.1.0",
+    "service": "0.1.0"
+  }
+}

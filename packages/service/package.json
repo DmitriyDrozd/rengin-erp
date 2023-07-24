@@ -1,0 +1,25 @@
+{
+  "name": "service",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git"
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "service:start": "ts-node ./src/index.ts",
+    "service:demo": "ts-node ./src/index.ts",
+    "service:prod": "ts-node ./src/index.ts",
+    "debug": "node --inspect-brk=0.0.0.0:9229 -r ../../node_modules/ts-node/register/transpile-only ./src/index.ts",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "@sha/better-sse": "0.8.0",
+    "@sha/fsa": "0.1.0",
+    "@sha/random": "0.1.0",
+    "@sha/utils": "0.1.0",
+    "iso": "^0.1.0"
+  }
+}

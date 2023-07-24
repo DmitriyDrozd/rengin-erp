@@ -1,0 +1,22 @@
+import {nav, RouteScreen} from '../../nav'
+import useUser from '../../../hooks/useUser'
+import JSONEditor from '../../elements/JSONEditor'
+import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
+import UserEditor, {ItemEditor} from '../../elements/UserEditor'
+import InnerPageBase from '../../app/InnerPageBase'
+import {useHistory} from 'react-router'
+import useFrontDispatch from '../../../hooks/common/useFrontDispatch'
+import {usersCrud} from 'iso/src/store/bootstrap'
+import {routerDuck} from '../../../store/ducks/routerDuck'
+import {Breadcrumb} from 'antd'
+import React from 'react'
+import {getAbbrName} from 'iso/src/store/bootstrap/repos/users-crud'
+import {UserOutlined} from '@ant-design/icons'
+import {AntdIcons} from '../../elements/AntdIcons'
+import useSaveItem from '../../../hooks/useSaveItem'
+import {Link} from 'react-router-dom'
+import {Crud} from '@sha/fsa/src/createCRUDDuck'
+import {createEditorPage} from '../createEditorPage'
+
+
+export const UserPage = createEditorPage({crud:usersCrud,Editor:UserEditor,icon:    <UserOutlined />})
