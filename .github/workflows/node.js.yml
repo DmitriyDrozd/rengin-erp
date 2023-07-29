@@ -26,12 +26,10 @@ jobs:
       run: ssh root@${{ secrets.DEV_HOST }} "cd /home/${{ github.event.repository.name }} && git checkout main && git checkout ./ && git pull && yarn install"
     - name: connect and nextjs build
       run: | 
-        ssh root@${{ secrets.DEV_HOST }} 
-         "pm2 restart ${{ github.event.repository.name }}:service --update-env"
+        ssh root@${{ secrets.DEV_HOST }} "pm2 restart ${{ github.event.repository.name }}:service --update-env"
     - name: pm2 restart
       run: |
-        ssh root@${{ secrets.DEV_HOST }} 
-        "pm2 restart ${{ github.event.repository.name }}:front --update-env"
+        ssh root@${{ secrets.DEV_HOST }} "pm2 restart ${{ github.event.repository.name }}:front --update-env"
     - name: cleanup
       run: rm -rf ~/.ssh
 
