@@ -1698,10 +1698,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ag-grid-community@npm:~30.0.5":
-  version: 30.0.5
-  resolution: "ag-grid-community@npm:30.0.5"
-  checksum: a0503ecda5fcf76f78fdf36474f9cb07c6181b4c2519c6f218518e4e8d21dfa886efa3fd2a02be5e6f9192528b7418cb651506ce6945428a76c2fedd096ab63c
+"ag-grid-community@npm:^30.0.6":
+  version: 30.0.6
+  resolution: "ag-grid-community@npm:30.0.6"
+  checksum: 83426f06ec0ad98887fba1aae0abc8ec1883e86ed24b0319c2253b38d00168b88c80694da41cb85f1f60864401a82556ae9ec29b518a40b6ac8ae091fc4d92ce
   languageName: node
   linkType: hard
 
@@ -1709,6 +1709,19 @@ __metadata:
   version: 30.0.5
   resolution: "ag-grid-enterprise@npm:30.0.5"
   checksum: 6d586e8b58fb3c101ecce3b14d98830f13d2538167373aa0d67b6a48135dd385ee599b70652f3b3244fb54780eaae0642003caaab5b4bc29887180975c7a6af0
+  languageName: node
+  linkType: hard
+
+"ag-grid-react@npm:^30.0.6":
+  version: 30.0.6
+  resolution: "ag-grid-react@npm:30.0.6"
+  dependencies:
+    prop-types: ^15.8.1
+  peerDependencies:
+    ag-grid-community: ~30.0.6
+    react: ^16.3.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.3.0 || ^17.0.0 || ^18.0.0
+  checksum: 3fe4e5ec88a4fc4fbfb365b4a586de703fc095be4addc405d869c985fa5a7db93a4eb8e4e365776177fc6ba3638d144b42fcfcbf2e4ab775b9308158fcf1935f
   languageName: node
   linkType: hard
 
@@ -5683,7 +5696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -6671,8 +6684,9 @@ __metadata:
     "@types/ramda": ^0.29.1
     "@types/react-router": ^5.1.20
     "@types/react-router-dom": ^5.3.3
-    ag-grid-community: ~30.0.5
+    ag-grid-community: ^30.0.6
     ag-grid-enterprise: ~30.0.5
+    ag-grid-react: ^30.0.6
     aggregate-error: 4.0.1
     antd: ^5.7.0
     axios: ^0.27.2
