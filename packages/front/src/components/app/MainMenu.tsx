@@ -34,16 +34,6 @@ const items: MenuItem[] = [
     getItem('Заявки', 'issues', <MailOutlined />),
     getItem('Договора', 'contracts', <CalendarOutlined />),
     getItem('Адреса', 'addresses', <AppstoreOutlined />),
-
-
-
-    getItem(
-        <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-            Настройки
-        </a>,
-        'link',
-        <LinkOutlined />,
-    ),
 ];
 
 const App: React.FC = () => {

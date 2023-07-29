@@ -56,7 +56,7 @@ export default () => {
             >
 
             </Breadcrumb>
-            <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} />
+            <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} name={'пользователи'} />
         </InnerPageBase>
     )
 }

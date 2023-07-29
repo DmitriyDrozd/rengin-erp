@@ -33,7 +33,6 @@ export default () => {
         .addCol('kpp', 'КПП')
         .addEditCol('addressId','/app/in/addresses')
 
-
     const history = useHistory()
     const list = useSelector(crud.selectList)
 
@@ -41,9 +40,9 @@ export default () => {
     return (
         <InnerPageBase>
             <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Заказчики</Breadcrumb.Item>
+                <Breadcrumb.Item>Адреса</Breadcrumb.Item>
             </Breadcrumb>
-            <RCRUDTable itemNavBase={'/app/in/addresses'}  dataSource={list} columns={columns} />
+            <RCRUDTable itemNavBase={'/app/in/addresses'}  dataSource={list} columns={columns} name={'адреса'} />
         </InnerPageBase>
     )
 }

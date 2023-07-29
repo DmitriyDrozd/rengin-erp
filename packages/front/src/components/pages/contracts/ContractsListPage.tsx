@@ -41,9 +41,9 @@ export default () => {
     return (
         <InnerPageBase>
             <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Заказчики</Breadcrumb.Item>
+                <Breadcrumb.Item>Договора</Breadcrumb.Item>
             </Breadcrumb>
-            <RCRUDTable itemNavBase={'/app/in/contracts'} dataSource={list} columns={columns} />
+            <RCRUDTable itemNavBase={'/app/in/contracts'} dataSource={list} columns={columns}  name={'договора'}/>
         </InnerPageBase>
     )
 }
