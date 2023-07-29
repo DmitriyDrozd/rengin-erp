@@ -1,0 +1,37 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: dev-ssh-deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  run_pull:
+    name: run pull
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: install ssh keys
+      # check this thread to understand why its needed:
+      # https://stackoverflow.com/a/70447517
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY_GITHUB_RUNNER }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ vars.DEV_HOST }} > ~/.ssh/known_hosts
+    - name: connect and pull
+      run: ssh root@${{ secrets.DEV_HOST }} "cd /home/${{ github.event.repository.name }} && git checkout develop && git checkout ./ && git pull && yarn install"
+    - name: connect and nextjs build
+      run: | 
+        ssh root@${{ vars.DEV_HOST }} 
+         "pm2 restart ${{ github.event.repository.name }}:service --update-env"
+    - name: pm2 restart
+      run: |
+        ssh root@${{ vars.DEV_HOST }} 
+        "pm2 restart ${{ github.event.repository.name }}:front --update-env"
+    - name: cleanup
+      run: rm -rf ~/.ssh
+
