@@ -1,17 +1,16 @@
 import {combineReducers} from 'redux'
 
 import {History} from 'history'
-import {Bootstrap, bootstrapDuck} from "iso/src/store/bootstrapDuck";
-import {uiDuck, UIState} from "./ducks/uiDuck";
-import usersCrud from 'iso/src/store/bootstrap/repos/users-crud';
-import {connectionDuck, metaDuck, StoreMeta} from "iso/src/store";
-import {ConnectionState} from "iso/src/store/sse/sseConnectionDuck";
-import frontConfigDuck, {FrontConfig} from "./ducks/frontConfigDuck";
-import {routerDuck, RouterState} from "./ducks/routerDuck";
-import {loadingDuck} from "./ducks/loadingDuck";
-import {preferencesDuck} from "./ducks/preferencesDuck";
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
-import {connectRouter} from '@sha/router'
+import {Bootstrap, bootstrapDuck} from 'iso/src/store/bootstrapDuck';
+import {uiDuck, UIState} from './ducks/uiDuck';
+import {USERS, UserVO} from 'iso/src/store/bootstrap/repos/users';
+import {connectionDuck, metaDuck, StoreMeta} from 'iso/src/store';
+import {ConnectionState} from 'iso/src/store/sse/sseConnectionDuck';
+import frontConfigDuck, {FrontConfig} from './ducks/frontConfigDuck';
+import {routerDuck, RouterState} from './ducks/routerDuck';
+import {loadingDuck} from './ducks/loadingDuck';
+import {preferencesDuck} from './ducks/preferencesDuck';
+
 export type DeepReadonly<T> = T extends any[]
     ? DeepReadonlyArray<T[number]>
     : T extends object ? DeepReadonlyObject<T> : T
@@ -42,7 +41,6 @@ const frontReducer = (history: History ) => {
     return ((state, action) => {
 
         const res = resultReducer(state, action)
-        console.log(action.type, action, state,res)
         return res
     }) as any as typeof combinedReducer
 }
@@ -68,7 +66,7 @@ export default frontReducer
 
 export const selectCurrentUser = (state: FrontState): UserVO => {
     const email = state.ui.login
-    const user = usersCrud.selectUserByEmail(email)(state)
+    const user = USERS.selectUserByEmail(email)(state)
 
     return user
 }

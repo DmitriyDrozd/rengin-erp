@@ -1,6 +1,5 @@
-import * as FSA from '@sha/fsa';
-import {StoneStatus} from "./StatusesMatrix";
-import {ISOState} from "../../ISOState";
+import {StoneStatus} from './StatusesMatrix';
+import {ISOState} from '../../ISOState';
 import createBootableDuck from '@sha/fsa/src/createBootableDuck'
 
 export type RoleVO = {

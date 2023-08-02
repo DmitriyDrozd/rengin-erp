@@ -1,5 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
-import { getWindow } from "./mockWindow";
+import {useEffect, useMemo, useState} from 'react';
+import {getWindow} from './mockWindow';
+
 export type InitialType = {
     [key: string]: string | number | boolean | Date | string[] | Object | undefined;
 };

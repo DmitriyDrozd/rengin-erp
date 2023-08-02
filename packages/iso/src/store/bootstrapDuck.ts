@@ -1,19 +1,17 @@
 import * as fsa from '@sha/fsa'
-import {addressesCrud, contractsCrud, issuesCrud, usersCrud} from './bootstrap/index'
-import {combineReducers, Reducer} from 'redux'
-import {put, takeLatest} from 'typed-redux-saga'
+import {combineReducers} from 'redux'
 import configDuck from './bootstrap/configDuck'
-import settingsDuck from "./bootstrap/settingsDuck";
+import settingsDuck from './bootstrap/settingsDuck';
 import {ISOState} from '../ISOState'
 import {toAssociativeArray} from '@sha/utils'
-import {UserVO} from './bootstrap/repos/user-schema'
-import {AddressVO} from './bootstrap/repos/addresses-schema'
-import {ContractVO} from './bootstrap/repos/contracts-schema'
-import {IssueVO} from './bootstrap/repos/Issues-schema'
-import {Crud, isCRUD} from '@sha/fsa/src/createCRUDDuck'
+import {USERS, UserVO} from './bootstrap/repos/users'
+import {SITES, SiteVO} from './bootstrap/repos/sites'
+import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
+import {ISSUES, IssueVO} from './bootstrap/repos/issues'
+import {isCRUD} from '@sha/fsa/src/createCRUDDuck'
 import {Duck} from '@sha/fsa/src/createBootableDuck'
-import brandsCrud from './bootstrap/repos/brands-crud'
-import companiesCrud from './bootstrap/companies-crud'
+import brandsCrud, {BrandVO} from './bootstrap/repos/brands'
+import {LEGALS, LegalVO} from './bootstrap/repos/legals'
 
 const factory = fsa.actionCreatorFactory('bootstrap')
 
@@ -26,12 +24,12 @@ const actions = {
 
 
 export const bootstrapCrudsMap = {
-    users: usersCrud,
-    addresses: addressesCrud,
-    contracts: contractsCrud,
-    issues: issuesCrud,
+    users: USERS,
+    sites: SITES,
+    contracts: CONTRACTS,
+    issues: ISSUES,
     brands: brandsCrud,
-    companies: companiesCrud,
+    legals: LEGALS,
 }
 export const bootstrapDucksMap = {
     ...bootstrapCrudsMap,
@@ -84,19 +82,26 @@ export const bootstrapDuck = {
 
 export const selectLedger = (state: ISOState) => {
     const boot = state.app.bootstrap
+
     const users = boot.users as UserVO[]
-    const addresses = boot.addresses as AddressVO[]
+    const sites = boot.sites as SiteVO[]
     const contracts = boot.contracts  as ContractVO[]
     const issues = boot.issues as  IssueVO[]
-    const usersById = toAssociativeArray('userId')(boot.users)
-    const addressesById = toAssociativeArray('addressId')(boot.addresses)
-    const contractsById = toAssociativeArray('contractId')(boot.contracts)
-    const issuesById = toAssociativeArray('issuesId')(boot.issues)
+    const brands = boot.brands as BrandVO[]
+    const legals = boot.legals  as LegalVO[]
+
+    const usersById = toAssociativeArray('userId')(users)
+    const sitesById = toAssociativeArray('siteId')(sites)
+    const contractsById = toAssociativeArray('contractId')(contracts)
+    const issuesById = toAssociativeArray('issuesId')(issues)
+    const legalsById = toAssociativeArray('legalId')(legals)
     return {
+        brands,
+        legals,legalsById,
         usersById ,
-        addressesById,
+        sitesById,
         contractsById,
         issuesById,
-        users, addresses,contracts,issues
+        users, sites,contracts,issues
     }
 }

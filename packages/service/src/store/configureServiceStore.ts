@@ -4,10 +4,10 @@ import {serviceDuck, SEServiceState} from './serviceDuck'
 
 import {generateEventGuid} from '@sha/random'
 import * as FSA from '@sha/fsa'
-import sagaOptions, {SagaOptions} from "../sagaOptions";
-import createMongoConnection from "../repositories/createMongoConnection";
-import getServiceEnv from "../getServiceEnv";
-import {GServices} from "../rest/settings/getGServices";
+import sagaOptions, {SagaOptions} from '../sagaOptions';
+import createMongoConnection from '../repositories/createMongoConnection';
+import getServiceEnv from '../getServiceEnv';
+import {GServices} from '../rest/settings/getGServices';
 import eventStore from '../repositories/eventStore'
 
 //var remotedev = require('remotedev-server');

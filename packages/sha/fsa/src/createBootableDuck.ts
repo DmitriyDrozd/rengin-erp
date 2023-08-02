@@ -1,6 +1,4 @@
 import * as FSA from './fsa'
-import {defaultSettings, Settings} from 'iso/src/store/bootstrap/settingsDuck'
-import createCRUDDuck from './createCRUDDuck'
 
 export const createBootableDuck = <S, P extends string = string>(factoryPrefix: P,
                                                           defaultProps: S = {} as any,

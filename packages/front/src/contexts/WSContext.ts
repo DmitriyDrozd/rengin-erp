@@ -1,4 +1,4 @@
-import {createAdvancedContext} from "./index";
+import {createAdvancedContext} from './index';
 
 export type WSGlobs = {
     outletElement: HTMLIonRouterOutletElement

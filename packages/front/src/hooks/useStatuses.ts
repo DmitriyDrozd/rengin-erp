@@ -1,5 +1,5 @@
-import useFrontSelector from "./common/useFrontSelector";
-import settingsDuck from "iso/src/store/bootstrap/settingsDuck";
+import useFrontSelector from './common/useFrontSelector';
+import settingsDuck from 'iso/src/store/bootstrap/settingsDuck';
 import projectsCURD from 'iso/src/store/bootstrap/repos/projectsCURD'
 
 

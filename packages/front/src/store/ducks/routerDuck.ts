@@ -2,9 +2,9 @@ import * as fsa from '@sha/fsa'
 import {FactoryAnyAction} from '@sha/fsa'
 import {prepend, tail} from 'ramda'
 
-import {connectRouter} from "@sha/router"
-import {History} from 'history'
 import * as RR from '@sha/router'
+import {connectRouter} from '@sha/router'
+import {History} from 'history'
 import type {LocationChangeAction, RouterActionType, RouterLocation} from 'connected-react-router'
 import {put, select, takeEvery} from 'typed-redux-saga'
 

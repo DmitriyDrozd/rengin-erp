@@ -1,7 +1,7 @@
-import path from "path";
-import express from "express";
-import {createSession} from "@sha/better-sse";
-import {resource} from "./channels/resource";
+import path from 'path';
+import express from 'express';
+import {createSession} from '@sha/better-sse';
+import {resource} from './channels/resource';
 
 const app = express();
 

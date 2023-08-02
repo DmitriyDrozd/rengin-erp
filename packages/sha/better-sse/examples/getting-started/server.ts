@@ -1,6 +1,6 @@
-import path from "path";
-import express from "express";
-import {createSession, Session} from "@sha/better-sse";
+import path from 'path';
+import express from 'express';
+import {createSession, Session} from '@sha/better-sse';
 
 const app = express();
 

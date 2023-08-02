@@ -1,4 +1,14 @@
-import { cN as Keyboard, cO as addEventListener, cP as removeEventListener, cK as componentOnReady, cJ as findClosestIonContent, cQ as KeyboardResize, cR as raf, cS as getScrollElement, cT as scrollByPoint } from "./vendor-6932f6a6.js";
+import {
+    cJ as findClosestIonContent,
+    cK as componentOnReady,
+    cN as Keyboard,
+    cO as addEventListener,
+    cP as removeEventListener,
+    cQ as KeyboardResize,
+    cR as raf,
+    cS as getScrollElement,
+    cT as scrollByPoint
+} from "./vendor-6932f6a6.js";
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */

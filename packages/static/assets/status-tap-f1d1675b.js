@@ -1,4 +1,10 @@
-import { cI as readTask, cJ as findClosestIonContent, cK as componentOnReady, cL as writeTask, cM as scrollToTop } from "./vendor-6932f6a6.js";
+import {
+    cI as readTask,
+    cJ as findClosestIonContent,
+    cK as componentOnReady,
+    cL as writeTask,
+    cM as scrollToTop
+} from "./vendor-6932f6a6.js";
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */

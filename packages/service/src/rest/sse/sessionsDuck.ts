@@ -1,5 +1,5 @@
 import {createCRUDDuck} from '@sha/fsa'
-import {Action} from "redux";
+import {Action} from 'redux';
 
 export type SessionVO = {
     sessionId?: string

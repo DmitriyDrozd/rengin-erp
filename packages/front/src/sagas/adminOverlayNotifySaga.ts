@@ -1,23 +1,50 @@
 import {select, takeEvery} from 'typed-redux-saga'
 
-import {FactoryAction} from '@sha/fsa'
+import {FactoryAction, FactoryAnyAction} from '@sha/fsa'
 
-import {uiDuck} from "../store/ducks/uiDuck"
-import sseConnectionDuck from "iso/src/store/sse/sseConnectionDuck";
+import {uiDuck} from '../store/ducks/uiDuck'
+import sseConnectionDuck from 'iso/src/store/sse/sseConnectionDuck';
+import {getResourceByAction} from 'iso/src/store/bootstrap/resourcesList'
+import {notification} from 'antd'
 
 
 export function* adminNotifySaga() {
-    yield* takeEvery(sseConnectionDuck.actions.serverPushed.isType, function* (pushAction) {
-            // const pref: AdminPreferences = yield* select(localAdminPreferencesDuck.selectPreferences)
-            const role = yield* select(uiDuck.selectRole)
-            if (role === 'admin') {
-                const {type, ...action}: FactoryAction<any> = pushAction.payload
-                /*  if (pref.liveEventFeedOverlay)
-                      notification.open({
-                          message: type,
-                          description: '',//React.createElement(JSONTree, {value: action.payload}),
-                          duration: 20,
-                      })*/
+
+    const isSuccessActions = (action: FactoryAnyAction) =>
+       Boolean (  sseConnectionDuck.actions.clientPushSuccess.isType(action) ||
+        sseConnectionDuck.actions.serverPushed.isType(action) )
+
+    yield* takeEvery((action) => {
+        return Boolean( sseConnectionDuck.actions.clientPushSuccess.isType(action) ||
+            sseConnectionDuck.actions.serverPushed.isType(action))
+        }, function* (pushAction) {
+
+            const action = pushAction.payload
+            const res = getResourceByAction(action)
+        const item = yield* select(res.selectById(action.payload[res.idProp]))
+            if(res && item) {
+                const itemName = res.getItemName(item)
+                if(res.actions.added.isType(action)) {
+                    notification.open({
+                        message: itemName + ' добавлен',
+                        description: 'Вы добавили новый '+res.langRU.some,
+                        type: 'success'
+                    })
+                }
+                else if(res.actions.updated.isType(action) || res.actions.patched.isType(action)) {
+                    notification.open({
+                        message: itemName,
+                        description: 'Вы обновили '+res.langRU.some,
+                        type: 'info'
+                    })
+                }
+                else if(res.actions.removed.isType(action)) {
+                    notification.open({
+                        message: itemName,
+                        description: 'Запись '+res.langRU.some+' удалена',
+                        type: 'warning'
+                    })
+                }
             }
         }
     )

@@ -1,10 +1,9 @@
 import * as FSA from './fsa'
 import {FactoryAnyAction} from './fsa'
 import * as R from 'ramda'
-import {DeepPartial, PickByValue, PickByValueExact} from 'utility-types'
 import {Reducer} from 'redux'
-import {AssociativeArray, toAssociativeArray} from "@sha/utils"
-import moize from "moize"
+import {AssociativeArray, toAssociativeArray} from '@sha/utils'
+import moize from 'moize'
 import {Duck} from './createBootableDuck'
 
 
@@ -287,6 +286,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
     }
 
     const duck = {
+
         getId: (item: T): IDType =>
             item[idProp],
         factoryPrefix,

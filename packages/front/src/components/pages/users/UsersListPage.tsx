@@ -1,25 +1,18 @@
-import {Breadcrumb, Button, Card, Col, Modal, Row, Space, Table, theme} from 'antd'
-import React, {useState} from 'react'
-import TicketsTable from '../TicketsTable'
-import TicketForm from '../TicketForm'
-import InnerPageBase from '../../app/InnerPageBase'
+import React from 'react'
 import {ColumnsType} from 'antd/es/table'
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
-import {take} from 'ramda'
+import {getAbbrName, USERS, UserVO} from 'iso/src/store/bootstrap/repos/users'
 import {useSelector} from 'react-redux'
-import {usersCrud} from 'iso/src/store/bootstrap'
-import {Link} from 'react-router-dom'
-import {nav} from '../../nav'
-import {getAbbrName} from 'iso/src/store/bootstrap/repos/users-crud'
-import {useHistory} from 'react-router'
-import AddItemFloatButton from '../../elements/AddItemFloatButton'
-import {makeColumns} from '../../grid/createColumns'
-import Search from 'antd/es/input/Search'
-import AddItemButton from '../../elements/AddItemButton'
-import {RCRUDTable} from '../../grid/RCRUDTable'
-import {AntdIcons} from '../../elements/AntdIcons'
-import {UserOutlined} from '@ant-design/icons'
+import {useHistory, useParams} from 'react-router'
+import {makeColumns} from '../../../grid/createColumns'
+import {RCRUDTable} from '../../../grid/RCRUDTable'
+import AppLayout from '../../app/AppLayout'
+import AddItemButton from '../../elements/CrudCreateButton'
+
 export default () => {
+
+    const params = useParams()
+    console.log()
+
     const columns: ColumnsType<UserVO> = makeColumns<UserVO>()
 
         .addCol('email')
@@ -32,31 +25,27 @@ export default () => {
 
 
     const history = useHistory()
-    const list = useSelector(usersCrud.selectList)
+    const list = useSelector(USERS.selectList)
 
 
     return (
-        <InnerPageBase>
-            <Breadcrumb style={{ margin: '16px 0' }}
-                        items={[
-                                {
+        <AppLayout
+            extra={<AddItemButton/>}
+            header={{
 
-                                    title:  <Link to={'/app/in/start'}><AntdIcons.HomeOutlined /></Link>,
-                                },
-                                {
+               /** breadcrumb: {
 
-                                    title: (
-                                        <Link >
-                                            <UserOutlined />
-                                            <span>Пользователи</span>
-                                        </Link>
-                                    ),
-                                }]
-            }
-            >
+                    items: [{
+                        path: '/app/in/users',
+                        title: 'Пользователи',
+                    },
+                    ]
+                }*/
+            }}
+        >
 
-            </Breadcrumb>
-            <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} name={'пользователи'} />
-        </InnerPageBase>
+                <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} />
+
+        </AppLayout>
     )
 }

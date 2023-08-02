@@ -5,6 +5,7 @@ import uuid from 'uuid/v4'
 import * as utils from '@sha/utils'
 import {AssociativeArray} from '@sha/utils'
 import {omit, pick, values} from 'ramda'
+import {customAlphabet} from 'nanoid'
 
 export const generatePassword = (
     length: number = 10,
@@ -18,8 +19,8 @@ const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 const nanoId = customAlphabet(alphabet, 6);
 export const generateGuid = (length = 6) => nanoId(length)
 export const generateEventGuid = (length = 6) => 'E-'+nanoId(length)*/
-export const generateGuid = uuid
-export const generateEventGuid = uuid
+export const generateGuid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-',15)
+export const generateEventGuid = generateGuid
 export const generateUint64Guid = () =>
   Number('0x' + uuid().split('-').join('').split('').slice(0, 8).join('')).toString()
 /*

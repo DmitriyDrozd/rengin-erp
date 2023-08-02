@@ -1,6 +1,6 @@
-import axios from "axios";
-import {Action} from "redux";
-import {isArray} from "@sha/utils";
+import axios from 'axios';
+import {Action} from 'redux';
+import {isArray} from '@sha/utils';
 
 export default async () => {
     const axiosInstance = axios//.create({})

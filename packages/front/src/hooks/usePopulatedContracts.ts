@@ -1,5 +1,5 @@
 import useLedger from './useLedger'
-import {getAbbrName} from 'iso/src/store/bootstrap/repos/users-crud'
+import {getAbbrName} from 'iso/src/store/bootstrap/repos/users'
 
 export default () => {
      const ledger = useLedger()

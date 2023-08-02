@@ -5,10 +5,10 @@ import sseConnectionDuck, {SSE_REDUX_EVENT} from './sseConnectionDuck'
 import * as R from 'ramda'
 import ReconnectingEventSource from 'reconnecting-eventsource'
 import {isPersistentAction, metaDuck} from '../../index'
-import {usersCrud} from '../bootstrap/repos/users-crud'
+import {USERS} from '../bootstrap/repos/users'
 import {FactoryAnyAction, isNamespace} from '@sha/fsa'
-import getRestApi from "../../getRestApi";
-import {StoreMeta} from "../metaDuck";
+import getRestApi from '../../getRestApi';
+import {StoreMeta} from '../metaDuck';
 
 const sentGuids = []
 
@@ -122,14 +122,14 @@ export function* sseClientSaga() {
 
 
                     let sanitizedAction = R.clone(action)
-                    if ((meta.userId && isNamespace(usersCrud.factory)(action)) || isPersistentAction(action)) {
+                    if ((meta.userId && isNamespace(USERS.factory)(action)) || isPersistentAction(action)) {
 
 
                         yield* put(sseConnectionDuck.actions.clientPushStarted(action))
                         // console.log('sending action', action)
                         try {
                             const result = yield* call(endpoint.pushCommands, [sanitizedAction])
-                            yield* put(sseConnectionDuck.actions.clientPushSuccess({action,result}))
+                            yield* put(sseConnectionDuck.actions.clientPushSuccess(action))
                         }
                         catch (e) {
                             yield* put(sseConnectionDuck.actions.clientPushFailed({action,error:e}))

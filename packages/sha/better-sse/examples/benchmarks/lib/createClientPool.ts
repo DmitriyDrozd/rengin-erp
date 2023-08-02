@@ -1,4 +1,4 @@
-import EventSource from "eventsource";
+import EventSource from 'eventsource';
 
 export interface ClientPoolOptions {
 	port: number;

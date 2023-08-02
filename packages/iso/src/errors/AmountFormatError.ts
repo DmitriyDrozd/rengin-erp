@@ -1,4 +1,4 @@
-import {YPError} from "./PrintmanError";
+import {YPError} from './PrintmanError';
 
 export default class AmountFormatError extends YPError {
     constructor(actualValue) {

@@ -1,6 +1,5 @@
-import { JsonEditor as Editor } from 'jsoneditor-react';
+import {JsonEditor as Editor} from 'jsoneditor-react';
 import 'jsoneditor-react/es/editor.min.css'
-import UseWithValue from '@sha/react-fp/src/hooks/useWithValue'
 import React from 'react'
 
 type JEProps<T> = {

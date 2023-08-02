@@ -1,10 +1,9 @@
-import useFrontSelector from "./common/useFrontSelector";
-import {uiDuck} from "../store/ducks/uiDuck";
-import {useProject} from "./useProject";
-import useStatuses from "./useStatuses";
-import settingsDuck from "iso/src/store/bootstrap/settingsDuck";
-import {prop} from "ramda";
-import {WSElementID} from "scene/src/utils";
+import useFrontSelector from './common/useFrontSelector';
+import {uiDuck} from '../store/ducks/uiDuck';
+import {useProject} from './useProject';
+import useStatuses from './useStatuses';
+import settingsDuck from 'iso/src/store/bootstrap/settingsDuck';
+import {prop} from 'ramda';
 
 export default () => {
     const roleId = useFrontSelector(uiDuck.selectRole)

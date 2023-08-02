@@ -1,4 +1,4 @@
-import {call} from "typed-redux-saga";
+import {call} from 'typed-redux-saga';
 
 export default function* wrapPerformanceSaga<T, R, Fn extends (...args: T[]) => R>(f: Fn, ...params: T[]) {
     const start = new Date().getTime()

@@ -1,4 +1,4 @@
-import {createChannel} from "@sha/better-sse";
+import {createChannel} from '@sha/better-sse';
 
 /**
  * Create a channel that allows you to broadcast messages

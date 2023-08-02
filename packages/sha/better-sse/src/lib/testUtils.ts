@@ -1,7 +1,7 @@
-import http from "http";
-import http2 from "http2";
-import net, {AddressInfo} from "net";
-import {Session} from "../Session";
+import http from 'http';
+import http2 from 'http2';
+import net, {AddressInfo} from 'net';
+import {Session} from '../Session';
 
 const createHttpServer = (): Promise<http.Server> =>
 	new Promise<http.Server>((resolve, reject) => {

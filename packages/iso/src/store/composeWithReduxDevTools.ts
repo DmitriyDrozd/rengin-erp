@@ -1,4 +1,4 @@
-import {composeWithDevTools} from "redux-devtools-extension";
+import {composeWithDevTools} from 'redux-devtools-extension';
 
 const arrayLimit = 50
 const composeWithReduxDevTools = (name = 'App printman') => composeWithDevTools({

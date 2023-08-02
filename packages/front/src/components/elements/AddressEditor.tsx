@@ -1,19 +1,12 @@
-import {WithValueProps} from '@sha/react-fp'
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
-import {Button, Form, Input, Select, Space} from 'antd'
-import useUser from '../../hooks/useUser'
-import {useEffect, useState} from 'react'
-import {key} from 'ionicons/icons'
-import { useForm } from "react-hook-form";
+import {Form, Input} from 'antd'
+import {useForm} from 'react-hook-form';
 import EditorFooter from './EditorFooter'
-import {FieldRender} from '../grid/createColumns'
-import {AddressVO} from 'iso/src/store/bootstrap/repos/addresses-schema'
+import {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
 import {z} from 'zod'
-import {zodResolver} from '@hookform/resolvers/zod'
-import { DevTool } from "@hookform/devtools";
+import {DevTool} from '@hookform/devtools';
 import {AntReactHookFormItem} from './AntReactHookFormItem'
 
-export default ({item, onCancel, onSave,isNew}:{item: Partial<AddressVO>,isNew?:boolean, onCancel: Function, onSave: (item: AddressVO) => any}) => {
+export default ({item, onCancel, onSave,isNew}:{item: Partial<SiteVO>,isNew?:boolean, onCancel: Function, onSave: (item: RealtyVO) => any}) => {
 
     const schema = z.object({
 clientId: z.string(),
@@ -27,7 +20,7 @@ companyName: z.string().optional(),
         brand: z.string().optional(),
 legalName: z.string({})   })
 
-    const { register, handleSubmit, setValue,formState,getValues,control  } = useForm<AddressVO>({defaultValues: item as any as AddressVO});
+    const { register, handleSubmit, setValue,formState,getValues,control  } = useForm<RealtyVO>({defaultValues: item as any as RealtyVO});
 
     const errors = formState.errors
     // Input は event が渡されてくる

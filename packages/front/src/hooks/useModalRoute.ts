@@ -1,7 +1,7 @@
-import {useIonRouter} from "@ionic/react";
-import {useHistory, useLocation} from "react-router";
-import {OverlayEventDetail} from "@ionic/core";
-import {IonModalCustomEvent} from "@ionic/core/dist/types/components";
+import {useIonRouter} from '@ionic/react';
+import {useHistory, useLocation} from 'react-router';
+import {OverlayEventDetail} from '@ionic/core';
+import {IonModalCustomEvent} from '@ionic/core/dist/types/components';
 
 export default (modalRoute, stateKey?: string): [boolean, (event: IonModalCustomEvent<OverlayEventDetail>) => void, (event: IonModalCustomEvent) => void] => {
     const history = useHistory()

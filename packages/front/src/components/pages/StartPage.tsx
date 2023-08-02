@@ -1,14 +1,15 @@
 import React from 'react';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import {Card, Col, Row, Space, Statistic} from 'antd';
-import InnerPageBase from '../app/InnerPageBase'
+import {ArrowDownOutlined, ArrowUpOutlined} from '@ant-design/icons';
+import {Card, Col, Row, Statistic} from 'antd';
+
 import {useSelector} from 'react-redux'
 import {bootstrapDuck} from 'iso/src/store/bootstrapDuck'
+import AppLayout from '../app/AppLayout'
 
 export default () => {
     const boot = useSelector(bootstrapDuck.selectBootstrap)
     return (
-        <InnerPageBase>
+        <AppLayout>
 
             <Row gutter={[16,16]} style={{marginBottom: '16px', marginTop: '16px'}}>
                 <Col span={12}>
@@ -27,7 +28,7 @@ export default () => {
                     <Card >
                         <Statistic
                             title="Объекты"
-                            value={boot.addresses.length}
+                            value={boot.sites.length}
                             precision={0}
                             valueStyle={{ color: '#cf1322' }}
                             prefix={<ArrowDownOutlined />}
@@ -63,6 +64,6 @@ export default () => {
                 </Col>
             </Row>
 
-        </InnerPageBase>
+        </AppLayout>
     );
 }

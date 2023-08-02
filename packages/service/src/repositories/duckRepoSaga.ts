@@ -1,6 +1,6 @@
 import {call, put, select, takeEvery} from 'typed-redux-saga'
 import {isNamespace} from '@sha/fsa'
-import {Schema} from "mongoose"
+import {Schema} from 'mongoose'
 import {DuckRepository} from './duckRepo'
 import {isPersistentAction} from 'iso'
 

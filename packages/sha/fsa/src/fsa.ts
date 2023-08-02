@@ -1,7 +1,6 @@
-
 import {AnyAction} from 'redux'
 import {equals} from 'ramda'
-import {generateGuid} from "@sha/random";
+import {generateGuid} from '@sha/random';
 
 export * from './ExtractAction'
 

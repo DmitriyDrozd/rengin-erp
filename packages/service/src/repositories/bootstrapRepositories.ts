@@ -1,20 +1,30 @@
 import duckRepo from './duckRepo'
-import {addressesCrud, contractsCrud, issuesCrud, usersCrud} from 'iso/src/store/bootstrap'
-import {UserSchema} from 'iso/src/store/bootstrap/repos/user-schema'
-import {ContractsSchema} from 'iso/src/store/bootstrap/repos/contracts-schema'
-import {IssuesSchema} from 'iso/src/store/bootstrap/repos/Issues-schema'
-import {AddressesSchema} from 'iso/src/store/bootstrap/repos/addresses-schema'
-import companiesCrud from 'iso/src/store/bootstrap/companies-crud'
-import {CompanySchema} from 'iso/src/store/bootstrap/companies-schema'
-import {BrandSchema} from 'iso/src/store/bootstrap/repos/brands-schema'
-import brandsCrud from 'iso/src/store/bootstrap/repos/brands-crud'
+import {CONTRACTS} from 'iso/src/store/bootstrap/repos/contracts'
+import {ISSUES} from 'iso/src/store/bootstrap/repos/issues'
+import {BRANDS} from 'iso/src/store/bootstrap/repos/brands'
+import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {USERS} from 'iso/src/store/bootstrap/repos/users'
+import buildMongooseByResource from './buildMongooseByResource'
+import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
+import {SITES} from 'iso/src/store/bootstrap/repos/sites'
 
-export default async (mongo) => ({
-    UsersRepo: await duckRepo({mongo}, usersCrud, UserSchema),
-    //  CommentsRepo: await duckRepo({mongo}, commentsCRUD, CommentSchema),
-    ContractsRepo: await duckRepo({mongo}, contractsCrud, ContractsSchema),
-    IssuesRepo: await duckRepo({mongo}, issuesCrud, IssuesSchema),
-    AddressesRepo: await duckRepo({mongo}, addressesCrud, AddressesSchema),
-    CompaniesRepo: await duckRepo({mongo}, companiesCrud, CompanySchema),
-    BrandsRepo: await duckRepo({mongo}, brandsCrud, BrandSchema),
-})
+export default async (mongo) => {
+
+    const makeRepo = async <RID extends string, P extends AnyFields>(res: Resource<RID,P>) => {
+        return await duckRepo({mongo}, res, buildMongooseByResource(res) )
+    }
+
+    return ({
+
+        UsersRepo: await makeRepo( USERS ),
+        BrandsRepo: await makeRepo(BRANDS),
+        LelagsRepo: await makeRepo(LEGALS),
+        RealtyRepo: await makeRepo(SITES),
+        ContractsRepo: await makeRepo(CONTRACTS)    ,
+IssuesRepo: await makeRepo(ISSUES)
+        // IssuesRepo: await makeRepo({mongo}, issuesCrud, IssuesSchema),
+        // AddressesRepo: await makeRepo({mongo}, addressesCrud, AddressesSchema),
+        // CompaniesRepo: await makeRepo({mongo}, companiesCrud, CompanySchema),
+        //BrandsRepo: await makeRepo({mongo}, brandsCrud, BrandSchema),
+    })
+}

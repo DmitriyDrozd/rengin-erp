@@ -1,14 +1,10 @@
-import {Readable} from "stream";
-import {
-	IncomingMessage as Http1ServerRequest,
-	ServerResponse as Http1ServerResponse,
-	OutgoingHttpHeaders,
-} from "http";
-import {Http2ServerRequest, Http2ServerResponse} from "http2";
-import {TypedEmitter, EventMap} from "./lib/TypedEmitter";
-import {serialize, SerializerFunction} from "./lib/serialize";
-import {sanitize, SanitizerFunction} from "./lib/sanitize";
-import {generateId} from "./lib/generateId";
+import {Readable} from 'stream';
+import {IncomingMessage as Http1ServerRequest, OutgoingHttpHeaders, ServerResponse as Http1ServerResponse,} from 'http';
+import {Http2ServerRequest, Http2ServerResponse} from 'http2';
+import {EventMap, TypedEmitter} from './lib/TypedEmitter';
+import {serialize, SerializerFunction} from './lib/serialize';
+import {sanitize, SanitizerFunction} from './lib/sanitize';
+import {generateId} from './lib/generateId';
 
 interface SessionOptions {
 	/**

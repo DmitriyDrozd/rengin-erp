@@ -1,6 +1,6 @@
-import {useSelector} from "react-redux";
-import {defaultPreferences, Preferences, preferencesDuck} from "../../store/ducks/preferencesDuck";
-import useFrontDispatch from "./useFrontDispatch";
+import {useSelector} from 'react-redux';
+import {defaultPreferences, Preferences, preferencesDuck} from '../../store/ducks/preferencesDuck';
+import useFrontDispatch from './useFrontDispatch';
 
 export type PrefKey = keyof Preferences
 export default <K extends PrefKey>(key: K, defaultValue?: Preferences[K]): [Preferences[K], (newValue: Preferences[K]) => any] => {

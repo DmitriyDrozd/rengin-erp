@@ -1,12 +1,13 @@
-import usersCrud from './repos/users-crud'
-import addressesCrud from './repos/addresses-crud'
-import contractsCrud from './repos/contracts-crud'
-import issuesCrud from './repos/issues-crud'
-import settingsDuck  from './settingsDuck'
+import users from './repos/users'
+import units from './repos/sites'
+import contractsCrud from './repos/contracts'
+import issuesCrud from './repos/issues'
+import settingsDuck from './settingsDuck'
+
 export {
     settingsDuck,
-    addressesCrud,
+    units,
     contractsCrud,
     issuesCrud,
-    usersCrud,
+    users,
 }

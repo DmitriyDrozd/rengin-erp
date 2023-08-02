@@ -2,7 +2,7 @@ import * as fsa from '@sha/fsa'
 import {FactoryAnyAction} from '@sha/fsa'
 import {append, equals, reject, uniq} from 'ramda'
 import {combineReducers} from 'redux'
-import {FrontState} from "../frontReducer";
+import {FrontState} from '../frontReducer';
 
 export type UIState = ReturnType<typeof reducer>
 

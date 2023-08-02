@@ -1,4 +1,4 @@
-import { cD as isRTL, cE as createGesture, cF as clamp } from "./vendor-6932f6a6.js";
+import {cD as isRTL, cE as createGesture, cF as clamp} from "./vendor-6932f6a6.js";
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */

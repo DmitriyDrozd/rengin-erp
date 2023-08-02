@@ -1,5 +1,5 @@
 import {FastifyInstance} from 'fastify'
-import path from "path";
+import path from 'path';
 
 export default (fastify: FastifyInstance, opts, done) => {
 

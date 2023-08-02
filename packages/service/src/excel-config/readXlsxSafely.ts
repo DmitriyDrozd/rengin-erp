@@ -1,5 +1,5 @@
-import R from "ramda";
-import readXlsxFile, {readSheetNames} from "read-excel-file/node";
+import R from 'ramda';
+import readXlsxFile, {readSheetNames} from 'read-excel-file/node';
 
 const specialCharsToReplace = {
     [String.fromCharCode(32)]: [String.fromCharCode(160)],

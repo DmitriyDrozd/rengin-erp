@@ -1,5 +1,5 @@
-import {SagaOptions} from "./sagaOptions";
-import {SEServiceState} from "./store/serviceDuck";
+import {SagaOptions} from './sagaOptions';
+import {SEServiceState} from './store/serviceDuck';
 
 declare module 'fastify' {
     interface FastifyInstance {

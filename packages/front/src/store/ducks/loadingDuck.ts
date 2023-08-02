@@ -1,6 +1,6 @@
-import {actionCreatorFactory} from "@sha/fsa";
-import {equals, prepend, reject} from "ramda";
-import {FrontState} from "../frontReducer";
+import {actionCreatorFactory} from '@sha/fsa';
+import {equals, prepend, reject} from 'ramda';
+import {FrontState} from '../frontReducer';
 
 const factory = actionCreatorFactory('loading')
 

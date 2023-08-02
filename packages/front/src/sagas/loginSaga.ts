@@ -3,22 +3,17 @@ import {call, delay, fork, put, select, take, takeLatest} from 'typed-redux-saga
 
 import {metaDuck} from 'iso/src/store/metaDuck'
 import {adminNotifySaga} from './adminOverlayNotifySaga'
-import * as router from '@sha/router'
-import {takeLatestRoute} from '@sha/router'
-import {generateGuid} from "@sha/random/src"
+import {generateGuid} from '@sha/random/src'
 import {uiDuck} from '../store/ducks/uiDuck'
-import sseClientSaga from "iso/src/store/sse/sseClientSaga"
-import getRestApi from "iso/src/getRestApi"
+import sseClientSaga from 'iso/src/store/sse/sseClientSaga'
+import getRestApi from 'iso/src/getRestApi'
 import {History} from 'history'
-import {sleep} from "@sha/utils"
-import {FrontState, selectCurrentUser} from '../store/frontReducer'
+import {sleep} from '@sha/utils'
+import {selectCurrentUser} from '../store/frontReducer'
 import {Bootstrap, bootstrapDuck, bootstrapDucksMap} from 'iso/src/store/bootstrapDuck';
-import {connectionDuck} from "iso/src/store"
-import {SSEClientFront} from "iso/src/store/sse/SSEClientFront"
-import {addressesCrud, contractsCrud, issuesCrud, usersCrud} from 'iso/src/store/bootstrap'
-import {appStorage} from "iso"
-import settingsDuck from "iso/src/store/bootstrap/settingsDuck"
-import {routerDuck} from "../store/ducks/routerDuck"
+import {connectionDuck} from 'iso/src/store'
+import {SSEClientFront} from 'iso/src/store/sse/SSEClientFront'
+import {appStorage} from 'iso'
 import {Preferences, preferencesDuck} from '../store/ducks/preferencesDuck'
 import {nav} from '../components/nav'
 import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'

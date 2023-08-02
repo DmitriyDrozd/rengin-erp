@@ -1,5 +1,5 @@
-import {Suite as BenchmarkSuite} from "benchmark";
-import express, {Express} from "express";
+import {Suite as BenchmarkSuite} from 'benchmark';
+import express, {Express} from 'express';
 
 /**
  * Wrap the Benchmark.js Suite with a much nicer and more

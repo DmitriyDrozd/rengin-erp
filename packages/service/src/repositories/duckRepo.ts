@@ -1,8 +1,7 @@
 import getMongoRepository from 'iso/src/getMongoRepository'
 import {Duck} from '@sha/fsa/createCRUDDuck'
 import {Connection, Schema} from 'mongoose';
-import {UnPromisify} from "@sha/utils";
-import duckRepoSaga from "./duckRepoSaga";
+import {UnPromisify} from '@sha/utils';
 
 const duckRepo = async <T, ID extends keyof T, S extends Schema>
 ({mongo}: { mongo: Connection }, duck: Duck<T, ID>, schema: S) => {

@@ -1,5 +1,5 @@
-import osu, {NetStatMetrics} from "node-os-utils";
-import {createChannel} from "@sha/better-sse";
+import osu, {NetStatMetrics} from 'node-os-utils';
+import {createChannel} from '@sha/better-sse';
 
 const resource = createChannel();
 

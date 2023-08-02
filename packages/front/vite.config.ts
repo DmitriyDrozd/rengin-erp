@@ -1,7 +1,6 @@
-import {defineConfig, PluginOption, UserConfigExport, splitVendorChunkPlugin } from 'vite'
+import {defineConfig, PluginOption, splitVendorChunkPlugin, UserConfigExport} from 'vite'
 import react from '@vitejs/plugin-react'
-import GitRevision from 'vite-plugin-git-revision'
-import { visualizer } from "rollup-plugin-visualizer"
+import {visualizer} from 'rollup-plugin-visualizer'
 
 
 const RENGIN_VITE_PORT = process.env.RENGIN_VITE_PORT || 9302

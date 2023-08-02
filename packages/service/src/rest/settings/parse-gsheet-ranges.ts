@@ -1,8 +1,7 @@
-
-import {GSheetValueRangesResponse} from "./getGServices";
+import {GSheetValueRangesResponse} from './getGServices';
 import {splitAt, tail, uniq} from 'ramda';
 import {sortStatusIds, StoneStatus} from 'iso/src/store/bootstrap/StatusesMatrix';
-import {RoleVO} from "iso/src/store/bootstrap/settingsDuck";
+import {RoleVO} from 'iso/src/store/bootstrap/settingsDuck';
 
 export type SettingsCell<R> = {
     title?: string

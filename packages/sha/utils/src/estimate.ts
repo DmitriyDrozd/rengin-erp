@@ -1,4 +1,4 @@
-import {identity} from "ramda";
+import {identity} from 'ramda';
 
 type Awaitable<T> = T | PromiseLike<T>
 

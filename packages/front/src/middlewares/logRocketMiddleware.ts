@@ -1,6 +1,5 @@
 import LogRocket from 'logrocket'
 import {FrontState} from '../store/frontReducer'
-import * as R from 'ramda'
 
 const sanitizeProject = (project: Partial<ProjectVO>) => {
     const {events,stones,...proj} = project

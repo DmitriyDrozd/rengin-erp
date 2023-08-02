@@ -15,7 +15,6 @@
  *
  * 8. Поврежден\требует замены
  */
-import {SEServiceState} from 'service/src/store/serviceDuck'
 import {ISOState} from '../../ISOState'
 import {sort, splitAt} from 'ramda'
 

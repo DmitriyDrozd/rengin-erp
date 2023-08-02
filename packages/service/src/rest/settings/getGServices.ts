@@ -1,8 +1,8 @@
-import {GoogleAuth} from "google-auth-library/build/src/auth/googleauth";
-import moment from "moment/moment";
-import {sheets_v4} from "googleapis/build/src/apis/sheets/v4";
-import {UnPromisify} from "@sha/utils";
-import {google, Auth} from 'googleapis';
+import {GoogleAuth} from 'google-auth-library/build/src/auth/googleauth';
+import moment from 'moment/moment';
+import {sheets_v4} from 'googleapis/build/src/apis/sheets/v4';
+import {UnPromisify} from '@sha/utils';
+import {Auth, google} from 'googleapis';
 
 export const G_SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',

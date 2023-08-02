@@ -1,13 +1,11 @@
 import {all, call, fork, put, select, setContext, take} from 'typed-redux-saga'
 
-import {SagaOptions} from "../sagaOptions"
-import startServer from "../rest/startServer";
-import {bootstrapCruds, bootstrapDuck, bootstrapDucks, bootstrapDucksMap} from 'iso/src/store/bootstrapDuck';
-import getServiceEnv from "../getServiceEnv";
+import {SagaOptions} from '../sagaOptions'
+import startServer from '../rest/startServer';
+import {bootstrapCruds} from 'iso/src/store/bootstrapDuck';
+import getServiceEnv from '../getServiceEnv';
 import duckRepoSaga from '../repositories/duckRepoSaga'
-import {addressesCrud, contractsCrud, issuesCrud, usersCrud} from 'iso/src/store/bootstrap'
-import contactsCRUD from 'iso/src/store/bootstrap/repos/contracts-crud'
-import {defaultAdminUser} from 'iso/src/store/bootstrap/repos/user-schema'
+import {defaultAdminUser, USERS} from 'iso/src/store/bootstrap/repos/users'
 
 let RENGIN_SERVICE_PORT = getServiceEnv().RENGIN_SERVICE_PORT
 
@@ -24,9 +22,9 @@ export function* serviceSaga(io: SagaOptions) {
     )
 
 
-    const users = yield* select(usersCrud.selectAll)
+    const users = yield* select(USERS.selectAll)
     if(users.length === 0) {
-        yield* put(usersCrud.actions.added(defaultAdminUser))
+        yield* put(USERS.actions.added(defaultAdminUser))
     }
     const fastify = yield* call(startServer, io)
 

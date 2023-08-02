@@ -1,4 +1,4 @@
-import {YPError} from "./YPError";
+import {YPError} from './YPError';
 
 export default class YPEnvError extends YPError<'YPEnvError'> {
     constructor(varName: string) {

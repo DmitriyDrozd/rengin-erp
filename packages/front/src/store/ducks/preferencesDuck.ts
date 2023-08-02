@@ -1,8 +1,7 @@
 import * as fsa from '@sha/fsa'
-import {isNamespace, isType} from '@sha/fsa'
-import {delay, put, select, takeLatest} from 'typed-redux-saga'
-import {uiDuck} from "./uiDuck";
-import {getUserStorage} from "../../app-storage";
+import {put, select, takeLatest} from 'typed-redux-saga'
+import {uiDuck} from './uiDuck';
+import {getUserStorage} from '../../app-storage';
 
 export type Preferences = typeof defaultPreferences
 

@@ -1,6 +1,6 @@
 import * as fsa from '@sha/fsa'
 import {FactoryAnyAction} from '@sha/fsa'
-import * as R from 'ramda'
+
 export const SSE_REDUX_EVENT = 'SSE_REDUX_EVENT'
 
 const factory = fsa.actionCreatorFactory('sseClientConnection')
@@ -17,7 +17,7 @@ const actions = {
     fetchStateFailed: factory<string>('FETCH_STATE_FAILED'),
     serverPushed: factory<FactoryAnyAction>('SERVER_PUSHED'),
     clientPushStarted: factory<FactoryAnyAction>('CLIENT_PUSH_STARTED'),
-    clientPushSuccess: factory<{action: FactoryAnyAction, result: any}>('CLIENT_PUSH_SUCCESS'),
+    clientPushSuccess: factory<FactoryAnyAction>('CLIENT_PUSH_SUCCESS'),
     clientPushFailed: factory<{action: FactoryAnyAction, error: any}>('CLIENT_PUSH_FAILED')
 }
 
@@ -57,13 +57,13 @@ const reducer = (state: ConnectionState = defaultConnectionState, action: fsa.Fa
     if (actions.clientPushFailed.isType(action))
         return {
         ...state,
-            pushingEvents: state.pushingEvents.filter(a => action.payload.action.guid !== a.guid),
+            pushingEvents: state.pushingEvents.filter(a => action.payload.guid !== a.guid),
             failedPushes: [action, ...state.failedPushes],
         }
     if (actions.clientPushSuccess.isType(action))
         return {
             ...state,
-            pushingEvents: state.pushingEvents.filter(a => action.payload.action.guid !== a.guid),
+            pushingEvents: state.pushingEvents.filter(a => action.payload.guid !== a.guid),
             completedPushes: [action, ...state.completedPushes],
         }
     if (actions.connected.isType(action))

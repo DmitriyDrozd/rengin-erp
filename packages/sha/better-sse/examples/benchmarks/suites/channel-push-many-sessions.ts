@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import {createSession, createChannel} from "@sha/better-sse";
+import {createChannel, createSession} from '@sha/better-sse';
 // @ts-ignore
-import SseChannel from "sse-channel";
+import SseChannel from 'sse-channel';
 // @ts-ignore
-import EasySse from "easy-server-sent-events";
-import {createClientPool} from "../lib/createClientPool";
-import {Suite} from "./Suite";
+import EasySse from 'easy-server-sent-events';
+import {createClientPool} from '../lib/createClientPool';
+import {Suite} from './Suite';
 
 export const suite = new Suite("Push events with channels", async () => {
 	const numberOfClients = 10;

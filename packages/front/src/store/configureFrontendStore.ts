@@ -4,9 +4,8 @@ import {isBrowser} from '@sha/utils'
 import frontReducer, {FrontState, selectCurrentUser} from './frontReducer'
 
 import {getBrowserHistory, routerMiddleware} from '@sha/router'
-import {composeWithReduxDevTools} from "iso";
-import logRocketMiddleware from "../middlewares/logRocketMiddleware";
-import {generateEventGuid} from "@sha/random";
+import {composeWithReduxDevTools} from 'iso';
+import {generateEventGuid} from '@sha/random';
 
 export const appliedGuids = []
 

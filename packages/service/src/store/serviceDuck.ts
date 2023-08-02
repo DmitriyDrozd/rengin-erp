@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux'
-import {bootstrapDuck} from "iso/src/store/bootstrapDuck";
+import {bootstrapDuck} from 'iso/src/store/bootstrapDuck';
 
 
 const reducer = combineReducers({

@@ -1,14 +1,13 @@
 import {FastifyInstance} from 'fastify'
 
-import getSSEUserChannel from "./getSSEUserChannel";
-import broadcastSSEEventsSaga from "./broadcastSSEEventsSaga";
-import createSSESession, {SSESessionState} from "./createSSESession";
-import getSSEAdminChannel from "./getSSEAdminChannel";
-import getSSEAllSesionsChannel from "./getSSEAllSesionsChannel";
+import getSSEUserChannel from './getSSEUserChannel';
+import broadcastSSEEventsSaga from './broadcastSSEEventsSaga';
+import createSSESession, {SSESessionState} from './createSSESession';
+import getSSEAdminChannel from './getSSEAdminChannel';
+import getSSEAllSesionsChannel from './getSSEAllSesionsChannel';
 
-import {sessionsDuck} from "./sessionsDuck";
+import {sessionsDuck} from './sessionsDuck';
 import '../../fastify-with-plugins'
-import {usersCrud} from "iso/src/store/bootstrap";
 
 export default async (fastify: FastifyInstance, opts, done) => {
     const io = fastify.io
@@ -56,7 +55,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
         }
     })
     const sessionRegistered = (session: Session<SSESessionState>) => {
-        const user = usersCrud.selectById(session.state.userId)(io.store.getState())
+        const user = USERS.selectById(session.state.userId)(io.store.getState())
         io.store.dispatch(sessionsDuck.actions.added({
             sessionId: session.state.storeGuid,
             email: user ? user.email : session.state.userId, ...session.state

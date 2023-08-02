@@ -1,7 +1,7 @@
-import path from "path";
-import express from "express";
-import {createSession} from "@sha/better-sse";
-import {Readable} from "stream";
+import path from 'path';
+import express from 'express';
+import {createSession} from '@sha/better-sse';
+import {Readable} from 'stream';
 
 const app = express();
 

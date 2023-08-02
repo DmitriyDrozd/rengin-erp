@@ -1,9 +1,9 @@
-import {useProject} from "./useProject";
-import useStatuses from "./useStatuses";
-import useRole from "./useRole";
-import projectsCURD, {StonePatch, StoneVO} from "iso/src/store/bootstrap/repos/projectsCURD";
-import {useDispatch} from "react-redux";
-import {arrify} from "@sha/utils";
+import {useProject} from './useProject';
+import useStatuses from './useStatuses';
+import useRole from './useRole';
+import projectsCURD, {StonePatch, StoneVO} from 'iso/src/store/bootstrap/repos/projectsCURD';
+import {useDispatch} from 'react-redux';
+import {arrify} from '@sha/utils';
 
 const noStatStatusId = [1,101,109]
 const noSelectStatusIds = [109]

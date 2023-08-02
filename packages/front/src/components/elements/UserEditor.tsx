@@ -1,12 +1,7 @@
-import {WithValueProps} from '@sha/react-fp'
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
-import {Button, Form, Input, Select, Space} from 'antd'
-import useUser from '../../hooks/useUser'
-import {useEffect, useState} from 'react'
-import {key} from 'ionicons/icons'
-import { useForm } from "react-hook-form";
+import {UserVO} from 'iso/src/store/bootstrap/repos/users'
+import {Form, Input, Select} from 'antd'
+import {useState} from 'react'
 import EditorFooter from './EditorFooter'
-import {FieldRender} from '../grid/createColumns'
 
 
 export type ItemEditor<T> =React.ComponentType<{

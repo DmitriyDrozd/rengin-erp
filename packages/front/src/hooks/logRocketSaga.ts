@@ -1,7 +1,7 @@
 import {call, put, select, take} from 'typed-redux-saga'
 import LogRocket from 'logrocket'
 import {uiDuck} from '../store/ducks/uiDuck'
-import getFrontEnv from "../getFrontEnv";
+import getFrontEnv from '../getFrontEnv';
 
 const env = getFrontEnv()
 

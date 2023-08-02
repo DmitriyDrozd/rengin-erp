@@ -1,25 +1,14 @@
-
 import {StoreMeta} from './store/metaDuck'
 import {AdminPreferences} from './store/localAdminPreferencesDuck'
+import {CRR} from '@sha/router';
 
-import {Settings} from "./store/bootstrap/settingsDuck";
-import {CRR} from "@sha/router";
-import {UserVO} from "./store/bootstrap/repos/users-crud";
-import {AddressVO} from './store/bootstrap/repos/addresses-schema'
-import {ContractVO} from './store/bootstrap/repos/contracts-schema'
-import {IssueVO} from './store/bootstrap/repos/Issues-schema'
+import {bootstrapDuck} from './store/bootstrapDuck'
 
 type RouterState = CRR.RouterState
 export type ISOState = {
     router: RouterState,
     app: {
-        bootstrap: {
-            users: UserVO[]
-            addresses: AddressVO[]
-            contracts: ContractVO[]
-            issues: IssueVO[]
-            settings: Settings
-        }
+        bootstrap: ReturnType<typeof bootstrapDuck.reducer>
     }
     meta: StoreMeta
     adminPreferences: AdminPreferences

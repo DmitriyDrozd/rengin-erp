@@ -1,10 +1,8 @@
 import useFrontDispatch from '../../hooks/common/useFrontDispatch'
 import {uiDuck} from '../../store/ducks/uiDuck'
-import {routerDuck} from '../../store/ducks/routerDuck'
 import {nav} from '../nav'
 import {Button} from 'antd'
 import React from 'react'
-import {PoweroffOutlined} from '@ant-design/icons'
 import {AntdIcons} from './AntdIcons'
 import {useHistory} from 'react-router'
 

@@ -1,6 +1,6 @@
-import path from "path";
-import {Configuration} from "webpack";
-import {Options} from "ts-loader";
+import path from 'path';
+import {Configuration} from 'webpack';
+import {Options} from 'ts-loader';
 
 const config = (): Configuration => ({
 	context: path.resolve(__dirname),

@@ -1,18 +1,7 @@
-import {WithValueProps} from '@sha/react-fp'
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
-import {Button, Form, Input, Select, Space} from 'antd'
-import useUser from '../../hooks/useUser'
-import {useEffect, useState} from 'react'
-import {key} from 'ionicons/icons'
-import { useForm } from "react-hook-form";
+import {Form, Input, Select} from 'antd'
+import {useState} from 'react'
 import EditorFooter from './EditorFooter'
-import {FieldRender} from '../grid/createColumns'
-import {AddressVO} from 'iso/src/store/bootstrap/repos/addresses-schema'
-import {z} from 'zod'
-import {zodResolver} from '@hookform/resolvers/zod'
-import { DevTool } from "@hookform/devtools";
-import {AntReactHookFormItem} from './AntReactHookFormItem'
-import {ContractVO} from 'iso/src/store/bootstrap/repos/contracts-schema'
+import {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
 import useLedger from '../../hooks/useLedger'
 import {uniq} from 'ramda'
 

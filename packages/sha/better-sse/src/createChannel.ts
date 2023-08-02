@@ -1,4 +1,4 @@
-import {Channel} from "./Channel";
+import {Channel} from './Channel';
 
 const createChannel = <State extends Record<string, unknown>>(
 	...args: ConstructorParameters<typeof Channel>

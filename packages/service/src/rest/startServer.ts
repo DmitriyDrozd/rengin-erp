@@ -1,19 +1,16 @@
 import path from 'path'
-import Fastify from 'fastify'
+import Fastify, {FastifyLoggerOptions, RawServerBase} from 'fastify'
 import {SagaOptions} from '../sagaOptions'
 import fastifyStatic from '@fastify/static'
 import fp from 'fastify-plugin'
 import usersDataPlugin from './data-users/data-users-routes-plugin'
-import fastifyPrettier from 'fastify-prettier'
-import configDuck from "iso/src/store/bootstrap/configDuck";
-import  br from 'brotli'
-
-const events = {}
-const _importDynamic = new Function("modulePath", "return import(modulePath)")
-import fastify, {FastifyLoggerOptions, RawServerBase} from 'fastify'
+import configDuck from 'iso/src/store/bootstrap/configDuck';
 import {PinoLoggerOptions} from 'fastify/types/logger'
 
 import {DateTime,} from 'luxon'
+
+const events = {}
+const _importDynamic = new Function("modulePath", "return import(modulePath)")
 
 let requestHandler = null;
 
@@ -84,9 +81,9 @@ export default async (io: SagaOptions) => {
 
         return reply.sendFile('index.html')
     })
-    const fastifyPrintRoutes = await _importDynamic('fastify-print-routes')
+   /* const fastifyPrintRoutes = await _importDynamic('fastify-print-routes')
     fastify.register(fastifyPrintRoutes)
-
+*/
 
     fastify.register(fp((fastify, opts, done) => {
         fastify.decorate('io', io)

@@ -5,8 +5,8 @@ import {createBrowserHistory, createMemoryHistory, LocationDescriptorObject} fro
 import {isBrowser} from '@sha/utils'
 import {ActionCreator, FactoryAnyAction} from '@sha/fsa'
 import {call, put, select, takeLatest} from 'typed-redux-saga'
-import {useSelector} from "react-redux";
-import {routerDuck} from "front/src/store/ducks/routerDuck";
+import {useSelector} from 'react-redux';
+import {routerDuck} from 'front/src/store/ducks/routerDuck';
 
 
 export * from 'react-router'
@@ -74,7 +74,7 @@ export type LocationArgs< P, S> = LocationDescriptorObject<S> & {params?: Extrac
 const routeBuilder = <
     Pattern extends RoutePath,
     LocationState = EmptyState,
-    RouteParams = ExtractRouteParams<Pattern>,
+    RouteParams extends {[k in string]: string}= ExtractRouteParams<Pattern>,
     >
 (pattern: Pattern) => {
 

@@ -1,18 +1,18 @@
-import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import React from 'react'
 import {ItemEditor} from '../elements/UserEditor'
 import useSaveItem from '../../hooks/useSaveItem'
 import {useHistory} from 'react-router'
-import InnerPageBase from '../app/InnerPageBase'
+import InnerPageBase from '../app_prev/InnerPageBase'
 import {Breadcrumb} from 'antd'
 import {Link} from 'react-router-dom'
 import {AntdIcons} from '../elements/AntdIcons'
+import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
 
-export const createEditorPage = <T,>({crud,icon,Editor}: {crud: Crud<T>, icon: React.ReactNode, Editor:ItemEditor<T>  }) =>
+export const createEditorPage = <RID extends string,F extends AnyFields>({crud,icon,Editor}: {crud: Resource<RID,F>, icon: React.ReactNode, Editor:ItemEditor<T>  }) =>
     ({id}: {id: string}) => {
 
 
-        type Item = T
+        type Item = typeof crud.exampleItem
         const [item, saveItem] = useSaveItem<Item>(crud, id)
 
         const history = useHistory()
@@ -34,7 +34,7 @@ export const createEditorPage = <T,>({crud,icon,Editor}: {crud: Crud<T>, icon: R
                                 title: (
                                     <Link to={'/app/in/'+crud.factoryPrefix}>
                                         {icon}
-                                        <span>{crud.plural}</span>
+                                        <span>{crud.langRU.plural}</span>
                                     </Link>
                                 ),
                             },

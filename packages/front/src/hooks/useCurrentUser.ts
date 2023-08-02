@@ -1,12 +1,11 @@
-import useFrontSelector from "./common/useFrontSelector";
-import {selectCurrentUser} from "../store/frontReducer";
-import useRole from "./useRole";
-import {RoleVO, settingsDuck} from "iso/src/store/bootstrap/settingsDuck";
+import useFrontSelector from './common/useFrontSelector';
+import {selectCurrentUser} from '../store/frontReducer';
 
 export default () => {
 
     const currentUser = useFrontSelector(selectCurrentUser)
 
+        // const updateGridPreferences  = (gridName, )
     return {
         currentUser,
 

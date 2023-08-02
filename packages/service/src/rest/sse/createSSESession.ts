@@ -1,5 +1,5 @@
-import {createSession, Session,} from "@sha/better-sse";
-import getSSEAllSesionsChannel from "./getSSEAllSesionsChannel";
+import {createSession, Session,} from '@sha/better-sse';
+import getSSEAllSesionsChannel from './getSSEAllSesionsChannel';
 
 export type SSESessionState = {
     userId: string

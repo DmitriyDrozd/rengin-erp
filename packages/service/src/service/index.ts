@@ -1,7 +1,7 @@
 import configureServiceStore from '../store/configureServiceStore'
-import {serviceSaga} from "./serviceSaga";
-import getGServices from "../rest/settings/getGServices";
-import path from "path";
+import {serviceSaga} from './serviceSaga';
+import getGServices from '../rest/settings/getGServices';
+import path from 'path';
 
 
 export default async () => {

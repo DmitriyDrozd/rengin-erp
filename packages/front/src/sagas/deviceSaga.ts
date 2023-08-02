@@ -1,5 +1,5 @@
-import {put} from "typed-redux-saga";
-import {uiDuck} from "../store/ducks/uiDuck";
+import {put} from 'typed-redux-saga';
+import {uiDuck} from '../store/ducks/uiDuck';
 
 function is_touch_enabled() {
     return ('ontouchstart' in window) ||

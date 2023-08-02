@@ -1,6 +1,6 @@
-import {useContext} from "react";
-import {__RouterContext, RouteComponentProps, StaticContext} from "react-router";
-import * as H from "history";
+import {useContext} from 'react';
+import {__RouterContext, RouteComponentProps, StaticContext} from 'react-router';
+import * as H from 'history';
 
 export default <Params extends { [K in keyof Params]?: string } = {},
     S = H.LocationState,

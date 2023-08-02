@@ -1,4 +1,4 @@
-import CreateCRUDDuck, {Crud} from '@sha/fsa/src/createCRUDDuck'
+import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import {useSelector} from 'react-redux'
 import {ColumnsType} from 'antd/es/table'
 

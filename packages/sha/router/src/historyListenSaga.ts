@@ -1,5 +1,5 @@
-import {eventChannel} from "redux-saga";
-import {take} from "typed-redux-saga";
+import {eventChannel} from 'redux-saga';
+import {take} from 'typed-redux-saga';
 import {History} from 'history'
 
 export default function* routeReadSaga(history: History) {

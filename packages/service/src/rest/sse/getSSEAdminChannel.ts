@@ -1,4 +1,4 @@
-import {Channel, createChannel} from "@sha/better-sse";
+import {Channel, createChannel} from '@sha/better-sse';
 
 const channels: Map<string, Channel> = new Map<string, Channel>()
 

@@ -1,12 +1,7 @@
 import {FastifyInstance} from 'fastify'
-import {usersCrud} from 'iso/src/store/bootstrap';
-import xlsx from 'node-xlsx'
-import moment from "moment";
 import zlib from 'zlib'
-import settingsDuck from "iso/src/store/bootstrap/settingsDuck";
-import {buildProjectReportSheet} from "./project-report";
-import {estimate} from "@sha/utils";
-import {takeLast} from "ramda";
+import USERS from 'iso/src/store/bootstrap/repos/users'
+
 export default async (fastify: FastifyInstance, opts, done) => {
     const store = fastify.io.store
     const brotliCompress = async (str: string) => {
@@ -55,7 +50,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
                 throw new Error('not valid email password pairs')
             const io = fastify.io
             const state = io.store.getState()
-            const user = usersCrud.selectUserByCredentials(credentials)(state)
+            const user = USERS.selectUserByCredentials(credentials)(state)
 
             if (!user)
                 throw new Error('user not found')
@@ -95,7 +90,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
                 throw new Error('not valid email password pairs')
             const io = fastify.io
             const state = io.store.getState()
-            const user = usersCrud.selectUserByCredentials(credentials)(state)
+            const user = USERS.selectUserByCredentials(credentials)(state)
 
             if (!user)
                 throw new Error('user not found')
@@ -115,7 +110,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
             if (events[0].type !== 'users/register_STARTED')
                 io.store.dispatch(events[0])
 
-            return usersCrud.selectById(events[0].userId)(io.store.getState()) || true
+            return USERS.selectById(events[0].userId)(io.store.getState()) || true
         }
     })
 

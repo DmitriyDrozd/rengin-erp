@@ -1,7 +1,6 @@
-import useFrontSelector from "./useFrontSelector";
-import {uiDuck} from "../../store/ducks/uiDuck";
-import {useDispatch} from "react-redux";
-import {useCallback, useState} from 'react';
+import useFrontSelector from './useFrontSelector';
+import {uiDuck} from '../../store/ducks/uiDuck';
+import {useDispatch} from 'react-redux';
 
 export default () => {
     const isSweepMode = useFrontSelector(uiDuck.selectSweepMode)

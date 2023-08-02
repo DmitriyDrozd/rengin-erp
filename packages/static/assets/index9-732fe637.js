@@ -1,4 +1,4 @@
-import { cG as now, cH as pointerCoord } from "./vendor-6932f6a6.js";
+import {cG as now, cH as pointerCoord} from "./vendor-6932f6a6.js";
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */

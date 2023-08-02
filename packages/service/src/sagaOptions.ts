@@ -1,14 +1,7 @@
-import {ServiceStore} from "./store/configureServiceStore";
-import {FastifyInstance} from "fastify";
-import {UnPromisify} from "@sha/utils";
-import eventStore from "./repositories/eventStore";
-import duckRepo from "./repositories/duckRepo";
-import {addressesCrud, contractsCrud, issuesCrud, usersCrud} from 'iso/src/store/bootstrap';
-import {IssuesSchema} from "iso/src/store/bootstrap/repos/Issues-schema";
-import {UserSchema} from "iso/src/store/bootstrap/repos/user-schema";
-import {ContractsSchema} from 'iso/src/store/bootstrap/repos/contracts-schema'
-import {AddressesSchema} from 'iso/src/store/bootstrap/repos/addresses-schema'
-import {Duck} from '@sha/fsa/src/createBootableDuck'
+import {ServiceStore} from './store/configureServiceStore';
+import {FastifyInstance} from 'fastify';
+import {UnPromisify} from '@sha/utils';
+import eventStore from './repositories/eventStore';
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import bootstrapRepositories from './repositories/bootstrapRepositories'
 

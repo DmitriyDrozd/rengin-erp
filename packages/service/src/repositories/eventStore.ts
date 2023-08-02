@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import {createSchema, ExtractDoc, ExtractProps, Type} from 'ts-mongoose'
 import getMongoRepository from 'iso/src/getMongoRepository'
-import {generateEventGuid} from "@sha/random";
+import {generateEventGuid} from '@sha/random';
 
 export const EventSchema = createSchema({
     guid: Type.string({unique: true, required: true}),

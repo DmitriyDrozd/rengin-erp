@@ -1,19 +1,15 @@
 import React from 'react'
-import {routeBuilder} from '@sha/router'
+import {ExtractRouteParams, routeBuilder, RoutePath} from '@sha/router'
 import LoginPage from './pages/LoginPage'
-import PlaceholderPage from './app/PlaceholderPage'
-import {Route} from 'react-router'
-
-import {ExtractRouteParams, RoutePath} from "@sha/router";
-import {RouteComponentProps} from "react-router";
+import {Route, RouteComponentProps} from 'react-router'
 import UsersListPage from './pages/users/UsersListPage'
 import {UserPage} from './pages/users/UserItemPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 import StartPage from './pages/StartPage'
-import {AddressItemPage} from './pages/addresses/AddressItemPage'
-import AddressesListPage from './pages/addresses/AddressesListPage'
-import ContractsListPage, {ContractItemPage} from './pages/contracts/ContractsListPage'
+import BrandsChapter from './pages/clients/BrandsChapter'
+import LegalsChapter from './pages/clients/LegalsChapter'
+import SitesChapter from './pages/clients/SitesChapter'
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -37,13 +33,22 @@ export const nav = {
     login: buildNav('/app/login', LoginPage),
     forgot: buildNav('/app/forgot', ForgotPasswordPage),
     start: buildNav('/app/in/start', StartPage),
-    issuesList: buildNav('/app/in/issues',ContractsListPage ),
+   // issuesList: buildNav('/app/in/issues',ContractsListPage ),
     usersList: buildNav('/app/in/users', UsersListPage),
     userPage: buildNav('/app/in/users/:userId', (props) =><UserPage id={props.userId} />),
-    addressesList: buildNav('/app/in/addresses', AddressesListPage),
-    addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
-    contractsList: buildNav('/app/in/contracts', ContractsListPage),
-    contractsPage: buildNav('/app/in/contracts/:contractId', props => <ContractItemPage id={props.contractId}/>),
+    brandsList: buildNav('/app/in/brands', BrandsChapter),
+    brandsCreate: buildNav('/app/in/brands/create', BrandsChapter),
+    brandsEdit: buildNav('/app/in/brands/:brandId', BrandsChapter),
+    legalsList: buildNav('/app/in/legals', LegalsChapter),
+    legalsCreate: buildNav('/app/in/legals/create', LegalsChapter),
+    legalsEdit: buildNav('/app/in/legals/:legalId', LegalsChapter),
+    sitesList: buildNav('/app/in/sites', SitesChapter),
+    sitesCreate: buildNav('/app/in/sites/create', SitesChapter),
+    sitesEdit: buildNav('/app/in/sites/:siteId', SitesChapter),
+    //addressesList: buildNav('/app/in/addresses', AddressesListPage),
+   // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
+   // contractsList: buildNav('/app/in/contracts', ContractsListPage),
+   // contractsPage: buildNav('/app/in/contracts/:contractId', props => <ContractItemPage id={props.contractId}/>),
 
 }
 

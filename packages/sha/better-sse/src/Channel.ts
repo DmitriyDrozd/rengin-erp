@@ -1,6 +1,6 @@
-import {TypedEmitter, EventMap} from "./lib/TypedEmitter";
-import {generateId} from "./lib/generateId";
-import {Session} from "./Session";
+import {EventMap, TypedEmitter} from './lib/TypedEmitter';
+import {generateId} from './lib/generateId';
+import {Session} from './Session';
 
 interface BroadcastOptions {
 	/**

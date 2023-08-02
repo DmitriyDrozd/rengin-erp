@@ -1,12 +1,9 @@
-import useFrontSelector from "./common/useFrontSelector";
-import {uiDuck} from "../store/ducks/uiDuck";
-import {useProject} from "./useProject";
-import {equals, flatten, uniq} from "ramda";
-import useStatuses from "./useStatuses";
-import {StoneStatus} from "iso/src/store/bootstrap/StatusesMatrix";
-import {StoneVO} from "iso/src/store/bootstrap/repos/projectsCURD";
-import useRole from "./useRole";
-import {useDispatch} from "react-redux";
+import useFrontSelector from './common/useFrontSelector';
+import {uiDuck} from '../store/ducks/uiDuck';
+import {useProject} from './useProject';
+import {equals} from 'ramda';
+import {StoneVO} from 'iso/src/store/bootstrap/repos/projectsCURD';
+import {useDispatch} from 'react-redux';
 
 export type StatusTransition = {
     okStones: StoneVO[]

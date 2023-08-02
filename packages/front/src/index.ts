@@ -1,14 +1,13 @@
 import React from 'react'
 import * as R from 'ramda'
 
-
 //import './theme/status-colors.scss';
-import configureAdminStore from "./store/configureFrontendStore";
-import rootFrontSaga from "./sagas/rootFrontSaga";
-import {history} from "@sha/router";
-import axios from "axios";
-import ReactDOM from "react-dom/client";
-import App from "./App"
+import configureAdminStore from './store/configureFrontendStore';
+import rootFrontSaga from './sagas/rootFrontSaga';
+import {history} from '@sha/router';
+import axios from 'axios';
+import ReactDOM from 'react-dom/client';
+import App from './components/app/App'
 import {ducks} from 'iso/src/store'
 
 window['ducks'] = ducks
