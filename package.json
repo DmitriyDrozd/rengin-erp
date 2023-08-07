@@ -120,5 +120,8 @@
         "utility-types": "^3.10.0",
         "xlsx": "^0.18.5",
         "zod": "^3.21.4"
+    },
+    "overrides": {
+        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
     }
 }

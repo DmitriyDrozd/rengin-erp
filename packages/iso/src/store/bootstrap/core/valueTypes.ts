@@ -1,5 +1,5 @@
 import {DateRangeVO} from './VO'
-import {ResourceNames, RESOURCES_MAP, ResourceValues} from '../resourcesList'
+import { ResourceName, ResourcesMap} from '../resourcesList'
 
 
 export const cast = <T>(value: any): T => value
@@ -22,8 +22,9 @@ export type MetaType =
     | 'enum'
 
 
-export type Meta<MT extends MetaType = MetaType, TSType = any> = {
+export type Meta<MT extends MetaType, TSType = any> = {
     type: MT
+    immutable?: boolean
     isIDProp?: boolean
     unique?: boolean
     saveModificationDate?: boolean
@@ -33,7 +34,6 @@ export type Meta<MT extends MetaType = MetaType, TSType = any> = {
     tsType?: TSType
     sealed?: boolean
     name?: string
-
 }
 
 export type ExtractTypeByPropMeta<M> = M extends Meta<infer S, infer T> ? T : unknown
@@ -53,11 +53,15 @@ const arrayMeta =  <Item = any, Extra = Empty>(extra: Partial<Meta<'array', Item
 const itemMeta = <Item, Extra = Empty>(extra: Partial<Meta<'item', Item>> ) =>
     ({...extra, type: 'item'})
 
-const itemOfMeta = <K extends ResourceNames, Extra = Empty>(extra: Meta<'itemOf', string> &{res: K} & Extra ) =>
-    ({...extra,type: 'itemOf'})
 
 
-const arrayOfMeta = <Extra extends {res: (typeof RESOURCES_MAP)[K]}, K extends keyof typeof RESOURCES_MAP>(extra: Partial<Meta<'arrayOf', string[]>> & Extra ) =>
+const itemOfMeta = <K extends ResourceName, Extra = Empty>(extra: Meta<'itemOf', string> &{
+    linkedResourceName: K} & Extra ) =>
+    ({
+        ...extra,type: 'itemOf'})
+
+
+const arrayOfMeta = <Extra extends {linkedResourceName: ResourceName}>(extra: Partial<Meta<'arrayOf', string[]>> & Extra ) =>
     ({...extra, type: 'arrayOf'})
 
 const enumMeta = <Tuple extends Readonly<string[]>,Element = Tuple[number]>(extra: Partial<Meta<'enum', Element>> & {enum: Tuple} ) =>
@@ -75,6 +79,15 @@ export type KeyOfValueTypes = keyof ValueTypesType
 export type PropMetas = {
     [K in keyof ValueTypesType]: ReturnType<ValueTypesType[K]>
 }
+
+export type StringMeta = Meta<'string',string>
+
+export type ItemOfMeta<ResName extends ResourceName = ResourceName> = Meta<'itemOf', string> & {
+    linkedResourceName: ResName
+}
+
+export const isItemOfMeta = (value: unknown): value is ItemOfMeta =>
+    value && (value as any).type === 'itemOf'
 
 const valueTypes = {
     date: meta<string>('date'),

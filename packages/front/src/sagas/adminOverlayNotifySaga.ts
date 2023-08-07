@@ -7,6 +7,7 @@ import sseConnectionDuck from 'iso/src/store/sse/sseConnectionDuck';
 import {getResourceByAction} from 'iso/src/store/bootstrap/resourcesList'
 import {notification} from 'antd'
 
+let fired = []
 
 export function* adminNotifySaga() {
 
@@ -15,10 +16,12 @@ export function* adminNotifySaga() {
         sseConnectionDuck.actions.serverPushed.isType(action) )
 
     yield* takeEvery((action) => {
-        return Boolean( sseConnectionDuck.actions.clientPushSuccess.isType(action) ||
-            sseConnectionDuck.actions.serverPushed.isType(action))
+        return Boolean( sseConnectionDuck.actions.clientPushSuccess.isType(action) /*||
+            sseConnectionDuck.actions.serverPushed.isType(action)*/)
         }, function* (pushAction) {
-
+        if(fired.includes(pushAction.guid))
+            return
+        fired.push(pushAction.guid)
             const action = pushAction.payload
             const res = getResourceByAction(action)
         const item = yield* select(res.selectById(action.payload[res.idProp]))

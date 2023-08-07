@@ -1,19 +1,17 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
+import {ISOState} from '../../../ISOState'
 
-export const LEGALS = createResource(
+
+const rawResource = createResource(
         'legal',
         {
             legalName: valueTypes.string({
                 headerName: 'Юр. Лицо',
                 required: true,
-                name: 'legalName'
             }),
             region: valueTypes.string({headerName: 'Регион'}),
-
-
-
-            brandId: valueTypes.itemOf({headerName:'Заказчик',res: 'BRANDS',required: true})
+            brandId: valueTypes.itemOf({headerName:'Заказчик',linkedResourceName: 'BRANDS',required: true})
         },
         {
             langRU: {
@@ -23,6 +21,13 @@ export const LEGALS = createResource(
             }
         }
 )
+
+export const LEGALS = {
+    ...rawResource,
+    selectValueEnumByBrandId: (brandId: string | undefined) => (state: ISOState) =>
+        rawResource.asValueEnum(rawResource.selectAll(state).filter(legal => legal.brandId === brandId))
+}
+
 export default LEGALS
 
 export type LegalVO = (typeof LEGALS.exampleItem)

@@ -1,5 +1,6 @@
-import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
+import {createResource} from '../core/createResource'
+
 
 export const BRANDS = createResource('brand',{
         brandName: valueTypes.string({required: true, unique: true,headerName: 'Заказчик'}),

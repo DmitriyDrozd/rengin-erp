@@ -1,6 +1,7 @@
-import {ResourceType} from 'iso/src/store/bootstrap/resourcesList'
+import {ResourceName} from 'iso/src/store/bootstrap/resourcesList'
 
-export default (resource:ResourceType ) => ({
+
+export default (resource:ResourceName ) => ({
 
     view: () => '/app/in/'+resource.collection,
     create: () => '/app/in/'+resource.collection+'/create',

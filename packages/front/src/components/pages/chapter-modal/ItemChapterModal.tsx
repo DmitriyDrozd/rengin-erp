@@ -1,4 +1,4 @@
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import React from 'react'
 import usePathnameResource from '../../../hooks/usePathnameResource'
 import {FormInstance} from '@ant-design/pro-components'
@@ -12,7 +12,7 @@ import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 
 export const proProp =<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     K extends keyof Resource<RID, Fields>['exampleItem']
 >  (resource: Resource<RID, Fields>, key: K) =>{
     const prop =resource.properties[key]
@@ -28,7 +28,7 @@ export const proProp =<
 
 type CrudBaseRenderProps <
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >  =  {
     resource: Res
@@ -37,13 +37,13 @@ type CrudBaseRenderProps <
 
 export type CrudListRenderProps<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >  = CrudBaseRenderProps<RID,Fields,Res> & {verb: 'LIST'}
 
 export type CrudFormRenderProps<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >  =  {
     resource: Resource<RID, Fields>
@@ -57,7 +57,7 @@ export type CrudFormRenderProps<
 
 export type ItemChapterProps<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 > = {
     resource: Res
@@ -67,17 +67,17 @@ export type ItemChapterProps<
 
 export type CrudFormRender<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >  = (props: CrudFormRenderProps<RID, Fields, Res>) => React.ReactNode
 export type CrudListRender<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >  = (props: CrudListRenderProps<RID, Fields, Res>) => React.ReactNode
 export default <
         RID extends string,
-        Fields extends AnyFields,
+        Fields extends AnyFieldsMeta,
         Res extends Resource<RID, Fields>
     >
     ({resource, renderForm, renderList}: ItemChapterProps<RID, Fields, Res> ) => {

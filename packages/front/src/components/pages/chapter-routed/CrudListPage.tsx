@@ -1,4 +1,4 @@
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {useDispatch} from 'react-redux'
 import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
@@ -11,7 +11,7 @@ import {Button} from 'antd'
 
 export const CrudListPage = <
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >({resource,renderList,verb,form}: CrudListRenderProps<RID, Fields,Res>& {renderList: CrudListRender<RID, Fields,Res>}) => {
     type Item = typeof resource.exampleItem

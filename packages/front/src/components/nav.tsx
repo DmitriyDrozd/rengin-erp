@@ -10,6 +10,7 @@ import StartPage from './pages/StartPage'
 import BrandsChapter from './pages/clients/BrandsChapter'
 import LegalsChapter from './pages/clients/LegalsChapter'
 import SitesChapter from './pages/clients/SitesChapter'
+import ContractsChapter from './pages/contracts/ContractsChapter'
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -36,15 +37,22 @@ export const nav = {
    // issuesList: buildNav('/app/in/issues',ContractsListPage ),
     usersList: buildNav('/app/in/users', UsersListPage),
     userPage: buildNav('/app/in/users/:userId', (props) =><UserPage id={props.userId} />),
+
     brandsList: buildNav('/app/in/brands', BrandsChapter),
     brandsCreate: buildNav('/app/in/brands/create', BrandsChapter),
     brandsEdit: buildNav('/app/in/brands/:brandId', BrandsChapter),
+
     legalsList: buildNav('/app/in/legals', LegalsChapter),
     legalsCreate: buildNav('/app/in/legals/create', LegalsChapter),
     legalsEdit: buildNav('/app/in/legals/:legalId', LegalsChapter),
+
     sitesList: buildNav('/app/in/sites', SitesChapter),
     sitesCreate: buildNav('/app/in/sites/create', SitesChapter),
     sitesEdit: buildNav('/app/in/sites/:siteId', SitesChapter),
+
+    contractsList: buildNav('/app/in/contracts', ContractsChapter),
+    contractsCreate: buildNav('/app/in/contracts/create', ContractsChapter),
+    contractsEdit: buildNav('/app/in/contracts/:contractsId', ContractsChapter),
     //addressesList: buildNav('/app/in/addresses', AddressesListPage),
    // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
    // contractsList: buildNav('/app/in/contracts', ContractsListPage),

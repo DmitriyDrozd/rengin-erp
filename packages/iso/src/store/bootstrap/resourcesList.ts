@@ -5,8 +5,11 @@ import {SITES} from './repos/sites'
 import {CONTRACTS} from './repos/contracts'
 import {ISSUES} from './repos/issues'
 import {FactoryAnyAction} from '@sha/fsa'
-import {AnyFields, Resource} from './core/createResource'
+import {AnyFieldsMeta, Resource} from './core/createResource'
 import {isBrowser} from '@sha/utils'
+import {BRAND} from 'zod'
+
+
 
 
 
@@ -17,13 +20,15 @@ export const RESOURCES_MAP = {
     SITES,
     CONTRACTS,
     ISSUES
-} as const
-export type ResourceNames = keyof ResourcesMap
+}
+export type ResourcesMap = typeof RESOURCES_MAP
+
+
 type KeysToValues<T, Keys extends (keyof T)[]> = {
     [Index in keyof Keys]: Keys[Index] extends keyof T ? T[Keys[Index]] : never;
 };
 
-export type ResourceValues = KeysToValues<ResourcesMap, ResourceNames[]>
+
 
 export const RESOURCES_LIST = [
     USERS,
@@ -32,23 +37,33 @@ export const RESOURCES_LIST = [
     SITES,
     CONTRACTS,
     ISSUES
-] as ResourceValues
+] as const
+
+export type ResourceName =typeof RESOURCES_LIST[number]['resourceName']
 
 
+export const getResourcesByNames = () => ({
+    user:USERS,
+    brand: BRANDS,
+    legal: LEGALS,
+    site:SITES,
+    contract:CONTRACTS,
+    issue:ISSUES
+})
 
-export const getLinkedItem = <RID extends string, Fields extends AnyFields>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
+export type BrandsResource = typeof BRANDS
+
+const a: ResourceName ='legals'
+export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
     const res = RESOURCES_MAP[rName]
 
 }
 
 // 👇️ type Keys = "name" | "age" | "country"
-type Keys = keyof ResourcesMap;
 
-// 👇️ type Values = string | number
-export type ResourceType = (ResourcesMap)[Keys];
-export type ResourcesMap = typeof RESOURCES_MAP
 
-export const getRes = <R extends keyof typeof RESOURCES_MAP>(res: R) =>
+
+export const getRes = <R extends keyof typeof RESOURCES_MAP>(res: R): typeof RESOURCES_MAP[R]=>
     RESOURCES_MAP[res]
 
 export const getResourceByAction = (action: FactoryAnyAction) => {

@@ -2,7 +2,7 @@ import duckRepo from './duckRepo'
 import {CONTRACTS} from 'iso/src/store/bootstrap/repos/contracts'
 import {ISSUES} from 'iso/src/store/bootstrap/repos/issues'
 import {BRANDS} from 'iso/src/store/bootstrap/repos/brands'
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {USERS} from 'iso/src/store/bootstrap/repos/users'
 import buildMongooseByResource from './buildMongooseByResource'
 import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
@@ -10,7 +10,7 @@ import {SITES} from 'iso/src/store/bootstrap/repos/sites'
 
 export default async (mongo) => {
 
-    const makeRepo = async <RID extends string, P extends AnyFields>(res: Resource<RID,P>) => {
+    const makeRepo = async <RID extends string, P extends AnyFieldsMeta>(res: Resource<RID,P>) => {
         return await duckRepo({mongo}, res, buildMongooseByResource(res) )
     }
 

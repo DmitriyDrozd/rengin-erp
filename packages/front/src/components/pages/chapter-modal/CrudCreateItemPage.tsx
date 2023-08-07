@@ -1,4 +1,4 @@
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {generateGuid} from '@sha/random'
 import React, {useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
@@ -12,7 +12,7 @@ import {useHistory} from 'react-router'
 
 export const CrudCreateItemPage =  <
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >({resource,renderForm, form,verb}:
       CrudFormRenderProps<RID, Fields,Res>& {renderForm: CrudFormRender<RID, Fields,Res>}) => {

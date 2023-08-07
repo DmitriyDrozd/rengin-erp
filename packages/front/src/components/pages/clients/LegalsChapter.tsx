@@ -1,5 +1,5 @@
 import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
-import ItemChapter, {proProp} from '../chapter-routed/ItemChapter'
+import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import RGrid from '../../../grid/RGrid'
@@ -12,9 +12,8 @@ import {RCellRender} from '../../../grid/RCellRender'
 
 export default () => {
     const ledger = useLedger()
-    const list = useFrontSelector(LEGALS.selectList) as any as typeof LEGALS.exampleItem
-
-    const cols = useAllColumns(LEGALS)
+    const list = ledger.legals
+    const [cols] = useAllColumns(LEGALS)
 
 
 
@@ -23,13 +22,9 @@ export default () => {
 
         renderForm={({item, form,id,verb, resource}) =>
             <>
-
-                <ProFormText {...proProp(LEGALS, 'legalName')} rules={[{required:true}]} />
-                <ProFormText {...proProp(LEGALS, 'region')} rules={[{required:true}]} />
-                <ProFormSelect.SearchSelect {...proProp(LEGALS, 'brandId')}
-
-
-                               rules={[{required:true}]} />
+                <ProFormSelect {...fieldMetaToProProps(LEGALS, 'brandId', item)} rules={[{required:true}]} />
+                <ProFormText {...fieldMetaToProProps(LEGALS, 'legalName', item)} rules={[{required:true}]} />
+                <ProFormText {...fieldMetaToProProps(LEGALS, 'region',item)} rules={[{required:true}]} />
             </>
         }
         renderList={({form,verb,resource}) => {

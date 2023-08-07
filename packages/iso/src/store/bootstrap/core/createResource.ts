@@ -1,7 +1,6 @@
 import {Meta, valueTypes} from './valueTypes'
 import {createCRUDDuck} from '@sha/fsa'
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
-import {ResourceType} from '../resourcesList'
 import {getStore} from '../../../getStore'
 import {ISOState} from '../../../ISOState'
 import {ColDef} from 'ag-grid-community'
@@ -19,52 +18,54 @@ export type ResourceLang = {
     gender?: 'm' | 'n' | 'f',
 }
 
-export type ResourceOptions<RID extends string, Fields extends AnyFields> = {
+export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = {
     nameProp: keyof Fields
     langRU: ResourceLang
-    getItemName: (item: FieldsWithID<RID, Fields>) => string
+    getItemName: (item: ItemWithId<RID, Fields>) => string
 }
 
-export type ExtractVOFromFields<Fields extends {[key in string]: Meta}> = {
-    [K in keyof Fields]:Fields[K]['tsType']
-}
 
-export type FieldsWithID<RID extends string, Fields extends AnyFields> =
+
+export type FieldsWithIDMeta<RID extends string, Fields extends AnyFieldsMeta> =
     Fields & {
-    [key in `${RID}Id`]: ReturnType<typeof valueTypes.string>
+    [key in `${RID}Id`]: Meta<'string',string>
 }
 
-const getResourceOptions = (res: ResourceType) => {
 
-}
+export type ItemWithId<RID extends string, Fields extends AnyFieldsMeta> =
+    {
+        [K in keyof Fields]: Fields[K]['tsType']
+    }&{
+    [key in `${RID}Id`]: Meta<'string',string>['tsType']
 
-export type ItemWithId<RID extends string, Fields extends AnyFields> =
-    {[K in keyof FieldsWithID<RID, Fields>]: FieldsWithID<RID, Fields>[K]['tsType']}
+    }
 
 export type Resource<RID extends string, Fields extends {[key in string]: Meta}>  =
   ResourceOptions<RID, Fields> & {
     collection: PluralEngindEng<RID>
-    exampleItem: ExtractVOFromFields<FieldsWithID<RID,Fields>>
-    properties:FieldsWithID<RID, Fields>
-    getItemName: (item: ExtractVOFromFields<FieldsWithID<RID,Fields>> ) => string
+    exampleItem: ItemWithId<RID,Fields>
+    properties:FieldsWithIDMeta<RID, Fields>
+    getItemName: (item: ItemWithId<RID,Fields> ) => string
     getStore: typeof getStore
     asOptions: () => {value: string, title: string}[]
+    asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
     getById: () => {value: string, title: string}[]
-    fieldsList: Meta[]
-} & Crud<ExtractVOFromFields<Fields >, IDProp<RID>, PluralEngindEng<RID>>
+    fieldsList: Meta<any, any>[]
+    resourceName: Uppercase<PluralEngindEng<RID>>
+} & Crud<ItemWithId<RID,Fields >, IDProp<RID>, PluralEngindEng<RID>>
 
 export type AnyMeta = Meta<any, any>
 export type IDProp<RID extends string> = `${RID}Id`
-export type AnyFields = {
+export type AnyFieldsMeta = {
     [key in string]: Meta
 }
 
 
 
 
-export const createResource = <RID extends string, Fields extends AnyFields>
-    (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>): Resource<RID, FieldsWithID<RID,Fields>> => {
-        type Item = ExtractVOFromFields<FieldsWithID<RID,Fields>>
+export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
+    (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>): Resource<RID, FieldsWithIDMeta<RID,Fields>> => {
+        type Item = ItemWithId<RID,Fields>
         const collection: PluralEngindEng<RID> = pluralEngindEnd(RID)
         const idProp = RID+'Id' as `${RID}Id`
         const props = {
@@ -84,9 +85,9 @@ export const createResource = <RID extends string, Fields extends AnyFields>
             fieldsList.push(props.properties[k])
             props.properties[k].name = k
         })
-        const defaultGetItemName = ( (item: Item): string => item[fieldsList[1].name] as string)
+        const defaultGetItemName =  (item: Item): string => item[fieldsList[1].name] as string
         const getItemName = rest.getItemName || defaultGetItemName
-        const crud = createCRUDDuck(props.collection,props.idProp, {} as any as ExtractVOFromFields<FieldsWithID<RID,Fields>>)
+        const crud = createCRUDDuck(props.collection,props.idProp, {} as any as ItemWithId<RID,Fields>)
 
 
         return {
@@ -104,12 +105,13 @@ export const createResource = <RID extends string, Fields extends AnyFields>
                 console.log('asOptions', options)
                 return options
             },
-            asValueEnum: () => {
+            resourceName: collection.toUpperCase() as any as Uppercase<PluralEngindEng<RID>>,
+            asValueEnum: (list: Item[] = undefined) => {
                 const state = getStore().getState()
-                const list = crud.selectList( state as any as ISOState)
-                const obj = {}
+                const workList =list || crud.selectList( state as any as ISOState)
+                const obj: Item = {} as any as Item
                 console.log(crud.factoryPrefix+' list of ' + crud.factoryPrefix,list)
-                const options = list.map( item => {
+                const options = workList.map( item => {
                     console.log('item',item)
                     obj[item[idProp]] = getItemName(item)
                 })
@@ -129,10 +131,9 @@ export const createResource = <RID extends string, Fields extends AnyFields>
     const TEST_RESOURCE = createResource('test',
         {
             brandName: valueTypes.string(),
-            obj: valueTypes.item<{b: string}>({headerName:'вфеф'})
         },
         {
-            nameProp:'brandName',
+
             langRU: {
 
                 singular: 'заказчик',
@@ -143,10 +144,13 @@ export const createResource = <RID extends string, Fields extends AnyFields>
 
         )
 
-const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',obj: {b:4},testId:'sds'}
+
+//export const resourceListAsValueEnum = <RID extends string, Fields extends AnyFieldsMeta>(list: ItemWithId<RID, Fields>[]) =>
+
+const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',testId:'sds'}
 
 class Clazz<RID extends string, Fields extends {[key in string]: Meta}>{
-    public create = (rid: RID, props: Fields, opts: ResourceOptions)=> {
+    public create = (rid: RID, props: Fields, opts: ResourceOptions<RID ,Fields>)=> {
         return createResource(rid,props, opts)
     }
 }

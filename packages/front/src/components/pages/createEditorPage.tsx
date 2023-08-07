@@ -6,9 +6,9 @@ import InnerPageBase from '../app_prev/InnerPageBase'
 import {Breadcrumb} from 'antd'
 import {Link} from 'react-router-dom'
 import {AntdIcons} from '../elements/AntdIcons'
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 
-export const createEditorPage = <RID extends string,F extends AnyFields>({crud,icon,Editor}: {crud: Resource<RID,F>, icon: React.ReactNode, Editor:ItemEditor<T>  }) =>
+export const createEditorPage = <RID extends string,F extends AnyFieldsMeta>({crud,icon,Editor}: {crud: Resource<RID,F>, icon: React.ReactNode, Editor:ItemEditor<T>  }) =>
     ({id}: {id: string}) => {
 
 

@@ -1,29 +1,39 @@
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import React from 'react'
 import usePathnameResource from '../../../hooks/usePathnameResource'
 import {FormInstance} from '@ant-design/pro-components'
-import {CrudEditItemPage} from './CrudEditItemPage'
+import {CrudEditItemPage, CrudFormRenderProps} from './CrudEditItemPage'
 import {CrudCreateItemPage} from './CrudCreateItemPage'
 import {CrudListPage} from './CrudListPage'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
-import {valueTypes} from 'iso/src/store/bootstrap/core/valueTypes'
-import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
+import {isItemOfMeta, valueTypes} from 'iso/src/store/bootstrap/core/valueTypes'
+import {getRes, ResourceName, RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
+import useFrontSelector, {useFrontStateSelector} from '../../../hooks/common/useFrontSelector'
 
 
-export const proProp =<
+export const fieldMetaToProProps =<
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     K extends keyof Resource<RID, Fields>['exampleItem']
->  (resource: Resource<RID, Fields>, key: K) =>{
-    const prop =resource.properties[key]
-
+>  (resource: Resource<RID, Fields>, key: K, item?: Partial<ItemWithId<RID,Fields>>) =>{
+    const meta = resource.properties[key]
+    const state = useFrontStateSelector()
+    const getLinkedResourceOptions = () => {
+        if (isItemOfMeta(meta)) {
+            const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
+            const list = linkedResource.selectList(state)
+            return linkedResource.asValueEnum(list)
+        }
+        return undefined
+    }
     const proProp = ({
         name: key,
-        label: prop.headerName,
+        label: meta.headerName,
         required: resource.properties[key].required,
         placeholder: resource.properties[key].headerName,
-        valueEnum: prop.res ? RESOURCES_MAP[prop.res].asValueEnum() : undefined
+        valueEnum: getLinkedResourceOptions()
     })
+
     console.log(resource.factoryPrefix, key ,proProp)
     return proProp
 }
@@ -31,68 +41,53 @@ export const proProp =<
 
 type CrudBaseRenderProps <
     RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
+    Fields extends AnyFieldsMeta,
 >  =  {
-    resource: Res
-    form?: FormInstance<Res['exampleItem']>
+    resource: Resource<RID, Fields>
+    form?: FormInstance<Resource<RID, Fields>['exampleItem']>
 }
 
 export type CrudListRenderProps<
     RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
->  = CrudBaseRenderProps<RID,Fields,Res> & {verb: 'LIST'}
+    Fields extends AnyFieldsMeta,
+>  = CrudBaseRenderProps<RID,Fields> & {verb: 'LIST', }
 
-export type CrudFormRenderProps<
-    RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
->  =  {
-    resource: Resource<RID, Fields>
-    item: Partial<Resource<RID, Fields>['exampleItem']>
-    id: string
-    verb: 'EDIT' | 'CREATE' |'VIEW'
-    form?: FormInstance<Resource<RID, Fields>['exampleItem']>
-}
 
 
 
 export type ItemChapterProps<
     RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
+    Fields extends AnyFieldsMeta,
 > = {
-    resource: Res
+    resource: Resource<RID, Fields>
     onImport?: Function
-    renderForm: (props: CrudFormRenderProps<RID, Fields,Res> ) => React.ReactNode
-    renderList: (props: CrudListRenderProps<RID , Fields,Res>) => React.ReactNode
+    renderForm: (props: CrudFormRenderProps<RID, Fields> ) => React.ReactNode
+    renderItemInfo?: (props: CrudFormRenderProps<RID, Fields>) => React.ReactNode
+    renderList: (props: CrudListRenderProps<RID , Fields>) => React.ReactNode
 }
 
 export type CrudFormRender<
     RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
->  = (props: CrudFormRenderProps<RID, Fields, Res>) => React.ReactNode
+    Fields extends AnyFieldsMeta,
+>  = (props: CrudFormRenderProps<RID, Fields>) => React.ReactNode
 export type CrudListRender<
     RID extends string,
-    Fields extends AnyFields,
-    Res extends Resource<RID, Fields>
->  = (props: CrudListRenderProps<RID, Fields, Res>) => React.ReactNode
+    Fields extends AnyFieldsMeta,
+>  = (props: CrudListRenderProps<RID, Fields>) => React.ReactNode
 export default <
         RID extends string,
-        Fields extends AnyFields,
+        Fields extends AnyFieldsMeta,
         Res extends Resource<RID, Fields>
     >
     ({
-         resource,
-         renderForm, renderList}: ItemChapterProps<RID, Fields, Res> ) => {
+         resource,renderItemInfo,
+         renderForm, renderList}: ItemChapterProps<RID, Fields> ) => {
     const pathRes = usePathnameResource()
     if(pathRes.resource.collection === resource.collection) {
        // if (pathRes.verb === 'VIEW')
         //    return <EditItemPage {...pathRes} renderForm={renderForm}  />
         if (pathRes.verb === 'EDIT')
-            return <CrudEditItemPage {...pathRes} renderForm={renderForm}  />
+            return <CrudEditItemPage {...pathRes} renderForm={renderForm} renderItemInfo={renderItemInfo} />
         if (pathRes.verb === 'CREATE')
             return <CrudCreateItemPage {...pathRes} renderForm={renderForm} />
         if (pathRes.verb === 'LIST')

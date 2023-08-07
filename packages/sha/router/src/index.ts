@@ -78,12 +78,19 @@ const routeBuilder = <
     >
 (pattern: Pattern) => {
 
-  const builder =( (params: RouteParams) =>
-      Object.entries(params || {}).reduce(
-          (url, [k,v]) =>
-              url.replace(':'+k, String(v)),
-          pattern
-      )
+  const builder =( (params: RouteParams, query = {}) => {
+          let pathname = Object.entries(params || {}).reduce(
+              (url, [k, v]) =>
+                  url.replace(':' + k, String(v)),
+              pattern
+          )
+          const keys = Object.keys(query)
+          if(keys.length) {
+              pathname+='?' + (new URLSearchParams(query).toString())
+          }
+
+          return pathname
+      }
   )as any as (
           RouteParams extends never
               ? () => Pattern

@@ -1,13 +1,25 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import {RESOURCES_MAP} from '../resourcesList'
+import {LegalVO} from './legals'
 
 
 export const siteResource = createResource('site',{
+        brandId: valueTypes.itemOf({
+            headerName: 'Заказчик',
+            linkedResourceName: 'BRANDS',
+            required: true
+        }),
+        region: valueTypes.string({
+            headerName: 'Регион',
+            required: true
+        }),
         legalId: valueTypes.itemOf({
             headerName: 'Юр. Лицо',
-            res: 'LEGALS',
-            required: true
+            linkedResourceName: 'LEGALS',
+            required: true,
+            filterLinkedResourceItems: (list: LegalVO[], source: SiteVO) =>
+                list.filter(item => item.brandId === source.brandId)
         }),
         city: valueTypes.string({
             headerName: 'Город',
@@ -18,10 +30,7 @@ export const siteResource = createResource('site',{
             required: true
         }),
         responsibleEngineer: valueTypes.string({headerName:'Ответственный инженер'}),
-        contractId: valueTypes.itemOf({
-            headerName: 'Договор',
-            res: 'CONTRACTS'
-        }),
+
         KPP: valueTypes.string({headerName: 'КПП'}),
     },
     {

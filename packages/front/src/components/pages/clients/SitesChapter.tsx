@@ -1,5 +1,5 @@
 import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
-import ItemChapter, {proProp} from '../chapter-routed/ItemChapter'
+import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import RGrid from '../../../grid/RGrid'
@@ -10,31 +10,36 @@ import {SelectProps} from 'antd'
 import useLedger from '../../../hooks/useLedger'
 import {RCellRender} from '../../../grid/RCellRender'
 import SITES from 'iso/src/store/bootstrap/repos/sites'
+import {useSelector} from 'react-redux'
 
 export default () => {
     const ledger = useLedger()
     const RES = SITES
-    const list = useFrontSelector(SITES.selectList) as any as typeof LEGALS.exampleItem
-
-    const cols = useAllColumns(SITES)
-
+    const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
+    const [cols] = useAllColumns(SITES)
 
 
     return <ItemChapter
-        resource={RES}
-        renderForm={({item, form,id,verb, resource}) =>
-            <>
-                <ProFormSelect.SearchSelect  {...proProp(RES, 'legalId')}  rules={[{required:true}]} />
-                <ProFormText {...proProp(RES, 'city')} rules={[{required:true}]} />
-                <ProFormText {...proProp(RES, 'address')} rules={[{required:true}]} />
-                <ProFormText {...proProp(RES, 'KPP')}/>
+                resource={RES}
+                renderForm={({item, form,id,verb, resource}) => {
+                    const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
+                    return <>
+                        <ProFormSelect  {...fieldMetaToProProps(RES, 'brandId')} rules={[{required: true}]}/>
+                        <ProFormSelect  {...fieldMetaToProProps(RES, 'legalId')} valueEnum={legalValueEnum}
+                                        rules={[{required: true}]}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'city')} rules={[{required: true}]}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'address')} rules={[{required: true}]}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'KPP')}/>
 
-                <ProFormSelect.SearchSelect  {...proProp(RES, 'contractId')}/>
+                        <ProFormSelect  {...fieldMetaToProProps(RES, 'contractId')}/>
 
-                <ProFormText {...proProp(RES, 'responsibleEngineer')}/>
-            </>
+                        <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
+                    </>
+                }
         }
         renderList={({form,verb,resource}) => {
+            const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
+            const [cols] = useAllColumns(SITES)
             return  <RGrid
                 columnDefs={cols}
                 rowData={list}

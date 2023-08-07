@@ -1,4 +1,4 @@
-import {AnyFields, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {useDispatch} from 'react-redux'
 import React, {useRef, useState} from 'react'
 import AppLayout from '../../app/AppLayout'
@@ -14,7 +14,7 @@ import {Button} from 'antd'
 
 export const CrudEditItemPage =  <
     RID extends string,
-    Fields extends AnyFields,
+    Fields extends AnyFieldsMeta,
     Res extends Resource<RID, Fields>
 >({resource,renderForm,item,verb,form}: CrudFormRenderProps<RID, Fields,Res>& {renderForm: CrudFormRender<RID, Fields,Res>}) => {
 
