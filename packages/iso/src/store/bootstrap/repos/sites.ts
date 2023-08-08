@@ -34,6 +34,7 @@ export const siteResource = createResource('site',{
         KPP: valueTypes.string({headerName: 'КПП'}),
     },
     {
+        getItemName: item => item.city+', '+item.address,
         langRU: {
             singular: 'Адрес',
             plural: 'Адреса',

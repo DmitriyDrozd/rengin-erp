@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux'
 import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {CrudListRender, CrudListRenderProps} from './ItemChapter'
-import CrudCreateItemButton from '../../elements/CrudCreateButton'
+import CrudCreateItemButton from '../../elements/CreateButton'
 import {RForm} from '../../elements/RForm'
 import {ProCard} from '@ant-design/pro-components'
 import {ExportOutlined} from '@ant-design/icons'
@@ -28,35 +28,13 @@ export const CrudListPage = <
     }
 
     return  <AppLayout
-                header={{
-                   // title: resource.langRU.plural,
-                    extra:[
-                        <Button icon={<ExportOutlined />}>Экспорт</Button>,
-                        <CrudCreateItemButton/>
-                    ]
-                }}
+                hidePageContainer={true}
+
             >
-        <RForm
-            submitter={{
-                render: (props, dom) => null
-            }}
-            readonly={false}
-            initialValues={initialValues}
-            onValuesChange={(_, values) => {
-                console.log(values);
-                setState(values)
-            }}
-            onFinish={async (values) => {
-                console.log('onFinish',values)
-                onSubmit(values)
-            }
-            }
-        >
 
         {
             renderList({resource, verb:'LIST',form})
         }
 
-        </RForm>
     </AppLayout>
 }

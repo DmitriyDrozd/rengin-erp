@@ -7,6 +7,7 @@ import {USERS} from 'iso/src/store/bootstrap/repos/users'
 import buildMongooseByResource from './buildMongooseByResource'
 import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
 import {SITES} from 'iso/src/store/bootstrap/repos/sites'
+import SUBS from 'iso/src/store/bootstrap/repos/subs'
 
 export default async (mongo) => {
 
@@ -21,7 +22,8 @@ export default async (mongo) => {
         LelagsRepo: await makeRepo(LEGALS),
         RealtyRepo: await makeRepo(SITES),
         ContractsRepo: await makeRepo(CONTRACTS)    ,
-IssuesRepo: await makeRepo(ISSUES)
+IssuesRepo: await makeRepo(ISSUES),
+        SubsRepo: await makeRepo(SUBS)
         // IssuesRepo: await makeRepo({mongo}, issuesCrud, IssuesSchema),
         // AddressesRepo: await makeRepo({mongo}, addressesCrud, AddressesSchema),
         // CompaniesRepo: await makeRepo({mongo}, companiesCrud, CompanySchema),

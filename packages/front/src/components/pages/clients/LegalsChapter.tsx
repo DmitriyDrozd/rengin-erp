@@ -9,6 +9,7 @@ import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import {SelectProps} from 'antd'
 import useLedger from '../../../hooks/useLedger'
 import {RCellRender} from '../../../grid/RCellRender'
+import PanelRGrid from '../../../grid/PanelRGrid'
 
 export default () => {
     const ledger = useLedger()
@@ -28,7 +29,9 @@ export default () => {
             </>
         }
         renderList={({form,verb,resource}) => {
-            return  <RGrid
+            return  <PanelRGrid
+                title={'Все Юр. Лица'}
+                resource={LEGALS}
                 columnDefs={cols}
                 rowData={list}
             />

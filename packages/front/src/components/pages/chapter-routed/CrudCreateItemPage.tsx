@@ -11,10 +11,11 @@ import {useHistory} from 'react-router'
 import {Breadcrumb, Button, Space} from 'antd'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {useQueryObject} from '../../../hooks/useQueryObject'
+import CancelButton from '../../elements/CancelButton'
 
 const layoutProps = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
 }
 export const CrudCreateItemPage =  <
     RID extends string,
@@ -64,7 +65,7 @@ export const CrudCreateItemPage =  <
                 proLayout={{
 
                     extra:[
-                        <Button danger ghost icon={<AntdIcons.DeleteOutlined/>} onClick={onDelete}>Отмена</Button>,
+                        <CancelButton onCancel={onBack}/>,
                         <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Создать</Button>
                     ],
                 title:'Rengin',

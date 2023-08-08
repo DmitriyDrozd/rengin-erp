@@ -12,10 +12,11 @@ import * as XLSX from 'xlsx'
 import {ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from '@ant-design/icons'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import CrudCreateButton from '../../elements/CrudCreateButton'
+import CrudCreateButton from '../../elements/CreateButton'
 import {Button, Card, Space} from 'antd'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {nav} from '../../nav'
+import PanelRGrid from '../../../grid/PanelRGrid'
 export default () => {
     const ledger = useLedger()
     const list = ledger.brands
@@ -41,6 +42,13 @@ const brandCols = [
         headerName:'Юр. лица',
         editable: false,
         valueGetter: (params => ledger.legals.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+    },
+    {
+        colId:'issuesCalc',
+        field: 'brandId',
+        headerName:'Всего заявок',
+        editable: false,
+        valueGetter: (params => ledger.issues.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
     },
 ]
     return <ItemChapter
@@ -114,7 +122,9 @@ const brandCols = [
                     document.addEventListener('paste', onPaste)
                     return () => document.removeEventListener('paste', onPaste)
                 })
-                return  <RGrid
+                return  <PanelRGrid
+                            title={'Заказчики'}
+                            resource={resource}
                             columnDefs={brandCols}
                             rowData={list}
                         />

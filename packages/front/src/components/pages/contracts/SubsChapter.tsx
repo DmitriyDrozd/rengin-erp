@@ -33,49 +33,49 @@ export default () => {
 
 
     return <ItemChapter
-                resource={RESOURCES_MAP.CONTRACTS}
-                renderForm={({item,id,verb, resource}) => {
-                    const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
-                    return      <>
-                                    <ProFormText {...fieldMetaToProProps(CONTRACTS, 'contractNumber', item)} rules={[{required: true}]}/>
+        resource={RESOURCES_MAP.CONTRACTS}
+        renderForm={({item,id,verb, resource}) => {
+            const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
+            return      <>
+                <ProFormText {...fieldMetaToProProps(CONTRACTS, 'contractNumber', item)} rules={[{required: true}]}/>
 
-<ProForm.Item label={'Заказчик'} required={true}  >
-    <Row>
-                    <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'brandId', item)} label={null} width={'sm'} rules={[{required: true}]}/>
+                <ProForm.Item label={'Заказчик'} required={true}  >
+                    <Row>
+                        <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'brandId', item)} label={null} width={'sm'} rules={[{required: true}]}/>
                         <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'legalId', item)} label={null}  width={'md'}   valueEnum={legalValueEnum} rules={[{required: true}]}/>
-    </Row>
-    </ProForm.Item>
-                        <ProForm.Item label={'Дата подписания'}  >
-                            <Row>
-                                <Space>
-                                    <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'signDate', item)} label={null} width={'sm'} rules={[]}/>
-                                    <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS,'rate', item)} label={'Ставка за объект'} width={'sm'} rules={[]}/>
-                                  </Space>
-                                </Row>
+                    </Row>
+                </ProForm.Item>
+                <ProForm.Item label={'Дата подписания'}  >
+                    <Row>
+                        <Space>
+                            <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'signDate', item)} label={null} width={'sm'} rules={[]}/>
+                            <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS,'rate', item)} label={'Ставка за объект'} width={'sm'} rules={[]}/>
+                        </Space>
+                    </Row>
 
-                        </ProForm.Item>
-                        <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'endDate', item)} label={'Действует до'} width={'sm'} rules={[]}/>
+                </ProForm.Item>
+                <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'endDate', item)} label={'Действует до'} width={'sm'} rules={[]}/>
 
-                    </>
-                }
+            </>
         }
-                renderItemInfo={({item,renderItemInfo,renderForm,renderList,id,resource,verb})=>{
+        }
+        renderItemInfo={({item,renderItemInfo,renderForm,renderList,id,resource,verb})=>{
 
-                }}
+        }}
         renderList={({form,verb,resource}) => {
             return  <div>
 
 
 
                 <PanelRGrid
-                    resource={CONTRACTS}
+                    resource={SU}
                     title={'Все договоры'}
 
                 />
                 {/**<FooterToolbar extra="extra information">
-                    <Button>Cancel</Button>
-                    <Button type="primary">Submit</Button>
-                </FooterToolbar>*/}</div>
+                 <Button>Cancel</Button>
+                 <Button type="primary">Submit</Button>
+                 </FooterToolbar>*/}</div>
         }}
     />
 }

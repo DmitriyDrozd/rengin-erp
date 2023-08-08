@@ -1,4 +1,5 @@
 import {
+    DownOutlined,
     GithubFilled,
     InfoCircleFilled,
     LogoutOutlined,
@@ -7,8 +8,8 @@ import {
     SearchOutlined
 } from '@ant-design/icons';
 import type {PageContainerProps, ProLayoutProps, ProSettings} from '@ant-design/pro-components';
-import {PageContainer, ProCard, ProLayout} from '@ant-design/pro-components';
-import {Dropdown, DropDownProps, Input, theme, Typography} from 'antd';
+import {PageContainer, ProCard, ProLayout, PageHeader} from '@ant-design/pro-components';
+import {Dropdown, DropDownProps, Input, Space, theme, Typography} from 'antd';
 import React from 'react';
 import defaultProps from './_defaultProps';
 import {useHistory} from 'react-router'
@@ -21,6 +22,7 @@ import {uiDuck} from '../../store/ducks/uiDuck'
 import {nav} from '../nav'
 import HeadLogo from '../app/HeadLogo'
 import usePathnameResource from '../../hooks/usePathnameResource'
+import {AntdIcons} from '../elements/AntdIcons'
 
 const { useToken } = theme;
 
@@ -36,7 +38,7 @@ const TopProfileDropDown = (props: DropDownProps)=> {
     }
     return (
         <Dropdown
-
+            trigger={['click']}
             {...props}
             menu={{
                 items: [
@@ -57,7 +59,7 @@ const TopProfileDropDown = (props: DropDownProps)=> {
         </Dropdown>
     )
 }
-export default ({proLayout, children, ...props}: PageContainerProps & {proLayout?: ProLayoutProps}) => {
+export default ({proLayout, children,hidePageContainer, ...props}: PageContainerProps & {proLayout?: ProLayoutProps,hidePageContainer?:boolean}) => {
 
     const settings: Partial<ProSettings> | undefined = {
         fixSiderbar: true,
@@ -111,11 +113,12 @@ collapsed={false}
 
                 }}
                 avatarProps={{
+                    icon:<AntdIcons.ArrowDownOutlined/>,
                     src: userAvatarURL,
                     size: "small",
                     title: <Typography.Link>{currentUser.email}</Typography.Link>,
                     render: (props, dom) =>
-                        <TopProfileDropDown {...props}>{dom}</TopProfileDropDown>
+                        <TopProfileDropDown {...props}><Space>{dom}<a href={'#'}><DownOutlined/></a></Space></TopProfileDropDown>
                 }}
                 actionsRender={(props) => {
                     if (props.isMobile) return [];
@@ -179,14 +182,18 @@ collapsed={false}
                 {...settings}
                 {...proLayout}
             >
-                <PageContainer {...props}
+                {hidePageContainer ?
+                    children
+                    :  <PageContainer {...props}
 
 
-                >
+                    >
 
                         {children}
 
-                </PageContainer>
+                    </PageContainer>
+                }
+
             </ProLayout>
     );
 };

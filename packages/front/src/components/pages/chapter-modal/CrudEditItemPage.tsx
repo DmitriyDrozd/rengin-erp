@@ -7,7 +7,7 @@ import type {CrudFormRender, CrudFormRenderProps} from './ItemChapterModal'
 import getCrudPathname from '../../../hooks/getCrudPathname'
 import {RForm} from '../../elements/RForm'
 import {useHistory} from 'react-router'
-import CrudCreateItemButton from '../../elements/CrudCreateButton'
+import CrudCreateItemButton from '../../elements/CreateButton'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {Button} from 'antd'
 

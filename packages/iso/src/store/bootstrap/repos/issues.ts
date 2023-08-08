@@ -5,10 +5,15 @@ export const issueResource = createResource('issue',{
 
         clientsIssueNumber: valueTypes.string(),
         status: valueTypes.string(),
-        clientId: valueTypes.string(),
+            brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
+            legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
+            contractId: valueTypes.itemOf({headerName: 'Договор',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
+            siteId: valueTypes.itemOf({headerName: 'Объект',linkedResourceName: 'SITES',required: true,immutable:true}),
 
-        payMode: valueTypes.string(),
-        contractId: valueTypes.string(),
+            subId: valueTypes.itemOf({headerName: 'Подписка',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
+
+            payMode: valueTypes.string(),
+
 
         userId: valueTypes.string(),
         responsibleEngineer: valueTypes.string(),

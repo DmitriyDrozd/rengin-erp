@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux'
 import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {CrudListRender, CrudListRenderProps} from './ItemChapterModal'
-import CrudCreateItemButton from '../../elements/CrudCreateButton'
+import CrudCreateItemButton from '../../elements/CreateButton'
 import {RForm} from '../../elements/RForm'
 import {ProCard} from '@ant-design/pro-components'
 

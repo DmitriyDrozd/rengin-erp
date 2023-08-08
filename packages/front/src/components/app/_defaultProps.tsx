@@ -1,6 +1,7 @@
 import * as Icons from '@ant-design/icons';
 import {AppstoreOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
 import React from 'react'
+import {AntdIcons} from '../elements/AntdIcons'
 
 export default {
     route: {
@@ -18,8 +19,13 @@ export default {
                         icon: <CalendarOutlined />,
                     },
                     {
-                        path: "/app/in/clients",
-                        name: "Клиенты",
+                        path: "/app/in/subs",
+                        name: "Подписки",
+                        icon: <AntdIcons.AccountBookOutlined />,
+                    },
+                    {
+                        path: "/app/in/dicts",
+                        name: "Справочники",
                         icon: <AppstoreOutlined />,
                         routes: [
                             {

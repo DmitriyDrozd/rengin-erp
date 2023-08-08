@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import 'ant-design-pro/dist/ant-design-pro.css'
 import {Provider} from 'react-redux'
 import {ConnectedRouter, history} from '@sha/router'
 import UIRoot from './UIRoot'

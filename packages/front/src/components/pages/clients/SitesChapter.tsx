@@ -11,6 +11,8 @@ import useLedger from '../../../hooks/useLedger'
 import {RCellRender} from '../../../grid/RCellRender'
 import SITES from 'iso/src/store/bootstrap/repos/sites'
 import {useSelector} from 'react-redux'
+import PanelRGrid from '../../../grid/PanelRGrid'
+import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 
 export default () => {
     const ledger = useLedger()
@@ -31,8 +33,6 @@ export default () => {
                         <ProFormText {...fieldMetaToProProps(RES, 'address')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RES, 'KPP')}/>
 
-                        <ProFormSelect  {...fieldMetaToProProps(RES, 'contractId')}/>
-
                         <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
                     </>
                 }
@@ -40,9 +40,9 @@ export default () => {
         renderList={({form,verb,resource}) => {
             const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
             const [cols] = useAllColumns(SITES)
-            return  <RGrid
-                columnDefs={cols}
-                rowData={list}
+            return         <PanelRGrid
+                resource={SITES}
+                title={'Все объекты'}
             />
         }}
     />

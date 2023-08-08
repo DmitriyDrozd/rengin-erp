@@ -7,10 +7,12 @@ import type {CrudFormRender} from './ItemChapter'
 import getCrudPathname from '../../../hooks/getCrudPathname'
 import {RForm} from '../../elements/RForm'
 import {useHistory} from 'react-router'
-import CrudCreateItemButton from '../../elements/CrudCreateButton'
+import CrudCreateItemButton from '../../elements/CreateButton'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {Breadcrumb, Button} from 'antd'
 import {ItemChapterProps} from './ItemChapter'
+import DeleteButton from '../../elements/DeleteButton'
+import CancelButton from '../../elements/CancelButton'
 
 
 export type CrudFormRenderProps<
@@ -44,9 +46,10 @@ export const CrudEditItemPage =  <
         const patch = {...initialValues, ...values,[idProp]:id};
         const action = resource.actions.patched(patch, initialValues)
         console.log('Submit', values, action)
-        if(action)
-        dispatch(action)
         history.goBack()
+        if(action)
+         dispatch(action)
+
         //            dispatch(BRANDS.actions.added(values))
     }
     const title = resource.getItemName(state)
@@ -58,8 +61,8 @@ export const CrudEditItemPage =  <
         onBack()
     }
     const layoutProps = {
-        labelCol: { span: 4 },
-        wrapperCol: { span:20 },
+        labelCol: { span: 6 },
+        wrapperCol: { span:18 },
     }
     const onBack = () =>
         history.goBack()
@@ -70,8 +73,8 @@ export const CrudEditItemPage =  <
 
                 proLayout={{
                      extra:[
-                         <Button icon={<AntdIcons.DeleteOutlined/>} onClick={onBack}>Отмена</Button>,
-                         <Button danger ghost icon={<AntdIcons.DeleteOutlined/>} onClick={onDelete}>Удалить</Button>,
+                         <CancelButton onCancel={onBack}/>,
+                         <DeleteButton  resource={resource} id={id} onDeleted={onDelete}/>,
                          <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
                      ],
                      title:'Rengin'

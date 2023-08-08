@@ -4,10 +4,12 @@ import {LEGALS} from './repos/legals'
 import {SITES} from './repos/sites'
 import {CONTRACTS} from './repos/contracts'
 import {ISSUES} from './repos/issues'
+import {SUBS} from './repos/subs'
+
 import {FactoryAnyAction} from '@sha/fsa'
 import {AnyFieldsMeta, Resource} from './core/createResource'
 import {isBrowser} from '@sha/utils'
-import {BRAND} from 'zod'
+
 
 
 
@@ -19,7 +21,8 @@ export const RESOURCES_MAP = {
     LEGALS,
     SITES,
     CONTRACTS,
-    ISSUES
+    ISSUES,
+    SUBS,
 }
 export type ResourcesMap = typeof RESOURCES_MAP
 
@@ -36,7 +39,8 @@ export const RESOURCES_LIST = [
     LEGALS,
     SITES,
     CONTRACTS,
-    ISSUES
+    ISSUES,
+    SUBS,
 ] as const
 
 export type ResourceName =typeof RESOURCES_LIST[number]['resourceName']
@@ -48,7 +52,8 @@ export const getResourcesByNames = () => ({
     legal: LEGALS,
     site:SITES,
     contract:CONTRACTS,
-    issue:ISSUES
+    issue:ISSUES,
+    sub: SUBS,
 })
 
 export type BrandsResource = typeof BRANDS

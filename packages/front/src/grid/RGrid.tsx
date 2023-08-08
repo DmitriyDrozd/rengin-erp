@@ -1,8 +1,8 @@
 
 
 import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
-import './rengin-theme.css'
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+//import './rengin-theme.css'
 import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
 import React, {useMemo} from 'react'
 import AG_GRID_LOCALE_RU from './locale.ru'
@@ -29,6 +29,7 @@ import { StatusBarModule } from '@ag-grid-enterprise/status-bar'
 import { useCallback, useState } from 'react'
 import mem from 'mem'
 import '@ag-grid-community/core/dist/styles/ag-grid.css';
+import {AnyFieldsMeta, ExtractResource, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
 
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
@@ -47,8 +48,13 @@ ModuleRegistry.registerModules([
     StatusBarModule,
     GridChartsModule,
 ])
-export default  <TData = any>(props: AgGridReactProps<TData>) => {
-        console.log('AgGrid colDef ',props.columnDefs)
+
+export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGridReactProps<ItemWithId<RID, Fields>> & {
+    resource: Resource<RID, Fields>
+    defaultCreateItemProps?: Partial<ItemWithId<RID, Fields>>
+}
+
+export default  <RID extends string, Fields extends AnyFieldsMeta>(props: RGridProps<RID, Fields>) => {
     const { onGridReady, columnApi, api } = useAgGrid();
     const gridOptions: GridOptions = { ...agGridDefaultOptions };
     console.log(columnApi, api);
@@ -58,8 +64,8 @@ export default  <TData = any>(props: AgGridReactProps<TData>) => {
                 return AG_GRID_LOCALE_RU;
             }, []);
 
-        return  <div className="ag-theme-balham" style={{height: 'calc(100vh - 250px)', width: '100%'}}>
-                    <AgGridReact<TData>
+        return  <div className="ag-theme-alpine" style={{height: 'calc(100vh - 250px)', width: '100%'}}>
+                    <AgGridReact<ItemWithId<RID, Fields>>
                         localeText={localeText}
 
                         defaultColDef={{resizable: true,sortable:true}}

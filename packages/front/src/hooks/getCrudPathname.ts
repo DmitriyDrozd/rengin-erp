@@ -1,10 +1,10 @@
-import {ResourceName} from 'iso/src/store/bootstrap/resourcesList'
+import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
 
 
-export default (resource:ResourceName ) => ({
+export default <RID extends string, Fields extends AnyFieldsMeta>(resource:Resource<RID,Fields> ) => ({
 
     view: () => '/app/in/'+resource.collection,
-    create: () => '/app/in/'+resource.collection+'/create',
+    create: (defaultProps:Partial< Record<keyof Fields, string>> = {}) => '/app/in/'+resource.collection+'/create?'+(new URLSearchParams(defaultProps as any).toString()),
     edit: (id: string) => '/app/in/'+resource.collection+'/'+id,
 })
 

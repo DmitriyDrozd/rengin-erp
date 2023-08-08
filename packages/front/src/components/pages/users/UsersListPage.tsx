@@ -6,7 +6,7 @@ import {useHistory, useParams} from 'react-router'
 import {makeColumns} from '../../../grid/createColumns'
 import {RCRUDTable} from '../../../grid/RCRUDTable'
 import AppLayout from '../../app/AppLayout'
-import AddItemButton from '../../elements/CrudCreateButton'
+import AddItemButton from '../../elements/CreateButton'
 
 export default () => {
 

@@ -1,6 +1,6 @@
 import {Card, Col, Row, Table, TableProps} from 'antd'
 import Search from 'antd/es/input/Search'
-import AddItemButton from '../components/elements/CrudCreateButton'
+import AddItemButton from '../components/elements/CreateButton'
 import React, {useState} from 'react'
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
 
