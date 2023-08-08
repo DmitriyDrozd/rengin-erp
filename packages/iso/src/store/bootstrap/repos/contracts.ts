@@ -1,7 +1,8 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
+import {ISOState} from '../../../ISOState'
 
-export const CONTRACTS = createResource('contract', {
+ const rawResource = createResource('contract', {
         contractNumber: valueTypes.string({headerName: 'Номер договора'}),
         brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
@@ -20,6 +21,12 @@ export const CONTRACTS = createResource('contract', {
     }
 )
 
-export default CONTRACTS
 
+export const CONTRACTS = {
+    ...rawResource,
+    selectValueEnumByLegalId: (legalId: string | undefined) => (state: ISOState) =>
+        rawResource.asValueEnum(rawResource.selectAll(state).filter(contract => contract.legalId === legalId))
+}
+
+export default CONTRACTS
 export type ContractVO = typeof CONTRACTS.exampleItem

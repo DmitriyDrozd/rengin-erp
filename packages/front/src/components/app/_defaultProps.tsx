@@ -1,5 +1,5 @@
 import * as Icons from '@ant-design/icons';
-import {AppstoreOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
+import {AppstoreOutlined, CalendarOutlined, ImportOutlined, MailOutlined} from '@ant-design/icons';
 import React from 'react'
 import {AntdIcons} from '../elements/AntdIcons'
 
@@ -40,8 +40,14 @@ export default {
                             },
                             {
                                 path: "/app/in/sites",
-                                name: "Адреса",
+                                name: "Объекты",
                                 icon: <AppstoreOutlined />,
+                            },
+                            {
+
+                                path: "/app/in/import-sites",
+                                name: "Импорт",
+                                icon: <ImportOutlined />,
                             }
                         ]
                     },

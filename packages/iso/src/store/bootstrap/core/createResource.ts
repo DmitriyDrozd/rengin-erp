@@ -105,6 +105,10 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
                 console.log('asOptions', options)
                 return options
             },
+            selectFirstByName: (name: string) => (state: ISOState) => {
+                const list = crud.selectList(state)
+                return list.find(item => getItemName(item) === name)
+            },
             resourceName: collection.toUpperCase() as any as Uppercase<PluralEngindEng<RID>>,
             asValueEnum: (list: Item[] = undefined) => {
                 const state = getStore().getState()

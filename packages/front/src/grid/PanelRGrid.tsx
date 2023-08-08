@@ -6,10 +6,18 @@ import {useAllColumns} from './RCol'
 import {useSelector} from 'react-redux'
 import {SearchOutlined} from '@ant-design/icons'
 import CrudCreateButton from '../components/elements/CreateButton'
+import {ChangeEventHandler, useState} from 'react'
 
 export default  <RID extends string, Fields extends AnyFieldsMeta>({title, columnDefs, resource,rowData,defaultCreateItemProps,...props}: RGridProps<RID, Fields> & {title: string}) => {
+
     const [defaultColumns] = useAllColumns(resource)
     const defaultList = useSelector(resource.selectList)
+    const [searchText, setSearchText] = useState('')
+
+    const onSearchTextChanged :ChangeEventHandler<HTMLInputElement> = e => {
+        setSearchText(e.target.value)
+    }
+
     return      <> <div
         style={{
             height: '48px',
@@ -29,11 +37,12 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
                 style={{maxWidth: '250px', marginRight: '16px'}}
                 addonBefore={<SearchOutlined />} placeholder="Быстрый поиск"
                 allowClear
-                onChange={console.log}
+                value={searchText}
+                onChange={onSearchTextChanged}
             />
             <CrudCreateButton resource={resource} defaultProps={defaultCreateItemProps} />
         </div>
     </div>
-        <RGrid {...props} columnDefs={columnDefs || defaultColumns} rowData={rowData || defaultList} resource={resource}/>
+        <RGrid {...props} columnDefs={columnDefs || defaultColumns} rowData={rowData || defaultList} resource={resource} quickFilterText={searchText}/>
     </>
  }

@@ -11,6 +11,8 @@ import BrandsChapter from './pages/clients/BrandsChapter'
 import LegalsChapter from './pages/clients/LegalsChapter'
 import SitesChapter from './pages/clients/SitesChapter'
 import ContractsChapter from './pages/contracts/ContractsChapter'
+import SubsChapter from './pages/contracts/SubsChapter'
+import ImportSItesPage from './pages/ImportSItesPage'
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -53,6 +55,12 @@ export const nav = {
     contractsList: buildNav('/app/in/contracts', ContractsChapter),
     contractsCreate: buildNav('/app/in/contracts/create', ContractsChapter),
     contractsEdit: buildNav('/app/in/contracts/:contractsId', ContractsChapter),
+
+    subsList: buildNav('/app/in/subs', SubsChapter),
+    subsCreate: buildNav('/app/in/subs/create', SubsChapter),
+    subsEdit: buildNav('/app/in/subs/:subId', SubsChapter),
+
+    importSites: buildNav('/app/in/import-sites', ImportSItesPage)
     //addressesList: buildNav('/app/in/addresses', AddressesListPage),
    // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
    // contractsList: buildNav('/app/in/contracts', ContractsListPage),

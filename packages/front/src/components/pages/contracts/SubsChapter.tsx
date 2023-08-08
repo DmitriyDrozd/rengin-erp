@@ -29,34 +29,23 @@ import SUBS from 'iso/src/store/bootstrap/repos/subs'
 export default () => {
     const ledger = useLedger()
     const list = ledger.contracts
-    const [cols] = useAllColumns(CONTRACTS)
+    const [cols] = useAllColumns(SUBS)
 
 
 
     return <ItemChapter
         resource={RESOURCES_MAP.CONTRACTS}
         renderForm={({item,id,verb, resource}) => {
-            const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
-            return      <>
-                <ProFormText {...fieldMetaToProProps(CONTRACTS, 'contractNumber', item)} rules={[{required: true}]}/>
-
-                <ProForm.Item label={'Заказчик'} required={true}  >
+            const contractValueEnum = useSelector(CONTRACTS.selectValueEnumByLegalId(item.legalId))
+            return <>
+                <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} valueEnum={contractValueEnum} rules={[{required: true}]}/>
+                <ProForm.Item label={'Период подключения'} required={true}  >
                     <Row>
-                        <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'brandId', item)} label={null} width={'sm'} rules={[{required: true}]}/>
-                        <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'legalId', item)} label={null}  width={'md'}   valueEnum={legalValueEnum} rules={[{required: true}]}/>
+                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null} width={'sm'} rules={[{required: true}]}/>
+                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}  width={'sm'} />
                     </Row>
                 </ProForm.Item>
-                <ProForm.Item label={'Дата подписания'}  >
-                    <Row>
-                        <Space>
-                            <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'signDate', item)} label={null} width={'sm'} rules={[]}/>
-                            <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS,'rate', item)} label={'Ставка за объект'} width={'sm'} rules={[]}/>
-                        </Space>
-                    </Row>
-
-                </ProForm.Item>
-                <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS,'endDate', item)} label={'Действует до'} width={'sm'} rules={[]}/>
-
+                <ProFormDatePicker {...fieldMetaToProProps(SUBS,'siteId', item)} label={'Действует до'} width={'sm'} rules={[]}/>
             </>
         }
         }

@@ -52,11 +52,17 @@ ModuleRegistry.registerModules([
 export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGridReactProps<ItemWithId<RID, Fields>> & {
     resource: Resource<RID, Fields>
     defaultCreateItemProps?: Partial<ItemWithId<RID, Fields>>
+    search?: string
 }
 
 export default  <RID extends string, Fields extends AnyFieldsMeta>(props: RGridProps<RID, Fields>) => {
     const { onGridReady, columnApi, api } = useAgGrid();
     const gridOptions: GridOptions = { ...agGridDefaultOptions };
+   /* const onFilterTextBoxChanged = useCallback(() => {
+        gridRef.current!.api.setQuickFilter(
+            (document.getElementById('filter-text-box') as HTMLInputElement).value
+        );
+    }, []);*/
     console.log(columnApi, api);
         const localeText = useMemo<{
                 [key: string]: string;

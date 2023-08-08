@@ -63,7 +63,7 @@ const sourceResourceName = res.resourceName
                         const it = RES.selectById(id)(state)
                         return RES.getItemName(it)
                     } catch (e){
-
+                        console.error(e)
                         return 'Непривязан'
                     }
 

@@ -78,6 +78,7 @@ export default ({proLayout, children,hidePageContainer, ...props}: PageContainer
 
             <ProLayout
                 breakpoint={false}
+
 collapsed={false}
                 bgLayoutImgList={[
                     {
@@ -102,16 +103,12 @@ collapsed={false}
                         width: "331px"
                     }
                 ]}
-
                 {...defaultProps}
                 location={{
                     pathname
                 }}
                 logo={<HeadLogo/>}
                 title={<div>Rengin</div>}
-                menu={{
-
-                }}
                 avatarProps={{
                     icon:<AntdIcons.ArrowDownOutlined/>,
                     src: userAvatarURL,
@@ -120,45 +117,7 @@ collapsed={false}
                     render: (props, dom) =>
                         <TopProfileDropDown {...props}><Space>{dom}<a href={'#'}><DownOutlined/></a></Space></TopProfileDropDown>
                 }}
-                actionsRender={(props) => {
-                    if (props.isMobile) return [];
-                    return [
-                        props.layout !== "side" && document.body.clientWidth > 1400 ? (
-                            <div
-                                key="SearchOutlined"
-                                aria-hidden
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    marginInlineEnd: 24
-                                }}
-                                onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                }}
-                            >
-                                <Input
-                                    style={{
-                                        borderRadius: 4,
-                                        marginInlineEnd: 12
-                                    }}
-                                    prefix={<SearchOutlined />}
-                                    placeholder="Поиск"
-                                    bordered={false}
-                                />
-                                <PlusCircleFilled
-                                    style={{
-                                        color: "var(--ant-primary-color)",
-                                        fontSize: 24
-                                    }}
-                                />
-                            </div>
-                        ) : undefined,
-                        <InfoCircleFilled key="InfoCircleFilled" />,
-                        <QuestionCircleFilled key="QuestionCircleFilled" />,
-                        <GithubFilled key="GithubFilled" />
-                    ];
-                }}
+
                 menuFooterRender={(props) => {
                     if (props?.collapsed) return undefined;
                     return (
@@ -172,7 +131,16 @@ collapsed={false}
                         </div>
                     );
                 }}
-                onMenuHeaderClick={(e) => console.log(e)}
+
+                onMenuHeaderClick={e =>
+                {
+                    console.log(e)
+                    debugger
+                }
+
+                }
+
+
                 menuItemRender={(item, dom) => {
                     //console.log(item)
                    return  <Link to={item.path}>
