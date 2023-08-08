@@ -25,6 +25,7 @@ import CrudCreateButton from '../../elements/CreateButton'
 import Search from 'antd/es/input/Search'
 import {SearchOutlined} from '@ant-design/icons'
 import PanelRGrid from '../../../grid/PanelRGrid'
+import SUBS from 'iso/src/store/bootstrap/repos/subs'
 export default () => {
     const ledger = useLedger()
     const list = ledger.contracts
@@ -68,8 +69,8 @@ export default () => {
 
 
                 <PanelRGrid
-                    resource={SU}
-                    title={'Все договоры'}
+                    resource={SUBS}
+                    title={'Все абонентские подключения'}
 
                 />
                 {/**<FooterToolbar extra="extra information">
