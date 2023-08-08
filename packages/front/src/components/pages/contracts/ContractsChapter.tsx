@@ -1,6 +1,7 @@
 import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {
+    ProCard,
     ProField,
     ProForm,
     ProFormDatePicker,
@@ -13,18 +14,19 @@ import RGrid from '../../../grid/RGrid'
 import useFrontSelector from '../../../hooks/common/useFrontSelector'
 import {useAllColumns} from '../../../grid/RCol'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import {Button, Input, Row, SelectProps, Space} from 'antd'
+import {Button, Card, Input, Row, SelectProps, Space} from 'antd'
 import useLedger from '../../../hooks/useLedger'
 import {RCellRender} from '../../../grid/RCellRender'
 import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 import {useSelector} from 'react-redux'
-import PageHeader from 'ant-design-pro/lib/PageHeader'
-import FooterToolbar from 'ant-design-pro/lib/FooterToolbar'
-import HeaderSearch from 'ant-design-pro/lib/HeaderSearch'
 import CrudCreateButton from '../../elements/CreateButton'
 import Search from 'antd/es/input/Search'
 import {SearchOutlined} from '@ant-design/icons'
 import PanelRGrid from '../../../grid/PanelRGrid'
+import SITES from 'iso/src/store/bootstrap/repos/sites'
+import {AntdIcons} from '../../elements/AntdIcons'
+import {nav} from '../../nav'
+import SUBS from 'iso/src/store/bootstrap/repos/subs'
 export default () => {
     const ledger = useLedger()
     const list = ledger.contracts
@@ -35,6 +37,7 @@ export default () => {
     return <ItemChapter
                 resource={RESOURCES_MAP.CONTRACTS}
                 renderForm={({item,id,verb, resource}) => {
+                    console.log("brandId",item)
                     const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
                     return      <>
                                     <ProFormText {...fieldMetaToProProps(CONTRACTS, 'contractNumber', item)} rules={[{required: true}]}/>
@@ -59,10 +62,23 @@ export default () => {
                     </>
                 }
         }
-                renderItemInfo={({item,renderItemInfo,renderForm,renderList,id,resource,verb})=>{
+                renderItemInfo={({verb,item,id, resource,}) => {
+                    const ledger = useLedger()
+                    const subList = ledger.subs.filter(s => s.contractId === item.contractId)
+                    const sites = ledger.sites.filter(s => s.brandId == id)
+                    const [sitesCols] = useAllColumns(SITES)
 
+                    const legals = ledger.legals.filter(s => s.brandId== id)
+                    const [legalsCols] = useAllColumns(LEGALS)
+                    return <PanelRGrid
+                        defaultCreateItemProps={{contractId:id}}
+                        resource={SUBS}
+                        title={'Подключённые объекты'}
+                        rowData={subList}
+                    />
                 }}
-        renderList={({form,verb,resource}) => {
+
+                renderList={({form,verb,resource}) => {
             return  <div>
 
 

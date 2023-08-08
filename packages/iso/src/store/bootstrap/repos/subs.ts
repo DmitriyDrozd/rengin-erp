@@ -2,8 +2,6 @@ import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 
 export const SUBS = createResource('sub',{
-        brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
-        legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
         contractId: valueTypes.itemOf({headerName: 'Договор',linkedResourceName: 'CONTRACTS',required: true, immutable: true}),
         subscribeDate: valueTypes.date({headerName: 'Дата подключения'}),
         unsubscribeDate: valueTypes.date({headerName: 'Дата отключения'}),

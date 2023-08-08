@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import 'ant-design-pro/dist/ant-design-pro.css'
 import {Provider} from 'react-redux'
 import {ConnectedRouter, history} from '@sha/router'
 import UIRoot from './UIRoot'
@@ -7,9 +6,9 @@ import {useMount} from 'react-use'
 import {Router} from 'react-router-dom'
 import {ConfigProvider} from 'antd'
 import {ProConfigProvider} from '@ant-design/pro-components'
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
-import ruRU from 'antd/locale/ru_RU';
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+import ruRU from 'antd/locale/ru_RU'
 const App = ({store}) => {
     const [rendered, setRendered] = useState(false)
     useMount(() => {
@@ -30,8 +29,8 @@ const App = ({store}) => {
                             theme={{
                                 components: {
                                     Form: {
-                                        marginLG:4
-                                    }
+                                        marginLG:4,
+                                    },
                                 },
                                 token: {
                                     borderRadius:0,

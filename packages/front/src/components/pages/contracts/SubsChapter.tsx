@@ -26,26 +26,36 @@ import Search from 'antd/es/input/Search'
 import {SearchOutlined} from '@ant-design/icons'
 import PanelRGrid from '../../../grid/PanelRGrid'
 import SUBS from 'iso/src/store/bootstrap/repos/subs'
+import SITES, {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
 export default () => {
     const ledger = useLedger()
-    const list = ledger.contracts
+
     const [cols] = useAllColumns(SUBS)
 
 
 
     return <ItemChapter
-        resource={RESOURCES_MAP.CONTRACTS}
+        resource={SUBS}
         renderForm={({item,id,verb, resource}) => {
-            const contractValueEnum = useSelector(CONTRACTS.selectValueEnumByLegalId(item.legalId))
+
+
+            const contract = useSelector(CONTRACTS.selectById(item.contractId))
+            const contractId = contract ? contract.contractId : undefined
+            const legalId = contract ? contract.legalId : undefined
+            const legal = useSelector(LEGALS.selectById(legalId))
+            const allSites: SiteVO[] = useSelector(SITES.selectAll)
+            const sitesEnum = SITES.asValueEnum(allSites.filter(s => s.legalId === legalId))
+
             return <>
-                <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} valueEnum={contractValueEnum} rules={[{required: true}]}/>
+            <div>{legal ? legal.legalName : 'Неизвестен'}</div>
+                <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} rules={[{required: true}]}/>
                 <ProForm.Item label={'Период подключения'} required={true}  >
                     <Row>
-                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null} width={'sm'} rules={[{required: true}]}/>
-                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}  width={'sm'} />
+                        <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null} width={'sm'} rules={[{required: true}]}/>
+                        <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}  width={'sm'} />
                     </Row>
                 </ProForm.Item>
-                <ProFormDatePicker {...fieldMetaToProProps(SUBS,'siteId', item)} label={'Действует до'} width={'sm'} rules={[]}/>
+                <ProFormSelect {...fieldMetaToProProps(SUBS,'siteId', item)} valueEnum={sitesEnum} label={'Объект'} width={'sm'} rules={[]}/>
             </>
         }
         }

@@ -1,14 +1,14 @@
 import AppLayout from '../app/AppLayout'
-import {Button, Card, Modal, Upload} from 'antd'
+import {Button, Card, Modal, Spin, Upload} from 'antd'
 import Meta from 'antd/es/card/Meta'
-import React from 'react'
+import React, {useState} from 'react'
 import Icon from 'antd/es/icon'
 import {UploadOutlined} from '@ant-design/icons'
 import {useFrontStateSelector} from '../../hooks/common/useFrontSelector'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import SITES from 'iso/src/store/bootstrap/repos/sites'
-import {toAssociativeArray} from '@sha/utils'
+import {sleep, toAssociativeArray} from '@sha/utils'
 import useLedger from '../../hooks/useLedger'
 import {useStore} from 'react-redux'
 import * as XLSX from 'xlsx'
@@ -18,7 +18,7 @@ import {useClickAway} from 'react-use'
 import {generateGuid} from '@sha/random'
 const xlsxCols = ['brandName','legalName','city','address'] as const
 type Datum =Record<typeof xlsxCols[number], string>
-const {confirm} = Modal
+const {confirm, info} = Modal
 function* importObjectsSaga(data: Datum[]) {
     let created = {
         brands: [],
@@ -65,7 +65,7 @@ function* importObjectsSaga(data: Datum[]) {
             )
         if(!site) {
 
-            const action = SITES.actions.added({brandId: brand.brandId, legalId: generateGuid(), city, address, siteId: generateGuid()})
+            const action = SITES.actions.added({brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()})
             console.log(`Site not found, create one`, action)
             yield* put(action)
             created.sites.push(action)
@@ -76,11 +76,11 @@ function* importObjectsSaga(data: Datum[]) {
         )
         return site
     }
-    debugger
+
     for(let i = 0;i < data.length;i++) {
         const d = data[i]
         yield* call(getOrCreateSite, d.brandName, d.legalName, d.city,d.address)
-
+        yield* call(sleep, 10)
     }
 
 }
@@ -88,10 +88,20 @@ function* importObjectsSaga(data: Datum[]) {
 export default () => {
     const state = useFrontStateSelector()
     const store = useStore()
+    const [loading, setLoading] = useState(false)
     const importFile = async (data: Array<string[]>) => {
-        store.runSaga(importObjectsSaga, data)
+        setLoading(true)
+       const task =  store.runSaga(importObjectsSaga, data)
+        await task
+        await sleep(2000)
+        const res =  info({
+            title:"Записи успешно импортированы",
+        })
+        setLoading(false)
+
     }
     return <AppLayout>
+        <Spin spinning={loading}>
         <Card
             hoverable
             style={{ width: '450px' , margin: 'auto' }}
@@ -113,16 +123,17 @@ export default () => {
                         const sheet = workbook.Sheets[workbook.SheetNames[0]]
                         const arr = XLSX.utils.sheet_to_json(sheet, {header:xlsxCols})
                            arr.shift()
-                        const res = confirm({
+                        const res =  confirm({
                             title:"Импортировать записи?",
                             content:<div>Найдено <b>{arr.length}</b> объектов с данными об адресах и заказчиках</div>,
                             okText:'Импорт',
-                            cancelText:'Отмена'
+                            cancelText:'Отмена',
+                            onOk: () => {
+                                importFile(arr)
+                            }
                         })
-                        const result = await re
-                        if(res) {
-                            importFile(arr)
-                        }
+
+
                         /* DO SOMETHING WITH workbook HERE */
                     };
                     reader.readAsArrayBuffer(file);
@@ -136,5 +147,6 @@ export default () => {
                 </Button>
             </Upload>;
         </Card>
+        </Spin>
     </AppLayout>
 }

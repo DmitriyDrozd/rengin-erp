@@ -332,8 +332,13 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
                 return result
             },
             selectById: (id: string|number) => (state: any): T => {
+            try {
                 const map = selectMap(state)
                 return map[id]
+            } catch (e){
+                console.error(e)
+                return  undefined
+            }
             },
             selectManyByIds,
 

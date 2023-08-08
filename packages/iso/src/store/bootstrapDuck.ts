@@ -10,8 +10,9 @@ import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
 import {ISSUES, IssueVO} from './bootstrap/repos/issues'
 import {isCRUD} from '@sha/fsa/src/createCRUDDuck'
 import {Duck} from '@sha/fsa/src/createBootableDuck'
-import brandsCrud, {BrandVO} from './bootstrap/repos/brands'
+import brandsCrud, {BRANDS, BrandVO} from './bootstrap/repos/brands'
 import {LEGALS, LegalVO} from './bootstrap/repos/legals'
+import SUBS, {SubVO} from './bootstrap/repos/subs'
 
 const factory = fsa.actionCreatorFactory('bootstrap')
 
@@ -28,8 +29,9 @@ export const bootstrapCrudsMap = {
     sites: SITES,
     contracts: CONTRACTS,
     issues: ISSUES,
-    brands: brandsCrud,
+    brands: BRANDS,
     legals: LEGALS,
+    subs: SUBS,
 }
 export const bootstrapDucksMap = {
     ...bootstrapCrudsMap,
@@ -89,6 +91,7 @@ export const selectLedger = (state: ISOState) => {
     const issues = boot.issues as  IssueVO[]
     const brands = boot.brands as BrandVO[]
     const legals = boot.legals  as LegalVO[]
+    const subs = boot.subs  as SubVO[]
 
     const usersById = toAssociativeArray('userId')(users)
     const sitesById = toAssociativeArray('siteId')(sites)
@@ -102,6 +105,7 @@ export const selectLedger = (state: ISOState) => {
         brandsList: brands,
         brands,
         legals,
+        subs,
         legalsList: legals,
         legalsById,
         usersById ,
