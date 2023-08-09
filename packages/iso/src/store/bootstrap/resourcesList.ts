@@ -32,7 +32,6 @@ type KeysToValues<T, Keys extends (keyof T)[]> = {
 };
 
 
-
 export const RESOURCES_LIST = [
     USERS,
     BRANDS,

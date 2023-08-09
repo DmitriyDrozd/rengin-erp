@@ -10,10 +10,10 @@ export const siteResource = createResource('site',{
             linkedResourceName: 'BRANDS',
             required: true
         }),
-        region: valueTypes.string({
+       /* region: valueTypes.string({
             headerName: 'Регион',
             required: true
-        }),
+        }),*/
         legalId: valueTypes.itemOf({
             headerName: 'Юр. Лицо',
             linkedResourceName: 'LEGALS',

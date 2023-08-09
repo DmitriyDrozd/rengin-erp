@@ -30,6 +30,7 @@ const App = ({store}) => {
                                 components: {
                                     Form: {
                                         marginLG:4,
+                lineHeight:2
                                     },
                                 },
                                 token: {

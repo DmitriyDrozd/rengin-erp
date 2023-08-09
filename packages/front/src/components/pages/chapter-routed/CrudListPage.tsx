@@ -29,7 +29,10 @@ export const CrudListPage = <
 
     return  <AppLayout
                 hidePageContainer={true}
-
+                proLayout={{contentStyle:{
+                    padding: '0px'
+                }
+                }}
             >
 
         {

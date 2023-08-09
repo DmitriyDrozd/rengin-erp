@@ -7,7 +7,7 @@ import {UploadOutlined} from '@ant-design/icons'
 import {useFrontStateSelector} from '../../hooks/common/useFrontSelector'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import SITES from 'iso/src/store/bootstrap/repos/sites'
+import SITES, {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
 import {sleep, toAssociativeArray} from '@sha/utils'
 import useLedger from '../../hooks/useLedger'
 import {useStore} from 'react-redux'
@@ -20,18 +20,14 @@ const xlsxCols = ['brandName','legalName','city','address'] as const
 type Datum =Record<typeof xlsxCols[number], string>
 const {confirm, info} = Modal
 function* importObjectsSaga(data: Datum[]) {
-    let created = {
-        brands: [],
-        legals: [],
-        sites: []
-    }
+
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger)
 
     function* updateLedger() {
-
         ledger = yield* select(selectLedger)
-
     }
+
+    const newSites: Partial<SiteVO>[] = []
 
     function* getOrCreateSite(brandName: string, legalName: string,city: string, address: string) {
         let brand = ledger.brandsByName[brandName]
@@ -40,7 +36,8 @@ function* importObjectsSaga(data: Datum[]) {
             const action = BRANDS.actions.added({brandId: generateGuid(), brandName})
             console.log(`Brand ${brandName} not found, create one`, action)
             yield* put(action)
-            created.brands.push(action)
+
+            yield* call(sleep, 10)
             yield* call(updateLedger)
         }
         else  {
@@ -54,7 +51,9 @@ function* importObjectsSaga(data: Datum[]) {
             const action = LEGALS.actions.added({brandId: brand.brandId, legalId: generateGuid(), legalName})
             console.log(`Legal ${legalName} not found, create one`, action)
             yield* put(action)
-            created.legals.push(action)
+
+
+            yield* call(sleep, 10)
             yield* call(updateLedger)
         }
         legal = ledger.legalsByName[legalName]
@@ -65,23 +64,21 @@ function* importObjectsSaga(data: Datum[]) {
             )
         if(!site) {
 
-            const action = SITES.actions.added({brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()})
-            console.log(`Site not found, create one`, action)
-            yield* put(action)
-            created.sites.push(action)
-            yield* call(updateLedger)
+            const site = {brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()}
+            console.log(`Site not found, create one`, site.address)
+            newSites.push(site)
         }
-        site = ledger.sites.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
-            s.city === city && s.address === address
-        )
+
         return site
     }
 
     for(let i = 0;i < data.length;i++) {
         const d = data[i]
         yield* call(getOrCreateSite, d.brandName, d.legalName, d.city,d.address)
-        yield* call(sleep, 10)
+
     }
+    if(newSites.length)
+        yield* put(SITES.actions.addedBatch(newSites))
 
 }
 

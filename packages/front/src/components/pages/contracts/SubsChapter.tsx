@@ -68,9 +68,9 @@ export default () => {
 
 
                 <PanelRGrid
+                    fullHeight={true}
                     resource={SUBS}
                     title={'Все абонентские подключения'}
-
                 />
                 {/**<FooterToolbar extra="extra information">
                  <Button>Cancel</Button>

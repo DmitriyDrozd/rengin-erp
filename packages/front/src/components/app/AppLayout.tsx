@@ -107,6 +107,7 @@ collapsed={false}
                 location={{
                     pathname
                 }}
+
                 logo={<HeadLogo/>}
                 title={<div>Rengin</div>}
                 avatarProps={{
@@ -131,6 +132,7 @@ collapsed={false}
                         </div>
                     );
                 }}
+                collapsedButtonRender={() => null}
 
                 onMenuHeaderClick={e =>
                 {

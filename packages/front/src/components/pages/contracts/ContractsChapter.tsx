@@ -71,7 +71,7 @@ export default () => {
                     const legals = ledger.legals.filter(s => s.brandId== id)
                     const [legalsCols] = useAllColumns(LEGALS)
                     return <PanelRGrid
-                        defaultCreateItemProps={{contractId:id}}
+                        createItemProps={{contractId:id}}
                         resource={SUBS}
                         title={'Подключённые объекты'}
                         rowData={subList}
@@ -84,9 +84,10 @@ export default () => {
 
 
                 <PanelRGrid
+                    fullHeight={true}
                     resource={CONTRACTS}
                     title={'Все договоры'}
-
+                    columnDefs={cols}
                 />
                 {/**<FooterToolbar extra="extra information">
                     <Button>Cancel</Button>

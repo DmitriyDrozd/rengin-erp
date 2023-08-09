@@ -10,7 +10,7 @@ const rawResource = createResource(
                 headerName: 'Юр. Лицо',
                 required: true,
             }),
-            region: valueTypes.string({headerName: 'Регион'}),
+        //   region: valueTypes.string({headerName: 'Регион'}),
             brandId: valueTypes.itemOf({headerName:'Заказчик',linkedResourceName: 'BRANDS',required: true})
         },
         {

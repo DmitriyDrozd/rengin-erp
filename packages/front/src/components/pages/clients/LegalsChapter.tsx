@@ -30,9 +30,10 @@ export default () => {
         }
         renderList={({form,verb,resource}) => {
             return  <PanelRGrid
+                fullHeight={true}
                 title={'Все Юр. Лица'}
                 resource={LEGALS}
-                columnDefs={cols}
+
                 rowData={list}
             />
         }}

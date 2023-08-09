@@ -4,6 +4,7 @@ import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import {getStore} from '../../../getStore'
 import {ISOState} from '../../../ISOState'
 import {ColDef} from 'ag-grid-community'
+import {ValuesType} from 'utility-types'
 
 export type PluralEngindEng<S extends string> = S extends `${string}s` ? `${S}es` :  `${S}s`
 
@@ -21,6 +22,7 @@ export type ResourceLang = {
 export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = {
     nameProp: keyof Fields
     langRU: ResourceLang
+
     getItemName: (item: ItemWithId<RID, Fields>) => string
 }
 
@@ -42,6 +44,8 @@ export type ItemWithId<RID extends string, Fields extends AnyFieldsMeta> =
 
 export type Resource<RID extends string, Fields extends {[key in string]: Meta}>  =
   ResourceOptions<RID, Fields> & {
+    rid: RID,
+    fields: Fields
     collection: PluralEngindEng<RID>
     exampleItem: ItemWithId<RID,Fields>
     properties:FieldsWithIDMeta<RID, Fields>
@@ -50,7 +54,7 @@ export type Resource<RID extends string, Fields extends {[key in string]: Meta}>
     asOptions: () => {value: string, title: string}[]
     asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
     getById: () => {value: string, title: string}[]
-    fieldsList: Meta<any, any>[]
+    fieldsList: Array<ValuesType<Fields>>
     resourceName: Uppercase<PluralEngindEng<RID>>
 } & Crud<ItemWithId<RID,Fields >, IDProp<RID>, PluralEngindEng<RID>>
 
@@ -91,8 +95,10 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
 
 
         return {
+            rid: RID,
             fieldsList,
             ...crud,
+            fields: properties,
             asOptions: () => {
                 const store = getStore()
                 const state = store.getState()

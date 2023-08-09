@@ -17,15 +17,13 @@ import {Button, Card, Space} from 'antd'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {nav} from '../../nav'
 import PanelRGrid from '../../../grid/PanelRGrid'
+import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 export default () => {
     const ledger = useLedger()
     const list = ledger.brands
 
     const [colsList, map] = useAllColumns(BRANDS)
 const brandCols = [
-    {
-        ...map.clickToEditCol
-    },
     {
         ...map.brandName,
     },
@@ -66,6 +64,7 @@ const brandCols = [
                 const name = resource.getItemName(item)
                 const legals = ledger.legals.filter(s => s.brandId== id)
                 const [legalsCols] = useAllColumns(LEGALS)
+                const contracts = ledger.contracts.filter(c => c.brandId === id)
                 return  <ProCard
                             tabs={{
                                 type: 'card',
@@ -75,27 +74,30 @@ const brandCols = [
 
                         <ProCard.TabPane key="tab1" tab="Объекты"
                         >
-                            <Card extra={<Space><CrudCreateButton href={nav.sitesCreate({},{brandId: id})}/></Space>}
-                                  title={'Объекты заказчика '+name}
-                            >
-                            <RGrid columnDefs={sitesCols} rowData={sites}/>
-                            </Card>
+                            <PanelRGrid
+                                createItemProps={{ brandId:id }}
+                                title={name}
+                                resource={SITES}
+                                rowData={sites}
+                            />
+
                         </ProCard.TabPane>
                         <ProCard.TabPane key="tab2" tab="Юр. Лица">
-                            <Card extra={<Space><CrudCreateButton href={nav.legalsCreate({},{brandId: id})}/></Space>}
-                                  title={'Юр. лица заказчика '+name}
-                            >
-                                <RGrid columnDefs={legalsCols} rowData={legals}/>
-                            </Card>
+                            <PanelRGrid
+                                createItemProps={{ brandId:id }}
+                                title={name}
+                                resource={LEGALS}
+                                rowData={legals}
+                            />
 
                         </ProCard.TabPane>
                     <ProCard.TabPane key="tab3" tab="Договоры">
-                        <Card extra={<Space><CrudCreateButton href={nav.legalsCreate({},{brandId: id})}/></Space>}
-                              title={'Договоры с заказчиком '+name}
-                        >
-                            <RGrid columnDefs={legalsCols} rowData={legals}/>
-                        </Card>
-
+                            <PanelRGrid
+                                createItemProps={{ brandId:id }}
+                                title={name}
+                                resource={CONTRACTS}
+                                rowData={contracts}
+                            />
                     </ProCard.TabPane>
 
                 </ProCard>
@@ -123,6 +125,7 @@ const brandCols = [
                     return () => document.removeEventListener('paste', onPaste)
                 })
                 return  <PanelRGrid
+                    fullHeight={true}
                             title={'Заказчики'}
                             resource={resource}
                             columnDefs={brandCols}

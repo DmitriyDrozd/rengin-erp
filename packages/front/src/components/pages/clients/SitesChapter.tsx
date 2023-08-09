@@ -42,6 +42,7 @@ export default () => {
             const [cols] = useAllColumns(SITES)
             return         <PanelRGrid
                 resource={SITES}
+                fullHeight={true}
                 title={'Все объекты'}
             />
         }}

@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 //import './rengin-theme.css'
 import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
-import React, {useMemo} from 'react'
+import React, {useMemo, useRef} from 'react'
 import AG_GRID_LOCALE_RU from './locale.ru'
 import {agGridDefaultOptions, useAgGrid} from '../hooks/useAgGrid'
 
@@ -30,6 +30,9 @@ import { useCallback, useState } from 'react'
 import mem from 'mem'
 import '@ag-grid-community/core/dist/styles/ag-grid.css';
 import {AnyFieldsMeta, ExtractResource, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {CheckboxSelectionCallbackParams, ColDef, HeaderCheckboxSelectionCallbackParams} from 'ag-grid-community'
+import DeleteButton from '../components/elements/DeleteButton'
+import CancelButton from '../components/elements/CancelButton'
 
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
@@ -51,29 +54,35 @@ ModuleRegistry.registerModules([
 
 export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGridReactProps<ItemWithId<RID, Fields>> & {
     resource: Resource<RID, Fields>
-    defaultCreateItemProps?: Partial<ItemWithId<RID, Fields>>
+    createItemProps?: Partial<ItemWithId<RID, Fields>>
     search?: string
+    fullHeight?: boolean
 }
 
-export default  <RID extends string, Fields extends AnyFieldsMeta>(props: RGridProps<RID, Fields>) => {
-    const { onGridReady, columnApi, api } = useAgGrid();
-    const gridOptions: GridOptions = { ...agGridDefaultOptions };
+const checkBoxColProps = {
+    headerCheckboxSelection: true,
+    checkboxSelection: true,
+}
+export default React.forwardRef( <RID extends string, Fields extends AnyFieldsMeta>({columnDefs , fullHeight,...props}: RGridProps<RID, Fields>, ref:React.ForwardedRef<any>) => {
+
    /* const onFilterTextBoxChanged = useCallback(() => {
         gridRef.current!.api.setQuickFilter(
             (document.getElementById('filter-text-box') as HTMLInputElement).value
         );
     }, []);*/
-    console.log(columnApi, api);
         const localeText = useMemo<{
                 [key: string]: string;
             }>(() => {
                 return AG_GRID_LOCALE_RU;
             }, []);
 
-        return  <div className="ag-theme-alpine" style={{height: 'calc(100vh - 250px)', width: '100%'}}>
-                    <AgGridReact<ItemWithId<RID, Fields>>
-                        localeText={localeText}
+         console.log(columnDefs)
 
+        return  <div className="ag-theme-alpine" style={{height: fullHeight ?  'calc(100vh - 104px)':'calc(100vh - 244px)', width: '100%'}}>
+                    <AgGridReact<ItemWithId<RID, Fields>>
+                        ref={ref}
+                        localeText={localeText}
+columnDefs={columnDefs}
                         defaultColDef={{resizable: true,sortable:true}}
                         enableRangeSelection={true}
                         allowContextMenuWithControlKey={true}
@@ -84,4 +93,4 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>(props: RGridP
                 </div>
 
 
-}
+}, )
