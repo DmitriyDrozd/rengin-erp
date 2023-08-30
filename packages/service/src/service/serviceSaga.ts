@@ -5,7 +5,7 @@ import startServer from '../rest/startServer';
 import {bootstrapCruds} from 'iso/src/store/bootstrapDuck';
 import getServiceEnv from '../getServiceEnv';
 import duckRepoSaga from '../repositories/duckRepoSaga'
-import {defaultAdminUser, USERS} from 'iso/src/store/bootstrap/repos/users'
+import {defaultAdminUser, usersResource} from 'iso/src/store/bootstrap/repos/users'
 
 let RENGIN_SERVICE_PORT = getServiceEnv().RENGIN_SERVICE_PORT
 
@@ -22,9 +22,9 @@ export function* serviceSaga(io: SagaOptions) {
     )
 
 
-    const users = yield* select(USERS.selectAll)
+    const users = yield* select(usersResource.selectAll)
     if(users.length === 0) {
-        yield* put(USERS.actions.added(defaultAdminUser))
+        yield* put(usersResource.actions.added(defaultAdminUser))
     }
     const fastify = yield* call(startServer, io)
 

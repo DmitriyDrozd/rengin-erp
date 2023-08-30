@@ -2,6 +2,8 @@
     "compilerOptions": {
 
       "target": "ESNext",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "useDefineForClassFields": true,
       "lib": ["DOM", "DOM.Iterable", "ESNext"],
       "noImplicitAny": true,
@@ -12,13 +14,11 @@
       "allowSyntheticDefaultImports": true,
       "strict": true,
       "forceConsistentCasingInFileNames": true,
-      "module": "ESNext",
-      "moduleResolution": "Node",
       "resolveJsonModule": true,
       "isolatedModules": true,
       "noEmit": true,
       "jsx": "react-jsx",
-      "typeRoots": [",./src/typings.d.ts"]
+      "typeRoots": ["./src/typings.d.ts"]
     },
     "include": ["src"],
 

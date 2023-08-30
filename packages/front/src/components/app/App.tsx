@@ -9,12 +9,20 @@ import {ProConfigProvider} from '@ant-design/pro-components'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 import ruRU from 'antd/locale/ru_RU'
+import {BlinkDbProvider} from '@blinkdb/react'
+import {createDB} from 'blinkdb'
+import {blinkModel, db} from './blink-db-model'
+
+
+
+
 const App = ({store}) => {
     const [rendered, setRendered] = useState(false)
     useMount(() => {
         setRendered(true)
     })
     return (
+        <BlinkDbProvider db={createDB()} model={blinkModel}>
         <Provider store={store}>
             <Router history={history}>
             <ConnectedRouter history={history} >
@@ -30,7 +38,7 @@ const App = ({store}) => {
                                 components: {
                                     Form: {
                                         marginLG:4,
-                lineHeight:2
+                                        lineHeight:2
                                     },
                                 },
                                 token: {
@@ -53,6 +61,7 @@ const App = ({store}) => {
             </ConnectedRouter>
             </Router>
         </Provider>
+        </BlinkDbProvider>
 
     )
 

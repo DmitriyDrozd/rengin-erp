@@ -5,7 +5,7 @@ import sseConnectionDuck, {SSE_REDUX_EVENT} from './sseConnectionDuck'
 import * as R from 'ramda'
 import ReconnectingEventSource from 'reconnecting-eventsource'
 import {isPersistentAction, metaDuck} from '../../index'
-import {USERS} from '../bootstrap/repos/users'
+import USERS from '../bootstrap/repos/users'
 import {FactoryAnyAction, isNamespace} from '@sha/fsa'
 import getRestApi from '../../getRestApi';
 import {StoreMeta} from '../metaDuck';

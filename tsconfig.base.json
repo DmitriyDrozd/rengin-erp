@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": false,
     "esModuleInterop": true,
@@ -9,8 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "keyofStringsOnly": false,
     //"useUnknownInCatchVariables": true,
-
-    "moduleResolution": "node",
+"module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "preserveConstEnums": true,
     //"exactOptionalPropertyTypes": true,
     //"isolatedModules": true,

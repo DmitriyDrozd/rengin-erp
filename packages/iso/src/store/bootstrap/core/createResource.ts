@@ -1,12 +1,11 @@
-import {Meta, valueTypes} from './valueTypes'
+import {Empty, Meta, valueTypes} from './valueTypes'
 import {createCRUDDuck} from '@sha/fsa'
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
-import {getStore} from '../../../getStore'
-import {ISOState} from '../../../ISOState'
 import {ColDef} from 'ag-grid-community'
 import {ValuesType} from 'utility-types'
+import { getStore } from '../../../getStore'
 
-export type PluralEngindEng<S extends string> = S extends `${string}s` ? `${S}es` :  `${S}s`
+export type PluralEngindEng<S extends string> = S 
 
 export const pluralEngindEnd = <S extends string>(singular: S):PluralEngindEng<S> =>
     (singular.slice(-1) === 's' ? singular+'es' : singular+'s') as any as PluralEngindEng<S>
@@ -20,10 +19,10 @@ export type ResourceLang = {
 }
 
 export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = {
-    nameProp: keyof Fields
+    nameProp?: keyof Fields
     langRU: ResourceLang
-
-    getItemName: (item: ItemWithId<RID, Fields>) => string
+    indexes?: Exclude<keyof Fields,`${RID}Id`>[],
+    getItemName?: (item: ItemWithId<RID, Fields>) => string
 }
 
 
@@ -32,20 +31,20 @@ export type FieldsWithIDMeta<RID extends string, Fields extends AnyFieldsMeta> =
     Fields & {
     [key in `${RID}Id`]: Meta<'string',string>
 }
+export type IdKey<RID extends string>= `${RID}Id`
 
+export type WithOnlyId<RID extends string> = {[K in IdKey<RID>]: string}
 
 export type ItemWithId<RID extends string, Fields extends AnyFieldsMeta> =
     {
-        [K in keyof Fields]: Fields[K]['tsType']
-    }&{
-    [key in `${RID}Id`]: Meta<'string',string>['tsType']
-
-    }
+        [K in Exclude<keyof Fields,IdKey<RID>>]: Fields[K]['tsType'] | undefined
+    } & WithOnlyId<RID>
 
 export type Resource<RID extends string, Fields extends {[key in string]: Meta}>  =
   ResourceOptions<RID, Fields> & {
     rid: RID,
     fields: Fields
+    selectFirstByName: (name: string) => (state) => ItemWithId<RID, Fields>
     collection: PluralEngindEng<RID>
     exampleItem: ItemWithId<RID,Fields>
     properties:FieldsWithIDMeta<RID, Fields>
@@ -53,13 +52,11 @@ export type Resource<RID extends string, Fields extends {[key in string]: Meta}>
     getStore: typeof getStore
     asOptions: () => {value: string, title: string}[]
     asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
-    getById: () => {value: string, title: string}[]
-    fieldsList: Array<ValuesType<Fields>>
+    fieldsList: (Meta & {name: string})[]
     resourceName: Uppercase<PluralEngindEng<RID>>
-} & Crud<ItemWithId<RID,Fields >, IDProp<RID>, PluralEngindEng<RID>>
+} & Crud<ItemWithId<RID,Fields >, IdKey<RID>, PluralEngindEng<RID>>
 
 export type AnyMeta = Meta<any, any>
-export type IDProp<RID extends string> = `${RID}Id`
 export type AnyFieldsMeta = {
     [key in string]: Meta
 }
@@ -71,7 +68,8 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
     (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>): Resource<RID, FieldsWithIDMeta<RID,Fields>> => {
         type Item = ItemWithId<RID,Fields>
         const collection: PluralEngindEng<RID> = pluralEngindEnd(RID)
-        const idProp = RID+'Id' as `${RID}Id`
+        const idProp = RID+'Id' as IdKey<RID>
+        type IDProp = IdKey<RID>
         const props = {
             langRU,
             RID,
@@ -84,14 +82,18 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
             },
             exampleItem: {} as any as Item
         }
-        const fieldsList:Meta[]  = []
+        const fieldsList:(Meta & {name: string})[]  = []
         Object.keys(props.properties).forEach( k => {
             fieldsList.push(props.properties[k])
             props.properties[k].name = k
         })
-        const defaultGetItemName =  (item: Item): string => item[fieldsList[1].name] as string
+        const defaultGetItemName =  ((item: Item): string => {
+            const i = item
+            const propName =fieldsList[1].name
+           return i[propName] as string
+        }) as any
         const getItemName = rest.getItemName || defaultGetItemName
-        const crud = createCRUDDuck(props.collection,props.idProp, {} as any as ItemWithId<RID,Fields>)
+        const crud = createCRUDDuck<Item,IDProp,PluralEngindEng<RID>>(collection, idProp,rest.indexes)
 
 
         return {
@@ -102,7 +104,7 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
             asOptions: () => {
                 const store = getStore()
                 const state = store.getState()
-                const list = crud.selectList(state as any as ISOState)
+                const list = crud.selectList(state as any)
                 const options = list.map( item => ({
                     value: item[idProp],
                     title: getItemName(item as any as Item),
@@ -111,23 +113,23 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
                 console.log('asOptions', options)
                 return options
             },
-            selectFirstByName: (name: string) => (state: ISOState) => {
+            selectFirstByName: (name: string) => (state) => {
                 const list = crud.selectList(state)
                 return list.find(item => getItemName(item) === name)
             },
             resourceName: collection.toUpperCase() as any as Uppercase<PluralEngindEng<RID>>,
             asValueEnum: (list: Item[] = undefined) => {
                 const state = getStore().getState()
-                const workList =list || crud.selectList( state as any as ISOState)
-                const obj: Item = {} as any as Item
+                const workList =list || crud.selectList( state as any)
+                const options: Record<string, string> = {}
                 console.log(crud.factoryPrefix+' list of ' + crud.factoryPrefix,list)
-                const options = workList.map( item => {
+                workList.map( item => {
                     console.log('item',item)
-                    obj[item[idProp]] = getItemName(item)
+                    options[item[idProp]] = getItemName(item)
                 })
 
-                console.log('asValueEnum', obj)
-                return obj
+                console.log('asValueEnum', options)
+                return options
             },
             getItemName,
             ...rest,

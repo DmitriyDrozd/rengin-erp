@@ -1,5 +1,6 @@
 import {DateRangeVO} from './VO'
 import { ResourceName, ResourcesMap} from '../resourcesList'
+import {AnyMeta} from './createResource'
 
 
 export const cast = <T>(value: any): T => value
@@ -22,7 +23,7 @@ export type MetaType =
     | 'enum'
 
 
-export type Meta<MT extends MetaType, TSType = any> = {
+export type Meta<MT extends MetaType = 'string', TSType = any> = {
     type: MT
     immutable?: boolean
     isIDProp?: boolean
@@ -31,7 +32,7 @@ export type Meta<MT extends MetaType, TSType = any> = {
     rules?: Array<any>
     required?: boolean
     headerName?: string
-    tsType?: TSType
+    tsType: TSType
     sealed?: boolean
     name?: string
 }
@@ -43,7 +44,7 @@ export type Empty = {}
 const meta = <TS = string,  MT extends MetaType = MetaType, E1 = Empty>(type:MT) =>Object.assign((
 
     <Extra>(extra: Partial<Meta<MT, TS>> & Partial<Extra> & Partial<E1> = {}) =>
-        ({...extra, type})
+        ({...extra, type, tsType: {} as any as TS})
 ),{type})
 
 
@@ -109,8 +110,8 @@ const valueTypes = {
 }
 
 
-const d = valueTypes.date({min: '435'})
-d.tsType='3'
+const d = valueTypes.number({min: '435'})
+
 
 export type WithKey<Path extends string, T = string> = { [K in Path]: T }
 

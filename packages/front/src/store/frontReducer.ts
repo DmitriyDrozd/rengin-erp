@@ -3,7 +3,7 @@ import {combineReducers} from 'redux'
 import {History} from 'history'
 import {Bootstrap, bootstrapDuck} from 'iso/src/store/bootstrapDuck';
 import {uiDuck, UIState} from './ducks/uiDuck';
-import {USERS, UserVO} from 'iso/src/store/bootstrap/repos/users';
+import {default as USERS, UserVO} from 'iso/src/store/bootstrap/repos/users';
 import {connectionDuck, metaDuck, StoreMeta} from 'iso/src/store';
 import {ConnectionState} from 'iso/src/store/sse/sseConnectionDuck';
 import frontConfigDuck, {FrontConfig} from './ducks/frontConfigDuck';

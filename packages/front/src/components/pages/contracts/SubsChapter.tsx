@@ -1,4 +1,3 @@
-import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {
     ProField,
@@ -8,9 +7,6 @@ import {
     ProFormSelect,
     ProFormText, ProTable
 } from '@ant-design/pro-components'
-import BRANDS from 'iso/src/store/bootstrap/repos/brands'
-import RGrid from '../../../grid/RGrid'
-import useFrontSelector from '../../../hooks/common/useFrontSelector'
 import {useAllColumns} from '../../../grid/RCol'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import {Button, Input, Row, SelectProps, Space} from 'antd'
@@ -18,12 +14,6 @@ import useLedger from '../../../hooks/useLedger'
 import {RCellRender} from '../../../grid/RCellRender'
 import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 import {useSelector} from 'react-redux'
-import PageHeader from 'ant-design-pro/lib/PageHeader'
-import FooterToolbar from 'ant-design-pro/lib/FooterToolbar'
-import HeaderSearch from 'ant-design-pro/lib/HeaderSearch'
-import CrudCreateButton from '../../elements/CreateButton'
-import Search from 'antd/es/input/Search'
-import {SearchOutlined} from '@ant-design/icons'
 import PanelRGrid from '../../../grid/PanelRGrid'
 import SUBS from 'iso/src/store/bootstrap/repos/subs'
 import SITES, {SiteVO} from 'iso/src/store/bootstrap/repos/sites'

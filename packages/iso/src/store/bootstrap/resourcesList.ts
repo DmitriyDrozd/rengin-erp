@@ -1,4 +1,4 @@
-import {USERS} from './repos/users'
+import USERS from './repos/users'
 import {BRANDS} from './repos/brands'
 import {LEGALS} from './repos/legals'
 import {SITES} from './repos/sites'

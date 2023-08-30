@@ -3,7 +3,7 @@ import BRANDS from './brands'
 import LEGALS from './legals'
 import SITES from './sites'
 import CONTRACTS from './contracts'
-import ISSUES from './issues'
+import {ISSUES}  from './issues'
 import SUBS from './subs'
 import {AnyFieldsMeta, ItemWithId, Resource} from '../core/createResource'
 import {RESOURCES_LIST} from '../resourcesList'
@@ -20,8 +20,7 @@ KeyRes<typeof CONTRACTS> &
 KeyRes<typeof ISSUES> &
 KeyRes<typeof SUBS>
 type ResMapKey = keyof ResMap
-const k: ResMapKey = 'brand'
-type A = ItemByRID<'issue'>
+
 
 export type ItemByRID<RID extends keyof ResMap> = ItemWithId<RID, ResourceByRID<RID>['fields']>
 

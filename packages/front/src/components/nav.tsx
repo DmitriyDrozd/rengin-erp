@@ -13,7 +13,10 @@ import SitesChapter from './pages/clients/SitesChapter'
 import ContractsChapter from './pages/contracts/ContractsChapter'
 import SubsChapter from './pages/contracts/SubsChapter'
 import ImportSItesPage from './pages/ImportSItesPage'
-import IssuesPage from './pages/issues/IssuesPage'
+import IssuesPage from './pages/issues/IssuesListPage'
+import IssuesListPage from './pages/issues/IssuesListPage'
+import IssueItemPage from './pages/issues/IssueItemPage'
+import AddIssuePage from './pages/issues/AddIssuePage'
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -62,7 +65,9 @@ export const nav = {
     subsEdit: buildNav('/app/in/subs/:subId', SubsChapter),
 
     importSites: buildNav('/app/in/import-sites', ImportSItesPage),
-    issues: buildNav('/app/in/issues', IssuesPage)
+    issues: buildNav('/app/in/issues', IssuesListPage),
+    issuesEdit: buildNav('/app/in/issues/create', AddIssuePage),
+    issuesCreate: buildNav('/app/in/issues/:issueId', IssueItemPage)
     //addressesList: buildNav('/app/in/addresses', AddressesListPage),
    // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
    // contractsList: buildNav('/app/in/contracts', ContractsListPage),

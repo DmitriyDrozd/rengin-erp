@@ -13,6 +13,7 @@ export const isCRUD = (duck: Crud<any> | Duck<any>): duck is Crud<any, any, any>
 const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
     factoryPrefix: Prefix,
     idProp: ID,
+    indicies:Exclude<keyof T, ID>[] = [],
     defaultProps: T = {} as any,
     defaultPersistent = true,
     get = (state: any): T[] => state.app.bootstrap[factoryPrefix]
@@ -278,7 +279,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
     const selectAll = state => {
         const array: T[] = get ? get(state) : state
-        return array
+        return array as any as T[]
     }
 
     const selectMap = state => {
@@ -294,6 +295,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
         idKey: idProp,
         factory,
         commands,
+        indicies,
         plural: factoryPrefix,
         getItemName: (item:T) =>
             item[idProp],
@@ -355,6 +357,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
                 return items[0]
             },
+            indicies,
             select: (query: Record<keyof Partial<T>, any>) => (state: any) => {
                 const array: T[] = get ? get(state) : state
                 const items: T[] = []
@@ -365,6 +368,33 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
                 return items
             },
+
+            isEventAffectsItemId: e => (id)=> {
+                if(factory.isNamespace(e)) {
+                    if(actions.removed.isType(e)) {
+                        return e.payload === id
+                    }
+                    if(actions.removedBatch.isType(e)) {
+                        return e.payload.includes(id)
+                    }
+                    if(actions.added.isType(e) ||
+                        actions.updated.isType(e) ||
+                        actions.patched.isType(e)
+                    ) {
+                        return e.payload[idProp] === id
+                    }
+                    if(actions.addedBatch.isType(e) ||
+                        actions.updatedBatch.isType(e) ||
+                        actions.patchedBatch.isType(e)
+                    ) {
+                        return e.payload.find( item => item[idProp] === id)
+                    }
+
+                    return false
+
+                }
+
+            }
 
 
     }

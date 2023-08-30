@@ -4,7 +4,7 @@ import configDuck from './bootstrap/configDuck'
 import settingsDuck from './bootstrap/settingsDuck';
 import {ISOState} from '../ISOState'
 import {toAssociativeArray} from '@sha/utils'
-import {USERS, UserVO} from './bootstrap/repos/users'
+import {default as USERS, UserVO} from './bootstrap/repos/users'
 import {SITES, SiteVO} from './bootstrap/repos/sites'
 import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
 import {ISSUES, IssueVO} from './bootstrap/repos/issues'

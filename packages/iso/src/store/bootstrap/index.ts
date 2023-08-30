@@ -1,13 +1,13 @@
-import users from './repos/users'
-import units from './repos/sites'
+import {USERS} from './repos/users'
+import {SITES} from './repos/sites'
 import contractsCrud from './repos/contracts'
-import issuesCrud from './repos/issues'
+import {ISSUES} from './repos/issues'
 import settingsDuck from './settingsDuck'
 
 export {
     settingsDuck,
-    units,
+    SITES,
     contractsCrud,
-    issuesCrud,
-    users,
+    ISSUES,
+    USERS,
 }

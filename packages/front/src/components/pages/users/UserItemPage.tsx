@@ -1,6 +1,6 @@
 import UserEditor from '../../elements/UserEditor'
 import React from 'react'
-import {USERS} from 'iso/src/store/bootstrap/repos/users'
+import USERS from 'iso/src/store/bootstrap/repos/users'
 import {UserOutlined} from '@ant-design/icons'
 
 import {createEditorPage} from '../createEditorPage'

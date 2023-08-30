@@ -179,11 +179,10 @@ export type AsyncState<S, P = undefined, E = string> = {
   result: S | undefined
   error: E | undefined
 }
-
+const defaultIsError = (payload: any) => false
 export function actionCreatorFactory(
     prefix?: string | null,
     factoryMeta: {} = {},
-    defaultIsError = (p: any) => p instanceof Error,
 ): ActionCreatorFactory {
   const actionTypes: { [type: string]: boolean } = {}
 

@@ -1,4 +1,4 @@
-import path from 'path'
+import * as path from 'path'
 import Fastify, {FastifyLoggerOptions, RawServerBase} from 'fastify'
 import {SagaOptions} from '../sagaOptions'
 import fastifyStatic from '@fastify/static'
@@ -25,9 +25,10 @@ export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced
 
 
 let FastifyHTTPErrorsEnhanced: FastifyHTTPErrorsEnhanced = {} as any
-const root = path.join(__dirname, '..', '..', '..', 'static')
 
 export default async (io: SagaOptions) => {
+const p = path
+    const root = path.join(__dirname, '..', '..', '..', 'static')
     const state = io.store.getState()
     const config = configDuck.selectConfig(state)
     const logger: boolean | FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions = {
