@@ -14,6 +14,7 @@ import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
 import VDevidedCard from '../../elements/VDevidedCard'
+import EditIssueItemForm from './EditIssueItemForm'
 
 
 
@@ -79,7 +80,7 @@ export default () => {
 
         <VDevidedCard>
             <ProCard title="Заявка" colSpan="50%">
-                <div style={{ height: 360 }}></div>
+                <EditIssueItemForm issueId={id}/>
             </ProCard>
             <ProCard title="История">
                 <div style={{ height: 360 }}>История</div>
