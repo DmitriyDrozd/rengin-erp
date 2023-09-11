@@ -46,10 +46,14 @@ export default () => {
                         resource={ISSUES}
                         title={'Все заявки'}
                     />
-                    {/**<FooterToolbar extra="extra information">
+                    {
+                        /**
+                         <FooterToolbar extra="extra information">
                      <Button>Cancel</Button>
                      <Button type="primary">Submit</Button>
-                     </FooterToolbar>*/}</div>
+                     </FooterToolbar>
+                         */
+                    }</div>
 
             </AppLayout>
 

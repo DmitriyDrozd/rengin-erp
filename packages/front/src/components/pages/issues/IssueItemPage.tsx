@@ -1,6 +1,6 @@
 import {AnyFieldsMeta, ExtractResource, Resource} from 'iso/src/store/bootstrap/core/createResource'
-import {useDispatch} from 'react-redux'
-import React, {useRef, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import React, {useCallback, useRef, useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {FormInstance, ProBreadcrumb, ProCard, ProFormInstance} from '@ant-design/pro-components'
 import type {CrudFormRender} from './ItemChapter'
@@ -15,6 +15,7 @@ import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
 import VDevidedCard from '../../elements/VDevidedCard'
 import EditIssueItemForm from './EditIssueItemForm'
+import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 
 
 
@@ -26,11 +27,13 @@ export default () => {
         ProFormInstance<Item>
     >();
 
+    const initialValues:IssueVO =useSelector(ISSUES.selectById(id))
+    const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
+
     const idProp = resource.idProp
-    const initialValues = item
     const dispatch = useDispatch()
     const history = useHistory()
-    const [state, setState] = useState(initialValues)
+
     const onSubmit = async (values: Item) => {
 
         const patch = {...initialValues, ...values,[idProp]:id};
@@ -42,9 +45,13 @@ export default () => {
 
         //            dispatch(BRANDS.actions.added(values))
     }
+    const onItemChange = useCallback((state) => {
+        setState(state)
+    },[id])
     const title = resource.getItemName(state)
     const onSave = () => {
-        formRef.current?.submit()
+        dispatch(resource.actions?.patched(state))
+        onBack()
     }
     const onDelete = () => {
         dispatch(resource.actions.removed(id))
@@ -80,7 +87,7 @@ export default () => {
 
         <VDevidedCard>
             <ProCard title="Заявка" colSpan="50%">
-                <EditIssueItemForm issueId={id}/>
+                <EditIssueItemForm issueId={id} onItemChange={onItemChange}/>
             </ProCard>
             <ProCard title="История">
                 <div style={{ height: 360 }}>История</div>

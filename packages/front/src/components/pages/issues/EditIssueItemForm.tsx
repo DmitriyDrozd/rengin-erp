@@ -19,7 +19,7 @@ import {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 
 const { Text, Link } = Typography;
-export default ({issueId}: {issueId: string}) => {
+export default ({issueId, onItemChange}: {issueId: string, onItemChange: Function}) => {
 
     const layoutProps = {
         labelCol: { span: 6 },
@@ -117,6 +117,7 @@ export default ({issueId}: {issueId: string}) => {
             onValuesChange={(_, values) => {
                 console.log(values);
                 setState({...state, ...values})
+                onItemChange({...state, ...values})
             }}
             onFinish={async (values) => {
                 console.log('onFinish',values)
@@ -147,6 +148,8 @@ export default ({issueId}: {issueId: string}) => {
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'workStartedDate', state)} label={'Дата начала работ'}  width={'sm'} />
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'completedDate', state)} label={'Дата завершения'}  width={'sm'} />
             <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
-        </RForm>
+            <ProFormSelect label={'Статус'} name={'status'} width={'sm'} valueEnum={{'Новая':'Новая','В работе':'В работе','Выполнена':'Выполнена','Отменена':'Отменена'}} placeholder={'Статус не указан'} />
+
+    </RForm>
 
 }

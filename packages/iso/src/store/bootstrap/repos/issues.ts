@@ -6,6 +6,7 @@ import {createResource} from '../core/createResource'
 const issuesRaw = createResource('issue',{
             clientsIssueNumber: valueTypes.string({headerName:'Номер заявки'}),
             status: valueTypes.string({headerName: 'Статус'}),
+        phase: valueTypes.string({headerName: 'Этап'}),
             brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
             legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
             contractId: valueTypes.itemOf({headerName: 'Договор',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
