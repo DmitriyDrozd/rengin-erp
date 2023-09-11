@@ -38,7 +38,7 @@ export default () => {
 
             return <>
             <div>{legal ? legal.legalName : 'Неизвестен'}</div>
-                <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} rules={[{required: true}]}/>
+                <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)}  rules={[{required: true}]}/>
                 <ProForm.Item label={'Период подключения'} required={true}  >
                     <Row>
                         <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null} width={'sm'} rules={[{required: true}]}/>

@@ -107,9 +107,15 @@ export default () => {
         const siteId = formRef.current?.getFieldValue('siteId')
         const sub = subs.find(s => s.siteId === siteId) || {contractId: undefined}
         const contract = contracts.find(c => c.contractId === sub.contractId )
-        if(sub && contract)
-        setState({...state, contractId: contract.contractId, subId: sub.subId})
+        debugger
+        if(sub && contract) {
+            formRef.current?.setFieldValue('contractId',contract.contractId)
+            formRef.current?.setFieldValue('subId',sub.subId)
+            setState({...state, contractId: contract.contractId, subId: sub.subId})
+        }
     }
+    console.log('contractId', state.contractId, contract)
+    console.log('siteId',state.siteId)
     return  <AppLayout
 
 
@@ -146,11 +152,13 @@ export default () => {
             initialValues={initialValues}
             onValuesChange={(_, values) => {
                 console.log(values);
-                setState(values)
+                setState({...state, ...values})
             }}
             onFinish={async (values) => {
                 console.log('onFinish',values)
-                onSubmit(values);
+                console.log('state', state)
+                debugger
+                onSubmit(state);
                 history.goBack()
             }
             }
@@ -158,20 +166,19 @@ export default () => {
                 render: (props) => null
             }}
         >
-            <ProFormSelect label={'Заказчик'} placeholder={'Выберите заказчика'}  required={true} valueEnum={brandsOptions} name={'brandId'}  onChange={onBrandChange} rules={[{required: true}]}/>
-            <ProFormSelect disabled={state.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}  required={true} valueEnum={legalsOptions} name={'legalId'}  onChange={onLegalChange} rules={[{required: true}]}/>
-            <ProFormSelect disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'}  onChange={onSiteChange} rules={[{required: true}]}/>
+            <ProFormSelect showSearch={true} label={'Заказчик'} placeholder={'Выберите заказчика'}  required={true} valueEnum={brandsOptions} name={'brandId'}  onChange={onBrandChange} rules={[{required: true}]}/>
+            <ProFormSelect showSearch={true} disabled={state.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}  required={true} valueEnum={legalsOptions} name={'legalId'}  onChange={onLegalChange} rules={[{required: true}]}/>
+            <ProFormSelect showSearch={true} disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'}  onChange={onSiteChange} rules={[{required: true}]}/>
             <Form.Item name="contractId" label="Договор">
                 {
-                    state.siteId ?
-                        (
+
                           contract?  <Text type="success">{contract.contractNumber}</Text>
                               :
                         <Text type="warning">Договор не найден</Text>
-                        ):'Укажите адрес'
+
                 }
             </Form.Item>
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'registerDate', state)}  label={'Заявка зарегистрирована'}  width={'sm'} />
+            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'registerDate', state) } label={'Заявка зарегистрирована'}  width={'sm'} />
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'plannedDate', state)} label={"Плановая дата завершения"}  width={'sm'} />
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'workStartedDate', state)} label={'Дата начала работ'}  width={'sm'} />
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'completedDate', state)} label={'Дата завершения'}  width={'sm'} />

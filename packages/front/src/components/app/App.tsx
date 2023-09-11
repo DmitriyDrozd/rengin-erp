@@ -4,11 +4,12 @@ import {ConnectedRouter, history} from '@sha/router'
 import UIRoot from './UIRoot'
 import {useMount} from 'react-use'
 import {Router} from 'react-router-dom'
-import {ConfigProvider} from 'antd'
-import {ProConfigProvider} from '@ant-design/pro-components'
+import {ConfigProvider, Empty} from 'antd'
+import {ProConfigProvider,ruRUIntl } from  '@ant-design/pro-provider'
+import {} from '@ant-design/pro-provider'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
-import ruRU from 'antd/locale/ru_RU'
+import ruRU from 'antd/locale/en_US'
 import {BlinkDbProvider} from '@blinkdb/react'
 import {createDB} from 'blinkdb'
 import {blinkModel, db} from './blink-db-model'
@@ -32,7 +33,7 @@ const App = ({store}) => {
                         height: "100vh"
                     }}
                 >
-                    <ProConfigProvider hashed={false} >
+
                         <ConfigProvider
                             theme={{
                                 components: {
@@ -51,12 +52,15 @@ const App = ({store}) => {
                             getTargetContainer={() => {
                                 return document.getElementById('test-pro-layout') || document.body;
                             }}
+                            renderEmpty={()=><Empty description={false} />}
                         >
+                            <ProConfigProvider hashed={false}    >
                     {
                      rendered &&   <UIRoot history={history}/>
                     }
+                            </ProConfigProvider>
                         </ConfigProvider>
-                    </ProConfigProvider>
+
                 </div>
             </ConnectedRouter>
             </Router>

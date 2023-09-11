@@ -4,7 +4,7 @@ import {createResource} from '../core/createResource'
 
 export const BRANDS = createResource('brand',{
         brandName: valueTypes.string({required: true, unique: true,headerName: 'Заказчик'}),
-        person: valueTypes.string({required: true, headerName: 'Контактное лицо'}),
+        person: valueTypes.string({headerName: 'Контактное лицо'}),
         email: valueTypes.string({headerName: 'Email'}),
         tel: valueTypes.string({headerName: 'Телефон'}),
     },

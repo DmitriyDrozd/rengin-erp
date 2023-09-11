@@ -57,6 +57,7 @@ export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGri
     createItemProps?: Partial<ItemWithId<RID, Fields>>
     search?: string
     fullHeight?: boolean
+
 }
 
 const checkBoxColProps = {

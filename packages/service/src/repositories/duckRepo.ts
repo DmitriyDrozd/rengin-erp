@@ -19,11 +19,13 @@ const duckRepo = async <T, ID extends keyof T, S extends Schema>
 
         return (await Model.updateMany(items))
     }
+
     const getAll = async ({limit, condition} = {limit: undefined, condition: {}}): Promise<T[]> => {
 
         const result = limit
-            ? (await Model.find({removed: undefined, ...condition}).sort({_id: -1}).limit(limit).lean())
-            : (await Model.find({removed: undefined, ...condition}).sort({_id: -1}).lean())
+            ? (await Model.find({...condition}).sort({_id: -1}).limit(limit).lean())
+            : (await Model.find({...condition}).sort({_id: -1}).lean());
+
         return result
     }
 
@@ -69,6 +71,11 @@ const duckRepo = async <T, ID extends keyof T, S extends Schema>
         //console.log(duck.factoryPrefix + ' created', newItem)
         return newItem
     }
+    const createMany = async (items: T[]): Promise<T[]> => {
+        const newItems = await Model.create(items)
+        //console.log(duck.factoryPrefix + ' created', newItem)
+        return newItems
+    }
 
     const removeAll = async (): Promise<any> =>
         await Model.deleteMany({})
@@ -84,6 +91,7 @@ const duckRepo = async <T, ID extends keyof T, S extends Schema>
         getAll,
         removeAll,
         removeById,
+        createMany,
         Model,
         idProp,
     }

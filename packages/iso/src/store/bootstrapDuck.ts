@@ -96,7 +96,7 @@ export const selectLedger = (state: ISOState) => {
     const usersById = toAssociativeArray('userId')(users)
     const sitesById = toAssociativeArray('siteId')(sites)
     const contractsById = toAssociativeArray('contractId')(contracts)
-    const issuesById = toAssociativeArray('issuesId')(issues)
+    const issuesById = toAssociativeArray('issueId')(issues)
     const legalsById = toAssociativeArray('legalId')(legals)
     const brandsByName = toAssociativeArray('brandName')(brands)
     const legalsByName = toAssociativeArray('legalName')(legals)

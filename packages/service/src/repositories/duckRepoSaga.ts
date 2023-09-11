@@ -13,6 +13,10 @@ export default function* duckRepoSaga<T, ID extends keyof T, S extends Schema>
         return repo.getAll({limit})
     }
 
+    /*if(repo.duck.factoryPrefix  === 'users')
+        debugger
+
+     */
     const items = (yield* call(getAll))
 
     console.log('Repo ' + repo.duck.factoryPrefix + ' found item: ' + items.length)
@@ -25,7 +29,14 @@ export default function* duckRepoSaga<T, ID extends keyof T, S extends Schema>
 
 
         if (isPersistentAction(action)) {
+            console.log('DuckRepoSaga ',action.type)
             try {
+                if(repo.duck.actions.addedBatch.isType(action)){
+                    yield* call(async () => {
+
+                            await repo.createMany(action.payload)
+                    })
+                }
                 if (repo.duck.actions.added.isType(action)) {
                     yield* call(async () => {
                         await repo.create(action.payload)

@@ -82,7 +82,7 @@ export default () => {
                 <div style={{ height: 360 }}></div>
             </ProCard>
             <ProCard title="История">
-                <div style={{ height: 360 }}>右侧内容</div>
+                <div style={{ height: 360 }}>История</div>
             </ProCard>
         </VDevidedCard>
 

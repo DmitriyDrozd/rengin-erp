@@ -27,7 +27,7 @@ export default () => {
     const onCreateClick = (defaults) => {
         console.log(defaults)
     }
-    const [cols] = useAllColumns(ISSUES)
+    const [cols,map] = useAllColumns(ISSUES)
 
             return  <AppLayout
                 hidePageContainer={true}
