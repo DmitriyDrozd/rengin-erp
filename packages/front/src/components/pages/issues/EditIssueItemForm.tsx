@@ -1,24 +1,27 @@
 import {Breadcrumb, Button, Form, Typography} from 'antd'
 import {ISSUES, SITES} from 'iso/src/store/bootstrap'
 import React, {useRef, useState} from 'react'
-import {ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormTextArea} from '@ant-design/pro-components'
+import {
+    ProForm,
+    ProFormDatePicker,
+    ProFormField,
+    ProFormInstance,
+    ProFormSelect,
+    ProFormTextArea
+} from '@ant-design/pro-components'
 import {IssueVO} from 'iso/src/store/bootstrap/repos/issues'
-import {generateGuid} from '@sha/random'
 import {useQueryObject} from '../../../hooks/useQueryObject'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router'
 import BRANDS, {BrandVO} from 'iso/src/store/bootstrap/repos/brands'
 import CONTRACTS, {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
 import SUBS, {SubVO} from 'iso/src/store/bootstrap/repos/subs'
-import AppLayout from '../../app/AppLayout'
-import CancelButton from '../../elements/CancelButton'
-import {AntdIcons} from '../../elements/AntdIcons'
-import getCrudPathname from '../../../hooks/getCrudPathname'
 import {RForm} from '../../elements/RForm'
 import {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
+import {useMount} from "react-use";
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 export default ({issueId, onItemChange}: {issueId: string, onItemChange: Function}) => {
 
     const layoutProps = {
@@ -65,44 +68,22 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
 
     const brands: BrandVO[] = useSelector(BRANDS.selectList) as any
     const brandsOptions = BRANDS.asValueEnum(brands)
+    const brandId = state.brandId
+    const legalId = state.legalId
+    const siteId = state.siteId
+
     const legals = useSelector(LEGALS.selectList)
-    const [legalsOptions, setLegalOptions]= useState({})
+
     const sites = useSelector(SITES.selectList)
-    const [sitesOptions, setSitesOptions]= useState({})
-    const onBrandChange = (e) => {
-        formRef.current?.setFieldValue('legalId', undefined)
-        formRef.current?.setFieldValue('siteId', undefined)
-        const brandId = formRef.current?.getFieldValue('brandId')
-        const legOpts=LEGALS.asValueEnum(legals.filter(l => l.brandId === brandId))
-        setLegalOptions(legOpts)
-        console.log('onBrandChange',e, legOpts)
-    }
-
-    const onLegalChange = (e) => {
-        formRef.current?.setFieldValue('siteId', undefined)
-
-        const legalId = formRef.current?.getFieldValue('legalId')
-        const sitesOpts=SITES.asValueEnum(sites.filter(l => l.legalId === legalId))
-        setSitesOptions(sitesOpts)
-        console.log('onLegalChange',e, sitesOpts)
-    }
+    const legalsOptions=LEGALS.asValueEnum(legals.filter(l => l.brandId === brandId))
 
 
+    const sitesOptions = SITES.asValueEnum(sites.filter(l => l.legalId === legalId))
     const contracts: ContractVO[] = useSelector(CONTRACTS.selectList)
     const subs: SubVO[] = useSelector(SUBS.selectList)
     const sub = subs.find(s => s.siteId === state.siteId) || {contractId: undefined}
     const contract = contracts.find(c => c.contractId === state.contractId )
-    const onSiteChange = (e) => {
-        const siteId = formRef.current?.getFieldValue('siteId')
-        const sub = subs.find(s => s.siteId === siteId) || {contractId: undefined}
-        const contract = contracts.find(c => c.contractId === sub.contractId )
-        debugger
-        if(sub && contract) {
-            formRef.current?.setFieldValue('contractId',contract.contractId)
-            formRef.current?.setFieldValue('subId',sub.subId)
-            setState({...state, contractId: contract.contractId, subId: sub.subId})
-        }
-    }
+
     console.log('contractId', state.contractId, contract)
     console.log('siteId',state.siteId)
     return <RForm<Item>
@@ -131,9 +112,13 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
                 render: (props) => null
             }}
         >
-            <ProFormSelect readonly={true} showSearch={true} label={'Заказчик'} placeholder={'Выберите заказчика'}  required={true} valueEnum={brandsOptions} name={'brandId'}  onChange={onBrandChange} rules={[{required: true}]}/>
-            <ProFormSelect readonly={true} showSearch={true} disabled={state.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}  required={true} valueEnum={legalsOptions} name={'legalId'}  onChange={onLegalChange} rules={[{required: true}]}/>
-            <ProFormSelect readonly={true} showSearch={true} disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'}  onChange={onSiteChange} rules={[{required: true}]}/>
+            <ProFormSelect readonly={true} showSearch={true} label={'Заказчик'} placeholder={'Выберите заказчика'}  required={true} valueEnum={brandsOptions} name={'brandId'}  rules={[{required: true}]}/>
+        {/*<ProForm.Item label={'Организация'}>
+            <Text></Text>
+        </ProForm.Item>
+        */}<ProFormSelect readonly={true} disabled={state.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}   required={true} valueEnum={legalsOptions} name={'legalId'}  rules={[{required: true}]}/>
+
+            <ProFormSelect readonly={true} showSearch={true} disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'} rules={[{required: true}]}/>
             <Form.Item name="contractId" label="Договор">
                 {
 

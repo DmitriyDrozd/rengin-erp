@@ -7,11 +7,11 @@ import {
     QuestionCircleFilled,
     SearchOutlined
 } from '@ant-design/icons';
-import type {PageContainerProps, ProLayoutProps, ProSettings} from '@ant-design/pro-components';
-import {PageContainer, ProCard, ProLayout, PageHeader} from '@ant-design/pro-components';
-import {Dropdown, DropDownProps, Input, Space, theme, Typography} from 'antd';
-import React from 'react';
-import defaultProps from './_defaultProps';
+import type {PageContainerProps, ProLayoutProps, ProSettings} from '@ant-design/pro-components'
+import {PageContainer, ProCard, ProLayout, PageHeader} from '@ant-design/pro-components'
+import {Dropdown, DropDownProps, Input, Space, theme, Typography} from 'antd'
+import React from 'react'
+import defaultProps from './_defaultProps'
 import {useHistory} from 'react-router'
 import {Link} from 'react-router-dom'
 import USERS from 'iso/src/store/bootstrap/repos/users'

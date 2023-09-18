@@ -1,6 +1,11 @@
 import {valueTypes} from '../core/valueTypes'
 import {createResource} from '../core/createResource'
 
+export type ExpenseItem = {
+    title: string
+    amount: number
+    comment: string
+}
 
 
 const issuesRaw = createResource('issue',{
@@ -21,6 +26,13 @@ const issuesRaw = createResource('issue',{
             completedDate: valueTypes.date({headerName: 'Дата завершения'}),
             description: valueTypes.string({headerName: 'Описание'}),
             removed: valueTypes.boolean({select: false}),
+    expensePrice: valueTypes.number({headerName: 'Затраты'}),
+    expenses: valueTypes.array({}),
+            workFiles: valueTypes.array({}),
+
+        actFiles: valueTypes.array({}),
+
+        checkFiles: valueTypes.array({}),
     },
     {
             indexes:['brandId','contractId','legalId','siteId','subId','userId'],

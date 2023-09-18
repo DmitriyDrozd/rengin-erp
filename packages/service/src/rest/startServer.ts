@@ -8,6 +8,7 @@ import configDuck from 'iso/src/store/bootstrap/configDuck';
 import {PinoLoggerOptions} from 'fastify/types/logger'
 
 import {DateTime,} from 'luxon'
+import upload from "./upload";
 
 const events = {}
 const _importDynamic = new Function("modulePath", "return import(modulePath)")
@@ -78,9 +79,13 @@ const p = path
     fastify.register(fastifyStatic, {
         root,
     })
+    fastify.register(upload)
     fastify.get('/app*', async (req, reply) => {
 
         return reply.sendFile('index.html')
+    })
+    fastify.get('/uploads/*', async(req, reply)=> {
+        return reply.sendFile(req.raw.url)
     })
    /* const fastifyPrintRoutes = await _importDynamic('fastify-print-routes')
     fastify.register(fastifyPrintRoutes)

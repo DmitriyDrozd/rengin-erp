@@ -1422,7 +1422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/error@npm:^3.2.0":
+"@fastify/error@npm:^3.0.0, @fastify/error@npm:^3.2.0":
   version: 3.3.0
   resolution: "@fastify/error@npm:3.3.0"
   checksum: 202507c8c7f49922cac2f5afc82802151b0bd9c583ca1c2850bf43d0f4cd97eedb3a3388b9016da74f8a01b517a5861d1f666c506dd64fd22995e559bc139264
@@ -1435,6 +1435,23 @@ __metadata:
   dependencies:
     fast-json-stringify: ^5.7.0
   checksum: 2734afabe2539d3e15d2bd9f8dfee756d9cd969f7303dc085dd91c744ff61742bb0d3ebd3b561cf3c32be54567048a634b4962f943eb6bd9ed3fbd71cbf6a4fa
+  languageName: node
+  linkType: hard
+
+"@fastify/multipart@npm:^7.7.3":
+  version: 7.7.3
+  resolution: "@fastify/multipart@npm:7.7.3"
+  dependencies:
+    "@fastify/busboy": ^1.0.0
+    "@fastify/deepmerge": ^1.0.0
+    "@fastify/error": ^3.0.0
+    "@fastify/swagger": ^8.3.1
+    "@fastify/swagger-ui": ^1.8.0
+    end-of-stream: ^1.4.4
+    fastify-plugin: ^4.0.0
+    secure-json-parse: ^2.4.0
+    stream-wormhole: ^1.1.0
+  checksum: de9ec4e9d91c7453453e18c1e5b5e3488d1330be0129311c9bd17c6d52ee2b63e266ca16e8e75f33d32d07a40dc776d77d13248377d70dc39e2af8a09fde4b61
   languageName: node
   linkType: hard
 
@@ -1451,6 +1468,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/static@npm:^6.0.0":
+  version: 6.11.1
+  resolution: "@fastify/static@npm:6.11.1"
+  dependencies:
+    "@fastify/accept-negotiator": ^1.0.0
+    "@fastify/send": ^2.0.0
+    content-disposition: ^0.5.3
+    fastify-plugin: ^4.0.0
+    glob: ^8.0.1
+    p-limit: ^3.1.0
+  checksum: 3554b68e4ea8caac2bda58aa107e7898628a329d1afe235876858d93d69f4269b481c1770998fcad2b8beaff98794d88c9fb11fae9fade14e55e0ef694ff226a
+  languageName: node
+  linkType: hard
+
 "@fastify/static@npm:^6.10.2":
   version: 6.10.2
   resolution: "@fastify/static@npm:6.10.2"
@@ -1463,6 +1494,32 @@ __metadata:
     p-limit: ^3.1.0
     readable-stream: ^4.0.0
   checksum: 724fe72346ff0fa280f6a281ebcf784a7ede9da3e49cc28c19c7f2a2886d25c735883f77ff99fc13425b4a1d3cb831f7b21a20a1996db221cfec2cfa25e9c3c8
+  languageName: node
+  linkType: hard
+
+"@fastify/swagger-ui@npm:^1.8.0":
+  version: 1.9.3
+  resolution: "@fastify/swagger-ui@npm:1.9.3"
+  dependencies:
+    "@fastify/static": ^6.0.0
+    fastify-plugin: ^4.0.0
+    openapi-types: ^12.0.2
+    rfdc: ^1.3.0
+    yaml: ^2.2.2
+  checksum: fb4dbe9c23706ab6fef26dceadd6210e40909de09e6bddaa4a36483cb20f6c2e0a2218ac7c4873e64da5babdee7151d2673cce940f8f2b2218b2b3032ef7a595
+  languageName: node
+  linkType: hard
+
+"@fastify/swagger@npm:^8.3.1":
+  version: 8.10.0
+  resolution: "@fastify/swagger@npm:8.10.0"
+  dependencies:
+    fastify-plugin: ^4.0.0
+    json-schema-resolver: ^2.0.0
+    openapi-types: ^12.0.0
+    rfdc: ^1.3.0
+    yaml: ^2.2.2
+  checksum: 9b0ee7848f03c1dcbc0f77f546b7c1ad1492489f2022522a4c348b433a32536cc51f866ec1c8c1c529777fc645e24767cb4b500502ef395d67075311247f0a95
   languageName: node
   linkType: hard
 
@@ -3745,7 +3802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"end-of-stream@npm:^1.0.0, end-of-stream@npm:^1.1.0, end-of-stream@npm:^1.4.1":
+"end-of-stream@npm:^1.0.0, end-of-stream@npm:^1.1.0, end-of-stream@npm:^1.4.1, end-of-stream@npm:^1.4.4":
   version: 1.4.4
   resolution: "end-of-stream@npm:1.4.4"
   dependencies:
@@ -5647,6 +5704,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-schema-resolver@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "json-schema-resolver@npm:2.0.0"
+  dependencies:
+    debug: ^4.1.1
+    rfdc: ^1.1.4
+    uri-js: ^4.2.2
+  checksum: cd380d8d51f261b122a2da08ffbf69837c368d2c9143a62a72b82940cbc836fb2fb32ae740246e3e81ee07ee8e4cc8129af290acfa7bbc14bb86e3ddfda08eda
+  languageName: node
+  linkType: hard
+
 "json-schema-traverse@npm:^0.4.1":
   version: 0.4.1
   resolution: "json-schema-traverse@npm:0.4.1"
@@ -6622,6 +6690,13 @@ __metadata:
     is-docker: ^2.1.1
     is-wsl: ^2.2.0
   checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
+  languageName: node
+  linkType: hard
+
+"openapi-types@npm:^12.0.0, openapi-types@npm:^12.0.2":
+  version: 12.1.3
+  resolution: "openapi-types@npm:12.1.3"
+  checksum: 7fa5547f87a58d2aa0eba6e91d396f42d7d31bc3ae140e61b5d60b47d2fd068b48776f42407d5a8da7280cf31195aa128c2fc285e8bb871d1105edee5647a0bb
   languageName: node
   linkType: hard
 
@@ -8156,6 +8231,7 @@ __metadata:
     "@blinkdb/react": ^0.0.1
     "@emotion/css": ^11.11.2
     "@fastify/cors": ^8.3.0
+    "@fastify/multipart": ^7.7.3
     "@fastify/static": ^6.10.2
     "@hookform/devtools": ^4.3.1
     "@hookform/resolvers": ^3.1.1
@@ -8503,7 +8579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secure-json-parse@npm:^2.0.0, secure-json-parse@npm:^2.5.0":
+"secure-json-parse@npm:^2.0.0, secure-json-parse@npm:^2.4.0, secure-json-parse@npm:^2.5.0":
   version: 2.7.0
   resolution: "secure-json-parse@npm:2.7.0"
   checksum: d9d7d5a01fc6db6115744ba23cf9e67ecfe8c524d771537c062ee05ad5c11b64c730bc58c7f33f60bd6877f96b86f0ceb9ea29644e4040cb757f6912d4dd6737
@@ -8928,6 +9004,13 @@ __metadata:
   version: 1.0.1
   resolution: "stream-shift@npm:1.0.1"
   checksum: 59b82b44b29ec3699b5519a49b3cedcc6db58c72fb40c04e005525dfdcab1c75c4e0c180b923c380f204bed78211b9bad8faecc7b93dece4d004c3f6ec75737b
+  languageName: node
+  linkType: hard
+
+"stream-wormhole@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "stream-wormhole@npm:1.1.0"
+  checksum: cc19e0235c5d031bd530fa83913c807d9525fa4ba33d51691dd822c0726b8b7ef138b34f289d063a3018cddba67d3ba7fd0ecedaa97242a0f1ed2eed3c6a2ab1
   languageName: node
   linkType: hard
 
@@ -9850,6 +9933,13 @@ __metadata:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.2.2":
+  version: 2.3.2
+  resolution: "yaml@npm:2.3.2"
+  checksum: acd80cc24df12c808c6dec8a0176d404ef9e6f08ad8786f746ecc9d8974968c53c6e8a67fdfabcc5f99f3dc59b6bb0994b95646ff03d18e9b1dcd59eccc02146
   languageName: node
   linkType: hard
 

@@ -44,12 +44,12 @@ export default () => {
     type Item = IssueVO
     const id =generateGuid()
     const predefinedValues = useQueryObject<IssueVO>()
-    const initialValues:IssueVO = {[idProp]: id, ...predefinedValues }as any as Item
+    const initialValues:IssueVO = {[idProp]: id, ...predefinedValues,checkFiles: [],actFiles: [],workFiles: [] }
     const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
     const dispatch = useDispatch()
 
     const onSubmit = async (values: Item) => {
-        const patch = {[idProp]:id, ...values}
+        const patch = {[idProp]:id, ...values,}
         const action = ISSUES.actions.added(patch)
         console.log('Submit', values, action)
         dispatch(action)

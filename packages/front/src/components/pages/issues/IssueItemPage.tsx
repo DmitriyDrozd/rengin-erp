@@ -9,13 +9,15 @@ import {RForm} from '../../elements/RForm'
 import {useHistory} from 'react-router'
 import CrudCreateItemButton from '../../elements/CreateButton'
 import {AntdIcons} from '../../elements/AntdIcons'
-import {Breadcrumb, Button} from 'antd'
+import {Breadcrumb, Button, Card} from 'antd'
 import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
 import VDevidedCard from '../../elements/VDevidedCard'
 import EditIssueItemForm from './EditIssueItemForm'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
+import ExpensesTable from "./ExpensesTable";
+import UploadSection from "../../elements/UploadSection";
 
 
 
@@ -27,12 +29,28 @@ export default () => {
         ProFormInstance<Item>
     >();
 
+
     const initialValues:IssueVO =useSelector(ISSUES.selectById(id))
-    const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
+    const [state, setState] = useState(initialValues) as any as [IssueVO, (otem: IssueVO)=>any]
 
     const idProp = resource.idProp
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const getFilesProps = (listName: 'workFiles'|'checkFiles'|'actFiles',label: string, maxCount = 1) => {
+        return {
+            items: state[listName],
+            onItemsChange: (list) => {
+                setState({...state, [listName]:list})
+            },
+            issueId: initialValues.issueId,
+            label,
+            maxCount,
+
+        }
+    }
+
+
 
     const onSubmit = async (values: Item) => {
 
@@ -84,15 +102,29 @@ export default () => {
                 title,
             }]} ></Breadcrumb>
         }>
-
-        <VDevidedCard>
-            <ProCard title="Заявка" colSpan="50%">
+        <ProCard
+            tabs={{
+                type: 'card',
+            }}
+        >
+            <ProCard.TabPane key="tab1" tab="Заявка">
                 <EditIssueItemForm issueId={id} onItemChange={onItemChange}/>
-            </ProCard>
-            <ProCard title="История">
-                <div style={{ height: 360 }}>История</div>
-            </ProCard>
-        </VDevidedCard>
+            </ProCard.TabPane>
+            <ProCard.TabPane key="tab2" tab={"Смета"}>
+                <ExpensesTable issueId={id}/>
+            </ProCard.TabPane>
+            <ProCard.TabPane key="tab3" tab={"Файлы"}>
+                    <UploadSection {...getFilesProps('checkFiles','Чек',1)}/>
+                    <UploadSection {...getFilesProps('actFiles','Акты',5)}/>
+                    <UploadSection {...getFilesProps('workFiles','Работы',70)}/>
+
+
+            </ProCard.TabPane>
+            <ProCard.TabPane key="tab4" tab={"История"}>
+
+            </ProCard.TabPane>
+        </ProCard>
+
 
 
     </AppLayout>

@@ -49,7 +49,9 @@ host: '127.0.0.1',
         proxy: {
             '/api/': RENGIN_SERVICE_API,
             '/sse/': RENGIN_SERVICE_API,
-            '/models/': RENGIN_SERVICE_API
+            '/models/': RENGIN_SERVICE_API,
+
+            '/uploads/': RENGIN_SERVICE_API
         },
     } }as UserConfigExport
 )
