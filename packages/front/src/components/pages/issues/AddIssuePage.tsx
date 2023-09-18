@@ -166,6 +166,8 @@ export default () => {
                 render: (props) => null
             }}
         >
+            <ProFormText {...fieldMetaToProProps(ISSUES, 'clientsIssueNumber')}  required={true} placeholder={'Введите номер заявки'} rules={[{required:true}]}/>
+
             <ProFormSelect showSearch={true} label={'Заказчик'} placeholder={'Выберите заказчика'}  required={true} valueEnum={brandsOptions} name={'brandId'}  onChange={onBrandChange} rules={[{required: true}]}/>
             <ProFormSelect showSearch={true} disabled={state.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}  required={true} valueEnum={legalsOptions} name={'legalId'}  onChange={onLegalChange} rules={[{required: true}]}/>
             <ProFormSelect showSearch={true} disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'}  onChange={onSiteChange} rules={[{required: true}]}/>
