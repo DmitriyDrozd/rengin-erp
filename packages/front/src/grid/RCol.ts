@@ -85,7 +85,7 @@ const sourceResourceName = res.resourceName
     }
 
 
-    const columnsList = res.fieldsList.filter((f,i)=> i!==0).map((f) => {
+    const columnsList = res.fieldsList.filter((f,i)=> i!==0 && f.type!=='array').map((f) => {
        const col = storedColumn(f.name)
         map[f.name] = col
 
