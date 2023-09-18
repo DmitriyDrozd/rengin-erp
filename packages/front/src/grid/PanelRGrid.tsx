@@ -13,7 +13,6 @@ import CancelButton from '../components/elements/CancelButton'
 import {CheckboxSelectionCallbackParams, HeaderCheckboxSelectionCallbackParams} from 'ag-grid-community'
 
 
-
 const items: MenuProps['items'] =
     [{
         label: 'Сохранить',
@@ -32,6 +31,7 @@ const items: MenuProps['items'] =
         key:'delete',
         danger: true
     }]
+
 export default  <RID extends string, Fields extends AnyFieldsMeta>({title, columnDefs, resource,rowData,createItemProps,...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any}) => {
     const dispatch = useDispatch()
     const [isDeleteMode, setDeleteMode,] = useState(false)

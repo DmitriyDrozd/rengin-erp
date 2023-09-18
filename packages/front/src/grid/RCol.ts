@@ -54,14 +54,12 @@ const sourceResourceName = res.resourceName
             headerName: fieldMeta.headerName,
             resizable: true,
             sortable: true,
-            field:property,
+            field: property,
             fieldName:property,
             editable: true,
             resource: res,
             filter:true,
-
-
-
+            width: 120
         }
         if(isItemOfMeta(fieldMeta)){
             const RES = getRes(fieldMeta.linkedResourceName)
