@@ -104,7 +104,7 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
         });
         setIsEdited(false)
         const upd = {issueId,expenses: items,expensePrice: countExpenses(items)}
-        onItemChange(upd)
+
         dispatch(ISSUES.actions.patched({...upd}))
     }
 

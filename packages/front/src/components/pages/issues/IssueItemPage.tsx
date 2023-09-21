@@ -64,10 +64,7 @@ export default () => {
 
         //            dispatch(BRANDS.actions.added(values))
     }
-    const [itemIndex, setItemIndex] = useState(0)
-    const onItemChange = (upd) => {
-        setItemIndex(i => i ++)
-    }
+
     const title = resource.getItemName(state)
     const onSave = () => {
         const { expenses,expensePrice,estimationPrice,estimations, ...rest} = state
@@ -111,13 +108,13 @@ export default () => {
             }}
         >
             <ProCard.TabPane key="tab1" tab="Заявка">
-                <EditIssueItemForm issueId={id} onItemChange={onItemChange} itemIndex={itemIndex}/>
+                <EditIssueItemForm issueId={id} />
             </ProCard.TabPane>
             <ProCard.TabPane key="tab2" tab={"Смета"}>
-                <EstimationsTable issueId={id} onItemChange={onItemChange}/>
+                <EstimationsTable issueId={id}/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab3" tab={"Расходы"}>
-                <ExpensesTable issueId={id} onItemChange={onItemChange}/>
+                <ExpensesTable issueId={id} />
             </ProCard.TabPane>
             <ProCard.TabPane key="tab4" tab={"Файлы"}>
                     <UploadSection {...getFilesProps('checkFiles','Чек',1)}/>

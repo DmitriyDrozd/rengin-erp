@@ -97,7 +97,7 @@ export default ({issueId,onItemChange}:{issueId: string}) => {
         setIsEdited(false)
 
         const upd = {issueId,estimations: items,estimationPrice: countEstimations(items)}
-        onItemChange(upd)
+      
         dispatch(ISSUES.actions.patched({...upd}))
     }
     return <div>
