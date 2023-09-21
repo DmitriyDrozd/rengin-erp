@@ -36,8 +36,16 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
                 values: ['Наличные', 'Безналичные']
             } as ISelectCellEditorParams,
         },
-
-        { field: 'title',headerName:'Наименование' },
+        {
+            field: 'purposeType',
+            headerName:'Назначение',
+            cellEditor: 'agSelectCellEditor',
+            width: 120,
+            cellEditorParams: {
+                values: ['Материалы', 'Работы','ГСМ','Прочее']
+            } as ISelectCellEditorParams,
+        },
+        { field: 'title',headerName:'Наименование',  width: 140, },
         { field: 'amount',headerName:'Расходы',cellEditor: 'agNumberCellEditor', },
         { field: 'date',headerName:'Дата оплаты',
         },
@@ -117,7 +125,7 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
 
         <div style={{paddingTop: '8px'}}>
             <Space>
-            <Button onClick={() => setRowData([...rowData,{paymentType:'Безналичные'}])}>Добавить</Button>
+            <Button onClick={() => setRowData([...rowData,{paymentType:'Безналичные',purpuseType:'Материалы'}])}>Добавить</Button>
                 {(!isEdited) ? 'Нет изменений' :
                     <><Button type={'primary'} onClick={onSave
                     } >Сохранить</Button>
