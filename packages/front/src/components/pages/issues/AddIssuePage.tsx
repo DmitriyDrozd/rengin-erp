@@ -50,6 +50,7 @@ export default () => {
         ...predefinedValues,checkFiles: [],
         actFiles: [],
         workFiles: [],
+        status: 'Новая',
         expensePrice: 0,estimationPrice: 0, expenses: [], estimations: [],
         plannedDate: initialPlannedDate.toISO(),
         registerDate: new Date().toISOString() }
