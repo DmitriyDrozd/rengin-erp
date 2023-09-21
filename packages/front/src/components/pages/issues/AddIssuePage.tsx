@@ -28,6 +28,7 @@ import {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
 import {LEGALS, LegalVO} from 'iso/src/store/bootstrap/repos/legals'
 import CONTRACTS, {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
 import { Space, Typography } from 'antd';
+import {DateTime, Duration} from "luxon";
 
 const { Text, Link } = Typography;
 export default () => {
@@ -44,7 +45,14 @@ export default () => {
     type Item = IssueVO
     const id =generateGuid()
     const predefinedValues = useQueryObject<IssueVO>()
-    const initialValues:IssueVO = {[idProp]: id, ...predefinedValues,checkFiles: [],actFiles: [],workFiles: [] }
+    const initialPlannedDate = ( DateTime.now().plus(Duration.fromISO('P3D')).endOf('day'))
+    const initialValues:IssueVO = {[idProp]: id,
+        ...predefinedValues,checkFiles: [],
+        actFiles: [],
+        workFiles: [],
+        expensePrice: 0,estimationPrice: 0, expenses: [], estimations: [],
+        plannedDate: initialPlannedDate.toISO(),
+        registerDate: new Date().toISOString() }
     const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
     const dispatch = useDispatch()
 

@@ -2,11 +2,11 @@ import {Breadcrumb, Button, Form, Typography} from 'antd'
 import {ISSUES, SITES} from 'iso/src/store/bootstrap'
 import React, {useRef, useState} from 'react'
 import {
-    ProForm,
+    ProForm, ProFormCheckbox,
     ProFormDatePicker,
     ProFormField,
     ProFormInstance,
-    ProFormSelect,
+    ProFormSelect, ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components'
 import {IssueVO} from 'iso/src/store/bootstrap/repos/issues'
@@ -89,7 +89,6 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
     return <RForm<Item>
             formRef={formRef}
             layout={'horizontal'}
-
             {
                 ...layoutProps
             }
@@ -121,10 +120,9 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
             <ProFormSelect readonly={true} showSearch={true} disabled={state.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'} rules={[{required: true}]}/>
             <Form.Item name="contractId" label="Договор">
                 {
-
-                    contract?  <Text type="success">{contract.contractNumber}</Text>
-                        :
-                        <Text type="warning">Договор не найден</Text>
+                    contract
+                        ?  <Text type="success">{contract.contractNumber}</Text>
+                        : <Text type="warning">Договор не найден</Text>
 
                 }
             </Form.Item>
@@ -134,7 +132,9 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
             <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'completedDate', state)} label={'Дата завершения'}  width={'sm'} />
             <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
             <ProFormSelect label={'Статус'} name={'status'} width={'sm'} valueEnum={{'Новая':'Новая','В работе':'В работе','Выполнена':'Выполнена','Отменена':'Отменена'}} placeholder={'Статус не указан'} />
-
+           <ProFormCheckbox {...fieldMetaToProProps(ISSUES,'estimationsApproved')} />
+            <ProFormText {...fieldMetaToProProps(ISSUES,'expensePrice')} readonly={true}  />
+            <ProFormText {...fieldMetaToProProps(ISSUES,'estimationPrice')} readonly={true} />
     </RForm>
 
 }

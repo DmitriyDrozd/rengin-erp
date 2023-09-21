@@ -38,7 +38,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
     const [defaultColumns, columnsMap] = useAllColumns(resource,isDeleteMode? 'multiple':undefined)
     const firstCol = isDeleteMode ? columnsMap.checkboxCol:columnsMap.clickToEditCol
 
-    const resultCols = [firstCol,...(columnDefs || defaultColumns)]
+    const resultCols = columnDefs || [firstCol,...(columnDefs || defaultColumns)]
 
     const defaultList = useSelector(resource.selectList)
     const [searchText, setSearchText] = useState('')

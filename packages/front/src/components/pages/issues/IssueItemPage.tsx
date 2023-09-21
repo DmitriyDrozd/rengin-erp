@@ -18,6 +18,7 @@ import EditIssueItemForm from './EditIssueItemForm'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 import ExpensesTable from "./ExpensesTable";
 import UploadSection from "../../elements/UploadSection";
+import EstimationsTable from "./EstimationsTable";
 
 
 
@@ -111,16 +112,17 @@ export default () => {
                 <EditIssueItemForm issueId={id} onItemChange={onItemChange}/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab2" tab={"Смета"}>
+                <EstimationsTable issueId={id}/>
+            </ProCard.TabPane>
+            <ProCard.TabPane key="tab3" tab={"Расходы"}>
                 <ExpensesTable issueId={id}/>
             </ProCard.TabPane>
-            <ProCard.TabPane key="tab3" tab={"Файлы"}>
+            <ProCard.TabPane key="tab4" tab={"Файлы"}>
                     <UploadSection {...getFilesProps('checkFiles','Чек',1)}/>
                     <UploadSection {...getFilesProps('actFiles','Акты',5)}/>
                     <UploadSection {...getFilesProps('workFiles','Работы',70)}/>
-
-
             </ProCard.TabPane>
-            <ProCard.TabPane key="tab4" tab={"История"}>
+            <ProCard.TabPane key="tab5" tab={"История"}>
 
             </ProCard.TabPane>
         </ProCard>

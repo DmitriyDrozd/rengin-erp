@@ -6,7 +6,6 @@ import {useHistory, useParams} from 'react-router'
 import {makeColumns} from '../../../grid/createColumns'
 import {RCRUDTable} from '../../../grid/RCRUDTable'
 import AppLayout from '../../app/AppLayout'
-import AddItemButton from '../../elements/CreateButton'
 
 export default () => {
 
@@ -14,7 +13,6 @@ export default () => {
     console.log()
 
     const columns: ColumnsType<UserVO> = makeColumns<UserVO>()
-
         .addCol('email')
         .addCol('fullName', 'ФИО',
             (fullName, record) => <span>{getAbbrName(record)}</span>
@@ -42,9 +40,7 @@ export default () => {
                 }*/
             }}
         >
-
                 <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} />
-
         </AppLayout>
     )
 }
