@@ -144,7 +144,7 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
         <Form.Item name="contractId" label="Маржинальность">
             {
                 ( state.estimationPrice && state.expensePrice)
-                    ? (((state.estimationPrice - state.expensePrice) / state.estimationPrice).toFixed(2) + '%')
+                    ? (((state.estimationPrice - state.expensePrice) / state.estimationPrice * 100).toFixed(2) + '%')
                     : "-"
             }
         </Form.Item>
