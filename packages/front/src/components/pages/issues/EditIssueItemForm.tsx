@@ -135,6 +135,19 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
            <ProFormCheckbox {...fieldMetaToProProps(ISSUES,'estimationsApproved')} />
             <ProFormText {...fieldMetaToProProps(ISSUES,'expensePrice')} readonly={true}  />
             <ProFormText {...fieldMetaToProProps(ISSUES,'estimationPrice')} readonly={true} />
+        <Form.Item name="contractId" label="прибыль">
+            {
+                state.estimationPrice - state.expensePrice
+
+            }
+        </Form.Item>
+        <Form.Item name="contractId" label="Маржинальность">
+            {
+                ( state.estimationPrice && state.expensePrice)
+                    ? (((state.estimationPrice - state.expensePrice) / state.estimationPrice).toFixed(2) + '%')
+                    : "-"
+            }
+        </Form.Item>
     </RForm>
 
 }
