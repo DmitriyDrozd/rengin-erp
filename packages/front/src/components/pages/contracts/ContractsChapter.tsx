@@ -30,7 +30,7 @@ import SUBS from 'iso/src/store/bootstrap/repos/subs'
 export default () => {
     const ledger = useLedger()
     const list = ledger.contracts
-    const [cols] = useAllColumns(CONTRACTS)
+    const [cols,map] = useAllColumns(CONTRACTS)
 
 
 
@@ -80,14 +80,11 @@ export default () => {
 
                 renderList={({form,verb,resource}) => {
             return  <div>
-
-
-
                 <PanelRGrid
                     fullHeight={true}
                     resource={CONTRACTS}
                     title={'Все договоры'}
-                    columnDefs={cols}
+                    columnDefs={[map.clickToEditCol, ...cols]}
                 />
                 {/**<FooterToolbar extra="extra information">
                     <Button>Cancel</Button>

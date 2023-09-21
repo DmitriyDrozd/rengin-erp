@@ -12,16 +12,17 @@ import {
 } from "ag-grid-community";
 import {EstimationItem, ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space} from "antd";
-import {equals, remove, update} from "ramda";
+import {clone, equals, remove, update} from "ramda";
 
 const countEstimations = (expenses: IssueVO['estimations']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 
-export default ({issueId}:{issueId: string}) => {
+export default ({issueId,onItemChange}:{issueId: string}) => {
     const dispatch = useDispatch()
     const issue:IssueVO = useSelector(ISSUES.selectById(issueId))
-    const initialItems = issue.estimations|| []
+    const [initialItems]= useState(clone(issue.estimations|| []))
+    const [isEdited, setIsEdited] = useState(false)
     const gridRef = useRef<AgGridReact>(null);
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({ height: '300px', width: '100%' }), []);
@@ -74,12 +75,31 @@ export default ({issueId}:{issueId: string}) => {
     const onCellEditingStarted = (e:RowEditingStartedEvent) => {
         console.log('RowEditingStartedEvent',e)
     }
+
     const onCellEditingStopped = (e: RowEditingStoppedEvent) => {
-        if (e.rowIndex!== null)
-        setRowData(update(e.rowIndex,e.data, rowData))
-        console.log('RowEditingStoppedEvent',e)
+        let items: Array<ExpenseItem> = [];
+        gridRef.current.api.forEachNode(function(node) {
+
+            items.push(node.data);
+        });
+        setRowData(items)
+        setIsEdited(true)
+
+        console.log('RowEditingStoppedEvent',e,items)
     }
 
+    const onSave = () => {
+        let items: Array<ExpenseItem> = [];
+        gridRef.current.api.forEachNode(function(node) {
+            if(node.data.amount)
+                items.push(node.data);
+        });
+        setIsEdited(false)
+
+        const upd = {issueId,estimations: items,estimationPrice: countEstimations(items)}
+        onItemChange(upd)
+        dispatch(ISSUES.actions.patched({...upd}))
+    }
     return <div>
 
         <div className="ag-theme-alpine" style={gridStyle}>
@@ -98,9 +118,8 @@ export default ({issueId}:{issueId: string}) => {
         <div style={{paddingTop: '8px'}}>
             <Space>
             <Button onClick={() => setRowData([...rowData,{}])}>Добавить</Button>
-                { JSON.stringify(initialItems)===JSON.stringify(rowData) ? 'Нет изменений' :
-                    <><Button type={'primary'} onClick={() =>
-                        dispatch(ISSUES.actions.patched({issueId,estimations: rowData,estimationPrice: countEstimations(rowData)}))
+                {(!isEdited) ? 'Нет изменений' :
+                    <><Button type={'primary'} onClick={onSave
                     } >Сохранить</Button>
                         <Button danger={true} onClick={() => setRowData(initialItems)} >Отменить</Button>
                     </>

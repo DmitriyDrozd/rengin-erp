@@ -36,7 +36,7 @@ const issuesRaw = createResource('issue',{
         completedDate: valueTypes.date({headerName: 'Дата завершения'}),
         description: valueTypes.string({headerName: 'Описание'}),
         removed: valueTypes.boolean({select: false}),
-        expensePrice: valueTypes.number({headerName: 'Затраты'}),
+        expensePrice: valueTypes.number({headerName: 'Расходы'}),
         expenses: valueTypes.array({headerName:'Список расходов'}),
         estimations: valueTypes.array({headerName: 'Смета'}),
         estimationPrice: valueTypes.number({headerName:'Смета сумма'}),

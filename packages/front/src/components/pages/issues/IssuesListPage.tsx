@@ -29,7 +29,6 @@ export default () => {
         if(!issue.status || issue.status === 'В работе')
         if (!issue.completedDate && new Date(issue.plannedDate).toISOString() < currentISO){//params.data..rowIndex % 2 === 0) {
 
-           debugger
             return <Tag color="red">Просрочено</Tag>
         }
 

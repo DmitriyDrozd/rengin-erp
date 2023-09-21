@@ -64,12 +64,14 @@ export default () => {
 
         //            dispatch(BRANDS.actions.added(values))
     }
-    const onItemChange = useCallback((state) => {
-        setState(state)
-    },[id])
+    const [itemIndex, setItemIndex] = useState(0)
+    const onItemChange = (upd) => {
+        setItemIndex(i => i ++)
+    }
     const title = resource.getItemName(state)
     const onSave = () => {
-        dispatch(resource.actions?.patched(state))
+        const { expenses,expensePrice,estimationPrice,estimations, ...rest} = state
+        dispatch(resource.actions?.patched(rest))
         onBack()
     }
     const onDelete = () => {
@@ -109,13 +111,13 @@ export default () => {
             }}
         >
             <ProCard.TabPane key="tab1" tab="Заявка">
-                <EditIssueItemForm issueId={id} onItemChange={onItemChange}/>
+                <EditIssueItemForm issueId={id} onItemChange={onItemChange} itemIndex={itemIndex}/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab2" tab={"Смета"}>
-                <EstimationsTable issueId={id}/>
+                <EstimationsTable issueId={id} onItemChange={onItemChange}/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab3" tab={"Расходы"}>
-                <ExpensesTable issueId={id}/>
+                <ExpensesTable issueId={id} onItemChange={onItemChange}/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab4" tab={"Файлы"}>
                     <UploadSection {...getFilesProps('checkFiles','Чек',1)}/>
