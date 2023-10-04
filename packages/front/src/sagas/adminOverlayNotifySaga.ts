@@ -1,8 +1,6 @@
 import {select, takeEvery} from 'typed-redux-saga'
 
-import {FactoryAction, FactoryAnyAction} from '@sha/fsa'
-
-import {uiDuck} from '../store/ducks/uiDuck'
+import {FactoryAnyAction} from '@sha/fsa'
 import sseConnectionDuck from 'iso/src/store/sse/sseConnectionDuck';
 import {getResourceByAction} from 'iso/src/store/bootstrap/resourcesList'
 import {notification} from 'antd'

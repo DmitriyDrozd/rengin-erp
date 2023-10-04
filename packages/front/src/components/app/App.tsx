@@ -4,17 +4,13 @@ import {ConnectedRouter, history} from '@sha/router'
 import UIRoot from './UIRoot'
 import {useMount} from 'react-use'
 import {Router} from 'react-router-dom'
-import {ConfigProvider, Empty} from 'antd'
-import {ProConfigProvider,ruRUIntl } from  '@ant-design/pro-provider'
-import {} from '@ant-design/pro-provider'
-import dayjs from 'dayjs'
+import {ConfigProvider, DatePicker, Empty} from 'antd'
+import {ProConfigProvider} from '@ant-design/pro-provider'
 import 'dayjs/locale/ru'
 import ruRU from 'antd/locale/en_US'
 import {BlinkDbProvider} from '@blinkdb/react'
 import {createDB} from 'blinkdb'
-import {blinkModel, db} from './blink-db-model'
-
-
+import {blinkModel} from './blink-db-model'
 
 
 const App = ({store}) => {
@@ -33,32 +29,31 @@ const App = ({store}) => {
                         height: "100vh"
                     }}
                 >
-
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Form: {
-                                        marginLG:4,
-                                        lineHeight:2
-                                    },
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Form: {
+                                    marginLG:4,
+                                    lineHeight:2
                                 },
-                                token: {
-                                    borderRadius:0,
-                                }
-                            }}
-                            componentSize={'middle'}
-                            locale={ruRU}
-                            autoInsertSpaceInButton={true}
-                            getTargetContainer={() => {
-                                return document.getElementById('test-pro-layout') || document.body;
-                            }}
-                            renderEmpty={()=><Empty description={false} />}
-                        >
-                            <ProConfigProvider hashed={false}    >
+                            },
+                            token: {
+                                borderRadius:0,
+                            }
+                        }}
+                        componentSize={'middle'}
+                        locale={ruRU}
+                        autoInsertSpaceInButton={true}
+                        getTargetContainer={() => {
+                            return document.getElementById('test-pro-layout') || document.body;
+                        }}
+                        renderEmpty={()=><Empty description={false} />}
+                    >
+
                     {
                      rendered &&   <UIRoot history={history}/>
                     }
-                            </ProConfigProvider>
+
                         </ConfigProvider>
 
                 </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { ExclamationCircleFilled } from '@ant-design/icons';
-import {Button, Card, Modal, Space} from 'antd';
+import {ExclamationCircleFilled} from '@ant-design/icons';
+import {Card, Modal} from 'antd';
 import Meta from 'antd/es/card/Meta'
 
 const { info } = Modal;

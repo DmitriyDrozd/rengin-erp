@@ -1,7 +1,7 @@
-import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
+import {AgGridReact} from 'ag-grid-react'
 import {AnyFieldsMeta} from 'iso/src/store/bootstrap/core/createResource'
 import RGrid, {RGridProps} from './RGrid'
-import {Button, Card, Dropdown, Input, MenuProps, Space} from 'antd'
+import {Button, Dropdown, Input, MenuProps, Space} from 'antd'
 import {useAllColumns} from './RCol'
 import {useDispatch, useSelector} from 'react-redux'
 import {SearchOutlined} from '@ant-design/icons'
@@ -10,7 +10,6 @@ import {ChangeEventHandler, useRef, useState} from 'react'
 import {AntdIcons} from '../components/elements/AntdIcons'
 import DeleteButton from '../components/elements/DeleteButton'
 import CancelButton from '../components/elements/CancelButton'
-import {CheckboxSelectionCallbackParams, HeaderCheckboxSelectionCallbackParams} from 'ag-grid-community'
 
 
 const items: MenuProps['items'] =
@@ -79,15 +78,15 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
                 </>
     }
     const renderStandartToolBar = () => {
-return <><CrudCreateButton resource={resource} defaultProps={createItemProps} />
-
-        <Dropdown menu={{
-            items,onClick: e => {
-                onMenuClick(e.key)
-            }}} >
-            <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
-        </Dropdown>
-    </>
+        return <>
+            <CrudCreateButton resource={resource} defaultProps={createItemProps} />
+            <Dropdown menu={{
+                items,onClick: e => {
+                    onMenuClick(e.key)
+                }}} >
+                <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
+            </Dropdown>
+        </>
     }
 
     return      <> <div
@@ -105,22 +104,18 @@ return <><CrudCreateButton resource={resource} defaultProps={createItemProps} />
     >
         <h3 style={{whiteSpace:'nowrap'}}>{title}</h3>
         <div style={{display: 'flex'}}>
-
             <Space>
-            <Input
+                <Input
 
-                style={{maxWidth: '250px', marginRight: '16px', lineHeight:'unset'}}
-                addonBefore={<SearchOutlined />} placeholder="Быстрый поиск"
-                allowClear
-                value={searchText}
-                onChange={onSearchTextChanged}
-            />
-
+                    style={{maxWidth: '250px', marginRight: '16px', lineHeight:'unset'}}
+                    addonBefore={<SearchOutlined />} placeholder="Быстрый поиск"
+                    allowClear
+                    value={searchText}
+                    onChange={onSearchTextChanged}
+                />
                 {
                     isDeleteMode ? renderDeleteModeToolBar(): renderStandartToolBar()
                 }
-
-
             </Space>
         </div>
     </div>

@@ -1,12 +1,12 @@
-import {Breadcrumb, Button, Form, Typography} from 'antd'
+import {DatePicker, Form, Typography} from 'antd'
 import {ISSUES, SITES} from 'iso/src/store/bootstrap'
 import React, {useRef, useState} from 'react'
 import {
-    ProForm, ProFormCheckbox,
+    ProFormCheckbox,
     ProFormDatePicker,
-    ProFormField,
     ProFormInstance,
-    ProFormSelect, ProFormText,
+    ProFormSelect,
+    ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components'
 import {IssueVO} from 'iso/src/store/bootstrap/repos/issues'
@@ -19,8 +19,11 @@ import SUBS, {SubVO} from 'iso/src/store/bootstrap/repos/subs'
 import {RForm} from '../../elements/RForm'
 import {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import {useMount} from "react-use";
+import RenFormDate from "../../form/RenFormDate";
+import locale from 'antd/es/date-picker/locale/ru_RU';
 
+import 'dayjs/locale/ru'
+import dayjs from "dayjs";
 const { Text } = Typography;
 export default ({issueId, onItemChange}: {issueId: string, onItemChange: Function}) => {
 
@@ -86,6 +89,20 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
 
     console.log('contractId', state.contractId, contract)
     console.log('siteId',state.siteId)
+
+    const buildDate = (name: keyof IssueVO) => {
+        return        <RenFormDate {...fieldMetaToProProps(ISSUES, name, state)}
+                                   value={state[name]}
+                                   onValueChange={e => {
+                                       const newItem ={...state,[name]:e}
+                                       setState(newItem)
+                                       onSubmit(newItem)
+                                       if (formRef.current)
+                                           formRef.current.setFieldValue(name,e)
+                                   }}
+                                   label={ISSUES.properties[name].headerName}  width={'sm'}
+                    />
+    }
     return <RForm<Item>
             formRef={formRef}
             layout={'horizontal'}
@@ -95,9 +112,9 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
             readonly={false}
             initialValues={initialValues}
             onValuesChange={(_, values) => {
-                console.log(values);
+                console.log('onValuesChange',values);
                 setState({...state, ...values})
-                onItemChange({...state, ...values})
+                //onItemChange({...state, ...values})
             }}
             onFinish={async (values) => {
                 console.log('onFinish',values)
@@ -123,14 +140,22 @@ export default ({issueId, onItemChange}: {issueId: string, onItemChange: Functio
                     contract
                         ?  <Text type="success">{contract.contractNumber}</Text>
                         : <Text type="warning">Договор не найден</Text>
-
                 }
             </Form.Item>
-            <ProFormDatePicker readonly={true} {...fieldMetaToProProps(ISSUES, 'registerDate', state) } label={'Заявка зарегистрирована'}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'plannedDate', state)} label={"Плановая дата"}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'workStartedDate', state)} label={'Дата начала работ'}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'completedDate', state)} label={'Дата завершения'}  width={'sm'} />
-            <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
+
+            <ProFormDatePicker readonly={true} {...fieldMetaToProProps(ISSUES, 'registerDate', state) } label={'Зарегистрирована'}  width={'sm'} />
+        {
+            buildDate('plannedDate')
+        }
+
+
+        {
+            buildDate('workStartedDate')
+        }
+        {
+            buildDate('completedDate')
+        }
+           <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
             <ProFormSelect label={'Статус'} name={'status'} width={'sm'} valueEnum={{'Новая':'Новая','В работе':'В работе','Выполнена':'Выполнена','Отменена':'Отменена'}} placeholder={'Статус не указан'} />
            <ProFormCheckbox {...fieldMetaToProProps(ISSUES,'estimationsApproved')} />
             <ProFormText {...fieldMetaToProProps(ISSUES,'expensePrice')} readonly={true}  />

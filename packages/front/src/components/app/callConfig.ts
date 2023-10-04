@@ -1,4 +1,4 @@
-import OutsideCallConsumer, { createCaller } from 'react-outside-call';
+import {createCaller} from 'react-outside-call';
 import {useTable} from '@blinkdb/react'
 
 

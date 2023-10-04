@@ -1,5 +1,8 @@
-import {Button, Card, Upload, UploadFile} from "antd";
-import {UploadOutlined} from "@ant-design/icons";
+import {Card, Modal, Upload, UploadFile} from "antd";
+import {PlusOutlined} from "@ant-design/icons";
+import React, {useState} from 'react';
+import type {RcFile, UploadProps} from 'antd/es/upload';
+import {remove} from "ramda";
 
 export type UploadListProps = {
     items: UploadFile[]
@@ -9,12 +12,6 @@ export type UploadListProps = {
     label:string
 }
 
-
-import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal} from 'antd';
-import type { RcFile, UploadProps } from 'antd/es/upload';
-import {remove} from "ramda";
 
 const getBase64 = (file: RcFile): Promise<string> =>
     new Promise((resolve, reject) => {

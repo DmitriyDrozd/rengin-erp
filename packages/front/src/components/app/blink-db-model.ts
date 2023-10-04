@@ -1,9 +1,7 @@
-import {createDB, createTable, Database} from 'blinkdb';
-import { ModelOf, ValidModel } from '@blinkdb/react';
+import {createDB, createTable} from 'blinkdb';
+import {ModelOf, ValidModel} from '@blinkdb/react';
 import type {IssueVO} from 'iso/src/store/bootstrap/repos/issues'
-import type {UserVO} from 'iso/src/store/bootstrap/repos/users'
 import {PrimaryKeyOf} from 'blinkdb/src/types'
-import {EventVO} from 'service/src/repositories/eventStore'
 
 interface IndexedEventVO {
     brandId?: string | undefined

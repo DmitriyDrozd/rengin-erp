@@ -1,4 +1,3 @@
-
 import {useAllColumns} from '../../../grid/RCol'
 import useLedger from '../../../hooks/useLedger'
 import PanelRGrid from '../../../grid/PanelRGrid'
@@ -8,8 +7,7 @@ import React from 'react'
 import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
 import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
-import {Button, Tag} from "antd";
-import {remove} from "ramda";
+import {Tag} from "antd";
 
 
 export default () => {

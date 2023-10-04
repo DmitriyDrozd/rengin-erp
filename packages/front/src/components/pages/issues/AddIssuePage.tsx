@@ -1,13 +1,11 @@
 import {
-    ModalForm,
     ProFormDatePicker,
     ProFormInstance,
     ProFormSelect,
     ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components'
-import {Breadcrumb, Button, Form, message} from 'antd'
-import CreateButton from '../../elements/CreateButton'
+import {Breadcrumb, Button, Form, Typography} from 'antd'
 import React, {useRef, useState} from 'react'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 import {generateGuid} from '@sha/random'
@@ -22,13 +20,11 @@ import {RForm} from '../../elements/RForm'
 import BRANDS, {BrandVO} from 'iso/src/store/bootstrap/repos/brands'
 import {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import SUBS, {SubVO} from 'iso/src/store/bootstrap/repos/subs'
-import {br} from '../../../../../static/assets/vendor-6932f6a6'
 import {SITES} from 'iso/src/store/bootstrap'
-import {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
-import {LEGALS, LegalVO} from 'iso/src/store/bootstrap/repos/legals'
+import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
 import CONTRACTS, {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
-import { Space, Typography } from 'antd';
 import {DateTime, Duration} from "luxon";
+import RenFormDate from "../../form/RenFormDate";
 
 const { Text, Link } = Typography;
 export default () => {
@@ -125,6 +121,17 @@ export default () => {
     }
     console.log('contractId', state.contractId, contract)
     console.log('siteId',state.siteId)
+    const buildDate = (name: keyof IssueVO) => {
+        return        <RenFormDate {...fieldMetaToProProps(ISSUES, name, state)}
+                                   value={state[name]}
+                                   onValueChange={e => {
+                                       const newItem ={...state,[name]:e}
+                                       setState(newItem)
+
+                                   }}
+                                   label={ISSUES.properties[name].headerName}  width={'sm'}
+        />
+    }
     return  <AppLayout
 
 
@@ -189,10 +196,14 @@ export default () => {
 
                 }
             </Form.Item>
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'registerDate', state) } label={'Заявка зарегистрирована'}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'plannedDate', state)} label={"Плановая дата завершения"}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'workStartedDate', state)} label={'Дата начала работ'}  width={'sm'} />
-            <ProFormDatePicker {...fieldMetaToProProps(ISSUES, 'completedDate', state)} label={'Дата завершения'}  width={'sm'} />
+            {
+                buildDate('registerDate')
+            }
+            {
+                buildDate('plannedDate')
+            }
+            { buildDate('workStartedDate')}
+            {buildDate('completedDate')}
             <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
         </RForm>
 

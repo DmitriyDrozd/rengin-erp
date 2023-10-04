@@ -5,7 +5,6 @@ import AppLayout from '../../app/AppLayout'
 import {CrudListRender, CrudListRenderProps} from './ItemChapterModal'
 import CrudCreateItemButton from '../../elements/CreateButton'
 import {RForm} from '../../elements/RForm'
-import {ProCard} from '@ant-design/pro-components'
 
 export const CrudListPage = <
     RID extends string,

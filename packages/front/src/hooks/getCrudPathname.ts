@@ -1,4 +1,4 @@
-import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(resource:Resource<RID,Fields> ) => ({

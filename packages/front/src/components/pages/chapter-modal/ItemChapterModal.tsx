@@ -5,8 +5,6 @@ import {FormInstance} from '@ant-design/pro-components'
 import {CrudEditItemPage} from './CrudEditItemPage'
 import {CrudCreateItemPage} from './CrudCreateItemPage'
 import {CrudListPage} from './CrudListPage'
-import BRANDS from 'iso/src/store/bootstrap/repos/brands'
-import {valueTypes} from 'iso/src/store/bootstrap/core/valueTypes'
 import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 
 

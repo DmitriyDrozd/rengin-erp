@@ -2,21 +2,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {ISSUES} from "iso/src/store/bootstrap";
 import {useMemo, useRef, useState} from "react";
 import {AgGridReact} from "ag-grid-react";
-import {
-    ColDef,
-    ICellRenderer,
-    ISelectCellEditorParams,
-    RowEditingStartedEvent,
-    RowEditingStoppedEvent,
-    StatusPanelDef
-} from "ag-grid-community";
+import {ColDef, RowEditingStartedEvent, RowEditingStoppedEvent, StatusPanelDef} from "ag-grid-community";
 import {EstimationItem, ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space} from "antd";
-import {clone, equals, remove, update} from "ramda";
+import {clone, remove} from "ramda";
 
 const countEstimations = (expenses: IssueVO['estimations']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
-
 
 export default ({issueId,onItemChange}:{issueId: string}) => {
     const dispatch = useDispatch()
@@ -97,7 +89,7 @@ export default ({issueId,onItemChange}:{issueId: string}) => {
         setIsEdited(false)
 
         const upd = {issueId,estimations: items,estimationPrice: countEstimations(items)}
-      
+
         dispatch(ISSUES.actions.patched({...upd}))
     }
     return <div>

@@ -10,7 +10,7 @@ import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
 import {ISSUES, IssueVO} from './bootstrap/repos/issues'
 import {isCRUD} from '@sha/fsa/src/createCRUDDuck'
 import {Duck} from '@sha/fsa/src/createBootableDuck'
-import brandsCrud, {BRANDS, BrandVO} from './bootstrap/repos/brands'
+import {BRANDS, BrandVO} from './bootstrap/repos/brands'
 import {LEGALS, LegalVO} from './bootstrap/repos/legals'
 import SUBS, {SubVO} from './bootstrap/repos/subs'
 

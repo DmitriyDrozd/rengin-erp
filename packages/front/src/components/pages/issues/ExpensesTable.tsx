@@ -4,7 +4,6 @@ import {useMemo, useRef, useState} from "react";
 import {AgGridReact} from "ag-grid-react";
 import {
     ColDef,
-    ICellRenderer,
     ISelectCellEditorParams,
     RowEditingStartedEvent,
     RowEditingStoppedEvent,
@@ -12,7 +11,7 @@ import {
 } from "ag-grid-community";
 import {ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space} from "antd";
-import {clone, equals, remove, update} from "ramda";
+import {clone, remove} from "ramda";
 
 const countExpenses = (expenses: IssueVO['expenses']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)

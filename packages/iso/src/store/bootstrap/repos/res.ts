@@ -3,10 +3,9 @@ import BRANDS from './brands'
 import LEGALS from './legals'
 import SITES from './sites'
 import CONTRACTS from './contracts'
-import {ISSUES}  from './issues'
+import {ISSUES} from './issues'
 import SUBS from './subs'
-import {AnyFieldsMeta, ItemWithId, Resource} from '../core/createResource'
-import {RESOURCES_LIST} from '../resourcesList'
+import {ItemWithId, Resource} from '../core/createResource'
 
 type KeyRes<R = unknown> = R extends Resource<infer RID, infer Fields> ? {
     [K in RID]: R

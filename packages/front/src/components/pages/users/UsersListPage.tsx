@@ -1,6 +1,6 @@
 import React from 'react'
 import {ColumnsType} from 'antd/es/table'
-import {getAbbrName, UserVO, default as USERS} from 'iso/src/store/bootstrap/repos/users'
+import {default as USERS, getAbbrName, UserVO} from 'iso/src/store/bootstrap/repos/users'
 import {useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router'
 import {makeColumns} from '../../../grid/createColumns'
@@ -15,7 +15,8 @@ export default () => {
     const columns: ColumnsType<UserVO> = makeColumns<UserVO>()
         .addCol('email')
         .addCol('fullName', 'ФИО',
-            (fullName, record) => <span>{getAbbrName(record)}</span>
+            (fullName, record) =>
+                <span>{getAbbrName(record)}</span>
         )
         .addCol('title','Должность')
         .addCol('role','Роль')

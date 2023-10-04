@@ -5,24 +5,24 @@
  * Copyright (c) 2021 Dr. Maximillian Dornseif
  */
 
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model'
-import { ColumnApi, GridApi, GridOptions, GridReadyEvent, ModuleRegistry } from '@ag-grid-community/core' // @ag-grid-community/core will always be implicitly available
-import { CsvExportModule } from '@ag-grid-community/csv-export'
-import { GridChartsModule } from '@ag-grid-enterprise/charts'
-import { ClipboardModule } from '@ag-grid-enterprise/clipboard'
-import { ColumnsToolPanelModule } from '@ag-grid-enterprise/column-tool-panel'
-import { LicenseManager } from '@ag-grid-enterprise/core'
-import { ExcelExportModule } from '@ag-grid-enterprise/excel-export'
-import { FiltersToolPanelModule } from '@ag-grid-enterprise/filter-tool-panel'
-import { MenuModule } from '@ag-grid-enterprise/menu'
-import { MultiFilterModule } from '@ag-grid-enterprise/multi-filter'
-import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection'
-import { RichSelectModule } from '@ag-grid-enterprise/rich-select'
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping'
-import { SetFilterModule } from '@ag-grid-enterprise/set-filter'
-import { SideBarModule } from '@ag-grid-enterprise/side-bar'
-import { StatusBarModule } from '@ag-grid-enterprise/status-bar'
-import { useCallback, useState } from 'react'
+import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model'
+import {ColumnApi, GridApi, GridOptions, GridReadyEvent, ModuleRegistry} from '@ag-grid-community/core' // @ag-grid-community/core will always be implicitly available
+import {CsvExportModule} from '@ag-grid-community/csv-export'
+import {GridChartsModule} from '@ag-grid-enterprise/charts'
+import {ClipboardModule} from '@ag-grid-enterprise/clipboard'
+import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
+import {LicenseManager} from '@ag-grid-enterprise/core'
+import {ExcelExportModule} from '@ag-grid-enterprise/excel-export'
+import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel'
+import {MenuModule} from '@ag-grid-enterprise/menu'
+import {MultiFilterModule} from '@ag-grid-enterprise/multi-filter'
+import {RangeSelectionModule} from '@ag-grid-enterprise/range-selection'
+import {RichSelectModule} from '@ag-grid-enterprise/rich-select'
+import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping'
+import {SetFilterModule} from '@ag-grid-enterprise/set-filter'
+import {SideBarModule} from '@ag-grid-enterprise/side-bar'
+import {StatusBarModule} from '@ag-grid-enterprise/status-bar'
+import {useCallback, useState} from 'react'
 import mem from 'mem'
 import '@ag-grid-community/core/dist/styles/ag-grid.css';
 

@@ -62,6 +62,7 @@
         "copy-to-clipboard": "^3.3.3",
         "copyfiles": "^2.4.1",
         "cross-env": "^7.0.3",
+        "dayjs": "^1.11.10",
         "fastify": "^4.19.2",
         "fastify-accepts": "^2.3.0",
         "fastify-accepts-serializer": "^3.3.0",

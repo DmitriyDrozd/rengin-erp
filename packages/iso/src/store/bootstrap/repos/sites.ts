@@ -1,6 +1,5 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
-import {RESOURCES_MAP} from '../resourcesList'
 import {LegalVO} from './legals'
 
 

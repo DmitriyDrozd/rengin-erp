@@ -1,13 +1,8 @@
- import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {useDispatch} from 'react-redux'
 import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {CrudListRender, CrudListRenderProps} from './ItemChapter'
-import CrudCreateItemButton from '../../elements/CreateButton'
-import {RForm} from '../../elements/RForm'
-import {ProCard} from '@ant-design/pro-components'
-import {ExportOutlined} from '@ant-design/icons'
-import {Button} from 'antd'
 
 export const CrudListPage = <
     RID extends string,

@@ -1,10 +1,7 @@
-import {ButtonProps, Popconfirm} from 'antd'
-import {Button} from 'antd'
+import {Button, ButtonProps, Popconfirm} from 'antd'
 import {AntdIcons} from './AntdIcons'
 import {useHistory} from 'react-router'
-import usePathnameResource from '../../hooks/usePathnameResource'
-import getCrudPathname from '../../hooks/getCrudPathname'
-import {AnyFieldsMeta, ExtractResource, ItemWithId} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyFieldsMeta, ExtractResource} from 'iso/src/store/bootstrap/core/createResource'
 
 export type DeleteButtonProps<RID extends string, Fields extends AnyFieldsMeta> = {
     resource?: ExtractResource<RID, Fields>

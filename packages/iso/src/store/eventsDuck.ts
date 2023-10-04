@@ -1,8 +1,9 @@
 import * as FSA from '@sha/fsa'
-const factory = FSA.actionCreatorFactory('events')
 import type {EventVO} from 'service/src/repositories/eventStore'
 import {ISOState} from '../ISOState'
-import {RESOURCES_LIST, ResourcesMap} from './bootstrap/resourcesList'
+import {ResourcesMap} from './bootstrap/resourcesList'
+
+const factory = FSA.actionCreatorFactory('events')
 
 type AnyRID = ResourcesMap[keyof ResourcesMap]['idProp']
 const r: AnyRID = ''

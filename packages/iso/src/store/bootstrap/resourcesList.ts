@@ -7,12 +7,8 @@ import {ISSUES} from './repos/issues'
 import {SUBS} from './repos/subs'
 
 import {FactoryAnyAction} from '@sha/fsa'
-import {AnyFieldsMeta, Resource} from './core/createResource'
+import {AnyFieldsMeta} from './core/createResource'
 import {isBrowser} from '@sha/utils'
-
-
-
-
 
 
 export const RESOURCES_MAP = {

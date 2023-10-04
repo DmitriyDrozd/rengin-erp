@@ -1,12 +1,8 @@
 import React from 'react'
 import {ColDef} from 'ag-grid-community'
-import {Button} from 'antd'
-import {useHistory} from 'react-router'
-import usePathnameResource from '../hooks/usePathnameResource'
 import getCrudPathname from '../hooks/getCrudPathname'
 import {EditOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
-import {getRes, ResourceName} from 'iso/src/store/bootstrap/resourcesList'
 import {AnyFieldsMeta, ItemWithId} from 'iso/src/store/bootstrap/core/createResource'
 
 

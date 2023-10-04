@@ -5,10 +5,9 @@ import {FormInstance} from '@ant-design/pro-components'
 import {CrudEditItemPage, CrudFormRenderProps} from './CrudEditItemPage'
 import {CrudCreateItemPage} from './CrudCreateItemPage'
 import {CrudListPage} from './CrudListPage'
-import BRANDS from 'iso/src/store/bootstrap/repos/brands'
-import {isItemOfMeta, valueTypes} from 'iso/src/store/bootstrap/core/valueTypes'
-import {getRes, ResourceName, RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
-import useFrontSelector, {useFrontStateSelector} from '../../../hooks/common/useFrontSelector'
+import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
+import {getRes} from 'iso/src/store/bootstrap/resourcesList'
+import {useFrontStateSelector} from '../../../hooks/common/useFrontSelector'
 
 
 export const fieldMetaToProProps =<

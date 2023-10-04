@@ -1,18 +1,11 @@
-import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components'
-import BRANDS from 'iso/src/store/bootstrap/repos/brands'
-import RGrid from '../../../grid/RGrid'
-import useFrontSelector from '../../../hooks/common/useFrontSelector'
 import {useAllColumns} from '../../../grid/RCol'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import {SelectProps} from 'antd'
 import useLedger from '../../../hooks/useLedger'
-import {RCellRender} from '../../../grid/RCellRender'
 import SITES from 'iso/src/store/bootstrap/repos/sites'
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 
 export default () => {
     const ledger = useLedger()

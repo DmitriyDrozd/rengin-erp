@@ -1,6 +1,5 @@
 import {DateRangeVO} from './VO'
-import { ResourceName, ResourcesMap} from '../resourcesList'
-import {AnyMeta} from './createResource'
+import {ResourceName} from '../resourcesList'
 
 
 export const cast = <T>(value: any): T => value

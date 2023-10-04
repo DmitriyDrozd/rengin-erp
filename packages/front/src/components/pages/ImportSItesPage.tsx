@@ -2,20 +2,18 @@ import AppLayout from '../app/AppLayout'
 import {Button, Card, Modal, Spin, Upload} from 'antd'
 import Meta from 'antd/es/card/Meta'
 import React, {useState} from 'react'
-import Icon from 'antd/es/icon'
 import {UploadOutlined} from '@ant-design/icons'
 import {useFrontStateSelector} from '../../hooks/common/useFrontSelector'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import SITES, {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
-import {sleep, toAssociativeArray} from '@sha/utils'
-import useLedger from '../../hooks/useLedger'
+import {sleep} from '@sha/utils'
 import {useStore} from 'react-redux'
 import * as XLSX from 'xlsx'
-import {call, put, select, take} from 'typed-redux-saga'
+import {call, put, select} from 'typed-redux-saga'
 import {selectLedger} from 'iso/src/store/bootstrapDuck'
-import {useClickAway} from 'react-use'
 import {generateGuid} from '@sha/random'
+
 const xlsxCols = ['brandName','legalName','city','address'] as const
 type Datum =Record<typeof xlsxCols[number], string>
 const {confirm, info} = Modal

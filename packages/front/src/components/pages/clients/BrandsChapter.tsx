@@ -2,22 +2,17 @@ import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProCard, ProFormText} from '@ant-design/pro-components'
 import BRANDS, {BrandVO} from 'iso/src/store/bootstrap/repos/brands'
-import RGrid from '../../../grid/RGrid'
-import useFrontSelector from '../../../hooks/common/useFrontSelector'
 import {useAllColumns} from '../../../grid/RCol'
 import useLedger from "../../../hooks/useLedger";
 import SITES from 'iso/src/store/bootstrap/repos/sites'
 import {useMount} from 'react-use'
 import * as XLSX from 'xlsx'
 import {ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
-import {EditOutlined, EllipsisOutlined, SettingOutlined} from '@ant-design/icons'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import CrudCreateButton from '../../elements/CreateButton'
-import {Button, Card, Space} from 'antd'
 import {AntdIcons} from '../../elements/AntdIcons'
-import {nav} from '../../nav'
 import PanelRGrid from '../../../grid/PanelRGrid'
 import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
+
 export default () => {
     const ledger = useLedger()
     const list = ledger.brands

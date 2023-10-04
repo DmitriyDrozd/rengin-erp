@@ -1,26 +1,19 @@
-import {AnyFieldsMeta, ExtractResource, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {useDispatch, useSelector} from 'react-redux'
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import AppLayout from '../../app/AppLayout'
-import {FormInstance, ProBreadcrumb, ProCard, ProFormInstance} from '@ant-design/pro-components'
-import type {CrudFormRender} from './ItemChapter'
+import {ProCard, ProFormInstance} from '@ant-design/pro-components'
 import getCrudPathname from '../../../hooks/getCrudPathname'
-import {RForm} from '../../elements/RForm'
 import {useHistory} from 'react-router'
-import CrudCreateItemButton from '../../elements/CreateButton'
 import {AntdIcons} from '../../elements/AntdIcons'
-import {Breadcrumb, Button, Card} from 'antd'
+import {Breadcrumb, Button} from 'antd'
 import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
-import VDevidedCard from '../../elements/VDevidedCard'
 import EditIssueItemForm from './EditIssueItemForm'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 import ExpensesTable from "./ExpensesTable";
 import UploadSection from "../../elements/UploadSection";
 import EstimationsTable from "./EstimationsTable";
-
-
 
 
 export default () => {
@@ -79,10 +72,6 @@ export default () => {
     const onBack = () =>
         history.goBack()
     return  <AppLayout
-
-
-
-
         proLayout={{
             extra:[
                 <CancelButton onCancel={onBack}/>,
