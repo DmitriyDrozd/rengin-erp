@@ -29,7 +29,10 @@ const issuesRaw = createResource('issue',{
         subId: valueTypes.itemOf({headerName: 'Подписка',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
         payMode: valueTypes.string({headerName: 'Оплата'}),
         userId: valueTypes.string(),
+
         responsibleEngineer: valueTypes.string({headerName: 'Отвественный инженер'}),
+
+            responsibleManager: valueTypes.string({headerName: 'Отвественный менеджер'}),
         registerDate: valueTypes.date({headerName:'Зарегистрировано'}),
         workStartedDate: valueTypes.date({headerName:'Начало работ'}),
         plannedDate: valueTypes.date({headerName: 'Запланировано'}),
@@ -44,6 +47,7 @@ const issuesRaw = createResource('issue',{
         actFiles: valueTypes.array({}),
         checkFiles: valueTypes.array({}),
         estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована'})
+
     },
     {
             indexes:['brandId','contractId','legalId','siteId','subId','userId'],
