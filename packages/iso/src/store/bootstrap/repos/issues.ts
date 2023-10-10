@@ -29,10 +29,9 @@ const issuesRaw = createResource('issue',{
         subId: valueTypes.itemOf({headerName: 'Подписка',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
         payMode: valueTypes.string({headerName: 'Оплата'}),
         userId: valueTypes.string(),
-           customersEngineer: valueTypes.string({headerName: 'Инженер заказчика'}),
-        responsibleEngineer: valueTypes.string({headerName: 'Отвественный инженер'}),
-
-            responsibleManager: valueTypes.string({headerName: 'Отвественный менеджер'}),
+        customersEngineer: valueTypes.string({headerName: 'Инженер заказчика'}),
+        responsibleEngineer: valueTypes.string({headerName: 'Ответственный инженер'}),
+        responsibleManager: valueTypes.string({headerName: 'Ответственный менеджер'}),
         registerDate: valueTypes.date({headerName:'Зарегистрировано'}),
         workStartedDate: valueTypes.date({headerName:'Начало работ'}),
         plannedDate: valueTypes.date({headerName: 'Запланировано'}),

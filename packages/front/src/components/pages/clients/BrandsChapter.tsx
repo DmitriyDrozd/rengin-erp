@@ -19,6 +19,7 @@ export default () => {
 
     const [colsList, map] = useAllColumns(BRANDS)
 const brandCols = [
+    map.clickToEditCol,
     {
         ...map.brandName,
     },

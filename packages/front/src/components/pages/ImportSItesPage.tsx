@@ -13,10 +13,11 @@ import * as XLSX from 'xlsx'
 import {call, put, select} from 'typed-redux-saga'
 import {selectLedger} from 'iso/src/store/bootstrapDuck'
 import {generateGuid} from '@sha/random'
+import ImportCard from "../elements/ImportCard";
 
-const xlsxCols = ['brandName','legalName','city','address'] as const
-type Datum =Record<typeof xlsxCols[number], string>
-const {confirm, info} = Modal
+export const importSitesXlsxCols = ['brandName','legalName','city','address'] as const
+type Datum =Record<typeof importSitesXlsxCols[number], string>
+
 function* importObjectsSaga(data: Datum[]) {
 
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger)
@@ -81,67 +82,24 @@ function* importObjectsSaga(data: Datum[]) {
 }
 
 export default () => {
-    const state = useFrontStateSelector()
     const store = useStore()
-    const [loading, setLoading] = useState(false)
     const importFile = async (data: Array<string[]>) => {
-        setLoading(true)
        const task =  store.runSaga(importObjectsSaga, data)
         await task
-        await sleep(2000)
-        const res =  info({
-            title:"Записи успешно импортированы",
-        })
-        setLoading(false)
+
 
     }
     return <AppLayout>
-        <Spin spinning={loading}>
-        <Card
-            hoverable
-            style={{ width: '450px' , margin: 'auto' }}
-            cover={<img alt="example" src="/assets/import-objects-example.png" />}
-        >
-
-            <Meta title="Импорт объектов и заказчиков" description={     <p>Подготовьте excel файл с данными как показано в примере <a href={'/assets/import-objects-example.xlsx'} download>образец-адресов.xlsx</a></p>
-            } />
-            <Upload
-                accept=".xls, .xlsx"
-                showUploadList={false}
-                beforeUpload={file => {
-                    const reader = new FileReader();
-
-                    reader.onload = async function(e) {
-                        var data = e.target.result;
-                        /* reader.readAsArrayBuffer(file) -> data will be an ArrayBuffer */
-                        var workbook = XLSX.read(data);
-                        const sheet = workbook.Sheets[workbook.SheetNames[0]]
-                        const arr = XLSX.utils.sheet_to_json(sheet, {header:xlsxCols})
-                           arr.shift()
-                        const res =  confirm({
-                            title:"Импортировать записи?",
-                            content:<div>Найдено <b>{arr.length}</b> объектов с данными об адресах и заказчиках</div>,
-                            okText:'Импорт',
-                            cancelText:'Отмена',
-                            onOk: () => {
-                                importFile(arr)
-                            }
-                        })
 
 
-                        /* DO SOMETHING WITH workbook HERE */
-                    };
-                    reader.readAsArrayBuffer(file);
+            <ImportCard<Datum>
+                onImport={importFile}
+                sampleFileURL={'/assets/import-objects-example.xlsx'}
+                xlsxCols={importSitesXlsxCols}
+                title={"Импорт объектов и заказчиков"}
+                imgURL={'/assets/import-objects-example.png'}
+                importedItemsFound={"объектов с данными об адресах и заказчиках"}
+            ></ImportCard>
 
-                    // Prevent upload
-                    return false;
-                }}
-            >
-                <Button icon={<UploadOutlined />}>
-                     Загрузить xls/xlsx файл
-                </Button>
-            </Upload>;
-        </Card>
-        </Spin>
     </AppLayout>
 }

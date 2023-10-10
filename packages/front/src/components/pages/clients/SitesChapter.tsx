@@ -1,5 +1,5 @@
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
-import {ProFormSelect, ProFormText} from '@ant-design/pro-components'
+import {ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
 import {useAllColumns} from '../../../grid/RCol'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import useLedger from '../../../hooks/useLedger'
@@ -27,6 +27,12 @@ export default () => {
                         <ProFormText {...fieldMetaToProProps(RES, 'KPP')}/>
 
                         <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
+                        <ProFormTextArea {...fieldMetaToProProps(RES, 'contactInfo')}/>
+                        <ProFormSelect
+                            {...fieldMetaToProProps(RES, '')}
+                            valueEnum={legalValueEnum}
+                            rules={[{required: true}]}
+                        />
                     </>
                 }
         }

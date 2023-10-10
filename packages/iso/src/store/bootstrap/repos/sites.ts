@@ -29,6 +29,7 @@ export const siteResource = createResource('site',{
             required: true
         }),
         responsibleEngineer: valueTypes.string({headerName:'Ответственный инженер'}),
+        responsibleManager: valueTypes.string({headerName:'Ответственный менеджер'}),
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         KPP: valueTypes.string({headerName: 'КПП'}),
     },

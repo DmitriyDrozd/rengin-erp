@@ -10,23 +10,32 @@ import {
     StatusPanelDef
 } from "ag-grid-community";
 import {ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
-import {Button, Space} from "antd";
-import {clone, remove} from "ramda";
+import {Button, Space, Typography} from "antd";
+import {clone, remove} from "ramda"
+import useIssue from "../../../../contexts/useIssue"
+import AG_GRID_LOCALE_RU from "../../../../grid/locale.ru";
+import ImportTableButton from "../ImportTableButton";
+import {importSitesXlsxCols} from "../../ImportSItesPage";
 
 const countExpenses = (expenses: IssueVO['expenses']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 
-export default ({issueId,  onItemChange}:{issueId: string}) => {
-    const dispatch = useDispatch()
-    const issue:IssueVO = useSelector(ISSUES.selectById(issueId))
-    const [initialItems]= useState(clone(issue.expenses|| []))
+export default (props) => {
+    const {issue,setIssue,setIssueProperty} = useIssue()
+    const issueId = issue.issueId
+
+    const initialItems= clone(issue.expenses|| [])
     const [isEdited, setIsEdited] = useState(false)
     const gridRef = useRef<AgGridReact>(null);
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({ height: '300px', width: '100%' }), []);
-    const [rowData, setRowData] = useState<ExpenseItem[]>(initialItems);
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+    const rowData = initialItems
+    console.log('ExpensesTable issue', issue)
+    const setRowData = (items: ExpenseItem[]) => {
+        setIssue({...issue, expenses: items, expensePrice: countExpenses(items)})
+    }
+    const columnDefs = [
         {
             field: 'paymentType',
             headerName:'Оплата',
@@ -46,7 +55,7 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
         },
         { field: 'title',headerName:'Наименование',  width: 140, },
         { field: 'amount',headerName:'Расходы',cellEditor: 'agNumberCellEditor', },
-        { field: 'date',headerName:'Дата оплаты',
+        { field: 'date',headerName:'Дата оплаты',cellEditor: 'agDateCellEditor', cellClass: 'dateISO'
         },
         { field: 'comment',headerName:'Комментарий'},
         {
@@ -55,7 +64,9 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
                    setRowData(remove(props.rowIndex,1,rowData))
                 }}>Удалить</Button>
         }
-    ]);
+    ];
+
+    const xlsxCols = columnDefs.filter(def => def.field).map(def => def.field)
     const defaultColDef = useMemo<ColDef>(() => {
         return {
             flex: 1,
@@ -64,22 +75,7 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
             resizable: true,
         };
     }, []);
-    const statusBar = useMemo<{
-        statusPanels: StatusPanelDef[];
-    }>(() => {
-        return {
-            statusPanels: [
-                {
-                    statusPanel: () => countExpenses(
-                        rowData
-                    )
-                }, {
-                statusPanel: () =>
-                    <Button onClick={() => setRowData([...rowData,{date: new Date().toISOString()}])}>Добавить</Button>
-                }
-            ],
-        };
-    }, []);
+
     const onCellEditingStarted = (e:RowEditingStartedEvent) => {
         console.log('RowEditingStartedEvent',e)
     }
@@ -89,48 +85,43 @@ export default ({issueId,  onItemChange}:{issueId: string}) => {
 
                 items.push(node.data);
         });
-        setRowData(items)
-        setIsEdited(true)
-
+setRowData(items)
         console.log('RowEditingStoppedEvent',e,items)
     }
 
-    const onSave = () => {
-        let items: Array<ExpenseItem> = [];
-        gridRef.current.api.forEachNode(function(node) {
-            if(node.data.amount)
-            items.push(node.data);
-        });
-        setIsEdited(false)
-        const upd = {issueId,expenses: items,expensePrice: countExpenses(items)}
 
-        dispatch(ISSUES.actions.patched({...upd}))
+    const onImport = async (items: ExpenseItem[]) => {
+        console.log('onImport', items)
+        setRowData(items)
     }
 
-    console.warn('init and current',JSON.stringify(initialItems),JSON.stringify(rowData) )
     return <div>
         <div className="ag-theme-alpine" style={gridStyle}>
             <AgGridReact
+                localeText={AG_GRID_LOCALE_RU}
                 ref={gridRef}
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 onCellEditingStarted={onCellEditingStarted}
                 onCellEditingStopped={onCellEditingStopped}
-                statusBar={statusBar}
             />
 
     </div>
 
         <div style={{paddingTop: '8px'}}>
             <Space>
-            <Button onClick={() => setRowData([...rowData,{paymentType:'Безналичные',purpuseType:'Материалы'}])}>Добавить</Button>
-                {(!isEdited) ? 'Нет изменений' :
-                    <><Button type={'primary'} onClick={onSave
-                    } >Сохранить</Button>
-                        <Button danger={true} onClick={() => setRowData(initialItems)} >Отменить</Button>
-                    </>
-                }
+                <ImportTableButton<ExpenseItem>
+                 onImport={onImport}
+                 sampleFileURL={'/assets/import-expenses-example.xlsx'}
+                 xlsxCols={xlsxCols}
+                 title={"Импорт расходов"}
+                 imgURL={'/assets/import-expenses-example.png'}
+                 importedItemsFound={"записей о расходах"}
+                ></ImportTableButton>
+                <Button type={"primary"} onClick={() => setRowData([...rowData,{paymentType:'Безналичные',purpuseType:'Материалы'}])}>Добавить строку</Button>
+                <Typography.Text>Итого: </Typography.Text>
+                <Typography.Text code strong>{issue.expensePrice}</Typography.Text>
             </Space>
         </div>
     </div>

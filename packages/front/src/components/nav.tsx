@@ -62,11 +62,10 @@ export const nav = {
     subsList: buildNav('/app/in/subs', SubsChapter),
     subsCreate: buildNav('/app/in/subs/create', SubsChapter),
     subsEdit: buildNav('/app/in/subs/:subId', SubsChapter),
-
     importSites: buildNav('/app/in/import-sites', ImportSItesPage),
     issues: buildNav('/app/in/issues', IssuesListPage),
-    issuesEdit: buildNav('/app/in/issues/create', AddIssuePage),
-    issuesCreate: buildNav('/app/in/issues/:issueId', IssueItemPage)
+    issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
+    issuesEdit: buildNav('/app/in/issues/:issueId', IssueItemPage)
     //addressesList: buildNav('/app/in/addresses', AddressesListPage),
    // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
    // contractsList: buildNav('/app/in/contracts', ContractsListPage),

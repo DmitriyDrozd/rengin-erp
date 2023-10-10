@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux'
-import React, {useRef, useState} from 'react'
+import React, {useReducer, useRef, useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {ProCard, ProFormInstance} from '@ant-design/pro-components'
 import getCrudPathname from '../../../hooks/getCrudPathname'
@@ -9,33 +9,37 @@ import {Breadcrumb, Button} from 'antd'
 import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
-import EditIssueItemForm from './EditIssueItemForm'
+import EditIssueItemForm from './tabs/EditIssueFormTab'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
-import ExpensesTable from "./ExpensesTable";
+import ExpensesTable from "./tabs/ExpensesTable";
 import UploadSection from "../../elements/UploadSection";
-import EstimationsTable from "./EstimationsTable";
+import EstimationsTable from "./tabs/EstimationsTable";
+import {issueEditReducer, IssueStateContext} from "../../../contexts/useIssue";
+import {currentIssueDuck} from "../../../store/ducks/currentIssueDuck";
 
 
 export default () => {
     const {resource,id,item,verb} = usePathnameResource()
-    type Item = typeof resource.exampleItem
-    const formRef = useRef<
-        ProFormInstance<Item>
-    >();
 
+    type Item = typeof resource.exampleItem
 
     const initialValues:IssueVO =useSelector(ISSUES.selectById(id))
-    const [state, setState] = useState(initialValues) as any as [IssueVO, (otem: IssueVO)=>any]
 
+    const [issueState, setIssueState] = useState(initialValues as IssueVO) as any as [IssueVO, (otem: IssueVO)=>any]
+
+    const setIssueProperty = <K extends keyof IssueVO>(prop: K) => (value: IssueVO[K]) => {
+        console.log('set property ', prop, value)
+        setIssueState({...issueState, [prop]: value})
+    }
     const idProp = resource.idProp
     const dispatch = useDispatch()
     const history = useHistory()
 
     const getFilesProps = (listName: 'workFiles'|'checkFiles'|'actFiles',label: string, maxCount = 1) => {
         return {
-            items: state[listName],
+            items: issueState[listName],
             onItemsChange: (list) => {
-                setState({...state, [listName]:list})
+                setIssueState({...issueState, [listName]:list})
             },
             issueId: initialValues.issueId,
             label,
@@ -46,22 +50,11 @@ export default () => {
 
 
 
-    const onSubmit = async (values: Item) => {
 
-        const patch = {...initialValues, ...values,[idProp]:id};
-        const action = resource.actions.patched(patch, initialValues)
-        console.log('Submit', values, action)
-        history.goBack()
-        if(action)
-            dispatch(action)
-
-        //            dispatch(BRANDS.actions.added(values))
-    }
-
-    const title = resource.getItemName(state)
+    const title = resource.getItemName(issueState)
     const onSave = () => {
-        const { expenses,expensePrice,estimationPrice,estimations, ...rest} = state
-        dispatch(resource.actions?.patched(rest))
+        //const { expenses,expensePrice,estimationPrice,estimations, ...rest} = issueState
+        dispatch(resource.actions?.patched(issueState))
         onBack()
     }
     const onDelete = () => {
@@ -71,12 +64,18 @@ export default () => {
 
     const onBack = () =>
         history.goBack()
-    return  <AppLayout
+    const issue = useSelector(currentIssueDuck.selectCurrentIssue)
+
+    return  <IssueStateContext.Provider value={{
+        issue: issueState,
+        setIssue: setIssueState,
+        setIssueProperty
+    }}><AppLayout
         proLayout={{
             extra:[
                 <CancelButton onCancel={onBack}/>,
                 <DeleteButton  resource={resource} id={id} onDeleted={onDelete}/>,
-                <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
+                <Button disabled={JSON.stringify(initialValues) === JSON.stringify(issueState)} type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
             ],
             title:'Rengin'
         }}
@@ -97,13 +96,13 @@ export default () => {
             }}
         >
             <ProCard.TabPane key="tab1" tab="Заявка">
-                <EditIssueItemForm issueId={id} />
+                <EditIssueItemForm />
             </ProCard.TabPane>
-            <ProCard.TabPane key="tab2" tab={"Смета"}>
-                <EstimationsTable issueId={id}/>
+             <ProCard.TabPane key="tab2" tab={"Смета"}>
+                <EstimationsTable/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab3" tab={"Расходы"}>
-                <ExpensesTable issueId={id} />
+                <ExpensesTable/>
             </ProCard.TabPane>
             <ProCard.TabPane key="tab4" tab={"Файлы"}>
                     <UploadSection {...getFilesProps('checkFiles','Чек',1)}/>
@@ -118,5 +117,6 @@ export default () => {
 
 
     </AppLayout>
+    </IssueStateContext.Provider>
 }
 

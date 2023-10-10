@@ -10,6 +10,8 @@ import frontConfigDuck, {FrontConfig} from './ducks/frontConfigDuck';
 import {routerDuck, RouterState} from './ducks/routerDuck';
 import {loadingDuck} from './ducks/loadingDuck';
 import {preferencesDuck} from './ducks/preferencesDuck';
+import {currentIssueDuck} from "./ducks/currentIssueDuck";
+import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 
 export type DeepReadonly<T> = T extends any[]
     ? DeepReadonlyArray<T[number]>
@@ -28,6 +30,7 @@ const frontReducer = (history: History ) => {
             router,
             app: combineReducers({
                 bootstrap: bootstrapDuck.reducer,
+                currentIssue: currentIssueDuck.reducer,
                 conn: connectionDuck.reducer,
                 preferences: preferencesDuck.reducer,
             }),
@@ -52,6 +55,7 @@ export type FrontState = {
     app: {
         bootstrap: Bootstrap,
         conn: ConnectionState
+        currentIssue: IssueVO
     },
     loading: string[]
     meta: StoreMeta

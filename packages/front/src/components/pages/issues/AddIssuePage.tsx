@@ -25,6 +25,8 @@ import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
 import CONTRACTS, {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
 import {DateTime, Duration} from "luxon";
 import RenFormDate from "../../form/RenFormDate";
+import {nav} from "../../nav";
+import {sleep} from "@sha/utils";
 
 const { Text, Link } = Typography;
 export default () => {
@@ -103,7 +105,6 @@ export default () => {
         console.log('onLegalChange',e, sitesOpts)
     }
 
-
     const contracts: ContractVO[] = useSelector(CONTRACTS.selectList)
     const subs: SubVO[] = useSelector(SUBS.selectList)
     const sub = subs.find(s => s.siteId === state.siteId) || {contractId: undefined}
@@ -112,7 +113,6 @@ export default () => {
         const siteId = formRef.current?.getFieldValue('siteId')
         const sub = subs.find(s => s.siteId === siteId) || {contractId: undefined}
         const contract = contracts.find(c => c.contractId === sub.contractId )
-        debugger
         if(sub && contract) {
             formRef.current?.setFieldValue('contractId',contract.contractId)
             formRef.current?.setFieldValue('subId',sub.subId)
@@ -175,7 +175,8 @@ export default () => {
                 console.log('state', state)
                 debugger
                 onSubmit(state);
-                history.goBack()
+                await sleep(100)
+                history.replace(nav.issuesEdit({issueId:state.issueId}))
             }
             }
             submitter={{
