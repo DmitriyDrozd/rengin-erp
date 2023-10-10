@@ -27,10 +27,13 @@ import {DateTime, Duration} from "luxon";
 import RenFormDate from "../../form/RenFormDate";
 import {nav} from "../../nav";
 import {sleep} from "@sha/utils";
+import {SiteVO} from "iso/src/store/bootstrap/repos/sites";
+import useCurrentUser from "../../../hooks/useCurrentUser";
 
 const { Text, Link } = Typography;
 export default () => {
 
+    const {currentUser} = useCurrentUser()
     const layoutProps = {
         labelCol: { span: 6 },
         wrapperCol: { span:18 },
@@ -48,6 +51,7 @@ export default () => {
         ...predefinedValues,checkFiles: [],
         actFiles: [],
         workFiles: [],
+        responsibleManagerId: currentUser.userId,
         status: 'Новая',
         expensePrice: 0,estimationPrice: 0, expenses: [], estimations: [],
         plannedDate: initialPlannedDate.toISO(),
@@ -85,7 +89,7 @@ export default () => {
     const brandsOptions = BRANDS.asValueEnum(brands)
     const legals = useSelector(LEGALS.selectList)
     const [legalsOptions, setLegalOptions]= useState({})
-    const sites = useSelector(SITES.selectList)
+    const sites: SiteVO[] = useSelector(SITES.selectList)
     const [sitesOptions, setSitesOptions]= useState({})
     const onBrandChange = (e) => {
         formRef.current?.setFieldValue('legalId', undefined)
@@ -111,12 +115,13 @@ export default () => {
     const contract = contracts.find(c => c.contractId === state.contractId )
     const onSiteChange = (e) => {
         const siteId = formRef.current?.getFieldValue('siteId')
+        const site = sites.find(s => s.siteId === siteId)
         const sub = subs.find(s => s.siteId === siteId) || {contractId: undefined}
         const contract = contracts.find(c => c.contractId === sub.contractId )
-        if(sub && contract) {
+        if(sub && contract && site) {
             formRef.current?.setFieldValue('contractId',contract.contractId)
             formRef.current?.setFieldValue('subId',sub.subId)
-            setState({...state, contractId: contract.contractId, subId: sub.subId})
+            setState({...state, contractId: contract.contractId, subId: sub.subId,contactInfo:site.contactInfo, responsibleEngineer: site.responsibleEngineer })
         }
     }
     console.log('contractId', state.contractId, contract)
@@ -205,7 +210,7 @@ export default () => {
             }
             { buildDate('workStartedDate')}
             {buildDate('completedDate')}
-            <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')} rules={[{required:true}]}/>
+            <ProFormTextArea {...fieldMetaToProProps(ISSUES, 'description')}/>
         </RForm>
 
     </AppLayout>

@@ -17,11 +17,19 @@ export const fieldMetaToProProps =<
 >  (resource: Resource<RID, Fields>, key: K, item?: Partial<ItemWithId<RID,Fields>>) =>{
     const meta = resource.properties[key]
     const state = useFrontStateSelector()
-    const getLinkedResourceOptions = () => {
+    const getLinkedResourceEnum = () => {
         if (isItemOfMeta(meta)) {
             const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
             const list = linkedResource.selectList(state)
             return linkedResource.asValueEnum(list)
+        }
+        return undefined
+    }
+    const getLinkedResourceOptions = () => {
+        if (isItemOfMeta(meta)) {
+            const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
+            const list = linkedResource.selectList(state)
+            return linkedResource.asOptions(list)
         }
         return undefined
     }
@@ -30,7 +38,8 @@ export const fieldMetaToProProps =<
         label: meta.headerName,
         required: resource.properties[key].required,
         placeholder: resource.properties[key].headerName,
-        valueEnum: getLinkedResourceOptions()
+        valueEnum: getLinkedResourceEnum(),
+        options:getLinkedResourceOptions()
     })
 
     console.log(resource.factoryPrefix, key ,proProp)

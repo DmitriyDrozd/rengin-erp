@@ -31,7 +31,7 @@ const issuesRaw = createResource('issue',{
         userId: valueTypes.string(),
         customersEngineer: valueTypes.string({headerName: 'Инженер заказчика'}),
         responsibleEngineer: valueTypes.string({headerName: 'Ответственный инженер'}),
-        responsibleManager: valueTypes.string({headerName: 'Ответственный менеджер'}),
+        responsibleManagerId: valueTypes.itemOf({headerName: 'Ответственный менеджер', linkedResourceName:'USERS'}),
         registerDate: valueTypes.date({headerName:'Зарегистрировано'}),
         workStartedDate: valueTypes.date({headerName:'Начало работ'}),
         plannedDate: valueTypes.date({headerName: 'Запланировано'}),
@@ -45,8 +45,8 @@ const issuesRaw = createResource('issue',{
         workFiles: valueTypes.array({}),
         actFiles: valueTypes.array({}),
         checkFiles: valueTypes.array({}),
-        estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована'})
-
+        estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована'}),
+        contactInfo: valueTypes.text({headerName:'Контакты'}),
     },
     {
             indexes:['brandId','contractId','legalId','siteId','subId','userId'],

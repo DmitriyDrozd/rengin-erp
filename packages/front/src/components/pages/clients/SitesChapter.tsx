@@ -16,7 +16,7 @@ export default () => {
 
     return <ItemChapter
                 resource={RES}
-                renderForm={({item, form,id,verb, resource}) => {
+                renderForm={({item, id,verb, resource}) => {
                     const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
                     return <>
                         <ProFormSelect  {...fieldMetaToProProps(RES, 'brandId')} rules={[{required: true}]}/>
@@ -28,7 +28,7 @@ export default () => {
 
                         <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
                         <ProFormTextArea {...fieldMetaToProProps(RES, 'contactInfo')}/>
-                       
+
                     </>
                 }
         }

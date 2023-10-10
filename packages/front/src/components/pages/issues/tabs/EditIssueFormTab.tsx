@@ -134,10 +134,13 @@ export default () => {
                 buildText('description')
             }
         {
+            buildSelect('responsibleManagerId')
+        }
+        {
             buildText('responsibleEngineer')
         }
         {
-            buildText('responsibleManager')
+            buildText('contactInfo')
         }
             <RenFormSelect label={'Статус'}  options={optionsFromValuesList(['Новая','В работе','Выполнена','Отменена'])} placeholder={'Статус не указан'}  value={issue.status}
                            onValueChange={

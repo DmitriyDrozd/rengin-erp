@@ -16,6 +16,7 @@ import UploadSection from "../../elements/UploadSection";
 import EstimationsTable from "./tabs/EstimationsTable";
 import {issueEditReducer, IssueStateContext} from "../../../contexts/useIssue";
 import {currentIssueDuck} from "../../../store/ducks/currentIssueDuck";
+import {sleep} from "@sha/utils";
 
 
 export default () => {
@@ -57,9 +58,11 @@ export default () => {
         dispatch(resource.actions?.patched(issueState))
         onBack()
     }
-    const onDelete = () => {
-        dispatch(resource.actions.removed(id))
+    const onDelete = async () => {
         onBack()
+        await sleep(100)
+        dispatch(resource.actions.removed(id))
+
     }
 
     const onBack = () =>
@@ -109,9 +112,14 @@ export default () => {
                     <UploadSection {...getFilesProps('actFiles','Акты',5)}/>
                     <UploadSection {...getFilesProps('workFiles','Работы',70)}/>
             </ProCard.TabPane>
+            {
+                /*
             <ProCard.TabPane key="tab5" tab={"История"}>
 
             </ProCard.TabPane>
+
+                 */
+            }
         </ProCard>
 
 

@@ -48,7 +48,7 @@ export type Resource<RID extends string, Fields extends {[key in string]: Meta}>
     properties:FieldsWithIDMeta<RID, Fields>
     getItemName: (item: ItemWithId<RID,Fields> ) => string
     getStore: typeof getStore
-    asOptions: () => {value: string, title: string}[]
+    asOptions: (list?: ItemWithId<RID,Fields>[]) => Array<{value: string, title: string}>
     asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
     fieldsList: (Meta & {name: string})[]
     resourceName: Uppercase<PluralEngindEng<RID>>
@@ -99,14 +99,13 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
             fieldsList,
             ...crud,
             fields: properties,
-            asOptions: () => {
+            asOptions: (init: Item[] = undefined) => {
                 const store = getStore()
                 const state = store.getState()
-                const list = crud.selectList(state as any)
+                const list = init || crud.selectList(state as any)
                 const options = list.map( item => ({
                     value: item[idProp],
-                    title: getItemName(item as any as Item),
-
+                    label: getItemName(item as any as Item),
                 }))
                 console.log('asOptions', options)
                 return options

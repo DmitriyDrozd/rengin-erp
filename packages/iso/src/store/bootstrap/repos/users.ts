@@ -13,7 +13,7 @@ const usersRaw =createResource('user',{
     removed: valueTypes.boolean({select: false}),
 
 },{
-   
+   getItemName: item => item.fullName,
     langRU: {
         singular: 'Пользователь',
         plural: 'Пользователи',

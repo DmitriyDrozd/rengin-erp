@@ -13,11 +13,12 @@ export default <T,>(props: ImportTableButton<T>) => {
         <Modal title="Импорт"
                open={isOpen}
                onOk={toggleOpen}
-               onCancel={toggleOpen}>
-        <ImportCard<T>
-            {...props}
+               onCancel={toggleOpen}
         >
-        </ImportCard>
+            <ImportCard<T>
+                {...props}
+            >
+            </ImportCard>
         </Modal>
     </>
 }
