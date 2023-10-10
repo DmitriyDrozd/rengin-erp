@@ -28,11 +28,7 @@ export default () => {
 
                         <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
                         <ProFormTextArea {...fieldMetaToProProps(RES, 'contactInfo')}/>
-                        <ProFormSelect
-                            {...fieldMetaToProProps(RES, '')}
-                            valueEnum={legalValueEnum}
-                            rules={[{required: true}]}
-                        />
+                       
                     </>
                 }
         }
