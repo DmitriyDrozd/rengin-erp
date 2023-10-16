@@ -142,7 +142,7 @@ export default () => {
             {
                 buildText('contactInfo')
             }
-            <RenFormSelect label={'Статус'}  options={optionsFromValuesList(ISSUES.properties.status.values)} placeholder={'Статус не указан'}  value={issue.status}
+            <RenFormSelect label={'Статус'}  options={optionsFromValuesList(ISSUES.properties.status.enum)} placeholder={'Статус не указан'}  value={issue.status}
                            onValueChange={
                                setIssueProperty('status')
                            }/>

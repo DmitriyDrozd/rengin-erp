@@ -18,7 +18,7 @@ export type EstimationItem = {
 
 const issuesRaw = createResource('issue',{
         clientsIssueNumber: valueTypes.string({headerName:'Номер заявки', required: true, immutable: true}),
-        status: valueTypes.enum({headerName: 'Статус',enum:['Новая','В работе','Выполнена','Отменена']}),
+        status: valueTypes.enum({headerName: 'Статус',enum:['Новая','В работе','Выполнена','Отменена','Приостановлена']}),
         phase: valueTypes.string({headerName: 'Этап'}),
         brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),

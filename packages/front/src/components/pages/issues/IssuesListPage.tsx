@@ -32,7 +32,8 @@ export default () => {
 
             return <Tag color="red">Просрочено</Tag>
         }
-
+        if(issue.status === 'Приостановлена')
+            return <Tag color="grey">{issue.status}</Tag>
         if(issue.status === 'В работе')
             return <Tag color="yellow">{issue.status}</Tag>
         if(issue.status === 'Выполнена')
@@ -66,7 +67,7 @@ export default () => {
                 dispatch(ISSUES.actions.patched({issueId: event.data.issueId, status: event.newValue}))
             },
             cellEditorParams: {
-                values: ['Новая','В работе','Выполнена','Отменена'],
+                values: ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
                 valueListGap: 0,
             },
             cellRenderer: (props:{rowIndex:number}) =>
