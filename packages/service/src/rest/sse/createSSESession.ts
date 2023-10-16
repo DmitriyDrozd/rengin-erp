@@ -18,5 +18,7 @@ export default async (req, res, initialState: Partial<SSESessionState>) => {
     session.state = initialState
 
     getSSEAllSesionsChannel().register(session)
+    const channelAll = getSSEAllSesionsChannel()
+    console.log('\t\t', 'now sessions are', channelAll.activeSessions.length)
     return session
 }

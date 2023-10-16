@@ -8,6 +8,8 @@ import getSSEAllSesionsChannel from './getSSEAllSesionsChannel';
 
 import {sessionsDuck} from './sessionsDuck';
 import '../../fastify-with-plugins'
+import {USERS} from "iso/src/store/bootstrap";
+import {Session} from "@sha/better-sse";
 
 export default async (fastify: FastifyInstance, opts, done) => {
     const io = fastify.io
@@ -26,8 +28,10 @@ export default async (fastify: FastifyInstance, opts, done) => {
         handler: async (request, reply) => {
             const state = fastify.io.store.getState()
             const {userId, storeGuid} = request.query as { [key in string]: string }
+            const sessionState = {userId, storeGuid}
             const sseSession = await createSSESession(request.raw, reply.raw, {userId, storeGuid})
-            getSSEUserChannel(userId).register(sseSession)
+
+            console.log('session ', sessionState, 'added','active sessions length', getSSEAllSesionsChannel().activeSessions.length)
         }
     })
     fastify.route({

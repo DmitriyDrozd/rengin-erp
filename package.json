@@ -52,7 +52,7 @@
         "aggregate-error": "4.0.1",
         "antd": "^5.8.2",
         "axios": "^0.27.2",
-        "better-sse": "^0.8.0",
+        "better-sse": "^0.10.0",
         "blinkdb": "^0.13.3",
         "brotli-cli": "^1.0.4",
         "buffer": "^6.0.3",

@@ -113,6 +113,7 @@ export function* loginSaga(history: History) {
             yield* put(preferencesDuck.actions.setKey({key:'roleId', value: action.payload}))
         })
         yield* fork(sseClientSaga)
+        debugger
         const meta = {userId: user.userId, storeGuid: 'S' + generateGuid()}
         yield* put(connectionDuck.actions.gatewayChanged(SSEClientFront.getSSERoute(meta)))
         yield* put(metaDuck.actions.metaUpdated(meta))

@@ -133,16 +133,16 @@ export default () => {
             {
                 buildText('description')
             }
-        {
-            buildSelect('responsibleManagerId')
-        }
-        {
-            buildText('responsibleEngineer')
-        }
-        {
-            buildText('contactInfo')
-        }
-            <RenFormSelect label={'Статус'}  options={optionsFromValuesList(['Новая','В работе','Выполнена','Отменена'])} placeholder={'Статус не указан'}  value={issue.status}
+            {
+                buildSelect('responsibleManagerId')
+            }
+            {
+                buildText('responsibleEngineer')
+            }
+            {
+                buildText('contactInfo')
+            }
+            <RenFormSelect label={'Статус'}  options={optionsFromValuesList(ISSUES.properties.status.values)} placeholder={'Статус не указан'}  value={issue.status}
                            onValueChange={
                                setIssueProperty('status')
                            }/>

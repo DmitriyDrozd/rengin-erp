@@ -5,7 +5,7 @@ import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
 import useLedger from '../hooks/useLedger'
 import {getRes} from 'iso/src/store/bootstrap/resourcesList'
 import useFrontSelector from '../hooks/common/useFrontSelector'
-import {ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
+import {CellClassRules, ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
 
 export const useAllColumns = <
     RID extends string,
@@ -51,20 +51,28 @@ const sourceResourceName = res.resourceName
     ): ColDef<Item,Item[K]> => {
         const fieldMeta = res.properties[property]
         const colInit :ColDef<Item, Item[K],RID,Fields ,K>= {
+            editable: !fieldMeta.immutable,
             headerName: fieldMeta.headerName,
             resizable: true,
             sortable: true,
             field: property,
             fieldName:property,
-            editable: true,
+
             resource: res,
             filter:true,
             width: 120
         }
         if(isItemOfMeta(fieldMeta)){
             const RES = getRes(fieldMeta.linkedResourceName)
+
+            const cellClassRules:CellClassRules<Item> = {}
+            if(fieldMeta.required) {
+                cellClassRules['grid-cell-required'] = params => params.data[params.colDef.field]=== undefined
+            }
+
             return {
                 ...colInit,
+                cellClassRules,
                 valueGetter: (params => {
 
 
@@ -79,7 +87,7 @@ const sourceResourceName = res.resourceName
                     }
 
                 }) as ValueGetterFunc<Item, Item[K]>
-            }
+            } as ColDef
         }
         return colInit
     }

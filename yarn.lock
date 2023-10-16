@@ -2996,10 +2996,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sse@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "better-sse@npm:0.8.0"
-  checksum: 7448f309a4da5bef12404c3c18d1b1c26ea18e6184f7fdf36efcd96b1a12ba88ca1ea21d4872c55cfb0412aa4f2941a933a7bb8affee947c74e7f87ea025b95d
+"better-sse@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "better-sse@npm:0.10.0"
+  checksum: 92ae12524e198c93443ca7fcaa4badb945f931496c0bc0adc0a726e28cf35221c47ea8333e0b86fb6e7fc4ebf511db6b3a037970a3a9523acd6689dbc298fc59
   languageName: node
   linkType: hard
 
@@ -8254,7 +8254,7 @@ __metadata:
     aggregate-error: 4.0.1
     antd: ^5.8.2
     axios: ^0.27.2
-    better-sse: ^0.8.0
+    better-sse: ^0.10.0
     blinkdb: ^0.13.3
     brotli-cli: ^1.0.4
     buffer: ^6.0.3

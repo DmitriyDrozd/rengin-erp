@@ -10,6 +10,7 @@ import {Session} from '@sha/better-sse';
 import {isPersistentAction} from 'iso';
 import {sessionsDuck} from './sessionsDuck';
 import isPublicForAllAction from './isPublicForAllAction';
+import {forEach} from "ramda";
 
 
 export default function* broadcastSSEEventsSaga() {
@@ -63,16 +64,16 @@ export default function* broadcastSSEEventsSaga() {
 
         const args = [SSE_REDUX_EVENT, action, {filter: filterNotStoreGuid(sourceStoreGuid)}] as const
         const channel = getSSEAllSesionsChannel()// getSSEAdminChannel('admin')
-        //.forEach( channel => {
-        //console.log('\t', 'to admins')
-        //console.log('\t\t', 'active admin length', channel.activeSessions.length)
-        //console.log('\t\t', 'send to SSE client with storeGuids:')
-        //console.log('\t\t\t', channel.activeSessions.filter(filterNotStoreGuid(sourceStoreGuid)).map(s => s.state.storeGuid).join(','))
+
+        console.log('\t', 'to admins')
+        console.log('\t\t', 'active admin length', channel.activeSessions.length)
+        console.log('\t\t', 'send to SSE client with storeGuids:')
+        console.log('\t\t\t', channel.activeSessions.filter(filterNotStoreGuid(sourceStoreGuid)).map(s => s.state.userId+':'+s.state.storeGuid).join(',\n'))
 
         channel.broadcast(action, SSE_REDUX_EVENT, {filter: filterNotStoreGuid(sourceStoreGuid)})
-        //})
 
-        /*  const userId = action.userId || action.meta.userId || (action.payload && action.payload.userId)
+/*
+          const userId = action.userId || action.meta.userId || (action.payload && action.payload.userId)
           if(userId) {
               const channel = getSSEUserChannel(userId)
               channel.activeSessions

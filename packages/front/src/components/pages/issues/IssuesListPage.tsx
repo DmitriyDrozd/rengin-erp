@@ -8,11 +8,14 @@ import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
 import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
 import {Tag} from "antd";
+import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
+import {useDispatch} from "react-redux";
 
 
 export default () => {
     const ledger = useLedger()
 
+    const dispatch = useDispatch()
     const onCreateClick = (defaults) => {
         console.log(defaults)
     }
@@ -55,11 +58,19 @@ export default () => {
     const columns: ColDef<IssueVO>[] = [colMap.clickToEditCol,
         colMap.clientsIssueNumber,
         {
-            field: 'plannedDate',
-            headerName: 'Выполнение',
+            field: 'status',
+            headerName: 'Статус',
+            cellEditor: 'agSelectCellEditor',
+            editable: true,
+            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['status']> ) => {
+                dispatch(ISSUES.actions.patched({issueId: event.data.issueId, status: event.newValue}))
+            },
+            cellEditorParams: {
+                values: ['Новая','В работе','Выполнена','Отменена'],
+                valueListGap: 0,
+            },
             cellRenderer: (props:{rowIndex:number}) =>
                 getTag(props.data)
-
         },
 
         colMap.brandId,
