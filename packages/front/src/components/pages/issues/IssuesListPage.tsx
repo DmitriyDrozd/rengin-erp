@@ -9,7 +9,7 @@ import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
 import {Tag} from "antd";
 import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import useRouteProps from "../../../hooks/useRouteProps";
 import {useRouteMatch} from "react-router";
@@ -44,9 +44,12 @@ const getStatusTag = (issue: IssueVO) => {
 export default () => {
 
     const routeMatch = useRouteMatch<{issueId:string}>()
-
+    const allIssues: IssueVO[] = useSelector(ISSUES.selectAll)
     const {currentUser} = useCurrentUser()
     const ledger = useLedger()
+    const rowData = currentUser.role === 'менеджер'
+        ? allIssues.filter(i => i.responsibleManagerId === currentUser.userId)
+        : allIssues
 
     const dispatch = useDispatch()
     const onCreateClick = (defaults) => {
@@ -118,6 +121,7 @@ export default () => {
 
 
                     <PanelRGrid
+                        rowData={rowData}
                         getRowStyle={getRowStyle}
                         onCreateClick={onCreateClick}
                         fullHeight={true}

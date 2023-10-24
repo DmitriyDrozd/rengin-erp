@@ -105,8 +105,8 @@ export default () => {
 
     return <div>{
         canEdit
-            ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, можете редактировать смету</Typography.Text>
-            : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+            ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, редактируйте смету</Typography.Text>
+            : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
         }
         {
             buildCheckbox('estimationsApproved')
@@ -137,7 +137,7 @@ export default () => {
                 ></ImportTableButton>
 
                 <Button type={"primary"} onClick={() => setRowData([...rowData,{}])}>Добавить строку</Button></>
-                    :<Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+                    :<Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
             }
                     <Typography.Text>Итого: </Typography.Text>
                 <Typography.Text code strong>{issue.estimationPrice}</Typography.Text>

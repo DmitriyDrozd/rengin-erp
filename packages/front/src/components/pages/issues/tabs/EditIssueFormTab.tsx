@@ -191,13 +191,14 @@ export default () => {
                 onValueChange={
                      setIssueProperty('status')
             }/>
-
+        {
+            buildCheckbox('estimationsApproved')
+        }
         <Descriptions
             column={2}
             title="Показатели"
             size={'small'}
 bordered={true}
-            extra={buildCheckbox('estimationsApproved')}
 
         >{items.map( ({label, children}, index) => <DescriptionsItem label={label} key={index}>{children}</DescriptionsItem>)}</Descriptions>
 
