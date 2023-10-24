@@ -1,7 +1,7 @@
 import {AgGridReact} from 'ag-grid-react'
 import {AnyFieldsMeta} from 'iso/src/store/bootstrap/core/createResource'
 import RGrid, {RGridProps} from './RGrid'
-import {Button, Dropdown, Input, MenuProps, Space} from 'antd'
+import {Button, Dropdown, Input, MenuProps, Space, Typography} from 'antd'
 import {useAllColumns} from './RCol'
 import {useDispatch, useSelector} from 'react-redux'
 import {SearchOutlined} from '@ant-design/icons'
@@ -10,6 +10,7 @@ import {ChangeEventHandler, useRef, useState} from 'react'
 import {AntdIcons} from '../components/elements/AntdIcons'
 import DeleteButton from '../components/elements/DeleteButton'
 import CancelButton from '../components/elements/CancelButton'
+import useRole from "../hooks/useRole";
 
 
 const items: MenuProps['items'] =
@@ -77,8 +78,12 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
 
                 </>
     }
+    const role = useRole()
     const renderStandartToolBar = () => {
-        return <>
+
+        return role === 'сметчик'
+            ? <Typography.Text>Вы можете редактировать сметы</Typography.Text>
+            :<>
             <CrudCreateButton resource={resource} defaultProps={createItemProps} />
             <Dropdown menu={{
                 items,onClick: e => {

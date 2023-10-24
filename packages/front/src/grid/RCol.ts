@@ -36,6 +36,7 @@ const sourceResourceName = res.resourceName
     const clickToEditCol: ColDef<Item, string,RID, Fields> = {
         headerName:'',
         field:res.idProp,
+
         sourceResourceName: res.resourceName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
         width:30,
@@ -51,7 +52,7 @@ const sourceResourceName = res.resourceName
     ): ColDef<Item,Item[K]> => {
         const fieldMeta = res.properties[property]
         const colInit :ColDef<Item, Item[K],RID,Fields ,K>= {
-            editable: !fieldMeta.immutable,
+            editable: false,
             headerName: fieldMeta.headerName,
             resizable: true,
             sortable: true,

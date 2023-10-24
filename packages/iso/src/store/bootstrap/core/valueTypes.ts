@@ -1,7 +1,6 @@
 import {DateRangeVO} from './VO'
 import {ResourceName} from '../resourcesList'
 
-
 export const cast = <T>(value: any): T => value
 export type MetaType =
     | 'string'
@@ -37,7 +36,6 @@ export type Meta<MT extends MetaType = 'string', TSType = any> = {
 }
 
 export type ExtractTypeByPropMeta<M> = M extends Meta<infer S, infer T> ? T : unknown
-
 
 export type Empty = {}
 const meta = <TS = string,  MT extends MetaType = MetaType, E1 = Empty>(type:MT) =>Object.assign((

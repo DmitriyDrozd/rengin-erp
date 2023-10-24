@@ -5,23 +5,23 @@ import {ExtractProps} from "@sha/react-fp";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
+import {e} from "../../../../static/assets/vendor-6932f6a6";
 
-type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
+type RenFormDateProps = ExtractProps<typeof DatePicker> & {
+    onValueChange:(value: string) => any
+    label: string
+}
 //2023-09-21T04:32:05.151Z
 const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
-export default ({value,onValueChange, label, ...props}) => {
-
-
+export default ({value,onValueChange, label, disabled, ...props}: RenFormDateProps) => {
     return (
         <ProForm.Item shouldUpdate label={label} {...props}>
-          <DatePicker locale={locale} value={value === undefined? undefined: dayjs(value)} onChange={ e => {
-              console.log("DatePicker onChange",e)
-
-
-              onValueChange(e ? e.toDate().toISOString() : e)
-          }
-          }/>
-
-         </ProForm.Item>
+          <DatePicker disabled={disabled}
+                      locale={locale} value={value === undefined? undefined: dayjs(value)}
+                      onChange={ e => {
+                          onValueChange(e ? e.toDate().toISOString() : e)
+                      }}
+          />
+        </ProForm.Item>
   );
 };

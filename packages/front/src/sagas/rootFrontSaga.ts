@@ -1,6 +1,6 @@
 import {call, cancel, delay, fork, put, take} from 'typed-redux-saga';
 import {uiDuck} from '../store/ducks/uiDuck';
-import deviceSaga from './deviceSaga';
+
 import {loginSaga} from './loginSaga';
 import {Store} from 'redux';
 import {FrontState} from '../store/frontReducer';
@@ -19,7 +19,7 @@ export default function* rootFrontSaga(store: Store<FrontState>, history: Router
     yield* fork(adminNotifySaga)
     yield* fork(routerSaga, history)
     yield* fork(preferencesSaga)
-    yield* put(uiDuck.actions.busy('preload'))
+
 
     const cfg = {}
     cfg['VERSION']= VERSION
@@ -27,7 +27,6 @@ export default function* rootFrontSaga(store: Store<FrontState>, history: Router
 
     yield* put(frontConfigDuck.actions.reset(cfg as any))
 
-    yield* fork(deviceSaga)
 
     while(true) {
         const task = yield* fork(loginSaga, history)

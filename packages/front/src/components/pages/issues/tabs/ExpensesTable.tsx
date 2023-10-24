@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {ISSUES} from "iso/src/store/bootstrap";
-import {useMemo, useRef, useState} from "react";
+import React, {useCallback, useMemo, useRef, useState} from "react";
 import {AgGridReact} from "ag-grid-react";
 import {
     ColDef,
@@ -9,6 +9,9 @@ import {
     RowEditingStoppedEvent,
     StatusPanelDef
 } from "ag-grid-community";
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
+
 import {ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space, Typography} from "antd";
 import {clone, remove} from "ramda"
@@ -16,15 +19,22 @@ import useIssue from "../../../../contexts/useIssue"
 import AG_GRID_LOCALE_RU from "../../../../grid/locale.ru";
 import ImportTableButton from "../ImportTableButton";
 import {importSitesXlsxCols} from "../../ImportSItesPage";
+import {DownloadOutlined} from "@ant-design/icons";
+import {MasterDetailModule} from "@ag-grid-enterprise/all-modules";
+import {CsvExportModule} from "@ag-grid-community/csv-export";
+import {ClientSideRowModelModule} from "@ag-grid-community/client-side-row-model";
+import {useCanManage} from "../../../../hooks/useCanManage";
+import useCurrentUser from "../../../../hooks/useCurrentUser";
 
 const countExpenses = (expenses: IssueVO['expenses']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 
 export default (props) => {
+    const {currentUser} = useCurrentUser()
     const {issue,setIssue,setIssueProperty} = useIssue()
     const issueId = issue.issueId
-
+    const canEdit = useCanManage()
     const initialItems= clone(issue.expenses|| [])
     const [isEdited, setIsEdited] = useState(false)
     const gridRef = useRef<AgGridReact>(null);
@@ -71,7 +81,7 @@ export default (props) => {
         return {
             flex: 1,
             minWidth: 110,
-            editable: true,
+            editable: canEdit,
             resizable: true,
         };
     }, []);
@@ -95,7 +105,15 @@ setRowData(items)
         setRowData(items)
     }
 
+    const onBtExport = useCallback(() => {
+        gridRef.current!.api.exportDataAsExcel();
+    }, []);
     return <div>
+        {
+            canEdit
+                ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, можете редактировать смету</Typography.Text>
+                : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+        }
         <div className="ag-theme-alpine" style={gridStyle}>
             <AgGridReact
                 localeText={AG_GRID_LOCALE_RU}
@@ -109,9 +127,10 @@ setRowData(items)
 
     </div>
 
-        <div style={{paddingTop: '8px'}}>
+        <div style={{paddingTop: '8px', display: 'flex', justifyContent:'space-between' }}>
             <Space>
-                <ImportTableButton<ExpenseItem>
+                {canEdit?<>
+                    <ImportTableButton<ExpenseItem>
                  onImport={onImport}
                  sampleFileURL={'/assets/import-expenses-example.xlsx'}
                  xlsxCols={xlsxCols}
@@ -120,8 +139,14 @@ setRowData(items)
                  importedItemsFound={"записей о расходах"}
                 ></ImportTableButton>
                 <Button type={"primary"} onClick={() => setRowData([...rowData,{paymentType:'Безналичные',purpuseType:'Материалы'}])}>Добавить строку</Button>
+                    </>
+                    :<Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+                }
                 <Typography.Text>Итого: </Typography.Text>
                 <Typography.Text code strong>{issue.expensePrice}</Typography.Text>
+            </Space>
+            <Space>
+                <Button icon={<DownloadOutlined />} onClick={onBtExport} >Скачать .xlsx</Button>
             </Space>
         </div>
     </div>

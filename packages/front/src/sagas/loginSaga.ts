@@ -16,8 +16,8 @@ import {SSEClientFront} from 'iso/src/store/sse/SSEClientFront'
 import {appStorage} from 'iso'
 import {Preferences, preferencesDuck} from '../store/ducks/preferencesDuck'
 import {nav} from '../components/nav'
-import {UserVO} from 'iso/src/store/bootstrap/repos/user-schema'
 import disposeGlobalPreloader from '../utils/disposeGlobalPreloader'
+import {UserVO} from "iso/src/store/bootstrap/repos/users";
 
 const getURLCreds = () => {
     const params = Object.fromEntries(new URLSearchParams(window.location.search))
@@ -109,16 +109,13 @@ export function* loginSaga(history: History) {
         const user: UserVO = yield* select(selectCurrentUser)
 
 
-        yield* takeLatest(uiDuck.actions.setRole.isType, function* (action) {
-            yield* put(preferencesDuck.actions.setKey({key:'roleId', value: action.payload}))
-        })
         yield* fork(sseClientSaga)
-        debugger
+
         const meta = {userId: user.userId, storeGuid: 'S' + generateGuid()}
         yield* put(connectionDuck.actions.gatewayChanged(SSEClientFront.getSSERoute(meta)))
         yield* put(metaDuck.actions.metaUpdated(meta))
         yield* put(uiDuck.actions.unbusy('fetchAdminState'))
-
+        yield* put(uiDuck.actions.unbusy('fetchAdminState'))
 
         //const ypState =  mockState
 
@@ -126,7 +123,7 @@ export function* loginSaga(history: History) {
 
 
         if (window.location.pathname === '/app/login') {
-            history.push(nav.usersList())
+            history.push(nav.issues())
         }
 
 

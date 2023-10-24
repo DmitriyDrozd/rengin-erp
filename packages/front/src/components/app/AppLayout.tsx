@@ -1,7 +1,7 @@
 import {DownOutlined, LogoutOutlined} from '@ant-design/icons';
 import type {PageContainerProps, ProLayoutProps, ProSettings} from '@ant-design/pro-components'
 import {PageContainer, ProLayout} from '@ant-design/pro-components'
-import {DatePicker, Dropdown, DropDownProps, Space, theme, Typography} from 'antd'
+import {DatePicker, Dropdown, DropDownProps, Space, Spin, theme, Typography} from 'antd'
 import React from 'react'
 import defaultProps from './_defaultProps'
 import {useHistory} from 'react-router'
@@ -15,6 +15,7 @@ import {nav} from '../nav'
 import HeadLogo from '../app/HeadLogo'
 import usePathnameResource from '../../hooks/usePathnameResource'
 import {AntdIcons} from '../elements/AntdIcons'
+import useUI from "../../hooks/common/useUI";
 
 const { useToken } = theme;
 
@@ -22,6 +23,7 @@ const { useToken } = theme;
 const TopProfileDropDown = (props: DropDownProps)=> {
     const dispatch = useFrontDispatch()
     const history = useHistory()
+
     const onConfirmExit = async () => {
 
         dispatch(uiDuck.actions.logout(undefined))
@@ -52,7 +54,7 @@ const TopProfileDropDown = (props: DropDownProps)=> {
     )
 }
 export default ({proLayout, children,hidePageContainer, ...props}: PageContainerProps & {proLayout?: ProLayoutProps,hidePageContainer?:boolean}) => {
-
+    const ui = useUI()
     const settings: Partial<ProSettings> | undefined = {
         fixSiderbar: true,
         layout: "mix",
@@ -64,14 +66,12 @@ export default ({proLayout, children,hidePageContainer, ...props}: PageContainer
     const history = useHistory()
     const pathname = history.location.pathname
 
-    console.log('ExtraBUTTONS',props.extra)
-    const pathRes = usePathnameResource()
     return (
 
             <ProLayout
                 breakpoint={false}
-
-collapsed={false}
+                loading={ui.busy.length !==0}
+                collapsed={false}
                 bgLayoutImgList={[
                     {
                         src:
@@ -95,18 +95,17 @@ collapsed={false}
                         width: "331px"
                     }
                 ]}
-                {...defaultProps}
+                {...defaultProps(currentUser.role)}
                 location={{
                     pathname
                 }}
-
                 logo={<HeadLogo/>}
                 title={<div>Rengin</div>}
                 avatarProps={{
                     icon:<AntdIcons.ArrowDownOutlined/>,
                     src: userAvatarURL,
                     size: "small",
-                    title: <Typography.Link>{currentUser.email}</Typography.Link>,
+                    title: <Typography.Link><Typography.Text type={"success"}>{currentUser.role}</Typography.Text> {currentUser.email}</Typography.Link>,
                     render: (props, dom) =>
                         <TopProfileDropDown {...props}><Space>{dom}<a href={'#'}><DownOutlined/></a></Space></TopProfileDropDown>
                 }}
@@ -145,7 +144,7 @@ collapsed={false}
                 {...proLayout}
             >
 
-                {hidePageContainer ?
+              {hidePageContainer ?
                     children
                     :  <PageContainer {...props}
 

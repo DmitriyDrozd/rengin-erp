@@ -1,4 +1,4 @@
-import {Divider, Dropdown, MenuProps, Space, theme} from 'antd'
+import {Divider, Dropdown, MenuProps, Space, theme, Typography} from 'antd'
 import UserPic from '../elements/UserPic'
 import useCurrentUser from '../../hooks/useCurrentUser'
 import {DownOutlined} from '@ant-design/icons'
@@ -60,6 +60,7 @@ export default () => {
     >
         <Link to={nav.userPage({userId:currentUser.userId})}>
             <Space>
+                <Typography.Text type={'secondary'}>{currentUser.role}</Typography.Text>
                 <UserPic userId={currentUser.userId}/>
                 {currentUser.email}
                 <DownOutlined />

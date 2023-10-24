@@ -16,6 +16,7 @@ import ImportSItesPage from './pages/ImportSItesPage'
 import IssuesListPage from './pages/issues/IssuesListPage'
 import IssueItemPage from './pages/issues/IssueItemPage'
 import AddIssuePage from './pages/issues/AddIssuePage'
+import DashboardPage from "./pages/dashboard/DashboardPage";
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -65,7 +66,9 @@ export const nav = {
     importSites: buildNav('/app/in/import-sites', ImportSItesPage),
     issues: buildNav('/app/in/issues', IssuesListPage),
     issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
-    issuesEdit: buildNav('/app/in/issues/:issueId', IssueItemPage)
+    issuesEdit: buildNav('/app/in/issues/:issueId', IssuesListPage),
+
+    dashboard: buildNav('/app/in/dashboard', DashboardPage)
     //addressesList: buildNav('/app/in/addresses', AddressesListPage),
    // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
    // contractsList: buildNav('/app/in/contracts', ContractsListPage),

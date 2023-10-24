@@ -7,19 +7,27 @@ import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 
-type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
+type RenFormTextProps = ExtractProps<typeof TextArea> & {multiline?: boolean, label: string, onValueChange: (value: string) => any, disabled?: boolean}
 
-export default ({value,onValueChange, label, valueEnum,...props}) => {
+export default ({value,onValueChange, label,multiline,disabled, ...props}:RenFormTextProps) => {
     return (
         <ProForm.Item label={label} {...props}>
-            <TextArea  value={value} onChange={ e => {
+            {
+            multiline ? <TextArea  value={value} disabled={disabled} onChange={ e => {
                 console.log("DatePicker onChange",e)
 
 
                 onValueChange(e.target.value)
             }
             }/>
+                :  <Input  value={value}  disabled={disabled}  onChange={ e => {
+                    console.log("DatePicker onChange",e)
 
+
+                    onValueChange(e.target.value)
+                }
+                }/>
+            }
         </ProForm.Item>
     );
 };

@@ -2,16 +2,16 @@ import chroma from 'chroma-js'
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
-
+export const roleTypes = ['руководитель','менеджер','сметчик'] as const
+export type RoleType = typeof roleTypes[number]
 const usersRaw =createResource('user',{
-    role: valueTypes.string(),
+    role: valueTypes.enum({required: true,enum: roleTypes as any as RoleType[]}),
     fullName: valueTypes.string({required: true}),
     title: valueTypes.string(),
     company: valueTypes.string(),
     avatarUrl: valueTypes.string(),
     email: valueTypes.string({required: true, unique: true, trim: true, toLowerCase: true}),
     removed: valueTypes.boolean({select: false}),
-
 },{
    getItemName: item => item.fullName,
     langRU: {

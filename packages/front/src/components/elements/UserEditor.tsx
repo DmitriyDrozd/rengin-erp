@@ -1,4 +1,4 @@
-import {UserVO} from 'iso/src/store/bootstrap/repos/users'
+import users, {UserVO} from 'iso/src/store/bootstrap/repos/users'
 import {Form, Input, Select} from 'antd'
 import {useState} from 'react'
 import EditorFooter from './EditorFooter'
@@ -71,10 +71,11 @@ export default ({item, onCancel, onSave, isNew}:{item:Partial< UserVO>,isNew?:bo
         </Form.Item>
                 <Form.Item label="Роль">
                     <Select value={state.role} onSelect={e => onPropChanged('role')(e)}>
-                        <Select.Option value="root">Root</Select.Option>
-                        <Select.Option value="admin">Admin</Select.Option>
-                        <Select.Option value="manager">Manager</Select.Option>
-                        <Select.Option value="booker">Booker</Select.Option>
+                        {
+                         users.properties.role.enum.map( role =>
+                             <Select.Option value={role}>{role}</Select.Option>
+                         )
+                    }
                     </Select>
                 </Form.Item>
         <Form.Item label="Должность">

@@ -1,4 +1,4 @@
-import {DatePicker, Form, Typography} from 'antd'
+import {DatePicker, Descriptions, DescriptionsProps, Form, Typography} from 'antd'
 import {ISSUES, SITES} from 'iso/src/store/bootstrap'
 import React, {useRef, useState} from 'react'
 import {
@@ -28,16 +28,20 @@ import useIssue from "../../../../contexts/useIssue";
 import RenFormSelect, {optionsFromValuesList} from "../../../form/RenFormSelect";
 import RenFormText from "../../../form/RenFormText";
 import RenFormCheckbox from "../../../form/RenFormCheckbox";
+import useRole from "../../../../hooks/useRole";
+import {useUnmount} from "react-use";
+import DescriptionsItem from "antd/es/descriptions/Item";
 const { Text } = Typography;
 export default () => {
+    const role = useRole()
     const {issue,setIssue,setIssueProperty} = useIssue()
     const layoutProps = {
         labelCol: { span: 6 },
         wrapperCol: { span:18 },
     }
-    const resource = ISSUES
+
+
     const formRef = useRef<ProFormInstance<IssueVO>>();
-    const idProp = ISSUES.idProp
     type Item = IssueVO
     const brands: BrandVO[] = useSelector(BRANDS.selectList) as any
     const brandsOptions = BRANDS.asValueEnum(brands)
@@ -47,25 +51,30 @@ export default () => {
     const legals = useSelector(LEGALS.selectList)
     const sites = useSelector(SITES.selectList)
     const legalsOptions=LEGALS.asValueEnum(legals.filter(l => l.brandId === brandId))
-    const sitesOptions = SITES.asValueEnum(sites.filter(l => l.legalId === legalId))
+    const sitesOptions = SITES.asOptions(sites.filter(l => l.legalId === legalId))
     const contracts: ContractVO[] = useSelector(CONTRACTS.selectList)
     const subs: SubVO[] = useSelector(SUBS.selectList)
     const sub = subs.find(s => s.siteId === issue.siteId) || {contractId: undefined}
     const contract = contracts.find(c => c.contractId === issue.contractId )
 
     const buildDate = (name: keyof IssueVO) => {
-        return   <RenFormDate {...fieldMetaToProProps(ISSUES, name, issue)}
-                                   value={issue[name]}
-                                   onValueChange={
-                                       setIssueProperty(name)
-                                   }
-                                   label={ISSUES.properties[name].headerName}  width={'sm'}
-                    />
+        return   <RenFormDate
+                       {...fieldMetaToProProps(ISSUES, name, issue)}
+                       value={issue[name]}
+                       onValueChange={
+                           setIssueProperty(name)
+                       }
+                       disabled={role==='сметчик'}
+                       label={ISSUES.properties[name].headerName}  width={'sm'}
+                />
     }
 
-    const buildText = (name: keyof IssueVO) => {
+    const buildText = (name: keyof IssueVO,multiline: boolean = true) => {
         return <RenFormText {...fieldMetaToProProps(ISSUES, name, issue)}
                      value={issue[name]}
+
+                            multiline={multiline}
+                            disabled={role==='сметчик'}
                      onValueChange={
                          setIssueProperty(name)
                      }
@@ -74,25 +83,45 @@ export default () => {
     }
 
     const buildCheckbox = (name: keyof IssueVO) => {
-        return <RenFormCheckbox {...fieldMetaToProProps(ISSUES, name, issue)}
-                            value={issue[name]}
-                            onValueChange={
-                                setIssueProperty(name)
-                            }
-                            label={ISSUES.properties[name].headerName}  width={'sm'}
-        />
+        return  <RenFormCheckbox {...fieldMetaToProProps(ISSUES, name, issue)}
+                                    value={issue[name]}
+                                    onValueChange={
+                                        setIssueProperty(name)
+                                    }
+                                    label={ISSUES.properties[name].headerName}  width={'sm'}
+                />
     }
 
     const buildSelect = (name: keyof IssueVO) => {
-        return <RenFormSelect {...fieldMetaToProProps(ISSUES, name, issue)}
-                              value={issue[name]}
-                              onValueChange={
-                                  setIssueProperty(name)
-                              }
-                              label={ISSUES.properties[name].headerName}  width={'sm'}
+        return <RenFormSelect
+            {...fieldMetaToProProps(ISSUES, name, issue)}
+            value={issue[name]}
+            onValueChange={
+                setIssueProperty(name)
+            }
+            disabled={role==='сметчик'}
+            label={ISSUES.properties[name].headerName}
+            width={'sm'}
         />
 
     }
+
+    const items=[{
+            label:ISSUES.properties.estimationPrice.headerName,
+            children: issue.estimationPrice
+        },{
+            label:'Прибыль',
+            children: issue.estimationPrice - issue.expensePrice
+
+    }, {
+        label:ISSUES.properties.expensePrice.headerName,
+        children: issue.expensePrice
+    }, {
+            label:'Маржинальность',
+            children: ( issue.estimationPrice && issue.expensePrice)
+                ? (((issue.estimationPrice - issue.expensePrice) / issue.estimationPrice * 100).toFixed(2) + '%')
+                : "-"
+        }]
     return <RForm<Item>
             formRef={formRef}
             layout={'horizontal'}
@@ -109,10 +138,21 @@ export default () => {
         {/*<ProForm.Item label={'Организация'}>
             <Text></Text>
         </ProForm.Item>
-        */}<ProFormSelect readonly={true} disabled={issue.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}   required={true} valueEnum={legalsOptions} name={'legalId'}  rules={[{required: true}]}/>
-
-            <ProFormSelect readonly={true} showSearch={true} disabled={issue.legalId === undefined} label={'Адрес'} placeholder={'Выберите адрес'}   required={true} valueEnum={sitesOptions} name={'siteId'} rules={[{required: true}]}/>
-            <ProFormItem name="contractId" label="Договор">
+        */}
+        <ProFormSelect readonly={true} disabled={issue.brandId === undefined} label={'Организация'} placeholder={'Выберите организацию'}   required={true} valueEnum={legalsOptions} name={'legalId'}  rules={[{required: true}]}/>
+        <RenFormSelect
+            style={{minWidth:'350px',maxWidth: '350px'}}
+            label={'Адрес'}
+            options={sitesOptions}
+            disabled={role!=='руководитель'}
+            placeholder={'Адрес не указан'}
+            value={issue.siteId}
+            showSearch={true}
+            onValueChange={
+                setIssueProperty('siteId')
+            }
+        />
+             <ProFormItem name="contractId" label="Договор">
                 {
                     contract
                         ? <Text type="success">{contract.contractNumber}</Text>
@@ -137,33 +177,30 @@ export default () => {
                 buildSelect('responsibleManagerId')
             }
             {
-                buildText('responsibleEngineer')
+                buildText('responsibleEngineer', false)
             }
             {
                 buildText('contactInfo')
             }
-            <RenFormSelect label={'Статус'}  options={optionsFromValuesList(ISSUES.properties.status.enum)} placeholder={'Статус не указан'}  value={issue.status}
-                           onValueChange={
-                               setIssueProperty('status')
-                           }/>
-            {
-                buildCheckbox('estimationsApproved')
-            }
-            <ProFormText {...fieldMetaToProProps(ISSUES,'estimationPrice')} readonly={true} />
-            <ProFormText {...fieldMetaToProProps(ISSUES,'expensePrice')} readonly={true}  />
+            <RenFormSelect
+                label={'Статус'}
+                disabled={role==='сметчик'}
+                options={optionsFromValuesList(ISSUES.properties.status.enum)}
+                placeholder={'Статус не указан'}
+                value={issue.status}
+                onValueChange={
+                     setIssueProperty('status')
+            }/>
 
-        <ProFormItem name="contractId" label="Прибыль">
-            {
-                issue.estimationPrice - issue.expensePrice
-            }
-        </ProFormItem>
-        <ProFormItem name="contractId" label="Маржинальность">
-            {
-                ( issue.estimationPrice && issue.expensePrice)
-                    ? (((issue.estimationPrice - issue.expensePrice) / issue.estimationPrice * 100).toFixed(2) + '%')
-                    : "-"
-            }
-        </ProFormItem>
+        <Descriptions
+            column={2}
+            title="Показатели"
+            size={'small'}
+bordered={true}
+            extra={buildCheckbox('estimationsApproved')}
+
+        >{items.map( ({label, children}, index) => <DescriptionsItem label={label} key={index}>{children}</DescriptionsItem>)}</Descriptions>
+
     </RForm>
 
 }

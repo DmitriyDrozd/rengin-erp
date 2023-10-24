@@ -12,12 +12,14 @@ import getFrontEnv from '../../getFrontEnv'
 import {Link} from 'react-router-dom'
 import {nav} from '../nav'
 import {AntdIcons} from '../elements/AntdIcons'
+import useUI from "../../hooks/common/useUI";
+import {sleep} from "@sha/utils";
 
 export default () => {
     const [notify, contextHolder] = notification.useNotification();
 
     const dispatch = useFrontDispatch()
-
+const ui = useUI()
     const history = useHistory()
     const store = useFrontStore()
     const [visible, setVisible] = useState(false)
@@ -68,11 +70,12 @@ export default () => {
             notify.error({message:'Не удалось авторизоваться'})
 
         }
+        await sleep(1000)
         setLoading(false)
     }
 
         return (
-            <Spin spinning={loading}>
+            <Spin spinning={loading || ui.busy.length !== 0}>
                 <Row type="flex" justify="center" align="middle" style={{minHeight: '100vh'}}>
                     <Card title={'Авторизация'} actions={[
                         <Checkbox checked={remember} onChange={e => setRemember(e.target.checked)}>Запомнить</Checkbox>,
@@ -84,6 +87,7 @@ export default () => {
                             htmlType="submit"
                             className="login-form-button"
                             onClick={onSubmit}
+                            loading={loading || ui.busy.length !== 0}
                             icon={<AntdIcons.LoginOutlined/>}
                         >
                             Логин

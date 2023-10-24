@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {ISSUES} from "iso/src/store/bootstrap";
-import {useMemo, useRef, useState} from "react";
+import React, {useCallback, useMemo, useRef, useState} from "react";
 import {AgGridReact} from "ag-grid-react";
 import {ColDef, RowEditingStartedEvent, RowEditingStoppedEvent, StatusPanelDef} from "ag-grid-community";
 import {EstimationItem, ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
@@ -9,11 +9,19 @@ import {clone, remove} from "ramda";
 import useIssue from "../../../../contexts/useIssue";
 import AG_GRID_LOCALE_RU from "../../../../grid/locale.ru";
 import ImportTableButton from "../ImportTableButton";
+import {DownloadOutlined} from "@ant-design/icons";
+import {fieldMetaToProProps} from "../../chapter-routed/ItemChapter";
+import RenFormCheckbox from "../../../form/RenFormCheckbox";
+import useCurrentUser from "../../../../hooks/useCurrentUser";
 
 const countEstimations = (expenses: IssueVO['estimations']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 export default () => {
+    const {currentUser} = useCurrentUser()
+    const canEdit = (currentUser.role ==='руководитель' || currentUser.role==='сметчик')
+        ? true
+        : false
     const {issue,setIssue,setIssueProperty} = useIssue()
     const issueId = issue.issueId
 
@@ -43,10 +51,12 @@ export default () => {
             },
         { field: 'comment',headerName:'Комментарий'},
         {
-            cellRenderer: (props:{rowIndex:number}) =>
+            cellRenderer: canEdit
+                ? (props:{rowIndex:number}) =>
                 <Button danger={true} onClick={() => {
                    setRowData(remove(props.rowIndex,1,rowData))
                 }}>Удалить</Button>
+                : 'Смета'
         }
     ]
 
@@ -56,7 +66,7 @@ export default () => {
         return {
             flex: 1,
             minWidth: 110,
-            editable: true,
+            editable: canEdit,
             resizable: true,
         };
     }, []);
@@ -79,8 +89,28 @@ export default () => {
         console.log('onImport', items)
         setRowData(items)
     }
+    const buildCheckbox = (name: keyof IssueVO) => {
+        return  <RenFormCheckbox {...fieldMetaToProProps(ISSUES, name, issue)}
+                                 value={issue[name]}
+                                 onValueChange={
+                                     setIssueProperty(name)
+                                 }
+                                 disabled={!canEdit}
+                                 label={ISSUES.properties[name].headerName}  width={'sm'}
+        />
+    }
+    const onBtExport = useCallback(() => {
+        gridRef.current!.api.exportDataAsExcel();
+    }, []);
 
-    return <div>
+    return <div>{
+        canEdit
+            ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, можете редактировать смету</Typography.Text>
+            : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+        }
+        {
+            buildCheckbox('estimationsApproved')
+        }
         <div className="ag-theme-alpine" style={gridStyle}>
             <AgGridReact
                 localeText={AG_GRID_LOCALE_RU}
@@ -90,13 +120,14 @@ export default () => {
                 defaultColDef={defaultColDef}
                 onCellEditingStarted={onCellEditingStarted}
                 onCellEditingStopped={onCellEditingStopped}
+
             />
 
         </div>
 
-        <div style={{paddingTop: '8px'}}>
+        <div style={{paddingTop: '8px', display: 'flex', justifyContent:'space-between' }}>
             <Space>
-                <ImportTableButton<ExpenseItem>
+                {canEdit?<> <ImportTableButton<ExpenseItem>
                     onImport={onImport}
                     sampleFileURL={'/assets/import-estimations-example.xlsx'}
                     xlsxCols={xlsxCols}
@@ -105,9 +136,15 @@ export default () => {
                     importedItemsFound={"позиций в смете"}
                 ></ImportTableButton>
 
-                <Button type={"primary"} onClick={() => setRowData([...rowData,{}])}>Добавить строку</Button>
-                <Typography.Text>Итого: </Typography.Text>
+                <Button type={"primary"} onClick={() => setRowData([...rowData,{}])}>Добавить строку</Button></>
+                    :<Typography.Text type={'danger'}>Ваша роль {currentUser.role}, можете НЕ редактировать смету</Typography.Text>
+            }
+                    <Typography.Text>Итого: </Typography.Text>
                 <Typography.Text code strong>{issue.estimationPrice}</Typography.Text>
+            </Space>
+
+            <Space>
+                <Button icon={<DownloadOutlined />} onClick={onBtExport} >Скачать .xlsx</Button>
             </Space>
         </div>
     </div>

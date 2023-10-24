@@ -20,20 +20,22 @@ export const optionsFromValuesList = (values: string[]): SelectOption[] => {
     values.forEach(v => options.push({value:v, label: v}))
     return options
 }
-export default ({value,onValueChange, label, options, placeholder, ...props}: {value: string, onValueChange: (value: string) => any, options:SelectOption[],label: string, placeholder?: string}) => {
+export default ({value,onValueChange, label, options, placeholder, showSearch,style,disabled,...props}: {value: string,showSearch?: boolean, onValueChange: (value: string) => any, options:SelectOption[],label: string, placeholder?: string, dusabled?: boolean}) => {
 
     return (
         <ProForm.Item label={label} {...props}>
             <Select  value={value}
+                    optionFilterProp={'label'}
+                     showSearch={showSearch}
                      placeholder={placeholder}
-                 onChange={ e => {
-                    console.log("Select onChange",e)
-                    onValueChange(e)
-                 }}
-                         style={{minWidth:'200px'}}
-                 options={options}
+                     disabled={disabled}
+                     onChange={ e => {
+                        console.log("Select onChange",e)
+                        onValueChange(e)
+                     }}
+                     style={{minWidth:'200px',...style}}
+                     options={options}
             />
-
         </ProForm.Item>
     );
 };

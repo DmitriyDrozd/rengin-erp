@@ -28,7 +28,7 @@ export function* sseClientSaga() {
 
 
     function* readSSERoute(route) {
-        debugger
+
         const channel = eventChannel(emitter => {
             let source = new ReconnectingEventSource(route)
 
@@ -75,14 +75,14 @@ export function* sseClientSaga() {
             if (window['store'].appliedGuids.includes(action.guid))
                 continue
             window['store'].appliedGuids.push(action.guid)
-            debugger
+
             yield* put(action)
         }
     }
 
     function* readWorker() {
         yield* takeLatest(metaDuck.actions.metaUpdated.isType, function* (action) {
-            debugger
+
             if (action.payload.userId === 'admin') {
                 yield* readSSERoute('/api/sse/admin?' + new URLSearchParams(action.payload).toString())
             } else if (action.payload.userId !== 'guest') {

@@ -10,10 +10,10 @@ import TextArea from "antd/es/input/TextArea";
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z
 const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
-export default ({value,onValueChange, label, ...props}) => {
+export default ({value,onValueChange, label, disabled, ...props}) => {
     return (
         <ProForm.Item label={label} {...props}>
-            <Checkbox   checked={value}  onChange={ e => {
+            <Checkbox   checked={value}  disabled={disabled} onChange={ e => {
                 console.log("DatePicker onChange",e)
 
 

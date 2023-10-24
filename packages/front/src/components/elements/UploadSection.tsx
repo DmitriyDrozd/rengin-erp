@@ -3,6 +3,8 @@ import {PlusOutlined} from "@ant-design/icons";
 import React, {useState} from 'react';
 import type {RcFile, UploadProps} from 'antd/es/upload';
 import {remove} from "ramda";
+import useRole from "../../hooks/useRole";
+import {useCanEstimations} from "../../hooks/useCan";
 
 export type UploadListProps = {
     items: UploadFile[]
@@ -22,12 +24,14 @@ const getBase64 = (file: RcFile): Promise<string> =>
     });
 
 const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListProps) => {
+    const role = useRole()
     const max = maxCount || 1
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
 
 
+    const canEstimations = useCanEstimations()
     const handleCancel = () => setPreviewOpen(false);
 
     const handlePreview = async (file: UploadFile) => {
@@ -64,6 +68,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
                 onChange={handleChange}
                 multiple={true}
                 maxCount={max}
+                disabled={canEstimations}
             >
                 {items.length >= maxCount ? null : uploadButton}
             </Upload>

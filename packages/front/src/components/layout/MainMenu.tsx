@@ -1,9 +1,10 @@
 import React from 'react';
 import * as Icons from '@ant-design/icons';
-import {AppstoreOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
+import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
 import {Menu} from 'antd';
 import type {MenuProps} from 'antd/es/menu';
 import {useHistory, useLocation} from 'react-router'
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -30,7 +31,12 @@ const items: MenuItem[] = [
 ];
 
 const App: React.FC = () => {
-
+    const {currentUser} = useCurrentUser()
+    const userItems = currentUser.role === 'руководитель' ?
+         [
+             getItem('Дашбор','dashboard', <BarChartOutlined />),
+             ...items
+         ] : items;
 
     const history  = useHistory()
     const location = useLocation()
@@ -46,7 +52,7 @@ const App: React.FC = () => {
                     console.log('Menu-> onSelect', e)
                     history.push('/app/in/'+e.key)
                 }}
-                items={items}
+                items={userItems}
             />
 
     );

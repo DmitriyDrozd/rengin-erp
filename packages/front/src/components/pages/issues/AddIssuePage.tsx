@@ -138,16 +138,12 @@ export default () => {
         />
     }
     return  <AppLayout
-
-
         proLayout={{
-
             extra:[
                 <CancelButton onCancel={onBack}/>,
                 <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Создать</Button>
             ],
             title:'Rengin',
-
         }}
         onBack={onBack}
 
@@ -160,7 +156,6 @@ export default () => {
                 title,
             }]} ></Breadcrumb>
         }
-
     >
         <RForm<Item>
             formRef={formRef}
