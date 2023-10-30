@@ -15,6 +15,7 @@ import useRouteProps from "../../../hooks/useRouteProps";
 import {useRouteMatch} from "react-router";
 import IssueModal from "./IssueModal";
 import dayjs from "dayjs";
+import {matchesTreeDataDisplayType} from "ag-grid-community/dist/lib/gridOptionsValidator";
 
 
 const getEstimationApprovedTag = (data: IssueVO) =>
@@ -61,17 +62,18 @@ export default () => {
     const getRowStyle = (params:RowClassParams<IssueVO>) => {
         console.log('getRowStyle params ', params)
        const currentISO = new Date().toISOString()
-         const plannedDateTime = DateTime.fromISO(params.data.plannedDate)
-        const completedDateTime = DateTime.fromISO(params.data.completedDate)
+         const plannedDayjs = dayjs(params.data.plannedDate)
+        const completedDayjs = dayjs(params.data.completedDate)
 
-        const workStartedDateTime = DateTime.fromISO(params.data.workStartedDate)
-        const registerDateTime = DateTime.fromISO(params.data.registerDate)
+        const workStartedDayjs = dayjs(params.data.workStartedDate)
+        const registerDayjs = dayjs(params.data.registerDate)
         const now = dayjs()
-        if (!params.data.completedDate && plannedDateTime  && now.isAfter(dayjs(plannedDateTime))){//params.data..rowIndex % 2 === 0) {
+        if ( !params.data.completedDate  && params.data.plannedDate  && now.isAfter(dayjs(plannedDayjs))){//params.data..rowIndex % 2 === 0) {
             return { background: 'yellow' };
         }
+        if(params.data.completedDate &&  params.data.plannedDate  && completedDayjs.isAfter(dayjs(plannedDayjs)))
 
-        return {background: undefined}
+        return {background: 'dark-yellow'}
     };
     const [cols,colMap] = useAllColumns(ISSUES)
 
