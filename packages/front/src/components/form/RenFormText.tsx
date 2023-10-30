@@ -15,8 +15,6 @@ export default ({value,onValueChange, label,multiline,disabled, ...props}:RenFor
             {
             multiline ? <TextArea  value={value} disabled={disabled} onChange={ e => {
                 console.log("DatePicker onChange",e)
-
-
                 onValueChange(e.target.value)
             }
             }/>

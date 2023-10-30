@@ -14,6 +14,7 @@ import useCurrentUser from "../../../hooks/useCurrentUser";
 import useRouteProps from "../../../hooks/useRouteProps";
 import {useRouteMatch} from "react-router";
 import IssueModal from "./IssueModal";
+import dayjs from "dayjs";
 
 
 const getEstimationApprovedTag = (data: IssueVO) =>
@@ -65,8 +66,9 @@ export default () => {
 
         const workStartedDateTime = DateTime.fromISO(params.data.workStartedDate)
         const registerDateTime = DateTime.fromISO(params.data.registerDate)
-        if (!params.data.completedDate && plannedDateTime){//params.data..rowIndex % 2 === 0) {
-            return { background: 'red' };
+        const now = dayjs()
+        if (!params.data.completedDate && plannedDateTime  && now.isAfter(dayjs(plannedDateTime))){//params.data..rowIndex % 2 === 0) {
+            return { background: 'yellow' };
         }
 
         return {background: undefined}

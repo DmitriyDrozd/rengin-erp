@@ -11,8 +11,7 @@ type RenFormDateProps = ExtractProps<typeof DatePicker> & {
     onValueChange:(value: string) => any
     label: string
 }
-//2023-09-21T04:32:05.151Z
-const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
+
 export default ({value,onValueChange, label, disabled, ...props}: RenFormDateProps) => {
     return (
         <ProForm.Item shouldUpdate label={label} {...props}>
