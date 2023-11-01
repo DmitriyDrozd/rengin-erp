@@ -56,9 +56,9 @@ export default ({issueId}) => {
 
     const title = resource.getItemName(issueState)
 
-    const onSave = () => {
-        //const { expenses,expensePrice,estimationPrice,estimations, ...rest} = issueState
-        dispatch(resource.actions?.patched(issueState))
+    const onSave = () =>{
+        if(JSON.stringify(initialValues) !== JSON.stringify(issueState))
+            dispatch(resource.actions?.patched(issueState))
         onBack()
     }
 

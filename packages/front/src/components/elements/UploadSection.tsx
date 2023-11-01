@@ -30,8 +30,6 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
 
-
-    const canEstimations = useCanEstimations()
     const handleCancel = () => setPreviewOpen(false);
 
     const handlePreview = async (file: UploadFile) => {
@@ -45,8 +43,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
     };
 
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-        onItemsChange(newFileList);
-
+        onItemsChange(newFileList)
     const handleRemove: UploadProps['onRemove'] = file => {
         console.log('handleRemove', file)
         onItemsChange(remove(items.indexOf(f => f.name === file.name), 1, items))
@@ -68,7 +65,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
                 onChange={handleChange}
                 multiple={true}
                 maxCount={max}
-                disabled={canEstimations}
+                disabled={role === 'сметчик'}
             >
                 {items.length >= maxCount ? null : uploadButton}
             </Upload>

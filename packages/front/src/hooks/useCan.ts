@@ -11,5 +11,6 @@ export default useCan*/
 
 export const useCanEstimations = () => {
     const role = useRole()
+    debugger
     return role === 'сметчик' || role === 'руководитель'
 }

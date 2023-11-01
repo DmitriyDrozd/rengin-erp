@@ -5,7 +5,7 @@ import {ProCard, ProFormInstance} from '@ant-design/pro-components'
 import getCrudPathname from '../../../hooks/getCrudPathname'
 import {useHistory} from 'react-router'
 import {AntdIcons} from '../../elements/AntdIcons'
-import {Breadcrumb, Button} from 'antd'
+import {Breadcrumb, Button, UploadFile} from 'antd'
 import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
 import usePathnameResource from '../../../hooks/usePathnameResource'
@@ -36,17 +36,20 @@ export default () => {
     const dispatch = useDispatch()
     const history = useHistory()
 
+    const trimUploadedFile = (file: UploadFile) =>
+        ({name:file.name, url: file.response.url,preview: file.preview})
     const getFilesProps = (listName: 'workFiles'|'checkFiles'|'actFiles',label: string, maxCount = 1) => {
         return {
             items: issueState[listName],
             onItemsChange: (list) => {
-                setIssueState({...issueState, [listName]:list})
+                setIssueState({...issueState,
+                    [listName]:list.map(trimUploadedFile)
+                });
             },
             issueId: initialValues.issueId,
             label,
             maxCount,
 
-        }
     }
 
     const title = resource.getItemName(issueState)
