@@ -21,7 +21,7 @@ export type MetaType =
     | 'enum'
 
 
-export type Meta<MT extends MetaType = 'string', TSType = any> = {
+export type Meta<MT extends MetaType, TSType = any> = {
     type: MT
     immutable?: boolean
     isIDProp?: boolean

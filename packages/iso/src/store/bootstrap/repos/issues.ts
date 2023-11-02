@@ -46,7 +46,9 @@ const issuesRaw = createResource('issue',{
         estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована'}),
         contactInfo: valueTypes.text({headerName:'Контакты'}),
     },
+
     {
+            nameProp: 'clientsIssueNumber',
             indexes:['brandId','contractId','legalId','siteId','subId','userId'],
             langRU: {
                     singular:'Заявка',

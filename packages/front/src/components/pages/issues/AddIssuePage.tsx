@@ -141,7 +141,7 @@ export default () => {
         proLayout={{
             extra:[
                 <CancelButton onCancel={onBack}/>,
-                <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Создать</Button>
+                <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave} disabled={!(state.siteId && contract && contract.contractId)}>Создать</Button>
             ],
             title:'Rengin',
         }}

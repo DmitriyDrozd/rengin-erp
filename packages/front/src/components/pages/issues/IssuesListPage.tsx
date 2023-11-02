@@ -7,7 +7,7 @@ import React, {useState} from 'react'
 import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
 import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
-import {Tag} from "antd";
+import {Badge, Tag} from "antd";
 import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
 import {useDispatch, useSelector} from "react-redux";
 import useCurrentUser from "../../../hooks/useCurrentUser";
@@ -24,25 +24,32 @@ const getEstimationApprovedTag = (data: IssueVO) =>
         : <Tag color={'red'}>Нет</Tag>
 
 const getStatusTag = (issue: IssueVO) => {
-    const currentISO = new Date().toISOString()
-    const plannedDateTime = DateTime.fromISO(issue.plannedDate)
-    const completedDateTime = DateTime.fromISO(issue.completedDate)
+    const currentDJ = dayjs()
+    const plannedDJ =issue.plannedDate ? dayjs(issue.plannedDate) : undefined
+    const completedDJ = issue.completedDate ? dayjs(issue.completedDate) : undefined
 
-    const workStartedDateTime = DateTime.fromISO(issue.workStartedDate)
-    const registerDateTime = DateTime.fromISO(issue.registerDate)
-    if(!issue.status || issue.status === 'В работе')
-        if (!issue.completedDate && new Date(issue.plannedDate).toISOString() < currentISO){//params.data..rowIndex % 2 === 0) {
+    const workStartedDJ =  issue.workStartedDate ? dayjs(issue.workStartedDate) : undefined
+    const registerDJ = issue.registerDate ? dayjs(issue.registerDate) : undefined
+    const getTag = () => {
 
-            return <Tag color="red">Просрочено</Tag>
-        }
-    if(issue.status === 'Приостановлена')
-        return <Tag color="grey">{issue.status}</Tag>
-    if(issue.status === 'В работе')
-        return <Tag color="yellow">{issue.status}</Tag>
-    if(issue.status === 'Выполнена')
-        return <Tag color="green">{issue.status}</Tag>
-    return <Tag color="blue">{issue.status}</Tag>
+        if (issue.status === 'Приостановлена')
+            return <Tag color="grey">{issue.status}</Tag>
+        if (issue.status === 'В работе')
+            return <Tag color="yellow">{issue.status}</Tag>
+        if (issue.status === 'Выполнена')
+            return <Tag color="green">{issue.status}</Tag>
+        return <Tag color="blue">{issue.status}</Tag>
+    }
+    const tag = getTag()
+    if(issue.status === 'В работе') {
+        if(currentDJ.isAfter(plannedDJ))
+        return <Badge count={currentDJ.diff(plannedDJ,'d')} offset={[-2,5]}>{tag}</Badge>
+    }
+    return tag
 }
+
+
+
 export default () => {
 
     const routeMatch = useRouteMatch<{issueId:string}>()
@@ -68,48 +75,51 @@ export default () => {
         const workStartedDayjs = dayjs(params.data.workStartedDate)
         const registerDayjs = dayjs(params.data.registerDate)
         const now = dayjs()
-        if ( !params.data.completedDate  && params.data.plannedDate  && now.isAfter(dayjs(plannedDayjs))){//params.data..rowIndex % 2 === 0) {
+       /* if ( !params.data.completedDate  && params.data.plannedDate  && now.isAfter(dayjs(plannedDayjs))){//params.data..rowIndex % 2 === 0) {
             return { background: 'yellow' };
         }
         if(params.data.completedDate &&  params.data.plannedDate  && completedDayjs.isAfter(dayjs(plannedDayjs)))
-
-        return {background: 'dark-yellow'}
+*/
+        return {background: undefined}
     };
     const [cols,colMap] = useAllColumns(ISSUES)
 
     const columns: ColDef<IssueVO>[] = [
-        colMap.clickToEditCol,
-        colMap.clientsIssueNumber,
+        {...colMap.clickToEditCol, headerName:'Номер'},
         {
             field: 'status',
             headerName: 'Статус',
-            width: 90,
+            width: 105,
             cellEditor: 'agSelectCellEditor',
             editable: currentUser.role !== 'сметчик',
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['status']> ) => {
-                dispatch(ISSUES.actions.patched({issueId: event.data.issueId, status: event.newValue}))
+                const issue: Partial<IssueVO> = {issueId: event.data.issueId, status: event.newValue}
+                if(event.newValue === 'Выполнена')
+                    issue.completedDate = dayjs().startOf('d').toISOString()
+
+                dispatch(ISSUES.actions.patched(issue))
             },
             cellEditorParams: {
+
                 values: ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
                 valueListGap: 0,
             },
             cellRenderer: (props:{rowIndex:number}) =>
                 getStatusTag(props.data)
         },
-        colMap.brandId,
-        colMap.legalId,
-        colMap.contractId,
-        colMap.siteId,
-        colMap.status,
-        colMap.completedDate,
-        colMap.plannedDate,
+        {...colMap.brandId, width: 65},
+        {...colMap.siteId, width: 170},
+        {...colMap.description, width: 260},
+        {...colMap.plannedDate,headerName:'План'},
+        {...colMap.completedDate,headerName:'Завершена'},
         {...colMap.estimationsApproved,
-            headerName:'Согласована',
+            headerName:'Смета',
             cellRenderer: (props) =>
                 getEstimationApprovedTag(props.data)
+            , width: 80
         },
-        {...colMap.estimationPrice, editable: false},
-        {...colMap.expensePrice,editable: false},
+        {...colMap.estimationPrice, editable: false, width: 80},
+        {...colMap.expensePrice,editable: false, width: 80},
     ]
             return  <AppLayout
                 hidePageContainer={true}

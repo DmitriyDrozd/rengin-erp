@@ -39,7 +39,7 @@ const sourceResourceName = res.resourceName
 
         sourceResourceName: res.resourceName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
-        width:30,
+        width:120,
         fieldName: res.idProp,
         resizable: false,
         resource: res,
@@ -59,9 +59,22 @@ const sourceResourceName = res.resourceName
             field: property,
             fieldName:property,
 
+
             resource: res,
             filter:true,
             width: 120
+        }
+       if(fieldMeta.type === 'date') {
+           function dateFormatter(params) {
+               const value = params.data[property]
+               var date = new Date(value);
+               if(value)
+                return `${date.getFullYear()}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getDate().toString().padStart(2,'0')}`;
+               return undefined
+           }
+           colInit.valueFormatter = dateFormatter
+           colInit.width = 100
+           // colInit. = 'dateString'
         }
         if(isItemOfMeta(fieldMeta)){
             const RES = getRes(fieldMeta.linkedResourceName)

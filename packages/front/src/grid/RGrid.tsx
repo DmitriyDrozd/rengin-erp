@@ -24,7 +24,7 @@ import {SideBarModule} from '@ag-grid-enterprise/side-bar'
 import {StatusBarModule} from '@ag-grid-enterprise/status-bar'
 import '@ag-grid-community/core/dist/styles/ag-grid.css';
 import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
-
+import './styles.css'
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
     ClipboardModule,

@@ -1,4 +1,4 @@
-import {Meta, valueTypes} from './valueTypes'
+import {Meta, MetaType, valueTypes} from './valueTypes'
 import {createCRUDDuck} from '@sha/fsa'
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import {getStore} from '../../../getStore'
@@ -27,7 +27,7 @@ export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = 
 
 export type FieldsWithIDMeta<RID extends string, Fields extends AnyFieldsMeta> =
     Fields & {
-    [key in `${RID}Id`]: Meta<'string',string>
+    [key in `${RID}Id`]: Meta<MetaType,string>
 }
 export type IdKey<RID extends string>= `${RID}Id`
 

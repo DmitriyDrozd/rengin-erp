@@ -1,0 +1,5 @@
+.ag-theme-alpine {
+    --ag-grid-size: 4px;
+    --ag-row-height: 32px;
+    --ag-header-height: 48px;
+}

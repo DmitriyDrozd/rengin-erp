@@ -23,6 +23,7 @@ export const RCellRender = {
             return (
                 <Link to={url}>
                     <EditOutlined  />
+                    {props.data[resource.nameProp]}
                 </Link>
 
             )
