@@ -106,6 +106,7 @@ export default () => {
 
     }
 
+
     const items=[{
             label:ISSUES.properties.estimationPrice.headerName,
             children: issue.estimationPrice
