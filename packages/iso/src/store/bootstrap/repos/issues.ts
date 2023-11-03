@@ -28,7 +28,7 @@ export const statusesRulesForManager: Record<Status, Status[]> = {
 }
 export const statusesColorsMap: Record<Status, string> = {
         "В работе": 'yellow',
-        "Новая": 'lightblue',
+        "Новая": 'blue',
         "Выполнена":'green',
         "Отменена":'lightgrey',
         "Приостановлена":'grey'

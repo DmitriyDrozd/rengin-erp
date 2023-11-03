@@ -84,6 +84,9 @@ export default () => {
             ...colMap.clientsIssueNumber, width: 100,
         },
         {
+            ...colMap.registerDate,
+        },
+        {
             field: 'status',
             filter: 'agSetColumnFilter',
             filterParams: {
@@ -156,7 +159,7 @@ export default () => {
                     </Space>}
                         rowData={rowData}
                         onCreateClick={onCreateClick}
-                        fullHeight={false}
+                        fullHeight={true}
                         resource={ISSUES}
                         columnDefs={columns}
                         title={'Все заявки'}

@@ -131,7 +131,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
         </div>
     </div>
         <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={rowData || defaultList} resource={resource} quickFilterText={searchText} ref={innerGridRef}/>
-        <div style={{paddingTop: '8px', display: 'flex', justifyContent:'space-between' }}>
+        <div style={{paddingTop: '4px', display: 'flex', justifyContent:'space-between' }}>
             <Space>
 
                 <Typography.Text>Всего записей: {rowData.length}</Typography.Text>

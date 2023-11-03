@@ -14,7 +14,7 @@ export default ({statuses,setStatuses}: StatusFilterProps) => {
             statusesList.map( s =>
                 statuses.includes(s)
                     ?
-                    <Tag icon={<CloseCircleOutlined />} style={{cursor:'pointer', border:'1px'}}  onClick={
+                    <Tag  style={{cursor:'pointer', border:'1px'}}  onClick={
                         () => {
                             const newStatuses =reject(st => st === s, statuses)
 
@@ -23,7 +23,7 @@ export default ({statuses,setStatuses}: StatusFilterProps) => {
                     } color={statusesColorsMap[s]}>
                         {s}
                     </Tag>
-                : <Tag  icon={<PlusCircleOutlined /> } style={{cursor:'pointer'}} onClick={
+                : <Tag style={{cursor:'pointer'}} onClick={
                         () => {
 
                             setStatuses([...statuses, s])

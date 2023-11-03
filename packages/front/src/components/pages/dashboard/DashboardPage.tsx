@@ -18,7 +18,7 @@ const gridStyle: React.CSSProperties = {
     textAlign: 'center',
 };
 export  default () => {
-    const [period, setPeriod] = useState([] as any as Period)
+    const [period, setPeriod] = useState([dayjs('2023/11/01'), dayjs('2023/11/03')] as any as Period)
     const start = period[0]
     const end = period[1]
     const issues: IssueVO[] = useSelector(ISSUES.selectAll)
@@ -48,15 +48,20 @@ export  default () => {
                 }
 
             /></Card.Grid>
-            <Card.Grid style={gridStyle}>
-                Новые заявки
-                <IssueChart issues={openedIssues} color={'green'}/></Card.Grid>
-            <Card.Grid hoverable={false} title={'Закрытые'} style={gridStyle} >
+            <Card.Grid style={gridStyle}><b>Новые заявки</b>
+                <IssueChart issues={openedIssues} color={'green'}/>
+
+            </Card.Grid>
+        <Card.Grid hoverable={false} title={'Закрытые'} style={gridStyle} >
+            <b>Закрыто за период</b>
                 <IssueChart  issues={closedIssues} color={'orange'}/>
             </Card.Grid>
-            <Card.Grid style={gridStyle} title={'Просрочено в закрытых'} >
+            <Card.Grid style={gridStyle} title={'Просрочено в закрытых'}  >
+                <b>Просрочено в закрытых за период</b>
                 <IssueChart  issues={outdatedClosedIssues} color={'blue'}/></Card.Grid>
-            <Card.Grid style={gridStyle} title={'Просрочено в работе'}> <IssueChart  issues={outdatedOpenIssues} color={'red'}/></Card.Grid>
+            <Card.Grid style={gridStyle} title={'Просрочено в работе'}>
+                <b>Просрочено в работе в течении пероида</b>
+                <IssueChart  issues={outdatedOpenIssues} color={'red'}/></Card.Grid>
 
         </Card>
     </AppLayout>
