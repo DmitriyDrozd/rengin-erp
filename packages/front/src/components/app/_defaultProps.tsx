@@ -68,10 +68,10 @@ export default (role: RoleType) =>{
 
         },
 
-        appList: [
+        appList: []/* [
             {
                 icon: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-                title: 'Ant Design',
+                title: 'В этом месяце',
                 desc: '杭州市较知名的 UI 设计语言',
                 url: 'https://ant.design',
             },
@@ -119,6 +119,6 @@ export default (role: RoleType) =>{
                 desc: '为组件开发场景而生的文档工具',
                 url: 'https://d.umijs.org/zh-CN',
             },
-        ]
+        ]*/
     }
 }

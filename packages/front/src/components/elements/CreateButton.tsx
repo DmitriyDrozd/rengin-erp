@@ -21,5 +21,5 @@ export default <RID extends string, Fields extends AnyFieldsMeta>({resource,defa
     const onButtonClick = (e: any) => {
             history.push(url)
     }
-    return <Button type={'primary'} icon={<AntdIcons.PlusOutlined/>} onClick={onCreate||onButtonClick}>Создать</Button>
+    return <Button type={'primary'} icon={<AntdIcons.PlusOutlined/>} onClick={onCreate||onButtonClick}></Button>
 }

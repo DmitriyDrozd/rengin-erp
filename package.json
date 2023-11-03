@@ -32,6 +32,7 @@
         "@ag-grid-community/all-modules": "27.3.0",
         "@ag-grid-enterprise/all-modules": "^27.3.0",
         "@ant-design/happy-work-theme": "^1.0.0",
+        "@ant-design/plots": "^1.2.5",
         "@ant-design/pro-components": "2.6.31",
         "@blinkdb/react": "0.0.3",
         "@emotion/css": "^11.11.2",

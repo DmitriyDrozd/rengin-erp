@@ -14,6 +14,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
 export type SelectOption = {
     value: string
     label: string
+    disabled?: boolean
 }
 export const optionsFromValuesList = (values: string[]): SelectOption[] => {
     const options: SelectOption[] = []

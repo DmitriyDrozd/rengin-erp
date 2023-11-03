@@ -17,6 +17,7 @@ console.log('Env ',env)
 export default defineConfig({
 
     envPrefix: 'RENGIN_',
+
     optimizeDeps: {
     },
     plugins: [

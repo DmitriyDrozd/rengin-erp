@@ -23,8 +23,8 @@ import {SiteVO} from "iso/src/store/bootstrap/repos/sites";
 import dayjs from "dayjs";
 import {SUBS, SubVO} from "iso/src/store/bootstrap/repos/subs";
 
-export default ({issueId}) => {
-    const resource =ISSUES
+export default ({issueId}: {issueId: string}) => {
+    const resource = ISSUES
     const id = issueId
     useUnmount(() => {})
     type Item = typeof resource.exampleItem
@@ -92,7 +92,7 @@ export default ({issueId}) => {
     }}> <Modal
         width={'80%'}
         style={{top:"20px"}}
-        title={site.address+' от '+ dayjs(issue.registerDate)}
+        title={ISSUES.getIssueTitle(issueState)}
         open={true}
         onOk={onOk}
         footer={[

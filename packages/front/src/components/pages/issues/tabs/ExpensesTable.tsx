@@ -9,8 +9,7 @@ import {
     RowEditingStoppedEvent,
     StatusPanelDef
 } from "ag-grid-community";
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
+import 'ag-grid-enterprise'
 
 import {ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space, Typography} from "antd";
@@ -25,7 +24,10 @@ import {CsvExportModule} from "@ag-grid-community/csv-export";
 import {ClientSideRowModelModule} from "@ag-grid-community/client-side-row-model";
 import {useCanManage} from "../../../../hooks/useCanManage";
 import useCurrentUser from "../../../../hooks/useCurrentUser";
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
 
+ModuleRegistry.registerModules([ ExcelExportModule ]);
 const countExpenses = (expenses: IssueVO['expenses']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 

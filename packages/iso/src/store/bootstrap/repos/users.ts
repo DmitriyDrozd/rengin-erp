@@ -3,15 +3,21 @@ import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
 export const roleTypes = ['руководитель','менеджер','сметчик'] as const
+export const roleEnum = {
+    'руководитель':'руководитель',
+    'менеджер':'менеджер',
+    'сметчик':'сметчик'
+}
 export type RoleType = typeof roleTypes[number]
 const usersRaw =createResource('user',{
     role: valueTypes.enum({required: true,enum: roleTypes as any as RoleType[]}),
-    fullName: valueTypes.string({required: true}),
-    title: valueTypes.string(),
-    company: valueTypes.string(),
-    avatarUrl: valueTypes.string(),
-    email: valueTypes.string({required: true, unique: true, trim: true, toLowerCase: true}),
-    removed: valueTypes.boolean({select: false}),
+    fullName: valueTypes.string({required: true, colDef:{width: 250}}),
+    title: valueTypes.string({colDef: {width: 200}}),
+    company: valueTypes.string({colDef: false}),
+    avatarUrl: valueTypes.string({colDef:false}),
+    email: valueTypes.string({required: true, unique: true, trim: true, toLowerCase: true, colDef: {width: 250}}),
+    password: valueTypes.string({required: true, colDef: false}),
+    removed: valueTypes.boolean({select: false, colDef: false}),
 },{
    getItemName: item => item.fullName,
     langRU: {

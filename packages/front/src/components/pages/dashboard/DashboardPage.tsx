@@ -8,7 +8,8 @@ import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'
-import {Period} from "./dates";
+import {Days} from "iso";
+import {Period} from "iso/src/utils/date-utils";
 dayjs.extend(isBetween)
 const { RangePicker } = DatePicker;
 const gridStyle: React.CSSProperties = {
@@ -21,11 +22,14 @@ export  default () => {
     const start = period[0]
     const end = period[1]
     const issues: IssueVO[] = useSelector(ISSUES.selectAll)
+    const allIssues = issues.filter(Days.isIssueInPeriod(period))
+    const activeIssues = allIssues.filter(Days.isIssueActive)
 
-    const openedIssues = issues.filter(i => dayjs(i.registerDate).isBetween(start, end))
-    const closedIssues = issues;
-    const outdatedClosedIssues = issues;
-    const outdatedOpenIssues = issues
+    const closedIssues = allIssues.filter(i => i.status === 'Выполнена')
+    const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start, end))
+    const outdatedIssues=allIssues.filter(Days.isIssueOutdated)
+    const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status==='Отменена')
+    const outdatedOpenIssues = outdatedIssues.filter(i => i.status ==='В работе')
     return  <AppLayout
         hidePageContainer={true}
         proLayout={{contentStyle:{
@@ -44,7 +48,9 @@ export  default () => {
                 }
 
             /></Card.Grid>
-            <Card.Grid style={gridStyle} title={'Все заявки'}> <IssueChart issues={openedIssues} color={'green'}/></Card.Grid>
+            <Card.Grid style={gridStyle}>
+                Новые заявки
+                <IssueChart issues={openedIssues} color={'green'}/></Card.Grid>
             <Card.Grid hoverable={false} title={'Закрытые'} style={gridStyle} >
                 <IssueChart  issues={closedIssues} color={'orange'}/>
             </Card.Grid>
