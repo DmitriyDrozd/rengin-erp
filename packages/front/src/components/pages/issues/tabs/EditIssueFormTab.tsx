@@ -32,6 +32,7 @@ import useRole from "../../../../hooks/useRole";
 import {useUnmount} from "react-use";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import {today} from "ionicons/icons";
+import {Days} from "iso";
 const { Text } = Typography;
 export default () => {
     const role = useRole()
@@ -196,13 +197,14 @@ export default () => {
                 placeholder={'Статус не указан'}
                 value={issue.status}
                 onValueChange={ (value: Status) => {
+                    debugger
                     if(value === 'В работе') {
-                        setIssueProperty('workStartedDate')(today)
+                        setIssue({...issue, issueId: issue.issueId,'workStartedDate': Days.today(), status: value})
+                    } else if(value === 'Выполнена') {
+                        setIssue({...issue,issueId: issue.issueId,'completedDate': Days.today(), status: value})
+                    } else {
+                        setIssue({...issue, issueId: issue.issueId, status: value})
                     }
-                    if(value === 'Выполнена') {
-                        setIssueProperty('completedDate')(today)
-                    }
-                     setIssueProperty('status')(value)
             }}/>
         {
             buildCheckbox('estimationsApproved')
