@@ -9,7 +9,7 @@ import {
     ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components'
-import {IssueVO} from 'iso/src/store/bootstrap/repos/issues'
+import {IssueVO, Status, statusesRulesForManager} from 'iso/src/store/bootstrap/repos/issues'
 import {useQueryObject} from '../../../../hooks/useQueryObject'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router'
@@ -31,6 +31,8 @@ import RenFormCheckbox from "../../../form/RenFormCheckbox";
 import useRole from "../../../../hooks/useRole";
 import {useUnmount} from "react-use";
 import DescriptionsItem from "antd/es/descriptions/Item";
+import {today} from "ionicons/icons";
+import {Days} from "iso";
 const { Text } = Typography;
 export default () => {
     const role = useRole()
@@ -39,7 +41,6 @@ export default () => {
         labelCol: { span: 6 },
         wrapperCol: { span:18 },
     }
-
 
     const formRef = useRef<ProFormInstance<IssueVO>>();
     type Item = IssueVO
@@ -64,7 +65,7 @@ export default () => {
                        onValueChange={
                            setIssueProperty(name)
                        }
-                       disabled={role==='сметчик'}
+                       disabled={role==='сметчик' || role === 'менеджер'}
                        label={ISSUES.properties[name].headerName}  width={'sm'}
                 />
     }
@@ -186,12 +187,25 @@ export default () => {
             <RenFormSelect
                 label={'Статус'}
                 disabled={role==='сметчик'}
-                options={optionsFromValuesList(ISSUES.properties.status.enum)}
+                options={optionsFromValuesList(ISSUES.properties.status.enum).map( o => {
+                    if(role === 'менеджер') {
+                        const availableStatuses  = statusesRulesForManager[issue.status]
+                        o.disabled = !availableStatuses.includes(o.value)
+                    }
+                    return o
+                })}
                 placeholder={'Статус не указан'}
                 value={issue.status}
-                onValueChange={
-                     setIssueProperty('status')
-            }/>
+                onValueChange={ (value: Status) => {
+                    debugger
+                    if(value === 'В работе') {
+                        setIssue({...issue, issueId: issue.issueId,'workStartedDate': Days.today(), status: value})
+                    } else if(value === 'Выполнена') {
+                        setIssue({...issue,issueId: issue.issueId,'completedDate': Days.today(), status: value})
+                    } else {
+                        setIssue({...issue, issueId: issue.issueId, status: value})
+                    }
+            }}/>
         {
             buildCheckbox('estimationsApproved')
         }

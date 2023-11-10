@@ -4,9 +4,9 @@ import RGrid, {RGridProps} from './RGrid'
 import {Button, Dropdown, Input, MenuProps, Space, Typography} from 'antd'
 import {useAllColumns} from './RCol'
 import {useDispatch, useSelector} from 'react-redux'
-import {SearchOutlined} from '@ant-design/icons'
+import {DownloadOutlined, SearchOutlined} from '@ant-design/icons'
 import CrudCreateButton from '../components/elements/CreateButton'
-import {ChangeEventHandler, useRef, useState} from 'react'
+import React, {ChangeEventHandler, useCallback, useRef, useState} from 'react'
 import {AntdIcons} from '../components/elements/AntdIcons'
 import DeleteButton from '../components/elements/DeleteButton'
 import CancelButton from '../components/elements/CancelButton'
@@ -32,7 +32,7 @@ const items: MenuProps['items'] =
         danger: true
     }]
 
-export default  <RID extends string, Fields extends AnyFieldsMeta>({title, columnDefs, resource,rowData,createItemProps,...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any}) => {
+export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRef, toolbar, columnDefs, resource,rowData,createItemProps,...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode}) => {
     const dispatch = useDispatch()
     const [isDeleteMode, setDeleteMode,] = useState(false)
     const [defaultColumns, columnsMap] = useAllColumns(resource,isDeleteMode? 'multiple':undefined)
@@ -63,10 +63,10 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
         setDeleteMode(false)
     }
 
-    const gridRef = useRef<AgGridReact>(null);
+    const innerGridRef = useRef<AgGridReact>(null);
 
     const onSelectionChanged = () => {
-        const rows = gridRef.current!.api.getSelectedRows()
+        const rows = innerGridRef.current!.api.getSelectedRows()
         const ids = rows.map(r =>r[resource.idProp])
         setSelectedIds(ids);
     }
@@ -93,6 +93,9 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
             </Dropdown>
         </>
     }
+    const onBtExport = useCallback(() => {
+        innerGridRef.current!.api.exportDataAsExcel();
+    }, []);
 
     return      <> <div
         style={{
@@ -108,6 +111,9 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
         }}
     >
         <h3 style={{whiteSpace:'nowrap'}}>{title}</h3>
+        {
+            toolbar
+        }
         <div style={{display: 'flex'}}>
             <Space>
                 <Input
@@ -124,6 +130,17 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title, colum
             </Space>
         </div>
     </div>
-        <RGrid onSelectionChanged={onSelectionChanged} rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={rowData || defaultList} resource={resource} quickFilterText={searchText} ref={gridRef}/>
+        <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={rowData || defaultList} resource={resource} quickFilterText={searchText} ref={innerGridRef}/>
+        <div style={{paddingTop: '4px', display: 'flex', justifyContent:'space-between' }}>
+            <Space>
+
+                <Typography.Text>Всего записей: {rowData.length}</Typography.Text>
+
+            </Space>
+
+            <Space>
+                <Button icon={<DownloadOutlined />} onClick={onBtExport} >Скачать .xlsx</Button>
+            </Space>
+        </div>
     </>
  }

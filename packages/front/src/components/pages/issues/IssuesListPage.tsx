@@ -1,13 +1,13 @@
 import {useAllColumns} from '../../../grid/RCol'
 import useLedger from '../../../hooks/useLedger'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
+import {ISSUES, IssueVO, statusesColorsMap, statusesList} from 'iso/src/store/bootstrap/repos/issues'
 import AppLayout from '../../app/AppLayout'
-import React, {useState} from 'react'
+import React, {useCallback, useRef, useState} from 'react'
 import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
 import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
-import {Badge, Tag} from "antd";
+import {Badge, Button, Checkbox, Space, Tag} from "antd";
 import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
 import {useDispatch, useSelector} from "react-redux";
 import useCurrentUser from "../../../hooks/useCurrentUser";
@@ -16,6 +16,14 @@ import {useRouteMatch} from "react-router";
 import IssueModal from "./IssueModal";
 import dayjs from "dayjs";
 import {matchesTreeDataDisplayType} from "ag-grid-community/dist/lib/gridOptionsValidator";
+import useLocalStorageState from "../../../hooks/useLocalStorageState";
+import StatusFilterSelector from "./StatusFilterSelector";
+import {isIssueOutdated} from "iso/src/utils/date-utils";
+import {Days} from "iso";
+import IsssueStatusCellEditor from "./IsssueStatusCellEditor";
+import {ClockCircleOutlined, DownloadOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
+import {AgGridReact} from "ag-grid-react";
+import {IOlympicData} from "../../../examples/ExportToExcel";
 
 
 const getEstimationApprovedTag = (data: IssueVO) =>
@@ -31,21 +39,23 @@ const getStatusTag = (issue: IssueVO) => {
     const workStartedDJ =  issue.workStartedDate ? dayjs(issue.workStartedDate) : undefined
     const registerDJ = issue.registerDate ? dayjs(issue.registerDate) : undefined
     const getTag = () => {
-
-        if (issue.status === 'Приостановлена')
-            return <Tag color="grey">{issue.status}</Tag>
-        if (issue.status === 'В работе')
-            return <Tag color="yellow">{issue.status}</Tag>
-        if (issue.status === 'Выполнена')
-            return <Tag color="green">{issue.status}</Tag>
-        return <Tag color="blue">{issue.status}</Tag>
+        return <Tag color={statusesColorsMap[issue.status]}>{issue.status}</Tag>
     }
-    const tag = getTag()
+    let node = getTag()
     if(issue.status === 'В работе') {
         if(currentDJ.isAfter(plannedDJ))
-        return <Badge count={currentDJ.diff(plannedDJ,'d')} offset={[-2,5]}>{tag}</Badge>
+        node = <Badge count={currentDJ.diff(plannedDJ,'d')} offset={[8,12]}>{node}</Badge>
     }
-    return tag
+    if(issue.status === 'Выполнена') {
+        if(issue.plannedDate && issue.completedDate) {
+         if(dayjs(issue.completedDate).isAfter(issue.plannedDate))
+            node = <Badge color={'lightpink'} count={dayjs(issue.completedDate).diff(dayjs(issue.plannedDate),'d')} offset={[-2,5]}>{node}</Badge>
+        }
+        if(!issue.plannedDate || !issue.completedDate) {
+            node = <Badge  count={<ClockCircleOutlined style={{ color: '#d5540a' }} />} offset={[5,10]}>{node}</Badge>
+        }
+    }
+    return <>{node}</>
 }
 
 
@@ -56,41 +66,34 @@ export default () => {
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll)
     const {currentUser} = useCurrentUser()
     const ledger = useLedger()
-    const rowData = currentUser.role === 'менеджер'
-        ? allIssues.filter(i => i.responsibleManagerId === currentUser.userId)
-        : allIssues
+
+    const onBtExport = useCallback(() => {
+        gridRef.current!.api.exportDataAsExcel();
+    }, []);
 
     const dispatch = useDispatch()
     const onCreateClick = (defaults) => {
         console.log(defaults)
     }
-    console.log("Render IssuesList")
 
-    const getRowStyle = (params:RowClassParams<IssueVO>) => {
-        console.log('getRowStyle params ', params)
-       const currentISO = new Date().toISOString()
-         const plannedDayjs = dayjs(params.data.plannedDate)
-        const completedDayjs = dayjs(params.data.completedDate)
-
-        const workStartedDayjs = dayjs(params.data.workStartedDate)
-        const registerDayjs = dayjs(params.data.registerDate)
-        const now = dayjs()
-       /* if ( !params.data.completedDate  && params.data.plannedDate  && now.isAfter(dayjs(plannedDayjs))){//params.data..rowIndex % 2 === 0) {
-            return { background: 'yellow' };
-        }
-        if(params.data.completedDate &&  params.data.plannedDate  && completedDayjs.isAfter(dayjs(plannedDayjs)))
-*/
-        return {background: undefined}
-    };
     const [cols,colMap] = useAllColumns(ISSUES)
 
     const columns: ColDef<IssueVO>[] = [
-        {...colMap.clickToEditCol, headerName:'Номер'},
+        {...colMap.clickToEditCol, headerName:'', width: 30},
+        {
+            ...colMap.clientsIssueNumber, width: 100,
+        },
+        {
+            ...colMap.registerDate,
+        },
         {
             field: 'status',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
             headerName: 'Статус',
-            width: 105,
-            cellEditor: 'agSelectCellEditor',
+            width: 125,
             editable: currentUser.role !== 'сметчик',
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['status']> ) => {
                 const issue: Partial<IssueVO> = {issueId: event.data.issueId, status: event.newValue}
@@ -99,9 +102,9 @@ export default () => {
 
                 dispatch(ISSUES.actions.patched(issue))
             },
+            cellEditor: IsssueStatusCellEditor,
             cellEditorParams: {
-
-                values: ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
+                values: (params) => [params.data.status,'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
                 valueListGap: 0,
             },
             cellRenderer: (props:{rowIndex:number}) =>
@@ -121,7 +124,21 @@ export default () => {
         {...colMap.estimationPrice, editable: false, width: 80},
         {...colMap.expensePrice,editable: false, width: 80},
     ]
-            return  <AppLayout
+
+    const [statuses, setStatuses] = useLocalStorageState('statusFilter',statusesList)
+    const [outdated, setOutdated] = useLocalStorageState('outdatedFilter', false)
+
+    const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues
+
+    const dataForUser = currentUser.role === 'менеджер'
+        ? outdatedIssues.filter(i => i.responsibleManagerId === currentUser.userId)
+        : outdatedIssues
+
+    console.log('statuses', statuses)
+    const gridRef = useRef<AgGridReact<IssueVO>>(null);
+    const rowData = dataForUser.filter(s => statuses.includes(s.status) )
+
+    return  <AppLayout
                 hidePageContainer={true}
                 proLayout={{contentStyle:{
                         padding: '0px'
@@ -135,13 +152,18 @@ export default () => {
 
 
                     <PanelRGrid
+
+                        toolbar={<Space>
+                            <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+<StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+                    </Space>}
                         rowData={rowData}
-                        getRowStyle={getRowStyle}
                         onCreateClick={onCreateClick}
                         fullHeight={true}
                         resource={ISSUES}
                         columnDefs={columns}
                         title={'Все заявки'}
+
                     />
                     {
                         /**

@@ -1,5 +1,7 @@
-import {valueTypes} from '../core/valueTypes'
+import {Meta, valueTypes} from '../core/valueTypes'
 import {createResource} from '../core/createResource'
+import {Days} from "../../../index";
+import SITES, {SiteVO} from "./sites";
 
 export type ExpenseItem = {
         paymentType: string
@@ -15,10 +17,25 @@ export type EstimationItem = {
         amount: number
         comment: string
 }
-
+export const statusesList = ['Новая','В работе','Выполнена','Отменена','Приостановлена'] as const
+export type Status = typeof statusesList[number]
+export const statusesRulesForManager: Record<Status, Status[]> = {
+        'Новая': ['В работе'],
+        'В работе': ['Выполнена','Отменена','Приостановлена'],
+        "Выполнена":[],
+        "Отменена":[],
+        "Приостановлена":[]
+}
+export const statusesColorsMap: Record<Status, string> = {
+        "В работе": 'yellow',
+        "Новая": 'blue',
+        "Выполнена":'green',
+        "Отменена":'lightgrey',
+        "Приостановлена":'grey'
+}
 const issuesRaw = createResource('issue',{
         clientsIssueNumber: valueTypes.string({headerName:'Номер заявки', required: true, immutable: true}),
-        status: valueTypes.enum({headerName: 'Статус',enum:['Новая','В работе','Выполнена','Отменена','Приостановлена']}),
+        status: valueTypes.enum({headerName: 'Статус',enum:statusesList}) as Meta<'enum', typeof statusesList[number]>,
         phase: valueTypes.string({headerName: 'Этап'}),
         brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
@@ -56,10 +73,17 @@ const issuesRaw = createResource('issue',{
                     some:'Заявки'
             }
     }
+
 )
+
+
 
 export const issueResource = {
         ...issuesRaw,
+        getIssueTitle: (issue: IssueVO) => {
+                const site: SiteVO = SITES.selectById(issue.siteId)(SITES.getStore().getState())
+                return `${issue.clientsIssueNumber} по адресу ${site ? site.city+ site.address: ' НЕ УКАЗАН '} от ${Days.toDayString(issue.registerDate)}`
+        }
 }
 
 export type IssueVO = typeof issueResource.exampleItem

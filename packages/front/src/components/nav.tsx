@@ -17,6 +17,7 @@ import IssuesListPage from './pages/issues/IssuesListPage'
 import IssueItemPage from './pages/issues/IssueItemPage'
 import AddIssuePage from './pages/issues/AddIssuePage'
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import UsersChapter from "./pages/users/UsersChapter";
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -41,8 +42,10 @@ export const nav = {
     forgot: buildNav('/app/forgot', ForgotPasswordPage),
     start: buildNav('/app/in/start', StartPage),
    // issuesList: buildNav('/app/in/issues',ContractsListPage ),
-    usersList: buildNav('/app/in/users', UsersListPage),
-    userPage: buildNav('/app/in/users/:userId', (props) =><UserPage id={props.userId} />),
+    usersList: buildNav('/app/in/users', UsersChapter),
+
+    userCreate: buildNav('/app/in/users/create', UsersChapter),
+    userEdit: buildNav('/app/in/users/:userId', UsersChapter),
 
     brandsList: buildNav('/app/in/brands', BrandsChapter),
     brandsCreate: buildNav('/app/in/brands/create', BrandsChapter),

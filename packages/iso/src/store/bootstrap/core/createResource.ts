@@ -23,8 +23,6 @@ export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = 
     getItemName?: (item: ItemWithId<RID, Fields>) => string
 }
 
-
-
 export type FieldsWithIDMeta<RID extends string, Fields extends AnyFieldsMeta> =
     Fields & {
     [key in `${RID}Id`]: Meta<MetaType,string>
@@ -38,7 +36,7 @@ export type ItemWithId<RID extends string, Fields extends AnyFieldsMeta> =
         [K in Exclude<keyof Fields,IdKey<RID>>]: Fields[K]['tsType'] | undefined
     } & WithOnlyId<RID>
 
-export type Resource<RID extends string, Fields extends {[key in string]: Meta}>  =
+export type Resource<RID extends string, Fields extends {[key in string]: Meta<any>}>  =
   ResourceOptions<RID, Fields> & {
     rid: RID,
     fields: Fields
@@ -50,17 +48,15 @@ export type Resource<RID extends string, Fields extends {[key in string]: Meta}>
     getStore: typeof getStore
     asOptions: (list?: ItemWithId<RID,Fields>[]) => Array<{value: string, title: string}>
     asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
-    fieldsList: (Meta & {name: string})[]
+    fieldsList: (Meta<any> & {name: string})[]
     resourceName: Uppercase<PluralEngindEng<RID>>
 } & Crud<ItemWithId<RID,Fields >, IdKey<RID>, PluralEngindEng<RID>>
 
 export type AnyMeta = Meta<any, any>
+
 export type AnyFieldsMeta = {
-    [key in string]: Meta
+    [key in string]: Meta<any,any>
 }
-
-
-
 
 export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
     (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>): Resource<RID, FieldsWithIDMeta<RID,Fields>> => {
@@ -124,14 +120,12 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
                     console.log('item',item)
                     options[item[idProp]] = getItemName(item)
                 })
-
                 console.log('asValueEnum', options)
                 return options
             },
             getItemName,
             ...rest,
             ...props,
-
             getStore,
         }
     }
@@ -158,7 +152,7 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
 
 const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',testId:'sds'}
 
-class Clazz<RID extends string, Fields extends {[key in string]: Meta}>{
+class Clazz<RID extends string, Fields extends {[key in string]: Meta<MetaType, any>}>{
     public create = (rid: RID, props: Fields, opts: ResourceOptions<RID ,Fields>)=> {
         return createResource(rid,props, opts)
     }
@@ -166,4 +160,5 @@ class Clazz<RID extends string, Fields extends {[key in string]: Meta}>{
 
 export type ExtractVOByResource<R extends Resource<any, any>> = R['exampleItem']
 
-export type ExtractResource<RID extends string, Fields extends {[key in string]: Meta}> = ReturnType<Clazz<RID, Fields>['create']>
+export type ExtractResource<RID extends string, Fields extends {[key in string]: Meta<MetaType, any>}> = ReturnType<Clazz<RID, Fields>['create']>
+

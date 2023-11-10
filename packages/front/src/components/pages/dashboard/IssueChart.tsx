@@ -68,7 +68,7 @@ export default ({issues, color}: IssueChartData) => {
             {
                 //<Legend />
                  }
-            <Bar dataKey="value" fill="#8884d8" activeBar={<Rectangle fill={color || "pink"} stroke={color} />} />
+            <Bar dataKey="value" fill={color || 'pink'} activeBar={<Rectangle fill={color || "pink"} stroke={color} />} />
         </BarChart>
     </ResponsiveContainer>
 }

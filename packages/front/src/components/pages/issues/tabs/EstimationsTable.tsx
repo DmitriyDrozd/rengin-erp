@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {ISSUES} from "iso/src/store/bootstrap";
 import React, {useCallback, useMemo, useRef, useState} from "react";
 import {AgGridReact} from "ag-grid-react";
+
 import {ColDef, RowEditingStartedEvent, RowEditingStoppedEvent, StatusPanelDef} from "ag-grid-community";
 import {EstimationItem, ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space, Typography} from "antd";
@@ -13,7 +14,11 @@ import {DownloadOutlined} from "@ant-design/icons";
 import {fieldMetaToProProps} from "../../chapter-routed/ItemChapter";
 import RenFormCheckbox from "../../../form/RenFormCheckbox";
 import useCurrentUser from "../../../../hooks/useCurrentUser";
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
+import ExportToExcel from "../../../../examples/ExportToExcel";
 
+ModuleRegistry.registerModules([ ExcelExportModule ]);
 const countEstimations = (expenses: IssueVO['estimations']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
@@ -124,6 +129,7 @@ export default () => {
             />
 
         </div>
+
 
         <div style={{paddingTop: '8px', display: 'flex', justifyContent:'space-between' }}>
             <Space>

@@ -107,11 +107,14 @@ const sourceResourceName = res.resourceName
     }
 
 
-    const columnsList = res.fieldsList.filter((f,i)=> i!==0 && f.type!=='array').map((f) => {
+    const columnsList = res.fieldsList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
        const col = storedColumn(f.name)
-        map[f.name] = col
+        const colComposed = f.colDef? {...col, ...f.colDef} : col
 
-        return col
+        map[f.name] = colComposed
+
+
+        return colComposed
     })
     return [columnsList, map] as const
   //  return res.properties

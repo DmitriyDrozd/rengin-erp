@@ -29,6 +29,9 @@ import {nav} from "../../nav";
 import {sleep} from "@sha/utils";
 import {SiteVO} from "iso/src/store/bootstrap/repos/sites";
 import useCurrentUser from "../../../hooks/useCurrentUser";
+import {today} from "ionicons/icons";
+import {Days} from "iso";
+
 
 const { Text, Link } = Typography;
 export default () => {
@@ -46,7 +49,7 @@ export default () => {
     type Item = IssueVO
     const id =generateGuid()
     const predefinedValues = useQueryObject<IssueVO>()
-    const initialPlannedDate = ( DateTime.now().plus(Duration.fromISO('P3D')).endOf('day'))
+    const initialPlannedDate = ( Days.today().add(3,'day'))
     const initialValues:IssueVO = {[idProp]: id,
         ...predefinedValues,checkFiles: [],
         actFiles: [],
@@ -54,8 +57,8 @@ export default () => {
         responsibleManagerId: currentUser.userId,
         status: 'Новая',
         expensePrice: 0,estimationPrice: 0, expenses: [], estimations: [],
-        plannedDate: initialPlannedDate.toISO(),
-        registerDate: new Date().toISOString() }
+        plannedDate: initialPlannedDate.toString(),
+        registerDate: Days.today()}
     const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
     const dispatch = useDispatch()
 

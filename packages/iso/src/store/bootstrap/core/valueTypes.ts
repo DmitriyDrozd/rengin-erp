@@ -1,5 +1,6 @@
 import {DateRangeVO} from './VO'
 import {ResourceName} from '../resourcesList'
+import {ColDef} from "ag-grid-community";
 
 export const cast = <T>(value: any): T => value
 export type MetaType =
@@ -21,7 +22,7 @@ export type MetaType =
     | 'enum'
 
 
-export type Meta<MT extends MetaType, TSType = any> = {
+export type Meta<MT extends MetaType, TSType = any,> = {
     type: MT
     immutable?: boolean
     isIDProp?: boolean
@@ -33,6 +34,7 @@ export type Meta<MT extends MetaType, TSType = any> = {
     tsType: TSType
     sealed?: boolean
     name?: string
+    colDef?: ColDef | false
 }
 
 export type ExtractTypeByPropMeta<M> = M extends Meta<infer S, infer T> ? T : unknown
@@ -63,7 +65,7 @@ const arrayOfMeta = <Extra extends {linkedResourceName: ResourceName}>(extra: Pa
     ({...extra, type: 'arrayOf'})
 
 const enumMeta = <Tuple extends Readonly<string[]>,Element = Tuple[number]>(extra: Partial<Meta<'enum', Element>> & {enum: Tuple} ) =>
-    ({...extra, type: 'enum' as 'enum'})as Meta<'enum',Tuple[number]>
+    ({...extra, type: 'enum' as 'enum'})as Meta<'enum',string> & typeof extra
 
 export type InferredVOByMetaMap<P extends {[key in string]: PropMetas}> = Readonly<{
     [K in keyof P]: P[K]
