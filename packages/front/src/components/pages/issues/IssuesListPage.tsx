@@ -7,7 +7,7 @@ import React, {useCallback, useRef, useState} from 'react'
 import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
 import {DateTime} from "luxon";
 import {ColDef} from "ag-grid-community";
-import {Badge, Button, Checkbox, Space, Tag} from "antd";
+import {Badge, Button, Checkbox, message, notification, Space, Tag} from "antd";
 import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
 import {useDispatch, useSelector} from "react-redux";
 import useCurrentUser from "../../../hooks/useCurrentUser";
@@ -25,7 +25,7 @@ import {ClockCircleOutlined, DownloadOutlined, ExclamationCircleOutlined} from "
 import {AgGridReact} from "ag-grid-react";
 import {IOlympicData} from "../../../examples/ExportToExcel";
 
-
+import copy from 'copy-to-clipboard';
 const getEstimationApprovedTag = (data: IssueVO) =>
     data.estimationsApproved === true
         ? <Tag color={'green'}>Да</Tag>
@@ -75,13 +75,18 @@ export default () => {
     const onCreateClick = (defaults) => {
         console.log(defaults)
     }
-
     const [cols,colMap] = useAllColumns(ISSUES)
 
     const columns: ColDef<IssueVO>[] = [
         {...colMap.clickToEditCol, headerName:'', width: 30},
         {
             ...colMap.clientsIssueNumber, width: 100,
+            cellRenderer: (props:{rowIndex:number}) => {
+                return <a onClick={() => {
+                    copy(props.value);
+                    message.info('Cкопировано "'+props.value+'"')
+                }}>{props.value}</a>
+            }
         },
         {
             ...colMap.registerDate,

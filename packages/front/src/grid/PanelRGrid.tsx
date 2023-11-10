@@ -41,6 +41,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
     const resultCols = columnDefs || [firstCol,...(columnDefs || defaultColumns)]
 
     const defaultList = useSelector(resource.selectList)
+    const list = rowData || defaultList
     const [searchText, setSearchText] = useState('')
 
     const [selectedIds,setSelectedIds] = useState([])
@@ -130,11 +131,11 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
             </Space>
         </div>
     </div>
-        <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={rowData || defaultList} resource={resource} quickFilterText={searchText} ref={innerGridRef}/>
+        <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={list} resource={resource} quickFilterText={searchText} ref={innerGridRef}/>
         <div style={{paddingTop: '4px', display: 'flex', justifyContent:'space-between' }}>
             <Space>
 
-                <Typography.Text>Всего записей: {rowData.length}</Typography.Text>
+                <Typography.Text>Всего записей: {list.length}</Typography.Text>
 
             </Space>
 

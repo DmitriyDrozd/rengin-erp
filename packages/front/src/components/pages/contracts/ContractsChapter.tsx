@@ -59,6 +59,7 @@ export default () => {
         renderList={({form,verb,resource}) => {
             return  <div>
                         <PanelRGrid
+
                             fullHeight={true}
                             resource={CONTRACTS}
                             title={'Все договоры'}
