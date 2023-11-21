@@ -6,9 +6,9 @@ import * as path from 'path';
 
 export default async () => {
     console.log('ENV', process.env)
-    const p = path
-    const gServices = await getGServices(p.join(__dirname,'..','rest','settings','stroi-monitroing-1590ca45292b.json'))
-    const store = await configureServiceStore(gServices)
+
+
+    const store = await configureServiceStore()
 
     global.store = store
 

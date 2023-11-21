@@ -9,7 +9,7 @@ import {SITES, SiteVO} from './bootstrap/repos/sites'
 import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
 import {ISSUES, IssueVO} from './bootstrap/repos/issues'
 import {isCRUD} from '@sha/fsa/src/createCRUDDuck'
-import {Duck} from '@sha/fsa/src/createBootableDuck'
+import {BootableDuck} from '@sha/fsa/src/createBootableDuck'
 import {BRANDS, BrandVO} from './bootstrap/repos/brands'
 import {LEGALS, LegalVO} from './bootstrap/repos/legals'
 import SUBS, {SubVO} from './bootstrap/repos/subs'
@@ -44,12 +44,12 @@ export const bootstrapDucks = Object.values(bootstrapDucksMap)
 export const bootstrapCruds = bootstrapDucks.filter(isCRUD)
 
 
-type ReducersMapByDuck<Type extends {[key in string]: Duck<any>}> = {
+type ReducersMapByDuck<Type extends {[key in string]: BootableDuck<any>}> = {
     [Property in keyof Type]: Type[Property]['reducer'];
 };
 
 
-const getReducersMapByDucks = <M extends {[key in string]: Duck<any> }>(ducks: M): ReducersMapByDuck<M> => {
+const getReducersMapByDucks = <M extends {[key in string]: BootableDuck<any> }>(ducks: M): ReducersMapByDuck<M> => {
     const reducers = {}
     Object.keys(ducks).forEach(k => reducers[ducks[k].factoryPrefix] = ducks[k].reducer)
     return  reducers as any

@@ -5,10 +5,12 @@ import {serviceDuck, SEServiceState} from './serviceDuck'
 import {generateEventGuid} from '@sha/random'
 import * as FSA from '@sha/fsa'
 import sagaOptions, {SagaOptions} from '../sagaOptions';
-import createMongoConnection from '../repositories/createMongoConnection';
-import getServiceEnv from '../getServiceEnv';
-import {GServices} from '../rest/settings/getGServices';
+import getGServices, {GServices} from '../rest/settings/getGServices';
 import eventStore from '../repositories/eventStore'
+import Env from "../Env";
+import knex, {Knex} from "knex";
+import path from "path";
+import {UnPromisify} from "@sha/utils";
 
 //var remotedev = require('remotedev-server');
 //remotedev({ hostname: 'localhost', port: 8000 });
@@ -18,9 +20,26 @@ let instance: ServiceStore
 export const getStore = () =>
     instance;
 
-const configureServiceStore = async (gServices: GServices) => {
-    const sagaMiddleware = createSagaMiddleware()
+import mongoose from 'mongoose'
 
+const createMongoConnection = async (config: { uri: string }) => {
+    mongoose.set('strictQuery', true);
+    return await mongoose.connect(config.uri, {
+        //useNewUrlParser: true,
+        pass: 'BuildMeUp',
+        user: 'rengin',
+
+        autoIndex: false,
+    })
+}
+
+ type MongoConnection = ReturnType<typeof createMongoConnection>
+
+
+
+const configureServiceStore = async () => {
+    const sagaMiddleware = createSagaMiddleware()
+    const gServices = await getGServices(path.join(__dirname,'..','rest','settings','stroi-monitroing-1590ca45292b.json'))
 
     //  const composeEnhancers = composeWithDevTools({ realtime: true, port: 8099, suppressConnectErrors:true });
     const middlewareEnhancer = applyMiddleware(sagaMiddleware)//composeEnhancers()
@@ -29,9 +48,25 @@ const configureServiceStore = async (gServices: GServices) => {
 
         middlewareEnhancer
     )
-    const mongoURL = getServiceEnv().RENGIN_SERVICE_MONGO_URI
-    const mongo = (await createMongoConnection({uri: mongoURL})).connection
+    const mongoURL = 'mongodb://dev.rengindesk.ru:27017/rengin'//Env.RENGIN_SERVICE_MONGO_URI
+    //const mongoURL = ''Env.RENGIN_SERVICE_MONGO_URI
+    const mongo = (await createMongoConnection({uri: mongoURL,})).connection
 
+    const connectionString ="UserID=rengin;Password=BuildMeUp;Host=195.24.66.223;Port=5432;Database=rengin;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+//    Env.RENGIN_PG_CONNECTION_STRIN
+
+    const pgConnectionConfig = {
+         database:'rengin',
+         host:'195.24.66.223',
+         port:5432,
+         user:'rengin',
+         password: 'BuildMeUp'
+
+    }
+    const pg = knex({
+        client: 'pg',
+        connection: {...pgConnectionConfig, pool: 10}
+    });
     const EventsRepo = await eventStore(mongo)
     const nativeDispatch = store.dispatch
 
@@ -87,16 +122,16 @@ const configureServiceStore = async (gServices: GServices) => {
         applyEvent(action)
     }
 
-    const storeWithRun: any = {
+    const storeWithRun = {
         ...store,
         dispatch,
         runSaga: sagaMiddleware.run,
-
+        mongo, pg: pg as any as Knex, gServices,
         persist,
         options: {} as any,
         command
     }
-    const options = await sagaOptions(storeWithRun, mongo,gServices)
+    const options = await sagaOptions(storeWithRun)
     storeWithRun.options = options
 
     return storeWithRun
@@ -107,8 +142,7 @@ type ThenArg<T> = T extends Promise<infer U> ? U :
         T
 
 export type ServiceStore =
-    Store<SEServiceState>
-    & { options: SagaOptions, waitForAction: (pred: (val: any) => boolean) => FSA.FactoryAction<any> }
+    UnPromisify<ReturnType<typeof configureServiceStore>>
 
 export default configureServiceStore
 

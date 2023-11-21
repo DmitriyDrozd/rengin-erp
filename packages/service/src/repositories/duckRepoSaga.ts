@@ -1,16 +1,17 @@
 import {call, put, select, takeEvery} from 'typed-redux-saga'
 import {isNamespace} from '@sha/fsa'
 import {Schema} from 'mongoose'
-import {DuckRepository} from './duckRepo'
-import {isPersistentAction} from 'iso'
+import getMongoDAO, {DuckRepository} from './getMongoDAO'
+import {isPersistentAction,Res} from 'iso'
+import {getPGDAO} from "./getPGDAO";
+import {SagaOptions} from "../sagaOptions";
+import {Repo} from "./getRepo";
+import {UnionRes} from "iso/src/store/bootstrap/resourcesList";
 
-export default function* duckRepoSaga<T, ID extends keyof T, S extends Schema>
-(ioOrRepo: DuckRepository<T, ID, S>, {limit} = {limit: undefined}) {
-
-    let repo: DuckRepository<T, ID, S> = ioOrRepo
+export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions)  {
 
     const getAll = async () => {
-        return repo.getAll({limit})
+        return await repo.mongoDao.getAll()
     }
 
     /*if(repo.duck.factoryPrefix  === 'users')
@@ -19,43 +20,48 @@ export default function* duckRepoSaga<T, ID extends keyof T, S extends Schema>
      */
     const items = (yield* call(getAll))
 
-    console.log('Repo ' + repo.duck.factoryPrefix + ' found item: ' + items.length)
+    console.log('Repo ' + repo.factoryPrefix + ' found item: ' + items.length)
 
     yield* put(
-        repo.duck.actions.reset(items)
+        repo.actions.reset(items)
     )
+    yield* call(repo.pgDao.createMany,items)
 
-    yield* takeEvery(isNamespace(repo.duck.factory), function* (action) {
+    yield* takeEvery(isNamespace(repo.factory), function* (action) {
 
 
         if (isPersistentAction(action)) {
             console.log('DuckRepoSaga ',action.type)
             try {
-                if(repo.duck.actions.addedBatch.isType(action)){
+                if(repo.actions.addedBatch.isType(action)){
                     yield* call(async () => {
 
-                            await repo.createMany(action.payload)
+                        await repo.mongoDao.createMany(action.payload)
+                        await repo.pgDao.createMany(action.payload)
                     })
                 }
-                if (repo.duck.actions.added.isType(action)) {
+                if (repo.actions.added.isType(action)) {
                     yield* call(async () => {
-                        await repo.create(action.payload)
+                        await repo.mongoDao.create(action.payload)
+                        await repo.pgDao.create(action.payload)
                     })
                 }
-                if (repo.duck.actions.removed.isType(action)) {
+                if (repo.actions.removed.isType(action)) {
                     yield* call(async () => {
-                        await repo.removeById(action.payload)
+                        await repo.mongoDao.removeById(action.payload)
+                        await repo.pgDao.removeById(action.payload)
                     })
                 } else if (
-                    isNamespace(repo.duck.factory)(action) && action.meta.noRepo !== true
+                    isNamespace(repo.factory)(action) && action.meta.noRepo !== true
                 ) {
                     const id = action.payload[repo.idProp] || action[repo.idProp]
                     if (id) {
-                        const item: T = yield* select(repo.duck.selectById(id))
+                        const item: T = yield* select(repo.selectById(id))
                         if (!item)
                             debugger
                         yield* call(async () => {
-                            await repo.updateById(item)
+                            await repo.mongoDao.updateById(item)
+                            await repo.pgDao.updateById(item)
                         })
                     }
                 }

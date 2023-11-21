@@ -1,10 +1,10 @@
 import getMongoRepository from 'iso/src/getMongoRepository'
-import {Duck} from '@sha/fsa/createCRUDDuck'
 import {Connection, Schema} from 'mongoose';
 import {UnPromisify} from '@sha/utils';
 
-const duckRepo = async <T, ID extends keyof T, S extends Schema>
-({mongo}: { mongo: Connection }, duck: Duck<T, ID>, schema: S) => {
+const getMongoDAO = async <T, ID extends keyof T, S extends Schema>
+({mongo}: { mongo: Connection }, duck: BootableDuck<T, ID>) => {
+    const schema = buildMongooseByResource(duck)
     const Model = await getMongoRepository(mongo, duck.factoryPrefix, schema)
     const idProp: ID = duck.idKey
 
@@ -26,7 +26,7 @@ const duckRepo = async <T, ID extends keyof T, S extends Schema>
             ? (await Model.find({...condition}).sort({_id: -1}).limit(limit).lean())
             : (await Model.find({...condition}).sort({_id: -1}).lean());
 
-        return result
+        return result.map( ({_id, createdAt, updatedAt,...o}) => o)
     }
 
     const updateById = async (item: T): Promise<T> => {
@@ -97,6 +97,39 @@ const duckRepo = async <T, ID extends keyof T, S extends Schema>
     }
 }
 
-export default duckRepo
+export default getMongoDAO
 
-export type DuckRepository<T, ID, S> = UnPromisify<ReturnType<typeof duckRepo>>
+export type DuckRepository<T, ID, S> = UnPromisify<ReturnType<typeof getMongoDAO>>
+import {AnyMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {createSchema, Type} from 'ts-mongoose'
+import {MetaType} from 'iso/src/store/bootstrap/core/valueTypes'
+import {BootableDuck} from "@sha/fsa/src/createBootableDuck";
+
+const mapMetaProp = <M extends AnyMeta>(prop: M) => {
+    const type: MetaType = prop.type
+    if(prop.type === 'string') {
+        return Type.string({required: prop.required})
+    }
+    if(prop.type === 'boolean') {
+        return Type.boolean({required: prop.required})
+    }
+    if(prop.type === 'number') {
+        return Type.number({required: prop.required})
+    }
+    if(prop.type === 'array') {
+        return Type.array({required: prop.required}).of(Type.mixed({}))
+    }
+    if(prop.type === 'date' || prop.type === 'datetime') {
+        return Type.date({required: prop.required})
+    }
+    return Type.mixed({required: prop.required})
+
+
+}
+const buildMongooseByResource =  <RID extends string, Properties extends {[key in string]: AnyMeta}>(resource: Resource<RID,Properties>) => {
+    const obj = {}
+    Object.keys(resource.properties).map( k =>
+        obj[k] = mapMetaProp(resource.properties[k]))
+    const schema = createSchema(obj,  {strict: false, timestamps: true, versionKey: false})
+    return schema
+}

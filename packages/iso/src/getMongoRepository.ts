@@ -16,7 +16,10 @@ export const getMongoRepository = async <T extends Schema, S extends {
         schema.statics = statics;
     console.log('define model '+name)
 
-
-    return conn.model(name, schema, collection) as any
+ try {
+     return conn.model(name, schema, collection) as any
+ } catch (e) {
+        console.error(e)
+ }
 }
 export default getMongoRepository

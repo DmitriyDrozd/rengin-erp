@@ -7,8 +7,10 @@ import {ISSUES} from './repos/issues'
 import {SUBS} from './repos/subs'
 
 import {FactoryAnyAction} from '@sha/fsa'
-import {AnyFieldsMeta} from './core/createResource'
+import {AnyFieldsMeta, ItemWithId} from './core/createResource'
 import {isBrowser} from '@sha/utils'
+import {$Values} from "utility-types";
+
 
 
 export const RESOURCES_MAP = {
@@ -27,7 +29,14 @@ type KeysToValues<T, Keys extends (keyof T)[]> = {
     [Index in keyof Keys]: Keys[Index] extends keyof T ? T[Keys[Index]] : never;
 };
 
-
+export type UnionRes =
+    typeof USERS |
+    typeof BRANDS |
+    typeof LEGALS |
+    typeof SITES |
+    typeof CONTRACTS|
+    typeof ISSUES|
+    typeof SUBS
 export const RESOURCES_LIST = [
     USERS,
     BRANDS,
@@ -38,7 +47,7 @@ export const RESOURCES_LIST = [
     SUBS,
 ] as const
 
-export type ResourceName =typeof RESOURCES_LIST[number]['resourceName']
+export type ResourceName =typeof RESOURCES_MAP[string]['resourceName']
 
 
 export const getResourcesByNames = () => ({
@@ -58,10 +67,13 @@ export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(
     const res = RESOURCES_MAP[rName]
 
 }
+export type ItemByRID<RID extends keyof typeof RESOURCES_MAP> = ItemWithId<RID, ResourceByRID<RID>['fields']>
+
+export type ResourceByRID<RID extends keyof typeof RESOURCES_MAP> = RID extends keyof typeof RESOURCES_MAP ? typeof RESOURCES_MAP[RID] : never
 
 // 👇️ type Keys = "name" | "age" | "country"
 
-
+export type Res = $Values<typeof RESOURCES_LIST>
 
 export const getRes = <R extends keyof typeof RESOURCES_MAP>(res: R): typeof RESOURCES_MAP[R]=>
     RESOURCES_MAP[res]

@@ -1,4 +1,5 @@
 import * as FSA from './fsa'
+export type BootableDuck<S,P extends string = any> = ReturnType<Clazz<S, P>['getDuck']>
 
 export const createBootableDuck = <S, P extends string = string>(factoryPrefix: P,
                                                           defaultProps: S = {} as any,
@@ -30,6 +31,5 @@ class Clazz<S,P extends string = any>{
     }
 }
 
-export type Duck<S,P extends string = any> = ReturnType<Clazz<S, P>['getDuck']>
 
 export default createBootableDuck

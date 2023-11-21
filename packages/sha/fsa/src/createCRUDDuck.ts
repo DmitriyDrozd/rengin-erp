@@ -4,10 +4,10 @@ import * as R from 'ramda'
 import {Reducer} from 'redux'
 import {AssociativeArray, toAssociativeArray} from '@sha/utils'
 import moize from 'moize'
-import {Duck} from './createBootableDuck'
+import {BootableDuck} from './createBootableDuck'
 
 
-export const isCRUD = (duck: Crud<any> | Duck<any>): duck is Crud<any, any, any> =>
+export const isCRUD = (duck: Crud<any> | BootableDuck<any>): duck is Crud<any, any, any> =>
     duck.actions && duck.isCRUD
 
 const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (

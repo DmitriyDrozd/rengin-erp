@@ -33,7 +33,7 @@ export type Meta<MT extends MetaType, TSType = any,> = {
     headerName?: string
     tsType: TSType
     sealed?: boolean
-    name?: string
+    name: string
     colDef?: ColDef | false
 }
 
