@@ -1,16 +1,15 @@
-import USERS from './repos/users'
+import {USERS} from './repos/users'
 import {BRANDS} from './repos/brands'
 import {LEGALS} from './repos/legals'
 import {SITES} from './repos/sites'
 import {CONTRACTS} from './repos/contracts'
-import {ISSUES} from './repos/issues'
-import {SUBS} from './repos/subs'
 
+import {SUBS} from './repos/subs'
+import ISSUES from './repos/issues'
 import {FactoryAnyAction} from '@sha/fsa'
 import {AnyFieldsMeta, ItemWithId} from './core/createResource'
 import {isBrowser} from '@sha/utils'
 import {$Values} from "utility-types";
-
 
 
 export const RESOURCES_MAP = {
@@ -19,9 +18,10 @@ export const RESOURCES_MAP = {
     LEGALS,
     SITES,
     CONTRACTS,
-    ISSUES,
     SUBS,
+    ISSUES,
 }
+export type {Resource} from './core/createResource'
 export type ResourcesMap = typeof RESOURCES_MAP
 
 
@@ -43,11 +43,9 @@ export const RESOURCES_LIST = [
     LEGALS,
     SITES,
     CONTRACTS,
-    ISSUES,
     SUBS,
+    ISSUES,
 ] as const
-
-export type ResourceName =typeof RESOURCES_MAP[string]['resourceName']
 
 
 export const getResourcesByNames = () => ({
@@ -62,7 +60,6 @@ export const getResourcesByNames = () => ({
 
 export type BrandsResource = typeof BRANDS
 
-const a: ResourceName ='legals'
 export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
     const res = RESOURCES_MAP[rName]
 
@@ -72,6 +69,13 @@ export type ItemByRID<RID extends keyof typeof RESOURCES_MAP> = ItemWithId<RID, 
 export type ResourceByRID<RID extends keyof typeof RESOURCES_MAP> = RID extends keyof typeof RESOURCES_MAP ? typeof RESOURCES_MAP[RID] : never
 
 // 👇️ type Keys = "name" | "age" | "country"
+const ResourceNames =  ['USERS',
+    'BRANDS',
+    'LEGALS','SITES',
+    'CONTRACTS',
+    'SUBS',
+    'ISSUES'] as const
+export type ResourceName=   typeof ResourceNames[number]
 
 export type Res = $Values<typeof RESOURCES_LIST>
 

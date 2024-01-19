@@ -116,7 +116,7 @@ const sourceResourceName = res.resourceName
 
         return colComposed
     })
-    return [columnsList, map] as const
+    return [[map.clickToEditCol, ...columnsList], map] as const
   //  return res.properties
 
 }

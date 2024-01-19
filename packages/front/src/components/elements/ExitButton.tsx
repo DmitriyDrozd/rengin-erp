@@ -1,6 +1,6 @@
 import useFrontDispatch from '../../hooks/common/useFrontDispatch'
 import {uiDuck} from '../../store/ducks/uiDuck'
-import {nav} from '../nav'
+import {getNav} from '../getNav'
 import {Button} from 'antd'
 import React from 'react'
 import {AntdIcons} from './AntdIcons'
@@ -12,7 +12,7 @@ export default ({onExit}: {onExit?: Function})=> {
     const onConfirmExit = async () => {
 
         dispatch(uiDuck.actions.logout(undefined))
-        history.replace(nav.login({}))
+        history.replace(getNav().login({}))
         window.location.reload()
     }
 

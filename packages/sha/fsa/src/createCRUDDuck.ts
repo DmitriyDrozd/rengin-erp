@@ -8,7 +8,7 @@ import {BootableDuck} from './createBootableDuck'
 
 
 export const isCRUD = (duck: Crud<any> | BootableDuck<any>): duck is Crud<any, any, any> =>
-    duck.actions && duck.isCRUD
+    duck.actions && 'isCRUD' in duck
 
 const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
     factoryPrefix: Prefix,
@@ -196,7 +196,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
                     const id = i[idProp]
                     const index = newState.findIndex(item => item[idProp] === id)
                     if (index === -1)
-                        newState = R.prepend(R.mergeDeepRight(defaultProps, i), newState)
+                        newState = R.prepend(R.mergeDeepRight(defaultProps, i), newState) as any
                     else
                         newState[index] = {...newState[index], ...i}
                 })
@@ -277,8 +277,8 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
     })
 
 
-    const selectAll = state => {
-        const array: T[] = get ? get(state) : state
+    const selectAll = (state: any): T[] => {
+        const array: T[] = get(state)
         return array as any as T[]
     }
 
@@ -288,8 +288,8 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
     const duck = {
 
-        getId: (item: T): IDType =>
-            item[idProp],
+        getId: (item: T): string =>
+            item[idProp] as any as string,
         factoryPrefix,
         idProp,
         idKey: idProp,
@@ -357,7 +357,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
                 return items[0]
             },
-            indicies,
+
             select: (query: Record<keyof Partial<T>, any>) => (state: any) => {
                 const array: T[] = get ? get(state) : state
                 const items: T[] = []
@@ -404,7 +404,7 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
 
 class Clazz<T,ID extends keyof T = any,P extends string = any>{
     public getDuck = (defaultItem:T)=> {
-        return createCRUDDuck('list' as any as P, 'id' as any as ID, defaultItem)
+        return createCRUDDuck<T, ID, P>('list' as any as P, 'id' as any as ID)
     }
 }
 

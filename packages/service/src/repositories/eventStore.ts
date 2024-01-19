@@ -17,32 +17,36 @@ export const EventSchema = createSchema({
 export type EventDoc = ExtractDoc<typeof EventSchema>
 
 export type EventVO = ExtractProps<typeof EventSchema>
+let _eventStore
 
 const eventStore = async (mongoose: mongoose.Connection) => {
 
-    const Model = await getMongoRepository(mongoose, 'events', EventSchema)
+        const Model = await getMongoRepository(mongoose, 'events', EventSchema)
 
-    const create = async (item: EventVO): Promise<EventVO> => {
-        if (!item.guid)
-            item.guid = generateEventGuid()
+        const create = async (item: EventVO): Promise<EventVO> => {
+            if (!item.guid)
+                item.guid = generateEventGuid()
 
-        const doc = await Model.create(item)
+            const doc = await Model.create(item)
 
-        return doc.toObject()
-    }
+            return doc.toObject()
+        }
 
-    const removeAll = async (): Promise<any> =>
-        await Model.deleteMany({})
+        const removeAll = async (): Promise<any> =>
+            await Model.deleteMany({})
 
-    const getAll = async (options = {}): Promise<any> =>
-        await Model.find(options).lean()
+        const getAll = async (options = {}): Promise<any> =>
+            await Model.find(options).lean()
 
-    return {
-        create,
-        removeAll,
-        getAll,
-        Model,
-    }
+        _eventStore = {
+            create,
+            removeAll,
+            getAll,
+            Model,
+        }
+
+        return _eventStore
+
 }
 
 export default eventStore

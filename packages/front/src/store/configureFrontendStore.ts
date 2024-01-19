@@ -7,7 +7,7 @@ import {getBrowserHistory, routerMiddleware} from '@sha/router'
 import {composeWithReduxDevTools} from 'iso';
 import {generateEventGuid} from '@sha/random';
 
-export const appliedGuids = []
+export const appliedGuids:string[] = []
 
 const REDUX_DEV_TOOLS = '__REDUX_DEVTOOLS_EXTENSION__'
 

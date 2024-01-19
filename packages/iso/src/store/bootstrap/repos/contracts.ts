@@ -1,6 +1,7 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
-import {ISOState} from '../../../ISOState'
+
+export const contractStatusesList = ['Новый','Действующий','Завершён']  as const
 
 const rawResource = createResource('contract', {
         contractNumber: valueTypes.string({headerName: 'Номер договора'}),
@@ -8,9 +9,12 @@ const rawResource = createResource('contract', {
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
         signDate: valueTypes.date({headerName: 'Дата подписания'}),
         endDate: valueTypes.date({headerName: 'Дата окончания'}),
-        contractStatus: valueTypes.enum({headerName:'Статус договора', enum: ['Новый','Действующий','Завершён']}),
+        contractStatus: valueTypes.enum({headerName:'Статус договора', enum:contractStatusesList}),
         rate: valueTypes.number({headerName: 'Ставка'}),
-        managerUserId: valueTypes.itemOf({headerName: 'Менеджер', linkedResourceName:'USERS' }),
+        managerUserId: valueTypes.itemOf({headerName: 'Менеджер',
+            linkedResourceName:'USERS',
+            defaultAsPropRef:'legalId'
+        }),
     },
     {
         langRU: {
@@ -24,9 +28,9 @@ const rawResource = createResource('contract', {
 
 export const CONTRACTS = {
     ...rawResource,
-    selectValueEnumByLegalId: (legalId: string | undefined) => (state: ISOState) =>
-        rawResource.asValueEnum(rawResource.selectAll(state).filter(contract => contract.legalId === legalId))
 }
 
+
+const a: Partial<ContractVO> = {contractStatus: 'Новый'}
 export default CONTRACTS
 export type ContractVO = typeof CONTRACTS.exampleItem

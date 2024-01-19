@@ -7,6 +7,7 @@ import {connectRouter} from '@sha/router'
 import {History} from 'history'
 import type {LocationChangeAction, RouterActionType, RouterLocation} from 'connected-react-router'
 import {put, select, takeEvery} from 'typed-redux-saga'
+import {FrontState} from "../frontReducer";
 
 const factory = fsa.actionCreatorFactory('router')
 

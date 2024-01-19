@@ -25,10 +25,10 @@ export default () => {
                         <ProFormText {...fieldMetaToProProps(RES, 'city')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RES, 'address')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RES, 'KPP')}/>
-
-                        <ProFormText {...fieldMetaToProProps(RES, 'responsibleEngineer')}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'clientsEngineerUserId')}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'managerUserId')}/>
+                        <ProFormText {...fieldMetaToProProps(RES, 'techUserId')}/>
                         <ProFormTextArea {...fieldMetaToProProps(RES, 'contactInfo')}/>
-
                     </>
                 }
         }

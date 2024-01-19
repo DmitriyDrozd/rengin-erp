@@ -1,4 +1,4 @@
-import {call, delay, fork, put, select, take, takeLatest} from 'typed-redux-saga'
+import {call, delay, fork, put, select, take} from 'typed-redux-saga'
 
 
 import {metaDuck} from 'iso/src/store/metaDuck'
@@ -15,7 +15,7 @@ import {connectionDuck} from 'iso/src/store'
 import {SSEClientFront} from 'iso/src/store/sse/SSEClientFront'
 import {appStorage} from 'iso'
 import {Preferences, preferencesDuck} from '../store/ducks/preferencesDuck'
-import {nav} from '../components/nav'
+import {getNav} from '../components/getNav'
 import disposeGlobalPreloader from '../utils/disposeGlobalPreloader'
 import {UserVO} from "iso/src/store/bootstrap/repos/users";
 
@@ -48,7 +48,7 @@ export function* loginSaga(history: History) {
 
         if (path.endsWith('/login') || path.length < 2) {
             yield* put(uiDuck.actions.preloaded(undefined))
-            history.replace(nav.login())
+            history.replace(getNav().login())
             appStorage.removeItem('credentials')
         } else if (credentials) {
             yield* fork(function* autoLogin() {
@@ -56,7 +56,7 @@ export function* loginSaga(history: History) {
                 yield* put(uiDuck.actions.loginRequested({...credentials}))
             })
         } else {
-            history.replace(nav.login())
+            history.replace(getNav().login())
             yield* put(uiDuck.actions.preloaded(undefined))
             appStorage.removeItem('credentials')
         }
@@ -92,7 +92,7 @@ export function* loginSaga(history: History) {
 
 
                 if (!window.location.pathname.startsWith('/app/login')) {
-                    history.replace(nav.login())
+                    history.replace(getNav().login())
                /*     const actionNavToLogin = routerDuck.actions.replacePage({url: nav.login()})
 
                     yield* put(actionNavToLogin)*/
@@ -123,7 +123,7 @@ export function* loginSaga(history: History) {
 
 
         if (window.location.pathname === '/app/login') {
-            history.push(nav.issues())
+            history.push(getNav().issues())
         }
 
 

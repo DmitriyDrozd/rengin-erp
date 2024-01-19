@@ -1,10 +1,8 @@
 import {AnyFieldsMeta, Resource} from "iso/src/store/bootstrap/core/createResource";
 import getMongoDAO from "./getMongoDAO";
 import {getPGDAO} from "./getPGDAO";
-import {Res, RESOURCES_MAP} from "iso";
 import {SagaOptions} from "../sagaOptions";
 import {UnPromisify} from "@sha/utils";
-import {RESOURCES_LIST, UnionRes} from "iso/src/store/bootstrap/resourcesList";
 import {Meta} from "iso/src/store/bootstrap/core/valueTypes";
 
 

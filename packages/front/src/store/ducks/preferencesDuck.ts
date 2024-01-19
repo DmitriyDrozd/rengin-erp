@@ -2,6 +2,7 @@ import * as fsa from '@sha/fsa'
 import {put, select, takeLatest} from 'typed-redux-saga'
 import {uiDuck} from './uiDuck';
 import {getUserStorage} from '../../app-storage';
+import {FrontState} from "../frontReducer";
 
 export type Preferences = typeof defaultPreferences
 
@@ -53,7 +54,7 @@ export const defaultPreferences = {
 }
 
 
-const reducer = (state = defaultPreferences, action) => {
+const reducer = (state = defaultPreferences, action: any) => {
     if (actions.setKey.isType(action)) {
         return {...state, [action.payload.key]: action.payload.value}
     }
@@ -61,13 +62,13 @@ const reducer = (state = defaultPreferences, action) => {
 }
 
 
-export const selectPreferences = (state): Preferences =>
+export const selectPreferences = (state:FrontState): Preferences =>
     state.app.preferences
 
 
 export const preferencesDuck = {
     actions,
-    reducer: (state: Preferences, action): Preferences => {
+    reducer: (state: Preferences, action: any): Preferences => {
         if (actions.localUserPreferencesLoaded.isType(action))
             return action.payload as any as Preferences
         else

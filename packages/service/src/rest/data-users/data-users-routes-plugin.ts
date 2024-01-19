@@ -2,7 +2,7 @@ import {FastifyInstance} from 'fastify'
 import zlib from 'zlib'
 import USERS from 'iso/src/store/bootstrap/repos/users'
 
-export default async (fastify: FastifyInstance, opts, done) => {
+export default async (fastify: FastifyInstance, opts: any, done: Function) => {
     const store = fastify.io.store
     const brotliCompress = async (str: string) => {
         return new Promise( (res, rej) => zlib.brotliCompress(str , {params:{
@@ -73,6 +73,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
 
         }
     })
+
     fastify.route({
         method: 'POST',
         url: '/api/user/login',
@@ -104,7 +105,7 @@ export default async (fastify: FastifyInstance, opts, done) => {
         url: '/api/push-commands',
         handler: async (request, reply) => {
             const io = fastify.io
-            let events = request.body
+            let events = request.body as any
             if (events['events'])
                 events = events['events']
             if (events[0].type !== 'users/register_STARTED')

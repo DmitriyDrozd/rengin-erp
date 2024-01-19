@@ -9,8 +9,7 @@ import {ConnectionState} from 'iso/src/store/sse/sseConnectionDuck';
 import frontConfigDuck, {FrontConfig} from './ducks/frontConfigDuck';
 import {routerDuck, RouterState} from './ducks/routerDuck';
 import {loadingDuck} from './ducks/loadingDuck';
-import {preferencesDuck} from './ducks/preferencesDuck';
-import {currentIssueDuck} from "./ducks/currentIssueDuck";
+import {Preferences, preferencesDuck} from './ducks/preferencesDuck';
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 
 export type DeepReadonly<T> = T extends any[]
@@ -30,7 +29,6 @@ const frontReducer = (history: History ) => {
             router,
             app: combineReducers({
                 bootstrap: bootstrapDuck.reducer,
-                currentIssue: currentIssueDuck.reducer,
                 conn: connectionDuck.reducer,
                 preferences: preferencesDuck.reducer,
             }),
@@ -41,7 +39,7 @@ const frontReducer = (history: History ) => {
         },
     )
     const resultReducer = combinedReducer
-    return ((state, action) => {
+    return ((state: any, action: any) => {
 
         const res = resultReducer(state, action)
         return res
@@ -56,6 +54,7 @@ export type FrontState = {
         bootstrap: Bootstrap,
         conn: ConnectionState
         currentIssue: IssueVO
+        preferences: Preferences
     },
     loading: string[]
     meta: StoreMeta
@@ -70,7 +69,7 @@ export default frontReducer
 
 export const selectCurrentUser = (state: FrontState): UserVO => {
     const email = state.ui.login
-    const user = USERS.selectUserByEmail(email)(state)
+    const user = USERS.selectUserByEmail(email as any as string)(state)
 
-    return user
+    return user as any as UserVO
 }

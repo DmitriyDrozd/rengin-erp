@@ -1,9 +1,8 @@
 import * as fsa from '@sha/fsa'
 import {combineReducers} from 'redux'
 import configDuck from './bootstrap/configDuck'
-import settingsDuck from './bootstrap/settingsDuck';
+import settingsDuck from './bootstrap/settingsDuck'
 import {ISOState} from '../ISOState'
-import {toAssociativeArray} from '@sha/utils'
 import {default as USERS, UserVO} from './bootstrap/repos/users'
 import {SITES, SiteVO} from './bootstrap/repos/sites'
 import {CONTRACTS, ContractVO} from './bootstrap/repos/contracts'
@@ -13,6 +12,8 @@ import {BootableDuck} from '@sha/fsa/src/createBootableDuck'
 import {BRANDS, BrandVO} from './bootstrap/repos/brands'
 import {LEGALS, LegalVO} from './bootstrap/repos/legals'
 import SUBS, {SubVO} from './bootstrap/repos/subs'
+import {RESOURCES_MAP} from "./bootstrap/resourcesList"
+import {ExtractResource, getResLedger, LinkedProps} from "./bootstrap/core/createResource"
 
 const factory = fsa.actionCreatorFactory('bootstrap')
 
@@ -23,7 +24,6 @@ const actions = {
     )
 }
 
-
 export const bootstrapCrudsMap = {
     users: USERS,
     sites: SITES,
@@ -33,6 +33,7 @@ export const bootstrapCrudsMap = {
     legals: LEGALS,
     subs: SUBS,
 }
+
 export const bootstrapDucksMap = {
     ...bootstrapCrudsMap,
     config: configDuck,
@@ -83,37 +84,38 @@ export const bootstrapDuck = {
 
 
 export const selectLedger = (state: ISOState) => {
+
     const boot = state.app.bootstrap
 
-    const users = boot.users as UserVO[]
-    const sites = boot.sites as SiteVO[]
-    const contracts = boot.contracts  as ContractVO[]
-    const issues = boot.issues as  IssueVO[]
-    const brands = boot.brands as BrandVO[]
-    const legals = boot.legals  as LegalVO[]
-    const subs = boot.subs  as SubVO[]
+    const users = getResLedger(USERS)(state)
+    const sites = getResLedger(SITES)(state)
+    const contracts = getResLedger(CONTRACTS)(state)
+    const issues = getResLedger(ISSUES)(state)
+    const brands = getResLedger(BRANDS)(state)
+    const legals = getResLedger(LEGALS)(state)
+    const subs = getResLedger(SUBS)(state)
+    const all: {[K in Lowercase<keyof typeof RESOURCES_MAP>] :{
+        list: typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][],
+        byId: Record<string, typeof RESOURCES_MAP[Uppercase<K>]['exampleItem']>,
+        byName: Record<string, typeof RESOURCES_MAP[Uppercase<K>]['exampleItem']>,
+        byRes: <M extends Extract<keyof typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'], `${string}Id`>>(key:M)=>
+            typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][]
+    } } = {
 
-    const usersById = toAssociativeArray('userId')(users)
-    const sitesById = toAssociativeArray('siteId')(sites)
-    const contractsById = toAssociativeArray('contractId')(contracts)
-    const issuesById = toAssociativeArray('issueId')(issues)
-    const legalsById = toAssociativeArray('legalId')(legals)
-    const brandsByName = toAssociativeArray('brandName')(brands)
-    const legalsByName = toAssociativeArray('legalName')(legals)
-    return {
-        brandsByName,legalsByName,
-        brandsList: brands,
         brands,
         legals,
         subs,
-        legalsList: legals,
-        legalsById,
-        usersById ,
-        sitesById,
-        sitesList: sites,
-        contractsById,
-        contractsList: contracts,
-        issuesById,
-        users, sites,contracts,issues
+
+        users,
+        sites,
+        contracts,
+        issues
+    }
+    return {
+        ...all,
+        getLinkedResByName: (res: string, name: string) =>
+            all[res.toLowerCase()].byName[name],
+        getLinkedResById: (res: string, id: string) =>
+            all[res.toLowerCase()].byId[id]
     }
 }

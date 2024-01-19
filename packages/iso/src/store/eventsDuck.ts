@@ -6,7 +6,7 @@ import {ResourcesMap} from './bootstrap/resourcesList'
 const factory = FSA.actionCreatorFactory('events')
 
 type AnyRID = ResourcesMap[keyof ResourcesMap]['idProp']
-const r: AnyRID = ''
+
 export type IndexedEventVO= {
     id: string
     brandId: string

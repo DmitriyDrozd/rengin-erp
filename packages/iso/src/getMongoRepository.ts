@@ -1,4 +1,4 @@
-import {Connection, Document, Model, Schema} from 'mongoose';
+import {Connection, Document, Model, model, Schema} from 'mongoose';
 import {Extract} from 'ts-mongoose';
 
 export const getMongoRepository = async <T extends Schema, S extends {
@@ -15,11 +15,15 @@ export const getMongoRepository = async <T extends Schema, S extends {
     if (schema && statics)
         schema.statics = statics;
     console.log('define model '+name)
-
+let Model
  try {
-     return conn.model(name, schema, collection) as any
+        console.log('getMongoRepo', name)
+
+     Model = model(name, schema) as any
  } catch (e) {
+        console.log('Error second creation of '+name)
         console.error(e)
  }
+ return Model
 }
 export default getMongoRepository

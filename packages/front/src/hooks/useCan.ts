@@ -1,4 +1,3 @@
-import useCurrentUser from "./useCurrentUser";
 import useRole from "./useRole";
 
 /*

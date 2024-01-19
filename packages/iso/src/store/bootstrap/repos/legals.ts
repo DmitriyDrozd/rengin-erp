@@ -10,7 +10,7 @@ const rawResource = createResource(
                 headerName: 'Юр. Лицо',
                 required: true,
             }),
-           region: valueTypes.string({headerName: 'Регион', required: false}),
+            region: valueTypes.string({headerName: 'Регион', required: false}),
             brandId: valueTypes.itemOf({headerName:'Заказчик',linkedResourceName: 'BRANDS',required: true})
         },
         {
@@ -21,11 +21,14 @@ const rawResource = createResource(
             }
         }
 )
-
+export const selectValueEnumByBrandId = (brandId: string | undefined) => (state: ISOState) => {
+    const allLegals = rawResource.selectAll(state) as any as LegalVO[]
+    const filtered = allLegals.filter(legal => legal.brandId === brandId)
+    return rawResource.asValueEnum(filtered)
+}
 export const LEGALS = {
     ...rawResource,
-    selectValueEnumByBrandId: (brandId: string | undefined) => (state: ISOState) =>
-        rawResource.asValueEnum(rawResource.selectAll(state).filter(legal => legal.brandId === brandId))
+    selectValueEnumByBrandId,
 }
 
 export default LEGALS

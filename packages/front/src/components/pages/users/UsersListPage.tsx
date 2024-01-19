@@ -1,47 +1,43 @@
-import React from 'react'
-import {ColumnsType} from 'antd/es/table'
-import {default as USERS, getAbbrName, UserVO} from 'iso/src/store/bootstrap/repos/users'
-import {useSelector} from 'react-redux'
-import {useHistory, useParams} from 'react-router'
-import {makeColumns} from '../../../grid/createColumns'
-import {RCRUDTable} from '../../../grid/RCRUDTable'
-import AppLayout from '../../app/AppLayout'
+import {useAllColumns} from '../../../grid/RCol'
+import useLedger from '../../../hooks/useLedger'
+import PanelRGrid from '../../../grid/PanelRGrid'
+import {USERS} from "iso/src/store/bootstrap";
+import {useHistory, useRouteMatch} from "react-router";
+import React from "react";
+import AppLayout from "../../app/AppLayout";
+import EditUserModal from "./UserModal";
+import {getNav} from "../../getNav";
 
 export default () => {
+    const ledger = useLedger()
+    const list = ledger.users
+    const [cols] = useAllColumns(USERS)
+    const routeMatch = useRouteMatch<{userId:string}>()
 
-    const params = useParams()
-    console.log()
-
-    const columns: ColumnsType<UserVO> = makeColumns<UserVO>()
-        .addCol('email')
-        .addCol('fullName', 'ФИО',
-            (fullName, record) =>
-                <span>{getAbbrName(record)}</span>
-        )
-        .addCol('title','Должность')
-        .addCol('role','Роль')
-        .addEditCol('userId','/app/in/users')
-
-
+    const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1)
     const history = useHistory()
-    const list = useSelector(USERS.selectList)
 
 
-    return (
-        <AppLayout
-            header={{
 
-               /** breadcrumb: {
+    return  <AppLayout
+        hidePageContainer={true}
+        proLayout={{contentStyle:{
+                padding: '0px'
+            }
+        }}
+    >
+        <div>
+            {
+                currentItemId ? <EditUserModal id={currentItemId} /> : null
+            }
 
-                    items: [{
-                        path: '/app/in/users',
-                        title: 'Пользователи',
-                    },
-                    ]
-                }*/
-            }}
-        >
-                <RCRUDTable itemNavBase={'/app/in/users'} dataSource={list} columns={columns} />
-        </AppLayout>
-    )
+             <PanelRGrid
+                fullHeight={true}
+                title={'Пользователи'}
+                resource={USERS}
+                rowData={list}
+
+            />
+        </div>
+    </AppLayout>
 }

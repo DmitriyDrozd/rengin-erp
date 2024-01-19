@@ -1,7 +1,7 @@
 import {DownOutlined, LogoutOutlined} from '@ant-design/icons';
 import type {PageContainerProps, ProLayoutProps, ProSettings} from '@ant-design/pro-components'
 import {PageContainer, ProLayout} from '@ant-design/pro-components'
-import {DatePicker, Dropdown, DropDownProps, Space, Spin, theme, Typography} from 'antd'
+import {Dropdown, DropDownProps, Space, theme, Typography} from 'antd'
 import React from 'react'
 import defaultProps from './_defaultProps'
 import {useHistory} from 'react-router'
@@ -11,9 +11,8 @@ import useCurrentUser from '../../hooks/useCurrentUser'
 import useFrontSelector from '../../hooks/common/useFrontSelector'
 import useFrontDispatch from '../../hooks/common/useFrontDispatch'
 import {uiDuck} from '../../store/ducks/uiDuck'
-import {nav} from '../nav'
+import {getNav} from '../getNav'
 import HeadLogo from '../app/HeadLogo'
-import usePathnameResource from '../../hooks/usePathnameResource'
 import {AntdIcons} from '../elements/AntdIcons'
 import useUI from "../../hooks/common/useUI";
 
@@ -27,7 +26,7 @@ const TopProfileDropDown = (props: DropDownProps)=> {
     const onConfirmExit = async () => {
 
         dispatch(uiDuck.actions.logout(undefined))
-        history.replace(nav.login({}))
+        history.replace(getNav().login({}))
         window.location.reload()
     }
     return (

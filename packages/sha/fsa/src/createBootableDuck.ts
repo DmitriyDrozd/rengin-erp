@@ -1,4 +1,5 @@
 import * as FSA from './fsa'
+
 export type BootableDuck<S,P extends string = any> = ReturnType<Clazz<S, P>['getDuck']>
 
 export const createBootableDuck = <S, P extends string = string>(factoryPrefix: P,
@@ -17,7 +18,7 @@ export const createBootableDuck = <S, P extends string = string>(factoryPrefix: 
         return state
     }
     return {
-        factory,
+        ...factory,
         actions,
         select: get,
         reducer,

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 export default <S>(localStorageItemName: string, defaultState: S | undefined =  undefined) => {
 
@@ -10,13 +10,6 @@ export default <S>(localStorageItemName: string, defaultState: S | undefined =  
         setStateInternal(newState)
         localStorage.setItem(localStorageState, JSON.stringify(newState))
     }
-/*
-    useEffect(() => {
-        const items = JSON.parse(localStorage.getItem('items'));
-        if (items) {
-            setItems(items);
-        }
-    }, []);*/
 
     return [state, setState]
 }

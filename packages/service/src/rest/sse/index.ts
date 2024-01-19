@@ -1,6 +1,4 @@
 import {FastifyInstance} from 'fastify'
-
-import getSSEUserChannel from './getSSEUserChannel';
 import broadcastSSEEventsSaga from './broadcastSSEEventsSaga';
 import createSSESession, {SSESessionState} from './createSSESession';
 import getSSEAdminChannel from './getSSEAdminChannel';

@@ -1,4 +1,4 @@
-import {Bar, BarChart, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {Bar, BarChart, CartesianGrid, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {useSelector} from "react-redux";
 import {USERS} from "iso/src/store/bootstrap";
@@ -42,11 +42,11 @@ export default ({issues, color}: IssueChartData) => {
         },
         ...users.map ( u => ({
             name: u.fullName,
-            value: issues.filter(i => i.responsibleManagerId === u.userId).length
+            value: issues.filter(i => i.managerUserId === u.userId).length
         })).filter( d => d.value > 0),
         {
             name: 'Не задан',
-            value: issues.filter(i => i.responsibleManagerId === undefined).length
+            value: issues.filter(i => i.managerUserId === undefined).length
         }
     ]
     return <ResponsiveContainer width="100%" height="100%">

@@ -8,9 +8,8 @@ import {appStorage} from 'iso'
 import {uiDuck} from '../../store/ducks/uiDuck'
 import getRestApi from 'iso/src/getRestApi'
 import Icon from 'antd/es/icon'
-import getFrontEnv from '../../getFrontEnv'
 import {Link} from 'react-router-dom'
-import {nav} from '../nav'
+import {getNav} from '../getNav'
 import {AntdIcons} from '../elements/AntdIcons'
 import useUI from "../../hooks/common/useUI";
 import {sleep} from "@sha/utils";
@@ -19,13 +18,13 @@ export default () => {
     const [notify, contextHolder] = notification.useNotification();
 
     const dispatch = useFrontDispatch()
-const ui = useUI()
+    const ui = useUI()
     const history = useHistory()
     const store = useFrontStore()
     const [visible, setVisible] = useState(false)
 
-    const [email, setEmail] = useState(getFrontEnv().RENGIN_MOCK_INPUTS ? 'miramaxis@gmail.com' : undefined)
-    const [password, setPassword] = useState(getFrontEnv().RENGIN_MOCK_INPUTS ? '123456' : undefined)
+    const [email, setEmail] = useState(window.location.hostname === 'localhost' ? 'miramaxis@gmail.com' : undefined)
+    const [password, setPassword] = useState(window.location.hostname === 'localhost' ? '123456' : undefined)
     const [remember, setRemember] = useState(false)
 
     const [loading, setLoading] = useState(false)
@@ -79,7 +78,7 @@ const ui = useUI()
                 <Row type="flex" justify="center" align="middle" style={{minHeight: '100vh'}}>
                     <Card title={'Авторизация'} actions={[
                         <Checkbox checked={remember} onChange={e => setRemember(e.target.checked)}>Запомнить</Checkbox>,
-                        <Link to={nav.forgot({})}>
+                        <Link to={getNav().forgot({})}>
                             Забыли пароль ?
                         </Link>,
                         <Button

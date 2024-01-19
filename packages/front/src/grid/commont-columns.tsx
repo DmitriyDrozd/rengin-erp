@@ -1,4 +1,4 @@
-import {BuildNav} from '../components/nav'
+import {BuildNav} from '../components/getNav'
 import {ColumnType} from 'antd/es/table'
 import {Link} from 'react-router-dom'
 import {AntdIcons} from '../components/elements/AntdIcons'

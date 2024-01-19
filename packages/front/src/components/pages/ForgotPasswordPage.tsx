@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Card, Result, Row} from 'antd';
 import {Link} from 'react-router-dom'
-import {nav} from '../nav'
+import {getNav} from '../getNav'
 
 const App = () => (
 
@@ -12,7 +12,7 @@ const App = () => (
         title="Для восстановления доступа обратитесь к администратору admin@rengin.ru tel: +7 9777 666 076) "
         subTitle="Это программное обеспечение на этапе разработки"
         extra={[
-            <Link to={nav.login({})}>
+            <Link to={getNav().login({})}>
             <Button type="primary" key="console">
                 Вернуться
             </Button>

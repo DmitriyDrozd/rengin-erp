@@ -1,11 +1,8 @@
-import {ProForm, ProFormDatePicker, ProFormItemProps} from "@ant-design/pro-components";
-import {ProFormProps} from "@ant-design/pro-form/es/layouts/ProForm";
-import {DatePicker, Form, Input} from "antd";
+import {ProForm} from "@ant-design/pro-components";
+import {DatePicker} from "antd";
 import {ExtractProps} from "@sha/react-fp";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
-import {e} from "../../../../static/assets/vendor-6932f6a6";
 
 type RenFormDateProps = ExtractProps<typeof DatePicker> & {
     onValueChange:(value: string) => any

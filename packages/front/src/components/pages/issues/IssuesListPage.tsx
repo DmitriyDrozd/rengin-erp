@@ -3,29 +3,27 @@ import useLedger from '../../../hooks/useLedger'
 import PanelRGrid from '../../../grid/PanelRGrid'
 import {ISSUES, IssueVO, statusesColorsMap, statusesList} from 'iso/src/store/bootstrap/repos/issues'
 import AppLayout from '../../app/AppLayout'
-import React, {useCallback, useRef, useState} from 'react'
-import {RowClassParams} from "ag-grid-community/dist/lib/entities/gridOptions";
-import {DateTime} from "luxon";
+import React, {useCallback, useRef} from 'react'
 import {ColDef} from "ag-grid-community";
-import {Badge, Button, Checkbox, message, notification, Space, Tag} from "antd";
+import {Badge, Button, Checkbox, message, Space, Tag} from "antd";
 import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
 import {useDispatch, useSelector} from "react-redux";
 import useCurrentUser from "../../../hooks/useCurrentUser";
-import useRouteProps from "../../../hooks/useRouteProps";
 import {useRouteMatch} from "react-router";
-import IssueModal from "./IssueModal";
+import IssueModal_NEW from "./IssueModal_NEW";
 import dayjs from "dayjs";
-import {matchesTreeDataDisplayType} from "ag-grid-community/dist/lib/gridOptionsValidator";
 import useLocalStorageState from "../../../hooks/useLocalStorageState";
 import StatusFilterSelector from "./StatusFilterSelector";
 import {isIssueOutdated} from "iso/src/utils/date-utils";
-import {Days} from "iso";
 import IsssueStatusCellEditor from "./IsssueStatusCellEditor";
-import {ClockCircleOutlined, DownloadOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
+import {ClockCircleOutlined} from "@ant-design/icons";
 import {AgGridReact} from "ag-grid-react";
-import {IOlympicData} from "../../../examples/ExportToExcel";
 
 import copy from 'copy-to-clipboard';
+import {AntdIcons} from "../../elements/AntdIcons";
+import axios from "axios";
+import ImportIssuesButton from "./import-gsheet/ImportIssuesButton.js";
+
 const getEstimationApprovedTag = (data: IssueVO) =>
     data.estimationsApproved === true
         ? <Tag color={'green'}>Да</Tag>
@@ -63,13 +61,11 @@ const getStatusTag = (issue: IssueVO) => {
 export default () => {
 
     const routeMatch = useRouteMatch<{issueId:string}>()
+
+    const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1)
+    console.log('RouteMatch ', routeMatch)
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll)
     const {currentUser} = useCurrentUser()
-    const ledger = useLedger()
-
-    const onBtExport = useCallback(() => {
-        gridRef.current!.api.exportDataAsExcel();
-    }, []);
 
     const dispatch = useDispatch()
     const onCreateClick = (defaults) => {
@@ -78,7 +74,7 @@ export default () => {
     const [cols,colMap] = useAllColumns(ISSUES)
 
     const columns: ColDef<IssueVO>[] = [
-        {...colMap.clickToEditCol, headerName:'', width: 30},
+        {...colMap.clickToEditCol, headerName:'id', width: 30},
         {
             ...colMap.clientsIssueNumber, width: 100,
             cellRenderer: (props:{rowIndex:number}) => {
@@ -136,7 +132,7 @@ export default () => {
     const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues
 
     const dataForUser = currentUser.role === 'менеджер'
-        ? outdatedIssues.filter(i => i.responsibleManagerId === currentUser.userId)
+        ? outdatedIssues.filter(i => i.managerUserId === currentUser.userId)
         : outdatedIssues
 
     console.log('statuses', statuses)
@@ -152,7 +148,7 @@ export default () => {
             >
                 <div>
                     {
-                        routeMatch.params.issueId ? <IssueModal issueId={routeMatch.params.issueId} /> : null
+                        currentItemId ? <IssueModal_NEW id={currentItemId} /> : null
                     }
 
 
@@ -168,7 +164,37 @@ export default () => {
                         resource={ISSUES}
                         columnDefs={columns}
                         title={'Все заявки'}
+                        bottomBar={({ag}) => {
+                            const onEmailExport = async () => {
+                              //  const email = prompt('Укажите почтовый ящик, куда нужн отправить выгрузку')
+                                const blob = ag.api.getDataAsExcel({}) as any as Blob
+                                //const api = await getRestApi()
+                                const formData = new FormData();
+                                formData.append("file[]", blob, 'report.xlsx');
+                                const response = await axios.post(
+                                    '/api/email-export?images=true&email=',
+                                    formData,
+                                    {
+                                        headers: {
+                                            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                                        },
+                                    })//?email=miramaxis@ya.ru&images=true', formData);
+                                    console.log(response.data)
 
+                                    const url= response.data.url
+                                    const element = document.createElement("a");
+                                    element.href = url
+                                    element.download = url
+// simulate link click
+                                    document.body.appendChild(element); // Required for this to work in FireFox
+                                    element.click();
+                                    document.body.removeChild(element)
+
+                            }
+                            return <Space><Button icon={<AntdIcons.MailTwoTone />} onClick={onEmailExport} >Выгрузить заявки</Button>
+                            <ImportIssuesButton/>
+                            </Space>
+                        }}
                     />
                     {
                         /**

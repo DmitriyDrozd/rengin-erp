@@ -10,7 +10,6 @@ import {Session} from '@sha/better-sse';
 import {isPersistentAction} from 'iso';
 import {sessionsDuck} from './sessionsDuck';
 import isPublicForAllAction from './isPublicForAllAction';
-import {forEach} from "ramda";
 
 
 export default function* broadcastSSEEventsSaga() {

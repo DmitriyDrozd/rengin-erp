@@ -1,33 +1,34 @@
-import {ProForm, ProFormDatePicker, ProFormItemProps} from "@ant-design/pro-components";
-import {ProFormProps} from "@ant-design/pro-form/es/layouts/ProForm";
-import {DatePicker, Form, Input, Select, SelectProps} from "antd";
+import {ProForm, ProFormDatePicker} from "@ant-design/pro-components";
+import {Button, Divider, Select, Space} from "antd";
 import {ExtractProps} from "@sha/react-fp";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
-import locale from "antd/es/date-picker/locale/ru_RU";
-
-import TextArea from "antd/es/input/TextArea";
+import {PlusOutlined} from "@ant-design/icons";
 
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z
 const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
 
-export type SelectOption = {
+export type RenSelectOption = {
     value: string
     label: string
     disabled?: boolean
 }
-export const optionsFromValuesList = (values: string[]): SelectOption[] => {
-    const options: SelectOption[] = []
+
+export const optionsFromValuesList = (values: readonly string[]): RenSelectOption[] => {
+    const options: RenSelectOption[] = []
     values.forEach(v => options.push({value:v, label: v}))
     return options
 }
-export default ({value,onValueChange, label, options, placeholder, showSearch,style,disabled,...props}: {value: string,showSearch?: boolean, onValueChange: (value: string) => any, options:SelectOption[],label: string, placeholder?: string, dusabled?: boolean}) => {
 
+export default ({value,onValueChange, label, options, placeholder,disabled, style, showSearch,...props}: {value: string,showSearch?: boolean, onValueChange: (value: string) => any, options:RenSelectOption[],label: string, placeholder?: string, disabled?: boolean, style?: any}) => {
     return (
-        <ProForm.Item label={label} {...props}>
+        <ProForm.Item
+            label={label}
+            {...props}
+        >
             <Select  value={value}
-                    optionFilterProp={'label'}
-                     showSearch={showSearch}
+
+                     optionFilterProp={'label'}
+                     showSearch={true}
                      placeholder={placeholder}
                      disabled={disabled}
                      onChange={ e => {
@@ -36,6 +37,17 @@ export default ({value,onValueChange, label, options, placeholder, showSearch,st
                      }}
                      style={{minWidth:'200px',...style}}
                      options={options}
+                     dropdownRender={(menu) => (
+                         <>
+                             {menu}
+                             <Divider style={{ margin: '8px 0' }} />
+                             <Space style={{ padding: '0 8px 4px' }}>
+                                 <Button type="text" icon={<PlusOutlined />} >
+                                     Добавить
+                                 </Button>
+                             </Space>
+                         </>
+                     )}
             />
         </ProForm.Item>
     );

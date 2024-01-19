@@ -17,7 +17,7 @@ export const siteResource = createResource('site',{
             headerName: 'Юр. Лицо',
             linkedResourceName: 'LEGALS',
             required: true,
-            filterLinkedResourceItems: (list: LegalVO[], source: SiteVO) =>
+            filterLinkedResourceItems: (list: LegalVO[], source: any) =>
                 list.filter(item => item.brandId === source.brandId)
         }),
         city: valueTypes.string({
@@ -28,10 +28,22 @@ export const siteResource = createResource('site',{
             headerName: 'Адрес',
             required: true
         }),
-        responsibleEngineer: valueTypes.string({headerName:'Ответственный инженер'}),
-        responsibleManager: valueTypes.string({headerName:'Ответственный менеджер'}),
+
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         KPP: valueTypes.string({headerName: 'КПП'}),
+
+
+        managerUserId: valueTypes.itemOf({headerName: 'Менеджер',
+            linkedResourceName:'USERS',
+            defaultAsPropRef:'legalId'
+        }),
+        techUserId: valueTypes.itemOf({headerName: 'Техник',linkedResourceName:'USERS'}),
+
+        clientsEngineerUserId: valueTypes.itemOf({headerName:'Отв. инженер',
+            linkedResourceName:'USERS',
+            defaultAsPropRef:'legalId'
+        }),
+
     },
     {
         getItemName: item => item.city+', '+item.address,

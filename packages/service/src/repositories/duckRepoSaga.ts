@@ -1,12 +1,9 @@
 import {call, put, select, takeEvery} from 'typed-redux-saga'
 import {isNamespace} from '@sha/fsa'
-import {Schema} from 'mongoose'
-import getMongoDAO, {DuckRepository} from './getMongoDAO'
-import {isPersistentAction,Res} from 'iso'
-import {getPGDAO} from "./getPGDAO";
+import {isPersistentAction} from 'iso'
 import {SagaOptions} from "../sagaOptions";
 import {Repo} from "./getRepo";
-import {UnionRes} from "iso/src/store/bootstrap/resourcesList";
+import {config} from "@app-config/main";
 
 export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions)  {
 
@@ -22,10 +19,12 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
 
     console.log('Repo ' + repo.factoryPrefix + ' found item: ' + items.length)
 
+    if(config.WRITE_PG===true)
+    yield* call(repo.pgDao.createMany,items)
     yield* put(
         repo.actions.reset(items)
     )
-    yield* call(repo.pgDao.createMany,items)
+
 
     yield* takeEvery(isNamespace(repo.factory), function* (action) {
 
@@ -37,18 +36,21 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                     yield* call(async () => {
 
                         await repo.mongoDao.createMany(action.payload)
+                        if(config.WRITE_PG===true)
                         await repo.pgDao.createMany(action.payload)
                     })
                 }
                 if (repo.actions.added.isType(action)) {
                     yield* call(async () => {
                         await repo.mongoDao.create(action.payload)
+                        if(config.WRITE_PG===true)
                         await repo.pgDao.create(action.payload)
                     })
                 }
                 if (repo.actions.removed.isType(action)) {
                     yield* call(async () => {
                         await repo.mongoDao.removeById(action.payload)
+                        if(config.WRITE_PG===true)
                         await repo.pgDao.removeById(action.payload)
                     })
                 } else if (
@@ -61,6 +63,7 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                             debugger
                         yield* call(async () => {
                             await repo.mongoDao.updateById(item)
+                            if(config.WRITE_PG===true)
                             await repo.pgDao.updateById(item)
                         })
                     }

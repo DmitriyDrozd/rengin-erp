@@ -8,6 +8,16 @@ export default async () => {
             ? 'http://localhost:9380'
             :''})*/
     return {
+        getNewGToken: async () => {
+            const response = await axiosInstance.get('/api/gapis/get-token')
+
+            return response.data.token
+        },
+        emailExport: async (payload: {email: string, images: boolean}) => {
+            const response = await axiosInstance.post('/api/email-export', payload)
+
+            return response.data
+        },
         login: async (payload: { email, password, remember }) => {
             const response = await axiosInstance.post('/api/user/login', payload)
 

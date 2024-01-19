@@ -2,17 +2,19 @@ import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import {useAllColumns} from '../../../grid/RCol'
-import LEGALS from 'iso/src/store/bootstrap/repos/legals'
+import LEGALS, {LegalVO} from 'iso/src/store/bootstrap/repos/legals'
 import useLedger from '../../../hooks/useLedger'
 import PanelRGrid from '../../../grid/PanelRGrid'
+import {ValueGetterFunc} from "ag-grid-community/dist/lib/entities/colDef";
 
 export default () => {
     const ledger = useLedger()
     const list = ledger.legals
-    const [cols] = useAllColumns(LEGALS)
+    const [cols,colMap] = useAllColumns(LEGALS)
 
 
 
+    const RES = LEGALS
     return <ItemChapter
         resource={RESOURCES_MAP.LEGALS}
 
@@ -21,6 +23,7 @@ export default () => {
                 <ProFormSelect {...fieldMetaToProProps(LEGALS, 'brandId', item)} rules={[{required:true}]} />
                 <ProFormText {...fieldMetaToProProps(LEGALS, 'legalName', item)} rules={[{required:true}]} />
                 <ProFormText {...fieldMetaToProProps(LEGALS, 'region',item)} rules={[{required:true}]} />
+
             </>
         }
         renderList={({form,verb,resource}) => {

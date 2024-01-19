@@ -4,6 +4,7 @@ import {CRR} from '@sha/router';
 
 import {bootstrapDuck} from './store/bootstrapDuck'
 import type {EventVO} from 'service/src/repositories/eventStore'
+import {useSelector} from "react-redux";
 
 type RouterState = CRR.RouterState
 export type ISOState = {
@@ -16,3 +17,6 @@ export type ISOState = {
     meta: StoreMeta
     adminPreferences: AdminPreferences
 }
+
+
+export const useISOState = () => useSelector((state: any) => state as ISOState)

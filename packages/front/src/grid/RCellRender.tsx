@@ -4,7 +4,6 @@ import getCrudPathname from '../hooks/getCrudPathname'
 import {EditOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
 import {AnyFieldsMeta, ItemWithId} from 'iso/src/store/bootstrap/core/createResource'
-import {Space} from "antd";
 
 
 type RCellRenderProps<D = any,V = any> = {

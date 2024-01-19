@@ -4,11 +4,10 @@ import React, {useState} from 'react';
 import type {RcFile, UploadProps} from 'antd/es/upload';
 import {remove} from "ramda";
 import useRole from "../../hooks/useRole";
-import {useCanEstimations} from "../../hooks/useCan";
 
 export type UploadListProps = {
     items: UploadFile[]
-    onItemsChange: (list: string[]) => any
+    onItemsChange: (list: UploadFile[]) => any
     maxCount: number
     issueId: string
     label:string
@@ -46,7 +45,8 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
         onItemsChange(newFileList)
     const handleRemove: UploadProps['onRemove'] = file => {
         console.log('handleRemove', file)
-        onItemsChange(remove(items.indexOf(f => f.name === file.name), 1, items))
+        const isFileWithName = (name: string) => (file: UploadFile) => file.name === name
+        onItemsChange(remove(items.findIndex(isFileWithName(file.name)), 1, items))
     }
     const uploadButton = (
         <div>

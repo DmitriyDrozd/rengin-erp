@@ -1,10 +1,4 @@
-import {
-    ProFormDatePicker,
-    ProFormInstance,
-    ProFormSelect,
-    ProFormText,
-    ProFormTextArea
-} from '@ant-design/pro-components'
+import {ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
 import {Breadcrumb, Button, Form, Typography} from 'antd'
 import React, {useRef, useState} from 'react'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
@@ -23,13 +17,11 @@ import SUBS, {SubVO} from 'iso/src/store/bootstrap/repos/subs'
 import {SITES} from 'iso/src/store/bootstrap'
 import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
 import CONTRACTS, {ContractVO} from 'iso/src/store/bootstrap/repos/contracts'
-import {DateTime, Duration} from "luxon";
 import RenFormDate from "../../form/RenFormDate";
-import {nav} from "../../nav";
+import {getNav} from "../../getNav";
 import {sleep} from "@sha/utils";
 import {SiteVO} from "iso/src/store/bootstrap/repos/sites";
 import useCurrentUser from "../../../hooks/useCurrentUser";
-import {today} from "ionicons/icons";
 import {Days} from "iso";
 
 
@@ -124,7 +116,7 @@ export default () => {
         if(sub && contract && site) {
             formRef.current?.setFieldValue('contractId',contract.contractId)
             formRef.current?.setFieldValue('subId',sub.subId)
-            setState({...state, contractId: contract.contractId, subId: sub.subId,contactInfo:site.contactInfo, responsibleEngineer: site.responsibleEngineer })
+            setState({...state, contractId: contract.contractId, subId: sub.subId,contactInfo:site.contactInfo, clientsEngineerUserId: site.clientsEngineerUserId })
         }
     }
     console.log('contractId', state.contractId, contract)
@@ -179,7 +171,7 @@ export default () => {
                 debugger
                 onSubmit(state);
                 await sleep(100)
-                history.replace(nav.issuesEdit({issueId:state.issueId}))
+                history.replace(getNav().issuesEdit({issueId:state.issueId}))
             }
             }
             submitter={{

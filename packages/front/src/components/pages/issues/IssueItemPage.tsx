@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux'
-import React, {useReducer, useRef, useState} from 'react'
+import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
-import {ProCard, ProFormInstance} from '@ant-design/pro-components'
+import {ProCard} from '@ant-design/pro-components'
 import getCrudPathname from '../../../hooks/getCrudPathname'
 import {useHistory} from 'react-router'
 import {AntdIcons} from '../../elements/AntdIcons'
@@ -14,17 +14,15 @@ import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 import ExpensesTable from "./tabs/ExpensesTable";
 import UploadSection from "../../elements/UploadSection";
 import EstimationsTable from "./tabs/EstimationsTable";
-import {issueEditReducer, IssueStateContext} from "../../../contexts/useIssue";
-import {currentIssueDuck} from "../../../store/ducks/currentIssueDuck";
+import {IssueStateContext} from "../../../contexts/useIssue";
 import {sleep} from "@sha/utils";
 import {useUnmount} from "react-use";
 
 export default () => {
     const {resource,id,item,verb} = usePathnameResource()
     useUnmount(() => {})
-    type Item = typeof resource.exampleItem
 
-    const initialValues:IssueVO =useSelector(ISSUES.selectById(id))
+    const initialValues:IssueVO = useSelector(ISSUES.selectById(id))
 
     const [issueState, setIssueState] = useState(initialValues as IssueVO) as any as [IssueVO, (otem: IssueVO)=>any]
 
@@ -62,12 +60,10 @@ export default () => {
         onBack()
         await sleep(100)
         dispatch(resource.actions.removed(id))
-
     }
 
     const onBack = () =>
         history.goBack()
-    const issue = useSelector(currentIssueDuck.selectCurrentIssue)
 
     return  <IssueStateContext.Provider value={{
         issue: issueState,

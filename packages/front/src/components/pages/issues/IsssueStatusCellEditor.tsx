@@ -1,14 +1,12 @@
+import * as React from "react";
 import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ISSUES} from "iso/src/store/bootstrap";
 import {CellEditorProps} from "../../../grid/RGrid";
 import {Select} from "antd";
-import * as React from "react";
 import {BaseSelectRef} from "rc-select";
 import {optionsFromValuesList} from "../../form/RenFormSelect";
 import {IssueVO, Status, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
-import {today} from "ionicons/icons";
 import useRole from "../../../hooks/useRole";
-import useIssue from "../../../contexts/useIssue";
 import {useDispatch, useSelector} from "react-redux";
 import {Days} from "iso";
 

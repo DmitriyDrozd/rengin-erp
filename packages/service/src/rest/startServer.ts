@@ -9,19 +9,15 @@ import {PinoLoggerOptions} from 'fastify/types/logger'
 
 import {DateTime,} from 'luxon'
 import upload from "./upload";
+import gapisToken from "./gapis-token/gapis-token";
 
 const events = {}
 const _importDynamic = new Function("modulePath", "return import(modulePath)")
 
-let requestHandler = null;
-
-
 export type FastifyHTTPErrorsEnhanced = typeof import("fastify-http-errors-enhanced"); // This is the import type!
 
 export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced> => {
-    // ...
     return await _importDynamic("fastify-http-errors-enhanced")
-
 }
 
 
@@ -31,12 +27,12 @@ export default async (io: SagaOptions) => {
 const p = path
     const root = path.join(__dirname, '..', '..', '..', 'static')
     const state = io.store.getState()
+    const store = io.store
     const config = configDuck.selectConfig(state)
     const logger: boolean | FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions = {
 
         genReqId: (req) =>
             req.url+ '@'+DateTime.now().toFormat('HH mm ss'),
-
 
         serializers: {
             req: request => {
@@ -45,8 +41,7 @@ const p = path
                     //  proto: request.protocol,
                     path: request.routerPath,
                     body: request.body,
-                    // Including the headers in the log could be in violation
-                    // of privacy laws, e.g. GDPR. You should use the "redact" option to
+                    // You should use the "redact" option to
                     // remove sensitive fields. It could also leak authentication data in
                     // the logs.
                     //headers: request.headers
@@ -55,10 +50,10 @@ const p = path
         }
     }
 
-    let fastify = Fastify({   logger,
+    let fastify = Fastify({
+        logger,
         ignoreTrailingSlash: true,
         bodyLimit: 1048576 * 4,
-
         trustProxy: true,
         // ?modifyCoreObjects:false"
     });
@@ -66,7 +61,7 @@ const p = path
 
 
 
-
+    fastify.register(require('@fastify/multipart'))
     fastify.register(FastifyHTTPErrorsEnhanced.default, {
         hideUnhandledErrors: false
     })
@@ -79,17 +74,15 @@ const p = path
     fastify.register(fastifyStatic, {
         root,
     })
-    fastify.register(upload)
+
     fastify.get('/app*', async (req, reply) => {
 
         return reply.sendFile('index.html')
     })
     fastify.get('/uploads/*', async(req, reply)=> {
-        return reply.sendFile(req.raw.url)
+        return reply.sendFile(req.raw.url!)
     })
-   /* const fastifyPrintRoutes = await _importDynamic('fastify-print-routes')
-    fastify.register(fastifyPrintRoutes)
-*/
+
 
     fastify.register(fp((fastify, opts, done) => {
         fastify.decorate('io', io)
@@ -97,14 +90,16 @@ const p = path
             req.state = fastify.io.store.getState()
             req.io = fastify.io
             next()
-        })
+        })1
         done()
     }))
 
     const ssePlugin = await import('./sse/index')
     fastify.register(fp(ssePlugin.default))
-
     fastify.register(fp(usersDataPlugin))
+    fastify.register(upload)
+    fastify.register(fp(gapisToken))
+
     return fastify
 }
 

@@ -2,7 +2,8 @@ import * as Icons from '@ant-design/icons';
 import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, ImportOutlined, MailOutlined} from '@ant-design/icons';
 import React from 'react'
 import {AntdIcons} from '../elements/AntdIcons'
-import {RoleType, UserVO} from "iso/src/store/bootstrap/repos/users"
+import {RoleType} from "iso/src/store/bootstrap/repos/users"
+
 export default (role: RoleType) =>{
     const routesInit = role === 'руководитель'?
         [{
@@ -60,7 +61,7 @@ export default (role: RoleType) =>{
                 },
                 {
                     path: "/app/in/users",
-                    name: "Сотрудники",
+                    name: "Контакты",
                     icon: <Icons.UserOutlined/>
                 },
 

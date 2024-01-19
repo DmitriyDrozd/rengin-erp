@@ -6,9 +6,9 @@ import configureAdminStore from './store/configureFrontendStore';
 import rootFrontSaga from './sagas/rootFrontSaga';
 import {history} from '@sha/router';
 import axios from 'axios';
-import ReactDOM from 'react-dom/client';
 import App from './components/app/App'
 import {ducks} from 'iso/src/store'
+import ReactDOM from "react-dom/client";
 
 window['ducks'] = ducks
 

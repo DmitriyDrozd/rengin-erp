@@ -1,16 +1,21 @@
 import getMongoRepository from 'iso/src/getMongoRepository'
 import {Connection, Schema} from 'mongoose';
 import {UnPromisify} from '@sha/utils';
+import {Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {createSchema, Type} from 'ts-mongoose'
+import {AnyMeta, MetaType} from 'iso/src/store/bootstrap/core/valueTypes'
+import {BootableDuck} from "@sha/fsa/src/createBootableDuck";
 
-const getMongoDAO = async <T, ID extends keyof T, S extends Schema>
+const getMongoDAO = async <T, ID extends string, S extends Schema>
 ({mongo}: { mongo: Connection }, duck: BootableDuck<T, ID>) => {
+    console.log('getMongoDAO', duck.factoryPrefix)
     const schema = buildMongooseByResource(duck)
     const Model = await getMongoRepository(mongo, duck.factoryPrefix, schema)
     const idProp: ID = duck.idKey
 
     const getById = async (itemId: string): Promise<T> => {
         const condition = {[idProp]: itemId}
-        return (await Model.findOne(condition).lean())
+        return (await condition. Model.findOne(condition).lean())
     }
     const insertMany = async (items: T): Promise<any> => {
         return (await Model.insertMany(items))
@@ -100,14 +105,10 @@ const getMongoDAO = async <T, ID extends keyof T, S extends Schema>
 export default getMongoDAO
 
 export type DuckRepository<T, ID, S> = UnPromisify<ReturnType<typeof getMongoDAO>>
-import {AnyMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
-import {createSchema, Type} from 'ts-mongoose'
-import {MetaType} from 'iso/src/store/bootstrap/core/valueTypes'
-import {BootableDuck} from "@sha/fsa/src/createBootableDuck";
 
 const mapMetaProp = <M extends AnyMeta>(prop: M) => {
     const type: MetaType = prop.type
-    if(prop.type === 'string') {
+    if(type === 'string') {
         return Type.string({required: prop.required})
     }
     if(prop.type === 'boolean') {

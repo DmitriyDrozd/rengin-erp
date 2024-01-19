@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux'
 import {selectLedger} from 'iso/src/store/bootstrapDuck'
+import useFrontSelector from "./common/useFrontSelector.js";
 
 export default () => {
-    const ledger = useSelector(selectLedger)
+    return  useFrontSelector(selectLedger)
 
-    return ledger
 }

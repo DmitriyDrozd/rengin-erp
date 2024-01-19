@@ -2,14 +2,14 @@ import AppLayout from "../../app/AppLayout";
 import {ISSUES} from "iso/src/store/bootstrap";
 import {useSelector} from "react-redux";
 import IssueChart from "./IssueChart";
-import {Card} from "antd";
-import { DatePicker, Space } from 'antd';
+import {Card, DatePicker} from "antd";
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {useState} from "react";
-import dayjs, {Dayjs} from "dayjs";
+import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'
 import {Days} from "iso";
 import {Period} from "iso/src/utils/date-utils";
+
 dayjs.extend(isBetween)
 const { RangePicker } = DatePicker;
 const gridStyle: React.CSSProperties = {

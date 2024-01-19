@@ -1,51 +1,35 @@
-import {useDispatch, useSelector} from "react-redux";
-import {ISSUES} from "iso/src/store/bootstrap";
-import React, {useCallback, useMemo, useRef, useState} from "react";
+import React, {useCallback, useMemo, useRef} from "react";
 import {AgGridReact} from "ag-grid-react";
-import {
-    ColDef,
-    ISelectCellEditorParams,
-    RowEditingStartedEvent,
-    RowEditingStoppedEvent,
-    StatusPanelDef
-} from "ag-grid-community";
+import {ColDef, ISelectCellEditorParams, RowEditingStartedEvent, RowEditingStoppedEvent} from "ag-grid-community";
 import 'ag-grid-enterprise'
 
-import {ExpenseItem, IssueVO} from "iso/src/store/bootstrap/repos/issues";
+import {ExpenseItem, ISSUES, IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {Button, Space, Typography} from "antd";
 import {clone, remove} from "ramda"
-import useIssue from "../../../../contexts/useIssue"
 import AG_GRID_LOCALE_RU from "../../../../grid/locale.ru";
 import ImportTableButton from "../ImportTableButton";
-import {importSitesXlsxCols} from "../../ImportSItesPage";
 import {DownloadOutlined} from "@ant-design/icons";
-import {MasterDetailModule} from "@ag-grid-enterprise/all-modules";
-import {CsvExportModule} from "@ag-grid-community/csv-export";
-import {ClientSideRowModelModule} from "@ag-grid-community/client-side-row-model";
 import {useCanManage} from "../../../../hooks/useCanManage";
 import useCurrentUser from "../../../../hooks/useCurrentUser";
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
+import {useContextEditor} from "../../chapter-modal/useEditor";
 
-ModuleRegistry.registerModules([ ExcelExportModule ]);
 const countExpenses = (expenses: IssueVO['expenses']) =>
         expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 
 export default (props) => {
     const {currentUser} = useCurrentUser()
-    const {issue,setIssue,setIssueProperty} = useIssue()
-    const issueId = issue.issueId
+    const {errors,item,getRenFieldProps,updateItemProperty,params,editor,hasChanges,resource,rules} = useContextEditor(ISSUES)
+  
+
     const canEdit = useCanManage()
-    const initialItems= clone(issue.expenses|| [])
-    const [isEdited, setIsEdited] = useState(false)
+    const initialItems= clone(item.expenses|| [])
     const gridRef = useRef<AgGridReact>(null);
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({ height: '300px', width: '100%' }), []);
     const rowData = initialItems
-    console.log('ExpensesTable issue', issue)
     const setRowData = (items: ExpenseItem[]) => {
-        setIssue({...issue, expenses: items, expensePrice: countExpenses(items)})
+         updateItemProperty('expenses')( items)// expensePrice: countExpenses(items)})
     }
     const columnDefs = [
         {
@@ -145,7 +129,7 @@ setRowData(items)
                     :<Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
                 }
                 <Typography.Text>Итого: </Typography.Text>
-                <Typography.Text code strong>{issue.expensePrice}</Typography.Text>
+                <Typography.Text code strong>{item.expensePrice}</Typography.Text>
             </Space>
             <Space>
                 <Button icon={<DownloadOutlined />} onClick={onBtExport} >Скачать .xlsx</Button>

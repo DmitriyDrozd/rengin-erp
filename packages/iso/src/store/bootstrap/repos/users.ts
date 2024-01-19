@@ -2,24 +2,38 @@ import chroma from 'chroma-js'
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
-export const roleTypes = ['руководитель','менеджер','сметчик'] as const
+
+export const roleTypes = ['руководитель','менеджер','сметчик','техник','ответственный инженер'] as const
+
 export const roleEnum = {
     'руководитель':'руководитель',
     'менеджер':'менеджер',
-    'сметчик':'сметчик'
+    'сметчик':'сметчик',
+    'клиент':'клиент',
+    'техник':'техник',
+    'ответственный инженер':'ответственный инженер'
 }
+
 export type RoleType = typeof roleTypes[number]
-const usersRaw =createResource('user',{
-    role: valueTypes.enum({required: true,enum: roleTypes as any as RoleType[]}),
-    fullName: valueTypes.string({required: true, colDef:{width: 250}}),
-    title: valueTypes.string({colDef: {width: 200}}),
-    company: valueTypes.string({colDef: false}),
+
+const usersRaw = createResource('user',{
+    role: valueTypes.enum({required: true, enum: roleTypes, headerName: 'Роль'}),
+    brandId: valueTypes.itemOf({
+        headerName:'Организация',
+        linkedResourceName:'BRANDS'
+    }),
+    lastname: valueTypes.string({required: true, colDef:{width: 250}, headerName:'Фамилия'},),
+    name: valueTypes.string({required: true, colDef:{width: 250}, headerName:'Имя'},),
+    title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
+
+
+    email: valueTypes.string({required: true, toLowerCase: true, colDef: {width: 250}}),
+    phone: valueTypes.string({ toLowerCase: true, colDef: {width: 250}}),
     avatarUrl: valueTypes.string({colDef:false}),
-    email: valueTypes.string({required: true, unique: true, trim: true, toLowerCase: true, colDef: {width: 250}}),
     password: valueTypes.string({required: true, colDef: false}),
-    removed: valueTypes.boolean({select: false, colDef: false}),
+    removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
 },{
-   getItemName: item => item.fullName,
+   getItemName: item => item.lastname +' '+ item.name,
     langRU: {
         singular: 'Пользователь',
         plural: 'Пользователи',
@@ -39,7 +53,7 @@ const selectUserByEmail = (email: string) => (state) => {
     if (!email)
         return undefined
 
-    const userByEmail = (users as any).find(user =>
+    const userByEmail = (users as any as UserVO[]).find(user =>
             user.email && (
                 user.email.toLowerCase() === email.toLowerCase()
             )
@@ -106,10 +120,8 @@ export const defaultAdminUser = {
     fullName: 'Шаммасов Максим Тимурович',
     password: '123456',
     title: 'Программист',
-    grids: {
 
-    }
-}
+} as any as UserVO
 export const usersResource = {
     ...usersRaw,
     getItemName: (item) =>
@@ -134,9 +146,7 @@ selectAbbrName: (userId: string) => (state) => {
         if(user.avatarUrl)
             return user.avatarUrl
         const num = stringToHashInt(userId)
-        return generateGravatar(num, user.fullName[0], (user.fullName.split(' ')[1]
-            ?  user.fullName.split(' ')[1].charAt(0)
-            : user.fullName.charAt(1)))
+        return generateGravatar(num, user.name ? user.name.charAt(0) : '', (user.lastname?user.lastname.charAt(0): ''))
     },
 
 }

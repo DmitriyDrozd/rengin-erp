@@ -1,6 +1,6 @@
 import * as fsa from '@sha/fsa'
 import {FactoryAnyAction} from '@sha/fsa'
-import {append, equals, reject, uniq} from 'ramda'
+import {append, equals, reject} from 'ramda'
 import {combineReducers} from 'redux'
 import {FrontState} from '../frontReducer';
 

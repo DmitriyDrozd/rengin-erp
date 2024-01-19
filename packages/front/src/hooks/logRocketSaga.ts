@@ -1,17 +1,16 @@
 import {call, put, select, take} from 'typed-redux-saga'
 import LogRocket from 'logrocket'
 import {uiDuck} from '../store/ducks/uiDuck'
-import getFrontEnv from '../getFrontEnv';
+import config from "@app-config/main";
 
-const env = getFrontEnv()
 
 export function* logRocketSaga() {
 
-    console.log('env.STONES_LOG_ROCKET '+env.STONES_LOG_ROCKET)
-    if (!(env.STONES_LOG_ROCKET))//| window.location.hostname ==='localhost')
+    console.log('env.LOG_ROCKET '+config.LOG_ROCKET)
+    if (!(config.LOG_ROCKET))//| window.location.hostname ==='localhost')
         return
 
-    LogRocket.init((env.STONES_LOG_ROCKET), {
+    LogRocket.init((config.LOG_ROCKET), {
         console: {
             shouldAggregateConsoleErrors: true,
         },

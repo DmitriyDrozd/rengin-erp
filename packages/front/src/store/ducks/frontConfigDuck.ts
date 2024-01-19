@@ -1,5 +1,5 @@
 import * as FSA from '@sha/fsa';
-
+import {FrontState} from "../frontReducer";
 
 export const defaultConfig = {
     VERSION: '',
@@ -22,11 +22,11 @@ const actions = {
 export const frontConfigDuck = {
     factory,
     actions,
-    selectFrontConfig: (state): FrontConfig =>
+    selectFrontConfig: (state: FrontState): FrontConfig =>
         state.frontConfig,
 
 
-    reducer: (state = defaultConfig, action): FrontConfig => {
+    reducer: (state = defaultConfig, action: any): FrontConfig => {
         if (actions.reset.isType(action))
             return action.payload
 

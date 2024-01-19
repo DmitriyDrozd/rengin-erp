@@ -7,15 +7,15 @@ import {FrontState} from '../store/frontReducer';
 import frontConfigDuck from '../store/ducks/frontConfigDuck';
 import {routerSaga} from '../store/ducks/routerDuck';
 import {preferencesSaga} from '../store/ducks/preferencesDuck';
-import {logRocketSaga} from '../hooks/logRocketSaga'
-import {nav, RouterHistory} from '../components/nav'
+//import {logRocketSaga} from '../hooks/logRocketSaga'
+import {getNav, RouterHistory} from '../components/getNav'
 import {adminNotifySaga} from './adminOverlayNotifySaga'
 
 //declare var GITVERSION: string
 const VERSION = '0.3.8'//GITVERSION.split('\n')[0]
     //const LASTCOMMITDATETIME = GITVERSION//.split('\n')[1]
 export default function* rootFrontSaga(store: Store<FrontState>, history: RouterHistory) {
-    yield* fork(logRocketSaga)
+    //yield* fork(logRocketSaga)
     yield* fork(adminNotifySaga)
     yield* fork(routerSaga, history)
     yield* fork(preferencesSaga)
@@ -33,7 +33,7 @@ export default function* rootFrontSaga(store: Store<FrontState>, history: Router
         const logoutActoin = yield* take(uiDuck.actions.logout.isType)
 
         yield* cancel(task)
-        history.replace(nav.login({}))
+        history.replace(getNav().login({}))
 
         yield* call(delay, 100)
 

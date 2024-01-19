@@ -32,13 +32,17 @@ const items: MenuProps['items'] =
         danger: true
     }]
 
-export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRef, toolbar, columnDefs, resource,rowData,createItemProps,...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode}) => {
+export type BottomGridApiBar = React.FC<{ag: AgGridReact}>
+
+export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRef, bottomBar,toolbar, columnDefs, resource,rowData,createItemProps , ...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode,bottomBar?: BottomGridApiBar}) => {
     const dispatch = useDispatch()
     const [isDeleteMode, setDeleteMode,] = useState(false)
     const [defaultColumns, columnsMap] = useAllColumns(resource,isDeleteMode? 'multiple':undefined)
-    const firstCol = isDeleteMode ? columnsMap.checkboxCol:columnsMap.clickToEditCol
+    const usedColumns = columnDefs || defaultColumns
+    const [editColumn, ...restColumns] = usedColumns
+    const firstCol = isDeleteMode ? columnsMap.checkboxCol:editColumn
 
-    const resultCols = columnDefs || [firstCol,...(columnDefs || defaultColumns)]
+    const resultCols =  [firstCol,...restColumns]
 
     const defaultList = useSelector(resource.selectList)
     const list = rowData || defaultList
@@ -118,7 +122,6 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
         <div style={{display: 'flex'}}>
             <Space>
                 <Input
-
                     style={{maxWidth: '250px', marginRight: '16px', lineHeight:'unset'}}
                     addonBefore={<SearchOutlined />} placeholder="Быстрый поиск"
                     allowClear
@@ -140,6 +143,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
             </Space>
 
             <Space>
+                {bottomBar && innerGridRef.current && bottomBar({ag: innerGridRef.current})}
                 <Button icon={<DownloadOutlined />} onClick={onBtExport} >Скачать .xlsx</Button>
             </Space>
         </div>

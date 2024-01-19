@@ -1,9 +1,12 @@
-import {Meta, MetaType, valueTypes} from './valueTypes'
+import {ItemOfMeta, Meta, MetaType, StringMeta, valueTypes} from './valueTypes'
 import {createCRUDDuck} from '@sha/fsa'
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
 import {getStore} from '../../../getStore'
+import {$Values} from "utility-types";
+import {ISOState} from "../../../ISOState";
+import {toAssociativeArray} from "@sha/utils";
 
-export type PluralEngindEng<S extends string> = S 
+export type PluralEngindEng<S extends string> = `${S}s`
 
 export const pluralEngindEnd = <S extends string>(singular: S):PluralEngindEng<S> =>
     (singular.slice(-1) === 's' ? singular+'es' : singular+'s') as any as PluralEngindEng<S>
@@ -19,67 +22,81 @@ export type ResourceLang = {
 export type ResourceOptions<RID extends string, Fields extends AnyFieldsMeta> = {
     nameProp?: keyof Fields
     langRU: ResourceLang
-    indexes?: Exclude<keyof Fields,`${RID}Id`>[],
     getItemName?: (item: ItemWithId<RID, Fields>) => string
 }
 
 export type FieldsWithIDMeta<RID extends string, Fields extends AnyFieldsMeta> =
     Fields & {
-    [key in `${RID}Id`]: Meta<MetaType,string>
+    [key in `${RID}Id`]: Meta<'string',string>
 }
 export type IdKey<RID extends string>= `${RID}Id`
 
-export type WithOnlyId<RID extends string> = {[K in IdKey<RID>]: string}
+export type WithOnlyId<RID extends string> = {[s in `${RID}Id`]: string}
 
+export type ItemWithoutId<Fields extends AnyFieldsMeta> =
+    {
+        [K in keyof Fields]: Fields[K]['tsType']
+    }
 export type ItemWithId<RID extends string, Fields extends AnyFieldsMeta> =
     {
-        [K in Exclude<keyof Fields,IdKey<RID>>]: Fields[K]['tsType'] | undefined
+        [K in keyof Fields]: Fields[K]['tsType']
     } & WithOnlyId<RID>
 
-export type Resource<RID extends string, Fields extends {[key in string]: Meta<any>}>  =
+export type Resource<RID extends string, Fields extends AnyFieldsMeta>  =
   ResourceOptions<RID, Fields> & {
+    idMeta: Meta<'string', string>
     rid: RID,
     fields: Fields
+    idProp: IdKey<RID>
+    idKey: IdKey<RID>
     selectFirstByName: (name: string) => (state) => ItemWithId<RID, Fields>
     collection: PluralEngindEng<RID>
     exampleItem: ItemWithId<RID,Fields>
-    properties:FieldsWithIDMeta<RID, Fields>
-    getItemName: (item: ItemWithId<RID,Fields> ) => string
+    properties:Fields//FieldsWithIDMeta<RID, Fields>
     getStore: typeof getStore
-    asOptions: (list?: ItemWithId<RID,Fields>[]) => Array<{value: string, title: string}>
+    asOptions: (list?: ItemWithId<RID,Fields>[]) => Array<{value: string, label: string, disabled?: boolean}>
     asValueEnum: (list?: ItemWithId<RID,Fields>[]) => Record<string, string>
-    fieldsList: (Meta<any> & {name: string})[]
+    fieldsList:  Meta<MetaType,string>[]
     resourceName: Uppercase<PluralEngindEng<RID>>
+    selectMapByNames: (state: ISOState) => Record<string, ItemWithId<RID, Fields>>
 } & Crud<ItemWithId<RID,Fields >, IdKey<RID>, PluralEngindEng<RID>>
 
-export type AnyMeta = Meta<any, any>
 
-export type AnyFieldsMeta = {
-    [key in string]: Meta<any,any>
-}
 
-export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
-    (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>): Resource<RID, FieldsWithIDMeta<RID,Fields>> => {
+export type AnyFieldsMeta =  {[key in string]: Meta<any>}
+
+const addProp = <K extends string>(name: K) => <V>(value: V): {} =>({[name]: value})
+addProp('a')(5)
+export const createResource = <RID extends string,  Fields extends AnyFieldsMeta>
+    (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>) => {
         type Item = ItemWithId<RID,Fields>
         const collection: PluralEngindEng<RID> = pluralEngindEnd(RID)
-        const idProp = RID+'Id' as IdKey<RID>
-        type IDProp = IdKey<RID>
+    type IDProp = IdKey<RID>
+        const idPropThis = RID+'Id' as IdKey<RID>
+
+        const propsWithOnlyId: {[ke in IDProp]: StringMeta}= ({
+
+            [idPropThis as IDProp]: valueTypes.string({headerName: 'id',isIDProp: true,unique: true})
+        }) as any
+
         const props = {
             langRU,
             RID,
-            idProp,
+            idProp: idPropThis,
             collection,
             properties: {
-                [idProp]: valueTypes.string({headerName: langRU.singular,isIDProp: true,unique: true}),
+                ...propsWithOnlyId,
                 ...properties,
                 removed: valueTypes.string({headerName: 'Удалёно',sealed:true}),
             },
             exampleItem: {} as any as Item
         }
-        const fieldsList:(Meta & {name: string})[]  = []
+        const fieldsList:(Meta<any, any>)[]  = []
         Object.keys(props.properties).forEach( k => {
-            fieldsList.push(props.properties[k])
-            props.properties[k].name = k
+            const p =props.properties[k]
+            fieldsList.push(p)
+            p.name = k
+            p.headerName = p.headerName || p.name
         })
         const defaultGetItemName =  ((item: Item): string => {
             const i = item
@@ -87,20 +104,33 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
            return i[propName] as string
         }) as any
         const getItemName = rest.getItemName || defaultGetItemName
-        const crud = createCRUDDuck<Item,IDProp,PluralEngindEng<RID>>(collection, idProp,rest.indexes)
+        const {idProp, ...crud} = createCRUDDuck<Item,IDProp,PluralEngindEng<RID>>(collection, idPropThis)
+const selectMapByNames= (state: ISOState) => {
+    const list = state.app.bootstrap[props.collection]  as any as Item[]
+    return list.reduce((map, item) =>{
+        const name =getItemName(item)
+        map[name] = item
+        if(!item[`${RID}Name`])
+            item[`${RID}Name`] = name
+        return map
+    } ,{} as any as Record<string, Item>)
 
-
-        return {
+}
+        const result = {
+            getPropByName: <K extends keyof ItemWithId<RID, Fields>>(key: K) =>
+                properties[key],
             rid: RID,
-            fieldsList,
+            idMeta: props.properties[idPropThis],
+            fieldsList: fieldsList as   any as $Values<FieldsWithIDMeta<RID, Fields>>[],
             ...crud,
+            idProp: idPropThis,
             fields: properties,
             asOptions: (init: Item[] = undefined) => {
                 const store = getStore()
                 const state = store.getState()
                 const list = init || crud.selectList(state as any)
                 const options = list.map( item => ({
-                    value: item[idProp],
+                    value: String(item[idProp]),
                     label: getItemName(item as any as Item),
                 }))
                 console.log('asOptions', options)
@@ -110,6 +140,8 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
                 const list = crud.selectList(state)
                 return list.find(item => getItemName(item) === name)
             },
+
+            selectMapByNames,
             resourceName: collection.toUpperCase() as any as Uppercase<PluralEngindEng<RID>>,
             asValueEnum: (list: Item[] = undefined) => {
                 const state = getStore().getState()
@@ -118,7 +150,7 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
                 console.log(crud.factoryPrefix+' list of ' + crud.factoryPrefix,list)
                 workList.map( item => {
                     console.log('item',item)
-                    options[item[idProp]] = getItemName(item)
+                    options[String(item[idProp])] = String(getItemName(item))
                 })
                 console.log('asValueEnum', options)
                 return options
@@ -126,9 +158,17 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
             getItemName,
             ...rest,
             ...props,
-            getStore,
+         getStore: getStore,
+
         }
-    }
+
+        return {
+            ...result,
+            isResource: <V = unknown>(value: V): value is typeof result =>
+                // @ts-ignore
+                value.rid === result.rid
+        }
+}
 
 
     const TEST_RESOURCE = createResource('test',
@@ -152,7 +192,7 @@ export const createResource = <RID extends string, Fields extends AnyFieldsMeta>
 
 const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',testId:'sds'}
 
-class Clazz<RID extends string, Fields extends {[key in string]: Meta<MetaType, any>}>{
+class Clazz<RID extends string, Fields extends AnyFieldsMeta>{
     public create = (rid: RID, props: Fields, opts: ResourceOptions<RID ,Fields>)=> {
         return createResource(rid,props, opts)
     }
@@ -162,3 +202,28 @@ export type ExtractVOByResource<R extends Resource<any, any>> = R['exampleItem']
 
 export type ExtractResource<RID extends string, Fields extends {[key in string]: Meta<MetaType, any>}> = ReturnType<Clazz<RID, Fields>['create']>
 
+export const getResLedger = <RID extends string, Fields extends AnyFieldsMeta, Item extends ItemWithId<RID, Fields> = ItemWithId<RID, Fields>> (res: Resource<RID, Fields>) =>
+    (state: ISOState) => {
+        const list = res.selectList(state)
+        const byId = toAssociativeArray(res.idProp)(list)
+        const byName = res.selectMapByNames(state)
+        const maps: LinkedProps<RID,Fields> = {} as any
+        const indexMapByProp = (p: ItemOfMeta) => {
+            const map: Record<string, Item[]> = {}
+            list.forEach( (item) => {
+                if(!map[item[p.name]])
+                    map[item[p.name]]= []
+                map[item[p.name]].push(item)
+            })
+        }
+        return {
+            list, byId, byName, byRes: <K extends keyof LinkedProps<RID,Fields>>(key:K)=> {
+                if(!maps[key])
+                    maps[key] = indexMapByProp(res.properties[key])
+                return linkedId =>
+                    maps[key][linkedId] || []
+
+            }
+        }
+    }
+export type LinkedProps<RID extends string, Fields extends AnyFieldsMeta> =Extract<keyof Fields,`${string}Id`>

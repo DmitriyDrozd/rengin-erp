@@ -1,6 +1,7 @@
 {
   "name": "front",
   "packageManager": "yarn@3.6.1",
+  "type": "module",
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@types/react": "^18.2.14",

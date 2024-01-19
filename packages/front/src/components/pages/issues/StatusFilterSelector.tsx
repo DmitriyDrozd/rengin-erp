@@ -1,7 +1,7 @@
 import {Space, Tag} from "antd";
 import {Status, statusesColorsMap, statusesList} from "iso/src/store/bootstrap/repos/issues";
 import {reject} from "ramda";
-import {CloseCircleOutlined, PlusCircleOutlined} from "@ant-design/icons";
+
 export type StatusFilterProps = {
     statuses: Status[],
     setStatuses: (statuses: Status[]) => any

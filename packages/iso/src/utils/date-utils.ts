@@ -1,13 +1,15 @@
-import dayjs, { OpUnitType} from "dayjs";
-type ConfigType =  string  | Date | Dayjs | null | undefined
+import dayjs, {Dayjs} from "dayjs";
 import {IssueVO} from "../store/bootstrap/repos/issues";
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isToday from 'dayjs/plugin/isToday'
+import isBetween from 'dayjs/plugin/isBetween'
+
+type ConfigType =  string  | Date | Dayjs | null | undefined
+
 function dayjsToString () {
     return this.format('YYYY/MM/DD')
 }
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import devHelper from 'dayjs/plugin/devHelper'
-import isToday from 'dayjs/plugin/isToday'
-import isBetween from 'dayjs/plugin/isBetween'
+
 declare module 'dayjs' {
     interface Dayjs {
         isInPeriod(period: Period): boolean
@@ -27,8 +29,6 @@ const isInPeriod = (o, c, d:typeof dayjs) => {
        return (this as Dayjs).isBetween(start, end,'day','[]')
     }
 }
-
-import {Dayjs} from "dayjs";
 
 export type Period = [ConfigType | undefined, ConfigType | undefined]
 export type Day = Dayjs

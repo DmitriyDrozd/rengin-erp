@@ -3,9 +3,6 @@ import {FastifyInstance} from 'fastify';
 import {UnPromisify} from '@sha/utils';
 import eventStore from './repositories/eventStore';
 import {Crud} from '@sha/fsa/src/createCRUDDuck'
-import {bootstrapRepositories} from './repositories/bootstrapRepositories'
-import Env from "./Env";
-import knex from "knex";
 
 
 type ThenArg<T> = T extends Promise<infer U> ? U :
@@ -17,7 +14,7 @@ type ReposMapByBootstrapCruds<Type extends {[key in string]: Crud<any>}> = {
     [Property in keyof Type]: Type[Property]['reducer'];
 };
 
-export const sagaOptions = async (store: ServiceStore) => {
+export const sagaOptions = async (store: ServiceStore, EventRepo: ReturnType<typeof eventStore>) => {
 
     const {pg,mongo,runSaga,gServices,} =store
 
@@ -29,7 +26,7 @@ export const sagaOptions = async (store: ServiceStore) => {
         mongo,
         gServices,
         pg,
-        eventStore: await eventStore(mongo),
+        EventRepo: EventRepo,
     }
 
 

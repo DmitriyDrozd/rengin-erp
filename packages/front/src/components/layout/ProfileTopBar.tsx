@@ -3,7 +3,7 @@ import UserPic from '../elements/UserPic'
 import useCurrentUser from '../../hooks/useCurrentUser'
 import {DownOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
-import {nav} from '../nav'
+import {getNav} from '../getNav'
 import React from 'react'
 import ExitButton from '../elements/ExitButton'
 
@@ -58,7 +58,7 @@ export default () => {
                          </div>
                      )}
     >
-        <Link to={nav.userPage({userId:currentUser.userId})}>
+        <Link to={getNav().userEdit({userId:currentUser.userId})}>
             <Space>
                 <Typography.Text type={'secondary'}>{currentUser.role}</Typography.Text>
                 <UserPic userId={currentUser.userId}/>
