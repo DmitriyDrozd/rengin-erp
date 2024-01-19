@@ -90,7 +90,7 @@ const p = path
             req.state = fastify.io.store.getState()
             req.io = fastify.io
             next()
-        })1
+        })
         done()
     }))
 
