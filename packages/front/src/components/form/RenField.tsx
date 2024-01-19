@@ -118,6 +118,9 @@ export default ({meta, disabled} :{meta: AnyMeta, disabled?: boolean}) => {
                     onBlur={e => {
                         updateItemProperty(e.target.value)
                     }}
+                    onChange={e => {
+                        updateItemProperty(e.target.value)
+                    }}
                     {...sharedProps}
                 />
             );
@@ -126,5 +129,5 @@ export default ({meta, disabled} :{meta: AnyMeta, disabled?: boolean}) => {
     if(error) {
         return <Form.Item label={property.headerName}  validateStatus={'error'} hasFeedback={true} help={error} required={property.required}  >{renderInputControl()}</Form.Item>
     }
-    return <Form.Item label={property.headerName}  required={property.required}  >{renderInputControl()}</Form.Item>
+    return <Form.Item label={property.headerName}  required={property.required}  >{renderInputControl()}<span></span></Form.Item>
 };

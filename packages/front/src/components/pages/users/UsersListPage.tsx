@@ -10,7 +10,7 @@ import {getNav} from "../../getNav";
 
 export default () => {
     const ledger = useLedger()
-    const list = ledger.users
+    const list = ledger.users.list
     const [cols] = useAllColumns(USERS)
     const routeMatch = useRouteMatch<{userId:string}>()
 

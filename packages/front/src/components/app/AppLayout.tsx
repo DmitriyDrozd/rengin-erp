@@ -118,7 +118,7 @@ export default ({proLayout, children,hidePageContainer, ...props}: PageContainer
                                 paddingBlockStart: 12
                             }}
                         >
-                            <div>© 2023 shammasov.com</div>
+                            <div>© 2023 rengindesk.ru</div>
                         </div>
                     );
                 }}
