@@ -112,16 +112,11 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                 for(let i of issuesFromState)
                     await ensureMoved(allIssuesFolder+'\\'+i.issueId, allIssuesFolder+'\\'+BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber)
                 const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
-                const zip = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
-                const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss')
-
-                const fullZipPath = publicDir+'/reports/'+reportDateTime+'.zip'
-                     await  zip.writeZipPromise(fullZipPath)
-                const filename = '/reports/'+reportDateTime+'.zip'
+                const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
 
                 //const buff = await zip.toBufferPromise()
                 // const stream = fs.createReadStream(fullZipPath, 'utf8')
-              return  reply.send({url:filename})//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
+              return  reply.send({url:relativeZipPath})//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
                 //return reply.header('Content-Disposition', 'attachment; filename="REFERRALS.xlsx"')
                //.send(stream)
               //  return reply.sendFile(fullZipPath)//.send(bufferZip)
