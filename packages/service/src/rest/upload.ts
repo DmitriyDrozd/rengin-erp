@@ -11,6 +11,7 @@ import * as R from "ramda";
 import {ISOState} from "iso/src/ISOState";
 import {allIssuesFolder, ensureMoved, exportIssuesZip, publicDir} from "./data-users/export-issues-zip";
 import moment from "moment/moment";
+import Path from "path";
 const contentDisposition = require('content-disposition');
 const fs = require('node:fs')
 
@@ -83,7 +84,8 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                 const buffer = await data.toBuffer()
                 var workbook = XLSX.read(buffer,{type:'buffer'})
                 const worksheet = workbook!.Sheets[workbook.SheetNames[0]]
-                var dir = path.join('..', 'static', 'reports',  dayjs().format('YYYY-MM-DD_HH-mm-ss'))
+                 const publicDir = Path.join(__filename,'..','..','..','..','static')
+                var dir = path.join(publicDir, 'reports',  dayjs().format('YYYY-MM-DD_HH-mm-ss'))
 
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {recursive: true});
