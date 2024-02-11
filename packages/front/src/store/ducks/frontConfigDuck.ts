@@ -1,4 +1,4 @@
-import * as FSA from '@sha/fsa';
+import * as FSA from '@shammasov/mydux';
 import {FrontState} from "../frontReducer";
 
 export const defaultConfig = {

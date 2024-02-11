@@ -1,21 +1,11 @@
-import {Res, RESOURCES_MAP} from "./store/bootstrap/resourcesList";
-import * as DaysUtils from './utils/date-utils'
+import {useSelector} from "react-redux";
+import {ORMState} from "./store";
 
-export {default as isPersistentAction} from './isPersistentAction'
+export * from "./store";
+export * from './appStorage'
+export * from  './utils'
+export * from './getRestApi'
+export * from './appStorage'
 
-export {default as appStorage} from './appStorage'
 
-export {default as composeWithReduxDevTools} from './store/composeWithReduxDevTools'
-export {metaDuck} from './store/metaDuck'
-
-export type {Resource } from './store/bootstrap/core/createResource'
-
-export const Days = DaysUtils
-export const today = Days.today()
-
-export {
-    RESOURCES_MAP
-}
-export type {
-    Res
-}
+export const useORMState = () => useSelector((state: any) => state as ORMState)

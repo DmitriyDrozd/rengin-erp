@@ -1,4 +1,4 @@
-import {isNode} from '@sha/utils'
+import {isNode} from '@shammasov/utils'
 
 type Store = {};
 
@@ -31,7 +31,6 @@ export class StorageMock {
 const mockStorage = new StorageMock({})
 
 const getStorage = () => localStorage
-
 console.log('isNode', isNode)
 console.log('nowStorage is', getStorage())
 

@@ -4,21 +4,15 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 //import './rengin-theme.css'
 import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
 import React, {useMemo} from 'react'
-import AG_GRID_LOCALE_RU from './locale.ru'
+import AG_GEID_LOCALE_RU from './locale.ru'
 
 
-import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes, EntitySlice, ItemByAttrs} from '@shammasov/mydux'
 import './styles.css'
-//import {ResVal} from "iso/src/store/bootstrap/repos/res";
-import {ISSUES, USERS} from "iso/src/store/bootstrap";
-import {Meta} from "iso/src/store/bootstrap/core/valueTypes";
+import {TICKETS, USERS} from "iso";
 
-export type ResVal = typeof USERS | typeof ISSUES
+export type ResVal = typeof USERS | typeof TICKETS
 
-export type ValueTypeBeResAndProp <Res extends ResVal, Prop extends string | number | symbol> =
-    Res extends {properties: {[key in Prop]: Meta<infer Type, infer TSType>} }
-        ? Res['properties'][Prop]['tsType']
-        : never
 export type ItemTypeByRes  <Res extends ResVal> =
     Res extends {exampleItem: infer T}
     ? Res['exampleItem']
@@ -30,9 +24,9 @@ export type CellEditorProps<Res extends ResVal, VType = any> =  {
 }
 
 
-export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGridReactProps<ItemWithId<RID, Fields>> & {
-    resource: Resource<RID, Fields>
-    createItemProps?: Partial<ItemWithId<RID, Fields>>
+export type RGridProps<EID extends string, Attrs extends AnyAttributes> = AgGridReactProps<ItemByAttrs<Attrs>> & {
+    resource: EntitySlice<Attrs, EID>
+    createItemProps?: Partial<ItemByAttrs<Attrs>>
     search?: string
     fullHeight?: boolean
 
@@ -42,7 +36,7 @@ const checkBoxColProps = {
     headerCheckboxSelection: true,
     checkboxSelection: true,
 }
-export default React.forwardRef( <RID extends string, Fields extends AnyFieldsMeta>({columnDefs , fullHeight,...props}: RGridProps<RID, Fields>, ref:React.ForwardedRef<any>) => {
+export default React.forwardRef( <EID extends string, Attrs extends AnyAttributes>({columnDefs , fullHeight,...props}: RGridProps<EID, Attrs>, ref:React.ForwardedRef<any>) => {
 
    /* const onFilterTextBoxChanged = useCallback(() => {
         gridRef.current!.api.setQuickFilter(
@@ -52,13 +46,13 @@ export default React.forwardRef( <RID extends string, Fields extends AnyFieldsMe
         const localeText = useMemo<{
                 [key: string]: string;
             }>(() => {
-                return AG_GRID_LOCALE_RU;
+                return AG_GEID_LOCALE_RU;
             }, []);
 
          console.log(columnDefs)
 
         return <> <div className="ag-theme-alpine" style={{height: fullHeight ?  'calc(100vh - 144px)':'calc(100vh - 244px)', width: '100%'}}>
-                    <AgGridReact<ItemWithId<RID, Fields>>
+                    <AgGridReact<ItemByAttrs<Attrs>>
                         ref={ref}
                         localeText={localeText}
 columnDefs={columnDefs}

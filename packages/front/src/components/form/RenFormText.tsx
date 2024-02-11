@@ -1,6 +1,6 @@
 import {ProForm} from "@ant-design/pro-components";
 import {Input} from "antd";
-import {ExtractProps} from "@sha/react-fp";
+import {ExtractProps} from "@shammasov/utils";
 import TextArea from "antd/es/input/TextArea";
 
 type RenFormTextProps = ExtractProps<typeof TextArea> & {multiline?: boolean, label: string, onValueChange: (value: string) => any, disabled?: boolean}

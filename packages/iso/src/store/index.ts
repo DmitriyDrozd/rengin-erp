@@ -1,19 +1,9 @@
-
-
-export {default as connectionDuck} from './sse/sseConnectionDuck'
-export {default as connectionSaga} from './sse/sseClientSaga'
-import {defaultMeta, metaDuck} from './metaDuck'
-import {contractsCrud, ISSUES, settingsDuck, SITES, USERS} from './bootstrap/index'
-
-export const ducks  = {
-    settingsDuck,
-    metaDuck,
-     USERS,
-    ISSUES,
-    CONTRACTS: contractsCrud,
-    SITES
-}
-export {metaDuck}
-
-export type StoreMeta = typeof defaultMeta
-
+export * from './entities/brands'
+export * from './entities/contracts'
+export * from './entities/legals'
+export * from './entities/sites'
+export * from './entities/subs'
+export * from './entities/tickets'
+export * from './entities/users'
+export * from './buildEditor'
+export * from './orm'

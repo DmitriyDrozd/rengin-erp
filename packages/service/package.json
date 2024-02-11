@@ -1,20 +1,4 @@
 {
-  "config": {
-    "NODE_ENV": {
-      "local": {
-        "CALLBACL_URL": "http://localhost:19001/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj-local"
-      },
-      "development": {
-        "CALLBACL_URL": "https://dev.godj.pro/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj-dev"
-      },
-      "production": {
-        "CALLBACL_URL": "https://dev.godj.pro/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj"
-      }
-    }
-  },
   "name": "service",
   "version": "0.1.0",
   "repository": {
@@ -33,10 +17,9 @@
     "build": "tsc -p ."
   },
   "dependencies": {
-    "@sha/better-sse": "0.8.0",
-    "@sha/fsa": "0.1.0",
-    "@sha/random": "0.1.0",
-    "@sha/utils": "0.1.0",
+    "@shammasov/mydux": "workspace:^0.2.0",
+    "@shammasov/mydux-backend": "workspace:^0.2.0",
+    "@shammasov/utils": "workspace:^0.2.0",
     "content-disposition": "^0.5.4",
     "iso": "^0.1.0"
   }

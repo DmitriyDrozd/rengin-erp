@@ -3,7 +3,7 @@ import * as Icons from '@ant-design/icons';
 import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
 import {Menu} from 'antd';
 import type {MenuProps} from 'antd/es/menu';
-import {useHistory, useLocation} from 'react-router'
+import {useParams, useLocation, useHistory} from 'react-router'
 import useCurrentUser from "../../hooks/useCurrentUser";
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -38,7 +38,7 @@ const App: React.FC = () => {
              ...items
          ] : items;
 
-    const history  = useHistory()
+    const history = useHistory()
     const location = useLocation()
     const segment = location.pathname.split('/')[2]
     console.log('segment', segment)

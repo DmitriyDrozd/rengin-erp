@@ -1,7 +1,2 @@
-import {getAppStorage} from './getAppStorage'
-import {getUserStorage} from './getUserStorage'
-
-export {
-    getAppStorage,
-    getUserStorage
-}
+export * from './getAppStorage';
+export * from './getUserStorage';

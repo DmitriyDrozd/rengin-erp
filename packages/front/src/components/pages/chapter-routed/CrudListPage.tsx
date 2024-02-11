@@ -1,18 +1,17 @@
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes, EntitySlice} from '@shammasov/mydux'
 import {useDispatch} from 'react-redux'
 import React, {useState} from 'react'
 import AppLayout from '../../app/AppLayout'
 import {CrudListRender, CrudListRenderProps} from './ItemChapter'
 
 export const CrudListPage = <
-    RID extends string,
-    Fields extends AnyFieldsMeta,
-    Res extends Resource<RID, Fields>
->({resource,renderList,verb,form}: CrudListRenderProps<RID, Fields,Res>& {renderList: CrudListRender<RID, Fields,Res>}) => {
+    EID extends string,
+    Attrs extends AnyAttributes,
+    Res extends EntitySlice<Attrs, EID>
+>({resource,renderList,verb,form}: CrudListRenderProps<EID, Attrs>& {renderList: CrudListRender<EID, Attrs>}) => {
     type Item = typeof resource.exampleItem
-    const idProp = resource.idProp
+
     const item: Item = {} as any
-    const id = ((item) as any as {[k in typeof idProp]: string})[idProp]
     const initialValues = item
     const dispatch = useDispatch()
     const [state, setState] = useState(item)

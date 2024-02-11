@@ -1,4 +1,4 @@
-export default {
+export const appStorage = {
     setItem: <T = any>(key: string, value: T) =>
         typeof value === 'undefined'
             ? localStorage.removeItem(key)

@@ -1,25 +1,24 @@
 import {ColDef} from 'ag-grid-community'
-import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes, EntitySlice, isItemOfAttr, ItemByAttrs} from '@shammasov/mydux'
 import {RCellRender} from './RCellRender'
-import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
-import useLedger from '../hooks/useLedger'
-import {getRes} from 'iso/src/store/bootstrap/resourcesList'
+import useDigest from '../hooks/useDigest'
 import useFrontSelector from '../hooks/common/useFrontSelector'
 import {CellClassRules, ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
+import {getEntityByEID} from "iso";
 
 export const useAllColumns = <
-    RID extends string,
-    Fields extends AnyFieldsMeta,
->(res: Resource<RID, Fields>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
-    type Item = ItemWithId<RID, Fields>
+    EID extends string,
+    Attrs extends AnyAttributes,
+>(res: EntitySlice<Attrs, EID>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
+    type Item = ItemByAttrs<Attrs>
 
-    type CommonColsMap = { clickToEditCol: ColDef<Item, string,RID, Fields>, checkboxCol: ColDef }
+    type CommonColsMap = { clickToEditCol: ColDef<Item, string,EID, Attrs>, checkboxCol: ColDef }
     type ColsMap = CommonColsMap & {
 
-        [K in keyof Fields]: ColDef<Item, Item[K], RID, Fields, K>
+        [K in keyof Attrs]: ColDef<Item, Item[K], EID, Attrs, K>
     }
-const sourceResourceName = res.resourceName
-    const ledger = useLedger()
+const sourceResourceName = res.EID
+    const digest = useDigest()
     const state = useFrontSelector(state => state)
     //const clickToEditColumn = () =>
 
@@ -33,14 +32,14 @@ const sourceResourceName = res.resourceName
         resizable: false,
 
     }
-    const clickToEditCol: ColDef<Item, string,RID, Fields> = {
+    const clickToEditCol: ColDef<Item, string,EID, Attrs> = {
         headerName:'',
-        field:res.idProp,
+        field:'id',
 
-        sourceResourceName: res.resourceName,
+        sourceResourceName: res.getItemName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
         width:120,
-        fieldName: res.idProp,
+        fieldName: 'id',
         resizable: false,
         resource: res,
 
@@ -50,8 +49,8 @@ const sourceResourceName = res.resourceName
     const storedColumn = <K extends keyof Item> (
         property: K
     ): ColDef<Item,Item[K]> => {
-        const fieldMeta = res.properties[property]
-        const colInit :ColDef<Item, Item[K],RID,Fields ,K>= {
+        const fieldMeta = res.attributes[property]
+        const colInit :ColDef<Item, Item[K],EID,Attrs ,K>= {
             editable: false,
             headerName: fieldMeta.headerName,
             resizable: true,
@@ -76,8 +75,8 @@ const sourceResourceName = res.resourceName
            colInit.width = 100
            // colInit. = 'dateString'
         }
-        if(isItemOfMeta(fieldMeta)){
-            const RES = getRes(fieldMeta.linkedResourceName)
+        if(isItemOfAttr(fieldMeta)){
+            const RES = getEntityByEID(fieldMeta.linkedEID)
 
             const cellClassRules:CellClassRules<Item> = {}
             if(fieldMeta.required) {
@@ -92,11 +91,11 @@ const sourceResourceName = res.resourceName
 
                     const id = params.data[params.colDef.field]
                     try {
-                        const it = RES.selectById(id)(state)
+                        const it = RES.selectors.selectById(id)(state)
                         return RES.getItemName(it)
                     } catch (e){
                         console.error(e)
-                        console.error(res.rid, params,params.colDef.field)
+                        console.error(res.EID, params,params.colDef.field)
                         return id ? 'Удалён '+id : 'Не указан'
                     }
 
@@ -107,7 +106,7 @@ const sourceResourceName = res.resourceName
     }
 
 
-    const columnsList = res.fieldsList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
+    const columnsList = res.attributesList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
        const col = storedColumn(f.name)
         const colComposed = f.colDef? {...col, ...f.colDef} : col
 
@@ -117,12 +116,12 @@ const sourceResourceName = res.resourceName
         return colComposed
     })
     return [[map.clickToEditCol, ...columnsList], map] as const
-  //  return res.properties
+  //  return res.attributes
 
 }
 
-export type StoredColumn<D,V, RID extends string, Fields extends AnyFieldsMeta> = {
-    resource: Resource<RID, Fields>
+export type StoredColumn<D,V, EID extends string, Attrs extends AnyAttributes> = {
+    resource: EntitySlice<Attrs, EID>
 } & ColDef<D, V>
 
 export type ResCol = {}

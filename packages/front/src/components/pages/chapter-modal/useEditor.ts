@@ -1,51 +1,50 @@
 import {createContext, useContext, useState} from "react";
-import {AnyFieldsMeta, ItemWithId, Resource} from "iso/src/store/bootstrap/core/createResource";
+import {AnyAttributes, EmpheralAttributes, EntitySlice, ItemByAttrs} from '@shammasov/mydux';
 import {useDispatch, useSelector} from "react-redux";
 import {isEmpty} from "ramda";
-import {useISOState} from "iso/src/ISOState";
-import {GetParamsByMeta, RenEditor} from "iso/src/store/bootstrap/buildEditor";
-import {generateGuid} from "@sha/random";
+import {GetParamsByMeta, RenEditor, useORMState} from "iso";
+import {generateGuid} from "@shammasov/utils";
 import {useHistory} from "react-router";
 
-const getArrayPropsForNewItem = <Fields extends AnyFieldsMeta>(fields: Fields) => {
+const getArrayPropsForNewItem = <Attrs extends EmpheralAttributes>(fields: Attrs) => {
     const obj : any = []
     Object.values(fields).filter(f => f.type === 'array').forEach(f => obj[f.name] = [])
     return obj
 }
 export const useEditor =  <
-    RID extends string,
-    Fields extends AnyFieldsMeta,
-> ( editor: RenEditor<RID, Fields>,
-    idOrInitItem: 'create' | string | ItemWithId<RID,Fields>
+    EID extends string,
+    Attrs extends AnyAttributes,
+> ( editor: RenEditor<EID, Attrs>,
+    idOrInitItem: 'create' | string | ItemByAttrs<Attrs>
    ) => {
 
 
     const history = useHistory()
     history.location.state
     const dispatch = useDispatch()
-    type Item = ItemWithId<RID, Fields>
+    type Item = ItemByAttrs<Attrs>
     const res = editor.resource
-    const [newItem] = useState({[res.idProp]: generateGuid(), ...getArrayPropsForNewItem(res.properties)})
-    const state = useISOState()
-    const items: Item[] = useSelector(editor.resource.selectList) as any
+    const [newItem] = useState({id: generateGuid(), ...getArrayPropsForNewItem(res.attributes)})
+    const state = useORMState()
+    const items: Item[] = useSelector(editor.resource.selectors.selectAll) as any
     const mode = idOrInitItem === 'create' ? 'create' : 'edit'
     const id = idOrInitItem === 'create'
-        ? newItem[res.idProp]
+        ? newItem.id
         : typeof idOrInitItem === 'string'
             ? idOrInitItem
-            : idOrInitItem[res.idProp]
+            : idOrInitItem.id
     const initItem: Item = idOrInitItem === 'create'
         ? newItem
         : typeof idOrInitItem === 'string'
-            ? items.find(i => i[res.idProp] === id)!
+            ? items.find(i => i.id === id)!
             : idOrInitItem
 
     const [item, setItem] = useState(initItem)
 
 
 
-    const updateItemProperty = <K extends keyof Fields>(prop: K) =>
-        (value: ItemWithId<RID,Fields>[K]) => {
+    const updateItemProperty = <K extends keyof Attrs>(prop: K) =>
+        (value: ItemByAttrs<Attrs>[K]) => {
             setItem(editor.updateProperty(prop)({item,value,state, mode}))
         }
     const errors = editor.getAllErrors(item)(state)
@@ -73,15 +72,15 @@ export const useEditor =  <
         validateProps: () => {
 
         },
-        getRenFieldProps:<K extends keyof Fields>(prop: K) => {
+        getRenFieldProps:<K extends keyof Attrs>(prop: K) => {
             return {mode: mode as 'create' |'edit',
                 editor,
                 rules: editor.rules[prop],
                 value: item[prop],
-                property: editor.resource.properties[prop],
+                property: editor.resource.attributes[prop],
                 updateItemProperty: updateItemProperty(prop),
                 error: errors[prop] as any as string | undefined,
-                params: params[prop] as any as GetParamsByMeta<typeof res.properties[K]>
+                params: params[prop] as any as GetParamsByMeta<typeof res.attributes[K]>
             }
         }
     }
@@ -92,14 +91,14 @@ export const useEditor =  <
 
 
 
-export const useContextEditor = <RID extends string, Fields extends AnyFieldsMeta>(res?: Resource<RID, Fields>) => {
+export const useContextEditor = <EID extends string, Attrs extends AnyAttributes>(res?: EntitySlice<Attrs, EID>) => {
     const editor = useContext(EditorContext)
-    return editor as any as UseEditorReturn<RID,Fields>
+    return editor as any as UseEditorReturn<EID,Attrs>
 }
 
-export const useContextEditorProperty =  <RID extends string, Fields extends AnyFieldsMeta, K extends keyof ItemWithId<RID,Fields>>
-(resource: Resource<RID, Fields> | string, property?: K) => {
-    const editor = useContextEditor<RID,Fields>()
+export const useContextEditorProperty =  <EID extends string, Attrs extends AnyAttributes, K extends keyof ItemByAttrs<Attrs>>
+(resource: EntitySlice<Attrs, EID> | string, property?: K) => {
+    const editor = useContextEditor<EID,Attrs>()
     return editor.getRenFieldProps(property || resource)
 }
 
@@ -108,12 +107,12 @@ export const useContextEditorProperty =  <RID extends string, Fields extends Any
 export const EditorContext = createContext<UseEditorReturn<any, any>>({} as any)
 
 
-class Clazz<RID extends string, Fields extends AnyFieldsMeta>{
-    public create = (rid: RID, props: Fields)=> {
-        return useEditor<RID, Fields>({} as any, {} as any)
+class Clazz<EID extends string, Attrs extends AnyAttributes>{
+    public create = (rid: EID, props: Attrs)=> {
+        return useEditor<EID, Attrs>({} as any, {} as any)
     }
 }
-export type UseEditorReturn<RID extends string, Fields extends AnyFieldsMeta> = ReturnType<Clazz<RID, Fields>['create']>
+export type UseEditorReturn<EID extends string, Attrs extends AnyAttributes> = ReturnType<Clazz<EID, Attrs>['create']>
 
 
 

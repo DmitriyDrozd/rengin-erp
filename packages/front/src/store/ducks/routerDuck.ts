@@ -1,5 +1,5 @@
-import * as fsa from '@sha/fsa'
-import {FactoryAnyAction} from '@sha/fsa'
+import * as fsa from '@shammasov/mydux'
+import {FactoryAnyAction} from '@shammasov/mydux'
 import {prepend, tail} from 'ramda'
 
 import * as RR from '@sha/router'

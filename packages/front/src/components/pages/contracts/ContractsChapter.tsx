@@ -1,23 +1,19 @@
-import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList'
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProForm, ProFormDatePicker, ProFormMoney, ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import {useAllColumns} from '../../../grid/RCol'
-import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import {Row, Space} from 'antd'
-import useLedger from '../../../hooks/useLedger'
-import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import SITES from 'iso/src/store/bootstrap/repos/sites'
-import SUBS from 'iso/src/store/bootstrap/repos/subs'
+import {CONTRACTS, ENTITIES_MAP, LEGALS, SITES, SUBS,} from "iso";
+import useDigest from "../../../hooks/useDigest";
 
 export default () => {
-    const ledger = useLedger()
-    const list = ledger.contracts
+    const digest = useDigest()
+    const list = digest.contracts
     const [cols,map] = useAllColumns(CONTRACTS)
 
     return <ItemChapter
-                resource={RESOURCES_MAP.CONTRACTS}
+                resource={ENTITIES_MAP.CONTRACTS}
                 renderForm={({item,id,verb, resource}) => {
                     console.log("brandId",item)
                     const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
@@ -42,12 +38,12 @@ export default () => {
                 }
         }
         renderItemInfo={({verb,item,id, resource,}) => {
-            const ledger = useLedger()
-            const subList = ledger.subs.filter(s => s.contractId === item.contractId)
-            const sites = ledger.sites.filter(s => s.brandId == id)
+            const digest = useDigest()
+            const subList = digest.subs.list.filter(s => s.contractId === item.contractId)
+            const sites = digest.sites.list.filter(s => s.brandId == id)
             const [sitesCols] = useAllColumns(SITES)
 
-            const legals = ledger.legals.filter(s => s.brandId== id)
+            const legals = digest.legals.list.filter(s => s.brandId== id)
             const [legalsCols] = useAllColumns(LEGALS)
             return <PanelRGrid
                 createItemProps={{contractId:id}}

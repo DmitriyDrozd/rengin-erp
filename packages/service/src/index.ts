@@ -1,19 +1,45 @@
-import {config, loadConfig,} from '@app-config/main';
-import './fastify-with-plugins'
-import service from './rest'
-import {importIssues} from "./rest/gapis-token/import-issues";
+import {envConfig} from "@shammasov/utils";
+import './typings'
+import service from './fastify'
+import {createMongoConnection} from "@shammasov/mydux-backend";
+import getGServices from "./fastify/gapis-token/getGServices";
+import path from "path";
+import knex from "knex";
+import configureServiceStore from "./store/configureServerStore";
+import {orm} from "iso";
+import {rootSaga} from "./store/rootSaga";
 
-
+envConfig({
+    "local": {
+        "MONGO_URI": "mongodb://dev:BuildMeUp@dev.rengindesk.ru:37017/local_dev",
+        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:35432/local_dev',
+        WRITE_PG: false,
+    },
+    "development": {
+        "MONGO_URI": "mongodb://dev:BuildMeUp@dev.rengindesk.ru:37017/dev",
+        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:35432/dev',
+        WRITE_PG: false,
+    },
+    "production": {
+        "MONGO_URI": "mongodb://dev:BuildMeUp@rengindesk.ru:37017/prod",
+        POSTGRES_URI: 'postgres://root:BuildMeUp@rengindesk.ru:35432/prod',
+        WRITE_PG: false,
+    }})
 // you're best off initializing config ASAP in your program
+
 async function main() {
 
-    const a = {a: 's'}
-    await loadConfig();
+    const mongo = (await createMongoConnection())
+    const gServices = await getGServices(path.join(__dirname,'rest','settings','stroi-monitroing-1590ca45292b.json'))
+    const connectionString =  envConfig().getString('POSTGRES_URI')
+    const pg = knex({
+        client: 'pg',
+        connection: { connectionString, pool: {max:20, min:3,}}
+    });
 
-    console.log({ config:config.WRITE_PG });
-    console.log({config})
+    const store = await configureServiceStore({mongo, pg, orm, gServices})
+    store.runSaga(rootSaga)
 
-   await service()
 }
 console.time('startup')
 main()
@@ -27,4 +53,3 @@ process.on('unhandledRejection', r => {
 process.on('uncaughtException', r => {
     console.error('Unhandled error', r)
 })
- 

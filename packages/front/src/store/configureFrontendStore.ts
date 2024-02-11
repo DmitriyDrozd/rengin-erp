@@ -1,11 +1,10 @@
 import {applyMiddleware, compose, createStore} from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import {isBrowser} from '@sha/utils'
+import {generateEventGuid, isBrowser} from '@shammasov/utils'
 import frontReducer, {FrontState, selectCurrentUser} from './frontReducer'
 
 import {getBrowserHistory, routerMiddleware} from '@sha/router'
 import {composeWithReduxDevTools} from 'iso';
-import {generateEventGuid} from '@sha/random';
 
 export const appliedGuids:string[] = []
 

@@ -1,0 +1,16 @@
+{
+  "name": "@shammasov/react",
+  "version": "0.1.0",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "main": "src/",
+  "typings": "src",
+  "scripts": {
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@shammasov/mydux": "workspace:^0.2.0"
+  }
+}

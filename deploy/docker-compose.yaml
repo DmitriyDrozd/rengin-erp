@@ -1,0 +1,55 @@
+version: '3.8'
+name: "rengindesk"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=BuildMeUp
+      - MONGO_INITDB_DATABASE=admin
+    ports:
+      - "37017:27017"
+    volumes:
+      - ./.volumes/mongo:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      #./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-BuildMeUp}
+      PGDATA: /data/postgres
+    volumes:
+      - ./.volumes/postgres:/data/postgres
+    ports:
+      - "35432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    user: '$UID:$GID'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-miramaxis@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-BuildMeUp}
+    volumes:
+      - ./.volumes/pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-35050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:

@@ -1,10 +1,10 @@
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes} from 'iso'
 
 declare module "ag-grid-community"{
-    interface ColDef<TData = any, TValue = any,  RID extends string = string,
-        Fields extends AnyFieldsMeta = AnyFieldsMeta,Prop extends keyof TData = keyof TData> {
-        resource: Resource<RID, Fields>
-        fieldMeta:  Resource<RID, Fields>['properties'][Prop]
+    interface ColDef<TData = any, TValue = any,  EID extends string = string,
+        Attrs extends AnyAttributes = AnyAttributes,Prop extends keyof TData = keyof TData> {
+        resource: EntitySlice<Attrs, EID>
+        fieldMeta:  EntitySlice<Attrs, EID>['attributes'][Prop]
         fieldName: Prop
 
     }

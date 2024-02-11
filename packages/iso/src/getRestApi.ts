@@ -1,8 +1,8 @@
-import axios from 'axios';
-import {Action} from 'redux';
-import {isArray} from '@sha/utils';
+import axios from "axios";
+import {Action} from "redux";
+import {isArray} from "@shammasov/utils";
 
-export default async () => {
+export const getRestApi = async () => {
     const axiosInstance = axios//.create({})
     /*{baseURL: window.location.hostname.includes('localhost')
             ? 'http://localhost:9380'
@@ -13,34 +13,17 @@ export default async () => {
 
             return response.data.token
         },
-        emailExport: async (payload: {email: string, images: boolean}) => {
+        emailExport: async (payload: { email: string, images: boolean }) => {
             const response = await axiosInstance.post('/api/email-export', payload)
 
             return response.data
         },
-        login: async (payload: { email, password, remember }) => {
+        login: async (payload: { email: string; password: string; remember: boolean }) => {
             const response = await axiosInstance.post('/api/user/login', payload)
 
             return response.data
         },
-        fetchBootstrap: async (payload) => {
-            const response = await axiosInstance.post('/api/bootstrap', payload)
 
-            return response.data
-            /**const response = await axios.post('/api/bootstrap')
-             const state = response.data
-             return state as any as YPAppState*/
-            // return fetchBootstrapMock()
-        },
-        loadPro: async (id) => {
-            const response = await axiosInstance.post('/api/project/'+id, )
-
-            return response.data
-            /**const response = await axios.post('/api/bootstrap')
-             const state = response.data
-             return state as any as YPAppState*/
-            // return fetchBootstrapMock()
-        },
         pushCommands: async (events: Action[] | Action) => {
             const array = isArray(events) ? events : [events]
             const body = {

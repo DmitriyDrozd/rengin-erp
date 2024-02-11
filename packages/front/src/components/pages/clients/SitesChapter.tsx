@@ -1,16 +1,15 @@
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
 import {useAllColumns} from '../../../grid/RCol'
-import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import useLedger from '../../../hooks/useLedger'
-import SITES from 'iso/src/store/bootstrap/repos/sites'
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
+import useDigest from "../../../hooks/useDigest";
+import {LEGALS, SITES} from "iso";
 
 export default () => {
-    const ledger = useLedger()
+    const digest = useDigest()
     const RES = SITES
-    const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
+    const list = digest.sites//(SITES.selectors.selectAll) as any as typeof LEGALS.exampleItem
     const [cols] = useAllColumns(SITES)
 
 
@@ -33,7 +32,7 @@ export default () => {
                 }
         }
         renderList={({form,verb,resource}) => {
-            const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
+            const list = digest.sites//(SITES.selectors.selectAll) as any as typeof LEGALS.exampleItem
             const [cols] = useAllColumns(SITES)
             return         <PanelRGrid
                 resource={SITES}

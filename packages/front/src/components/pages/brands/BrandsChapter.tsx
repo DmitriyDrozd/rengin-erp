@@ -1,17 +1,10 @@
-import {RESOURCES_MAP} from 'iso/src/store/bootstrap/resourcesList.js'
-import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter.js'
-import {ProCard, ProFormText} from '@ant-design/pro-components'
-import BRANDS, {BrandVO} from 'iso/src/store/bootstrap/repos/brands.js'
-import {useAllColumns} from '../../../grid/RCol.js'
-import useLedger from "../../../hooks/useLedger.js";
-import SITES from 'iso/src/store/bootstrap/repos/sites.js'
-import {useMount} from 'react-use'
-import * as XLSX from 'xlsx'
+import {BRANDS, BrandVO} from 'iso'
+import {useAllColumns} from '../../../grid/RCol'
+import useDigest from "../../../hooks/useDigest";
 import {ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
 
 import PanelRGrid from '../../../grid/PanelRGrid'
-import {USERS} from "iso/src/store/bootstrap";
-import {useHistory, useRouteMatch} from "react-router";
+import {useHistory} from "react-router";
 import React from "react";
 import AppLayout from "../../app/AppLayout";
 
@@ -19,8 +12,8 @@ import {getNav} from "../../getNav";
 import BrandModal from "./BrandModal";
 
 export default () => {
-    const ledger = useLedger()
-    const list = ledger.brands
+    const digest = useDigest()
+    const list = digest.brands
     const [cols] = useAllColumns(BRANDS)
 
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1)
@@ -55,21 +48,21 @@ export default () => {
                         field: 'brandId',
                         headerName:'Объекты',
                         editable: false,
-                        valueGetter: (params => ledger.sites.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+                        valueGetter: (params => digest.sites.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
                     },
                     {
                         colId:'legalsCals',
                         field: 'brandId',
                         headerName:'Юр. лица',
                         editable: false,
-                        valueGetter: (params => ledger.legals.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+                        valueGetter: (params => digest.legals.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
                     },
                     {
                         colId:'issuesCalc',
                         field: 'brandId',
                         headerName:'Всего заявок',
                         editable: false,
-                        valueGetter: (params => ledger.issues.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+                        valueGetter: (params => digest.issues.filter(s => s.brandId ===params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
                     },]}
 
             />

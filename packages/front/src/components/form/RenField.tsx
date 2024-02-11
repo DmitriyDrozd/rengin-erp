@@ -1,25 +1,24 @@
 import {ProFormDatePicker} from "@ant-design/pro-components";
 import {Button, Checkbox, DatePicker, Divider, Form, Input, Select, Space, Typography} from "antd";
-import {ExtractProps} from "@sha/react-fp";
 import {useContextEditorProperty} from "../pages/chapter-modal/useEditor";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import {PlusOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import {AnyMeta, isItemOfMeta} from "iso/src/store/bootstrap/core/valueTypes";
 import React from "react";
-import {getRes} from "iso/src/store/bootstrap/resourcesList";
-import {useISOState} from "iso/src/ISOState";
+import {AnyAttr, isItemOfAttr} from "@shammasov/mydux";
+import {getEntityByEID, useORMState} from "iso";
+import {ExtractProps} from "@shammasov/react";
 
 const { Text, Link } = Typography;
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z
 const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ'
 
-export default ({meta, disabled} :{meta: AnyMeta, disabled?: boolean}) => {
+export default ({meta, disabled} :{meta: AnyAttr, disabled?: boolean}) => {
     const editorProperty = useContextEditorProperty(meta.name)
 
-    const state = useISOState()
+    const state = useORMState()
     const {value,updateItemProperty,property,error, mode,params,editor} = editorProperty
 
     const sharedProps = {
@@ -28,9 +27,9 @@ export default ({meta, disabled} :{meta: AnyMeta, disabled?: boolean}) => {
 
             if(property.immutable && mode === 'edit') {
                 let text = value
-                if(isItemOfMeta(property)) {
-                   const reses =  getRes(property.linkedResourceName)
-                    const linkedItem = reses.selectById(value)(state)
+                if(isItemOfAttr(property)) {
+                   const reses =  getEntityByEID(property.linkedEID as any)
+                    const linkedItem = reses.selectors.selectById(value)(state)
 
                     if(linkedItem)
                         text = reses.getItemName(linkedItem)
@@ -40,7 +39,7 @@ export default ({meta, disabled} :{meta: AnyMeta, disabled?: boolean}) => {
                     <Text type="success">{text}</Text>
                 )
             }
-            if(isItemOfMeta(property)) {
+            if(isItemOfAttr(property)) {
                 return              <Select  value={value}
                                              optionFilterProp={'label'}
                                              showSearch={true}

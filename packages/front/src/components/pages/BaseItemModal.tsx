@@ -4,7 +4,7 @@ import {AntdIcons} from '../elements/AntdIcons'
 import {Button, Form, Modal} from 'antd'
 import DeleteButton from '../elements/DeleteButton'
 import CancelButton from '../elements/CancelButton'
-import {sleep} from "@sha/utils"
+import {sleep} from "@shammasov/utils"
 import {useContextEditor} from "./chapter-modal/useEditor";
 import {layoutPropsModalForm} from "../form/ModalForm";
 

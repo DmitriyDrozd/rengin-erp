@@ -1,4 +1,4 @@
-import {actionCreatorFactory} from '@sha/fsa';
+import {actionCreatorFactory} from '@shammasov/mydux';
 import {equals, prepend, reject} from 'ramda';
 import {FrontState} from '../frontReducer';
 

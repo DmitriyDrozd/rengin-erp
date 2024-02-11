@@ -4,7 +4,7 @@ import {Avatar} from 'antd'
 
 import {Link} from 'react-router-dom'
 import {getNav} from '../getNav'
-import USERS from 'iso/src/store/bootstrap/repos/users'
+import {USERS} from 'iso'
 
 export default ({userId}:{userId: string}) => {
     const user = useUser(userId)

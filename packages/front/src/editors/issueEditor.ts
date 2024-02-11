@@ -1,26 +1,22 @@
-import {ISSUES, IssueVO, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
-import {buildEditor} from "iso/src/store/bootstrap/buildEditor";
+import {buildEditor, Days, LEGALS, optionsFromValuesList, SITES, statusesRulesForManager, TICKETS, TicketVO} from "iso"
 import {clientsEngineerUserId, managerUserId, techUserId} from "./siteEditor";
-import {optionsFromValuesList} from "../components/form/RenFormSelect";
-import {Days} from "iso";
-import LEGALS from "iso/src/store/bootstrap/repos/legals";
-import {SITES} from "iso/src/store/bootstrap";
 
-const countExpenses = (expenses: IssueVO['expenses']) =>
+
+const countExpenses = (expenses: TicketVO['expenses']) =>
     expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
 
-const countEstimations = (expenses: IssueVO['estimations']) =>
+const countEstimations = (expenses: TicketVO['estimations']) =>
     expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
 
-export const issuesEditor =  buildEditor(ISSUES,{
+export const issuesEditor =  buildEditor(TICKETS,{
     clientsEngineerUserId,
     managerUserId,
     techUserId,
     status: {
         getParams: ({value,property,state,role,currentUserId,item}) => {
             return {
-                options:optionsFromValuesList(ISSUES.properties.status.enum).map( o => {
+                options:optionsFromValuesList(TICKETS.attributes.status.enum).map(o => {
                     if(role === 'менеджер') {
                         const availableStatuses  = statusesRulesForManager[item.status]
                         o.disabled = !availableStatuses.includes(o.value)
@@ -61,7 +57,7 @@ export const issuesEditor =  buildEditor(ISSUES,{
             if (value !== item.legalId) {
                 const newItem = {...item, siteId: undefined, legalId: value, contractId: undefined, subId: undefined}
                 if (item.brandId === undefined){
-                    newItem.brandId =  LEGALS.selectById(value)(state).brandId
+                    newItem.brandId =  LEGALS.selectors.selectById(value)(state).brandId
                 }
 
 
@@ -72,7 +68,7 @@ export const issuesEditor =  buildEditor(ISSUES,{
         },
         getParams: ({item, value,state}) => {
             return {
-                options: LEGALS.asOptions(LEGALS.selectAll(state)
+                options: LEGALS.asOptions(LEGALS.selectors.selectAll(state)
                     .filter(l => item.brandId ? l.brandId ===item.brandId : true )),
                 addNewItemDefaults: {}
             }
@@ -110,7 +106,7 @@ export const issuesEditor =  buildEditor(ISSUES,{
             return {...item, siteId}
         },
         getParams: ({item, state}) => {
-            var options = SITES.selectAll(state)
+            var options = SITES.selectors.selectAll(state)
             if(item.brandId) {
                 options = options.filter(o => o.brandId === item.brandId)
             }

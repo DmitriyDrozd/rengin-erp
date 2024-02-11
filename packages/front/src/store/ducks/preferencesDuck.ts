@@ -1,4 +1,4 @@
-import * as fsa from '@sha/fsa'
+import * as fsa from '@shammasov/mydux'
 import {put, select, takeLatest} from 'typed-redux-saga'
 import {uiDuck} from './uiDuck';
 import {getUserStorage} from '../../app-storage';

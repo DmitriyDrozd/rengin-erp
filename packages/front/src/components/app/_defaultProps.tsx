@@ -2,7 +2,7 @@ import * as Icons from '@ant-design/icons';
 import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, ImportOutlined, MailOutlined} from '@ant-design/icons';
 import React from 'react'
 import {AntdIcons} from '../elements/AntdIcons'
-import {RoleType} from "iso/src/store/bootstrap/repos/users"
+import {RoleType} from "iso"
 
 export default (role: RoleType) =>{
     const routesInit = role === 'руководитель'?
@@ -69,7 +69,7 @@ export default (role: RoleType) =>{
 
         },
 
-        appList: []/* [
+        appList: [] as any[]/* [
             {
                 icon: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
                 title: 'В этом месяце',

@@ -6,7 +6,7 @@ import React from 'react'
 import defaultProps from './_defaultProps'
 import {useHistory} from 'react-router'
 import {Link} from 'react-router-dom'
-import USERS from 'iso/src/store/bootstrap/repos/users'
+import {USERS} from 'iso'
 import useCurrentUser from '../../hooks/useCurrentUser'
 import useFrontSelector from '../../hooks/common/useFrontSelector'
 import useFrontDispatch from '../../hooks/common/useFrontDispatch'
@@ -99,7 +99,7 @@ export default ({proLayout, children,hidePageContainer, ...props}: PageContainer
                     pathname
                 }}
                 logo={<HeadLogo/>}
-                title={<div>Rengin</div>}
+                title={'Rengin'}
                 avatarProps={{
                     icon:<AntdIcons.ArrowDownOutlined/>,
                     src: userAvatarURL,

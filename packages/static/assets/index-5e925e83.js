@@ -978,13 +978,13 @@ const usersCRUD = {
     return user && user.password === password ? user : void 0;
   },
   selectAvatar: (userId) => (state) => {
-    const user = duck$3.selectById(userId)(state);
+    const user = duck$3.selectors.selectById(userId)(state);
     const num = Number(userId);
     return generateGravatar(num, user.firstName, user.lastName);
   },
   selectBootstrapFoUser: (userId) => (state) => {
     const boot = state.app.bootstrap;
-    const user = usersCRUD.selectById(userId)(state);
+    const user = usersCRUD.selectors.selectById(userId)(state);
     const projects = state.app.bootstrap.projects.filter((p, index) => {
       if (!p)
         console.error("Project " + index + "  = " + void 0);
@@ -1221,7 +1221,7 @@ const projectReducer = reducerWithInitialState({}).caseWithAction(
   }
 );
 const selectEventsUpTo = (projectId, date) => (state) => {
-  const proj = crud.selectById(projectId)(state);
+  const proj = crud.selectors.selectById(projectId)(state);
   const lastTimestamp = typeof date === "string" ? date : date.toJSDate().toISOString();
   const list = proj.events.filter((e) => e.timestamp <= lastTimestamp && e.type === projectsCRUD.actions.stoneStatusesUpdated.type);
   return list;
@@ -1231,7 +1231,7 @@ const projectsCRUD = {
   actions: actions$9,
   reducer: reducer$6,
   selectStonesGroupedByStatuses: (projectId) => (state) => {
-    const project = crud.selectById(projectId)(state);
+    const project = crud.selectors.selectById(projectId)(state);
     const statusBatches = settingsDuck.selectStatuses(state).filter((s) => s.statusType === project.projectStatusesType).map((s) => ({ ...s, stones: [] }));
     project.stones.forEach(
       (s) => {
@@ -1241,17 +1241,17 @@ const projectsCRUD = {
     return statusBatches;
   },
   selectStonesByProject: (projectId) => (state) => {
-    return projectsCRUD.selectById(projectId)(state).stones;
+    return projectsCRUD.selectors.selectById(projectId)(state).stones;
   },
   selectStone: (projectId, stoneId) => (state) => {
-    return projectsCRUD.selectById(projectId)(state).stones.find((s) => s.id == stoneId);
+    return projectsCRUD.selectors.selectById(projectId)(state).stones.find((s) => s.id == stoneId);
   },
   selectComments: (projectId, stoneId) => (state) => {
-    return projectsCRUD.selectById(projectId)(state).comments.filter((s) => s.stoneId == stoneId);
+    return projectsCRUD.selectors.selectById(projectId)(state).comments.filter((s) => s.stoneId == stoneId);
   },
   selectEventsUpTo,
   selectHistoryProject: (projectId, date) => (state) => {
-    const currentProject = crud.selectById(projectId)(state);
+    const currentProject = crud.selectors.selectById(projectId)(state);
     const initialProject = {
       ...currentProject,
       events: [],
@@ -2148,11 +2148,11 @@ const useProject = (projectId = void 0) => {
   const location = useLocation$1();
   const params = useParams();
   const idToSelect = projectId || params.projectId || location.pathname.split("/").pop();
-  const project = useSelector(projectsCRUD.selectById(idToSelect));
+  const project = useSelector(projectsCRUD.selectors.selectById(idToSelect));
   return project;
 };
 const useStatuses = (projectId = void 0) => {
-  useFrontSelector(projectsCRUD.selectById(projectId));
+  useFrontSelector(projectsCRUD.selectors.selectById(projectId));
   const allStatuses = useFrontSelector(settingsDuck.selectStatuses);
   return {
     allStatuses,
@@ -2618,7 +2618,7 @@ const useStones = (stoneIdsOrId = []) => {
 const ComposedBars = ({ projectId }) => {
   useFrontDispatch();
   const { isNoStatStatusId } = useStones();
-  const project = useFrontSelector(projectsCRUD.selectById(projectId));
+  const project = useFrontSelector(projectsCRUD.selectors.selectById(projectId));
   const stones = project.stones;
   const { projectStatuses } = useProjectStatuses(project.projectId);
   const statuses = projectStatuses.filter((s) => !isNoStatStatusId(s.statusId));
@@ -2725,7 +2725,7 @@ const UserAvatar = ({ userId, ...props }) => {
   return /* @__PURE__ */ jsx(IonAvatar, { slot: "start", children: /* @__PURE__ */ jsx("img", { src: url }) });
 };
 const ProjectCommentView = ({ onSelect, comment }) => {
-  const commentUser = useFrontSelector(usersCRUD.selectById(comment.userId));
+  const commentUser = useFrontSelector(usersCRUD.selectors.selectById(comment.userId));
   const datetime = hooks(comment.createdAt).format("YYYY/MM/DD hh:mm");
   const author = /* @__PURE__ */ jsxs("a", { children: [
     commentUser.firstName,
@@ -2761,7 +2761,7 @@ const ProjectCommentsScreen = () => {
   const dispatch = useFrontDispatch();
   const history2 = useHistory();
   const { projectId } = useLatestNavParams(nav.project);
-  const project = useFrontSelector(projectsCRUD.selectById(projectId));
+  const project = useFrontSelector(projectsCRUD.selectors.selectById(projectId));
   const comments = project ? project.comments : [];
   const onItemSelect = async (c) => {
     history2.replace(nav.project({ projectId }), { direction: "back" });
@@ -2908,7 +2908,7 @@ const CommentAddBox = ({ stoneId }) => {
 const CommentView = ({ onSelect, comment }) => {
   const dispatch = useDispatch();
   useFrontSelector(selectCurrentUser);
-  const commentUser = useFrontSelector(usersCRUD.selectById(comment.userId));
+  const commentUser = useFrontSelector(usersCRUD.selectors.selectById(comment.userId));
   const datetime = hooks(comment.createdAt).format("YYYY/MM/DD hh:mm");
   const author = /* @__PURE__ */ jsxs("a", { children: [
     commentUser.firstName,
@@ -3479,7 +3479,7 @@ const IonCurrentRoute = ({ children }) => {
   return /* @__PURE__ */ jsx(IonTitle, { children });
 };
 const SceneHeader = connect$1((state, props) => ({
-  project: projectsCRUD.selectById(props.projectId)(state)
+  project: projectsCRUD.selectors.selectById(props.projectId)(state)
 }), (dispatch) => ({ dispatch }))(
   ({ projectId, dispatch, project }) => {
     const ionRouter = useIonRouter();
@@ -39637,7 +39637,7 @@ const useInteractiveStones = ({ onStoneClick, onStoneHover, colorMapper, lastTim
     const onActivateStone = (event) => {
       const getStoneById2 = (stoneId) => {
         const state2 = window.store.getState();
-        const proj = projectsCRUD.selectById(project.projectId)(state2);
+        const proj = projectsCRUD.selectors.selectById(project.projectId)(state2);
         const stone2 = proj.stones.find((s) => s.id === stoneId);
         return stone2;
       };
@@ -39835,7 +39835,7 @@ const ToolBrush = () => {
     const selectedStoneIds2 = state.ui.selection.ids;
     const getStoneById = (stoneId) => {
       const state2 = window.store.getState();
-      const proj = projectsCRUD.selectById(project.projectId)(state2);
+      const proj = projectsCRUD.selectors.selectById(project.projectId)(state2);
       const stone2 = proj.stones.find((s) => s.id === stoneId);
       return stone2;
     };

@@ -1,5 +1,5 @@
 import dayjs, {Dayjs} from "dayjs";
-import {IssueVO} from "../store/bootstrap/repos/issues";
+import {TicketVO} from "../store/";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isToday from 'dayjs/plugin/isToday'
 import isBetween from 'dayjs/plugin/isBetween'
@@ -64,7 +64,7 @@ export const asDayOrToday = (value: ConfigType) =>
 export const asDayOrUndefined = (value: ConfigType) =>
     value === undefined ? undefined : asDay(value)
 
-export const getIssueDays  = (issue: IssueVO) => {
+export const getIssueDays  = (issue: TicketVO) => {
     return {
         plannedDay: asDay(issue.plannedDate),
         completedDay: asDay(issue.completedDate),
@@ -74,7 +74,7 @@ export const getIssueDays  = (issue: IssueVO) => {
 }
 
 
-export const getIssueDelayOrUndefined = (issue: IssueVO) => {
+export const getIssueDelayOrUndefined = (issue: TicketVO) => {
     const {plannedDay,completedDay,registerDay,workStartedDay} = getIssueDays(issue)
 
     console.log(plannedDay? plannedDay.toString(): '-', completedDay? completedDay.toString(): '-')
@@ -89,14 +89,14 @@ export const getIssueDelayOrUndefined = (issue: IssueVO) => {
     return 0
 }
 
-export const isIssueActive = (issue: IssueVO) => {
+export const isIssueActive = (issue: TicketVO) => {
     if(issue.status === 'Отменена' || issue.status === 'Приостановлена')
         return false
+
     return true
 }
 
-
-export const isIssueOutdated = (issue: IssueVO) =>
+export const isIssueOutdated = (issue: TicketVO) =>
     getIssueDelayOrUndefined(issue) > 0
 
 export const isIssueDelayed = isIssueOutdated
@@ -105,7 +105,7 @@ export type DayProp = keyof ReturnType<typeof getIssueDays>
 
 export const isDayPropInPeriod = (prop: DayProp) =>
     (period: Period, includeUndefined: boolean =false) =>
-    (issue: IssueVO) => {
+    (issue: TicketVO) => {
 
         if(!issue[prop]) {
             return includeUndefined
@@ -118,7 +118,7 @@ export const isCompletedIn = isDayPropInPeriod('completedDay')
 export const isWorkStartedIn = isDayPropInPeriod('workStartedDay')
 export const isPlannedIn = isDayPropInPeriod('plannedDay')
 
-const anyIssueDayInPeriod =  (period: Period) => (issue: IssueVO) =>
+const anyIssueDayInPeriod =  (period: Period) => (issue: TicketVO) =>
     isRegisteredIn(period)(issue) ||
     isCompletedIn(period)(issue) ||
     isPlannedIn(period)(issue) ||
@@ -129,7 +129,7 @@ const anyIssueDayInPeriod =  (period: Period) => (issue: IssueVO) =>
 export const isAnyDayBefore = (day: ConfigType) => {
 
 }
-export const isIssueInPeriod = (period: Period) => (issue: IssueVO) => {
+export const isIssueInPeriod = (period: Period) => (issue: TicketVO) => {
     if (anyIssueDayInPeriod(period)(issue))
         return true
     const {plannedDay ,completedDay, registerDay,workStartedDay} = getIssueDays(issue)
@@ -139,6 +139,7 @@ export const isIssueInPeriod = (period: Period) => (issue: IssueVO) => {
     }
     return false
 }
+
 
 
 export const toDayString = (d: ConfigType) =>

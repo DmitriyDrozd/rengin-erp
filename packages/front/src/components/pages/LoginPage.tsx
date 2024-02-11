@@ -4,15 +4,14 @@ import {useState} from 'react'
 import {useHistory} from 'react-router'
 import useFrontStore from '../../hooks/common/useFrontStore'
 import useFrontDispatch from '../../hooks/common/useFrontDispatch'
-import {appStorage} from 'iso'
+import {appStorage, getRestApi} from 'iso'
 import {uiDuck} from '../../store/ducks/uiDuck'
-import getRestApi from 'iso/src/getRestApi'
 import Icon from 'antd/es/icon'
 import {Link} from 'react-router-dom'
 import {getNav} from '../getNav'
 import {AntdIcons} from '../elements/AntdIcons'
 import useUI from "../../hooks/common/useUI";
-import {sleep} from "@sha/utils";
+import {sleep} from "@shammasov/utils";
 
 export default () => {
     const [notify, contextHolder] = notification.useNotification();

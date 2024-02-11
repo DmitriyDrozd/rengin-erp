@@ -1,17 +1,17 @@
-import {USERS} from "iso/src/store/bootstrap"
+import {USERS} from "iso"
 import React from "react"
 import {EditorContext, useEditor} from "../chapter-modal/useEditor"
 import BaseEditModal from "../BaseItemModal"
-import GenericRenFields from "../../form/GenericRenFields"
+import GenericRenAttrs from "../../form/GenericRenAttrs"
 import {usersEditor} from "../../../editors/usersEditor"
 
 export default ({id}: {id: string}) => {
     const useEditorData = useEditor(usersEditor,id)
-    const {removed, ...propsToRender} = USERS.properties
+    const {removed, ...propsToRender} = USERS.attributes
 
     return   <EditorContext.Provider value={useEditorData}>
                 <BaseEditModal>
-                    <GenericRenFields list={Array.from(Object.values(propsToRender))}/>
+                    <GenericRenAttrs list={Array.from(Object.values(propsToRender))}/>
                 </BaseEditModal>
             </EditorContext.Provider>
 }

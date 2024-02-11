@@ -1,30 +1,26 @@
-import {USERS} from "iso/src/store/bootstrap"
 import React from "react"
 import {EditorContext, useEditor} from "../chapter-modal/useEditor"
 import BaseEditModal from "../BaseItemModal"
-import GenericRenFields from "../../form/GenericRenFields"
-import {brandEditor} from "../../../editors/brandsEditor"
-import BRANDS from "iso/src/store/bootstrap/repos/brands";
-import useLedger from "../../../hooks/useLedger";
+import GenericRenAttrs from "../../form/GenericRenAttrs"
 import {useAllColumns} from "../../../grid/RCol";
-import SITES from "iso/src/store/bootstrap/repos/sites";
-import LEGALS from "iso/src/store/bootstrap/repos/legals";
 import {ProCard} from "@ant-design/pro-components";
 import {AntdIcons} from "../../elements/AntdIcons";
 import PanelRGrid from "../../../grid/PanelRGrid";
-import CONTRACTS from "iso/src/store/bootstrap/repos/contracts";
+import {BRANDS, CONTRACTS, LEGALS, SITES} from "iso";
+import useDigest from "../../../hooks/useDigest";
+import {brandEditor} from "../../../editors/brandsEditor"
 
 export default ({id}: {id: string}) => {
     const useEditorData = useEditor(brandEditor,id)
     const resource = BRANDS
-    const {removed, ...propsToRender} = BRANDS.properties
-    const ledger = useLedger()
-    const sites = ledger.sites.filter(s => s.brandId == id)
+    const {removed, ...propsToRender} = BRANDS.attributes
+    const digest = useDigest()
+    const sites = digest.sites.list.filter(s => s.brandId == id)
     const [sitesCols] = useAllColumns(SITES)
     const name = resource.getItemName(useEditorData.item)
-    const legals = ledger.legals.filter(s => s.brandId== id)
+    const legals = digest.legals.list.filter(s => s.brandId== id)
     const [legalsCols] = useAllColumns(LEGALS)
-    const contracts = ledger.contracts.filter(c => c.brandId === id)
+    const contracts = digest.contracts.list.filter(c => c.brandId === id)
     const addon=  <ProCard
         tabs={{
             type: 'card',
@@ -63,7 +59,7 @@ export default ({id}: {id: string}) => {
     </ProCard>
     return   <EditorContext.Provider value={useEditorData}>
         <BaseEditModal>
-            <GenericRenFields list={Array.from(Object.values(propsToRender))}/>
+            <GenericRenAttrs list={Array.from(Object.values(propsToRender))}/>
             {addon}
         </BaseEditModal>
     </EditorContext.Provider>

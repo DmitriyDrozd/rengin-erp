@@ -1,14 +1,12 @@
 import AppLayout from "../../app/AppLayout";
-import {ISSUES} from "iso/src/store/bootstrap";
+
 import {useSelector} from "react-redux";
-import IssueChart from "./IssueChart";
+import IssueChart from "./TicketChart";
 import {Card, DatePicker} from "antd";
-import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
+import {Days, Period, TICKETS, TicketVO} from "iso";
 import {useState} from "react";
 import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'
-import {Days} from "iso";
-import {Period} from "iso/src/utils/date-utils";
 
 dayjs.extend(isBetween)
 const { RangePicker } = DatePicker;
@@ -21,7 +19,7 @@ export  default () => {
     const [period, setPeriod] = useState([dayjs('2023/11/01'), dayjs('2023/11/03')] as any as Period)
     const start = period[0]
     const end = period[1]
-    const issues: IssueVO[] = useSelector(ISSUES.selectAll)
+    const issues: TicketVO[] = useSelector(TICKETS.selectors.selectAll)
     const allIssues = issues.filter(Days.isIssueInPeriod(period))
     const activeIssues = allIssues.filter(Days.isIssueActive)
 

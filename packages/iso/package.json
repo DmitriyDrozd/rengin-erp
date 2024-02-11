@@ -10,10 +10,9 @@
   "version": "0.1.0",
   "homepage": "",
   "dependencies": {
-    "@sha/fsa": "0.1.0",
-    "@sha/random": "0.1.0",
-    "@sha/utils": "0.1.0",
-    "scene": "0.1.0",
+    "@shammasov/mydux": "workspace:^0.2.0",
+    "@shammasov/utils": "workspace:^0.2.0",
+    "scene": "0.1.4",
     "service": "0.1.0"
   }
 }

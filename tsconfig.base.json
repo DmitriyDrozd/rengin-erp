@@ -1,48 +1,50 @@
 {
+  "ts-node": {
+    "transpileOnly": true ,
+
+  },
   "compilerOptions": {
 
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": false,
-    "esModuleInterop": true,
-    "downlevelIteration": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "keyofStringsOnly": false,
-    //"useUnknownInCatchVariables": true,
-"module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "preserveConstEnums": true,
-    //"exactOptionalPropertyTypes": true,
-    //"isolatedModules": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "module": "CommonJS",
+    "target": "ES2017",
+    "moduleResolution": "Node",
+    "useDefineForClassFields": true,
     "lib": [
-      "es2016",
-      "dom",
-      "es5",
-      "ES2021",
-      "scripthost",
-      "esnext",
-      "ES2020",
-      "esnext.asynciterable"
-
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
-    "target": "ES2015",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "allowJs": true,
 
-    "importHelpers": true,
-
-
-    "resolveJsonModule": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
-    "noUnusedLocals": false,
-    "jsx": "react",
-    "pretty": true,
     "skipLibCheck": true,
-
-    "strict": false,
-    "strictNullChecks": false
-
-    //"allowJs": true
-  }
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "downlevelIteration": true,
+    "useUnknownInCatchVariables": true,
+    "suppressExcessPropertyErrors": false,
+    "strictNullChecks": true,
+    "importsNotUsedAsValues": "remove",
+    "strictBindCallApply": false,
+    //"exactOptionalPropertyTypes": false,
+    //"strictFunctionTypes": true,
+    //"noStrictGenericChecks": true,
+    "jsx": "react-jsx",
+    "typeRoots": [
+      "./src/typings"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src"
+  ]
 }

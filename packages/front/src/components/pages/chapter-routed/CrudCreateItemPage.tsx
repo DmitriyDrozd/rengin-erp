@@ -1,10 +1,9 @@
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
-import {generateGuid} from '@sha/random'
+import {generateGuid} from '@shammasov/utils'
 import React, {useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import AppLayout from '../../app/AppLayout'
 import {ProFormInstance} from '@ant-design/pro-components'
-import type {CrudFormRender, CrudFormRenderProps} from './ItemChapter'
+import type {CrudFormRender} from './ItemChapter'
 import {RForm} from '../../elements/RForm'
 import getCrudPathname from '../../../hooks/getCrudPathname'
 import {useHistory} from 'react-router'
@@ -12,30 +11,32 @@ import {Breadcrumb, Button} from 'antd'
 import {AntdIcons} from '../../elements/AntdIcons'
 import {useQueryObject} from '../../../hooks/useQueryObject'
 import CancelButton from '../../elements/CancelButton'
+import {AnyAttributes, EntitySlice} from "@shammasov/mydux";
+import {CrudFormRenderProps} from "./CrudEditItemPage";
 
 const layoutProps = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
 }
 export const CrudCreateItemPage =  <
-    RID extends string,
-    Fields extends AnyFieldsMeta,
-    Res extends Resource<RID, Fields>
+    EID extends string,
+    Attrs extends AnyAttributes,
+    Res extends EntitySlice<Attrs, EID>
 >({resource,renderForm, form,verb}:
-      CrudFormRenderProps<RID, Fields,Res>& {renderForm: CrudFormRender<RID, Fields,Res>}) => {
+      CrudFormRenderProps<EID, Attrs>& {renderForm: CrudFormRender<EID, Attrs>}) => {
     type Item = typeof resource.exampleItem
     const formRef = useRef<
         ProFormInstance<Item>
     >();
-    const idProp = resource.idProp
+
     const id = generateGuid()//item[idProp]
     const predefinedValues = useQueryObject<Item>()
-    const initialValues:Item = {[idProp]: id, ...predefinedValues }as any as Item
+    const initialValues:Item = {id: id, ...predefinedValues }as any as Item
     const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
     const dispatch = useDispatch()
 
     const onSubmit = async (values: Item) => {
-        const patch = {[idProp]:id, ...values}
+        const patch = {id:id, ...values}
         const action = resource.actions.added(patch)
         console.log('Submit', values, action)
         dispatch(action)

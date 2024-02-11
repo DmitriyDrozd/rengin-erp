@@ -1,4 +1,3 @@
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {useDispatch} from 'react-redux'
 import React, {useRef, useState} from 'react'
 import AppLayout from '../../app/AppLayout'
@@ -11,37 +10,37 @@ import {AntdIcons} from '../../elements/AntdIcons'
 import {Breadcrumb, Button} from 'antd'
 import DeleteButton from '../../elements/DeleteButton'
 import CancelButton from '../../elements/CancelButton'
+import {AnyAttributes, EntitySlice} from "@shammasov/mydux";
 
 
 export type CrudFormRenderProps<
-    RID extends string,
-    Fields extends AnyFieldsMeta,
->  =  ItemChapterProps<RID,Fields> & {
-    item: Partial<Resource<RID, Fields>['exampleItem']>
+    EID extends string,
+    Attrs extends AnyAttributes,
+>  =  ItemChapterProps<EID,Attrs> & {
+    item: Partial<EntitySlice<Attrs, EID>['exampleItem']>
     id: string
     verb: 'EDIT' | 'CREATE' |'VIEW'
 }
 
 
 export const CrudEditItemPage =  <
-    RID extends string,
-    Fields extends AnyFieldsMeta,
->(props: CrudFormRenderProps<RID, Fields>) => {
+    EID extends string,
+    Attrs extends AnyAttributes,
+>(props: CrudFormRenderProps<EID, Attrs>) => {
     const {resource,renderForm,item,renderItemInfo,verb,renderList,id} = props
-
+resource.actions.updated
     type Item = typeof resource.exampleItem
     const formRef = useRef<
         ProFormInstance<Item>
     >();
 
-    const idProp = resource.idProp
     const initialValues = item
     const dispatch = useDispatch()
     const history = useHistory()
     const [state, setState] = useState(initialValues)
     const onSubmit = async (values: Item) => {
 
-        const patch = {...initialValues, ...values,[idProp]:id};
+        const patch = {...initialValues, ...values,id};
         const action = resource.actions.patched(patch, initialValues)
         console.log('Submit', values, action)
         history.goBack()

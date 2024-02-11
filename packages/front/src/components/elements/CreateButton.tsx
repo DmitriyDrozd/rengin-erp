@@ -1,25 +1,26 @@
 import {Button} from 'antd'
 import {AntdIcons} from './AntdIcons'
-import {useHistory} from 'react-router'
+import { useNavigate } from 'react-router-dom';
 import usePathnameResource from '../../hooks/usePathnameResource'
 import getCrudPathname from '../../hooks/getCrudPathname'
-import {AnyFieldsMeta, ExtractResource, ItemWithId} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes, EntitySlice, ExtractVOByEntitySlice, ItemByAttrs} from "@shammasov/mydux"
 
-export type CrudCreateButtonProps<RID extends string, Fields extends AnyFieldsMeta> = {
-    resource?: ExtractResource<RID, Fields>
-    defaultProps?: Partial<ItemWithId<RID, Fields>>
+export type CrudCreateButtonProps<Attrs extends AnyAttributes,EID extends string = string> = {
+    resource?: EntitySlice<Attrs,EID>
+    defaultProps?: Partial<ItemByAttrs<Attrs>>
     href?: string
-    onCreate?: (props?: Partial<ItemWithId<RID, Fields>>) => any
+    onCreate?: (props?: Partial<ItemByAttrs<Attrs>>) => any
 }
-export default <RID extends string, Fields extends AnyFieldsMeta>({resource,defaultProps,href,onCreate}: CrudCreateButtonProps<RID,Fields>) => {
+
+export default <EID extends string, Attrs extends AnyAttributes>({resource,defaultProps,href,onCreate}: CrudCreateButtonProps<Attrs,EID>) => {
     const pathRes = usePathnameResource()
     let url = href || getCrudPathname(pathRes.resource).create()
     if(resource)
         url = getCrudPathname(resource).create(defaultProps)
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const onButtonClick = (e: any) => {
-            history.push(url)
+        navigate(url)
     }
     return <Button type={'primary'} icon={<AntdIcons.PlusOutlined/>} onClick={onCreate||onButtonClick}></Button>
 }

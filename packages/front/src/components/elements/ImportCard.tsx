@@ -3,7 +3,7 @@ import Meta from "antd/es/card/Meta";
 import * as XLSX from "xlsx";
 import {UploadOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
-import {sleep} from "@sha/utils";
+import {sleep} from "@shammasov/utils";
 
 const {confirm, info} = Modal
 

@@ -1,16 +1,15 @@
 import {useAllColumns} from '../../../grid/RCol'
-import useLedger from '../../../hooks/useLedger'
+import useDigest from '../../../hooks/useDigest'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import {USERS} from "iso/src/store/bootstrap";
+import {USERS} from "iso";
 import {useHistory, useRouteMatch} from "react-router";
 import React from "react";
 import AppLayout from "../../app/AppLayout";
 import EditUserModal from "./UserModal";
-import {getNav} from "../../getNav";
 
 export default () => {
-    const ledger = useLedger()
-    const list = ledger.users.list
+    const digest = useDigest()
+    const list = digest.users.list
     const [cols] = useAllColumns(USERS)
     const routeMatch = useRouteMatch<{userId:string}>()
 

@@ -1,5 +1,5 @@
 import {AgGridReact} from 'ag-grid-react'
-import {AnyFieldsMeta} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes} from '@shammasov/mydux'
 import RGrid, {RGridProps} from './RGrid'
 import {Button, Dropdown, Input, MenuProps, Space, Typography} from 'antd'
 import {useAllColumns} from './RCol'
@@ -34,7 +34,7 @@ const items: MenuProps['items'] =
 
 export type BottomGridApiBar = React.FC<{ag: AgGridReact}>
 
-export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRef, bottomBar,toolbar, columnDefs, resource,rowData,createItemProps , ...props}: RGridProps<RID, Fields> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode,bottomBar?: BottomGridApiBar}) => {
+export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef, bottomBar,toolbar, columnDefs, resource,rowData,createItemProps , ...props}: RGridProps<EID, Attrs> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode,bottomBar?: BottomGridApiBar}) => {
     const dispatch = useDispatch()
     const [isDeleteMode, setDeleteMode,] = useState(false)
     const [defaultColumns, columnsMap] = useAllColumns(resource,isDeleteMode? 'multiple':undefined)
@@ -44,7 +44,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
 
     const resultCols =  [firstCol,...restColumns]
 
-    const defaultList = useSelector(resource.selectList)
+    const defaultList = useSelector(resource.selectors.selectAll)
     const list = rowData || defaultList
     const [searchText, setSearchText] = useState('')
 
@@ -72,7 +72,7 @@ export default  <RID extends string, Fields extends AnyFieldsMeta>({title,gridRe
 
     const onSelectionChanged = () => {
         const rows = innerGridRef.current!.api.getSelectedRows()
-        const ids = rows.map(r =>r[resource.idProp])
+        const ids = rows.map(r =>r.id)
         setSelectedIds(ids);
     }
 

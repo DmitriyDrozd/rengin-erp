@@ -1,6 +1,4 @@
 import {useStore} from 'react-redux'
-import {FrontState} from '../../store/frontReducer'
-import {ListenableStore} from '../middlewares/listenActionEnhancer'
 import {Store} from 'redux'
 
 

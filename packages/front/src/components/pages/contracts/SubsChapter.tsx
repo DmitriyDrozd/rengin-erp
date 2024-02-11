@@ -1,17 +1,14 @@
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProForm, ProFormDatePicker, ProFormSelect} from '@ant-design/pro-components'
 import {useAllColumns} from '../../../grid/RCol'
-import LEGALS from 'iso/src/store/bootstrap/repos/legals'
 import {Row} from 'antd'
-import useLedger from '../../../hooks/useLedger'
-import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
+import useDigest from '../../../hooks/useDigest'
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import SUBS from 'iso/src/store/bootstrap/repos/subs'
-import SITES, {SiteVO} from 'iso/src/store/bootstrap/repos/sites'
+import {CONTRACTS, LEGALS, SITES, SiteVO, SUBS} from "iso";
 
 export default () => {
-    const ledger = useLedger()
+    const digest = useDigest()
 
     const [cols] = useAllColumns(SUBS)
 
@@ -22,11 +19,11 @@ export default () => {
         renderForm={({item,id,verb, resource}) => {
 
 
-            const contract = useSelector(CONTRACTS.selectById(item.contractId))
-            const contractId = contract ? contract.contractId : undefined
+            const contract = useSelector(CONTRACTS.selectors.selectById(item.contractId))
+            const contractId = contract ? contract.id : undefined
             const legalId = contract ? contract.legalId : undefined
-            const legal = useSelector(LEGALS.selectById(legalId))
-            const allSites: SiteVO[] = useSelector(SITES.selectAll)
+            const legal = useSelector(LEGALS.selectors.selectById(legalId))
+            const allSites: SiteVO[] = useSelector(SITES.selectors.selectAll)
             const sitesEnum = SITES.asValueEnum(allSites.filter(s => s.legalId === legalId))
 
             return <>

@@ -1,4 +1,4 @@
-import {isNode} from '@sha/utils'
+import {isNode} from '@shammasov/utils'
 import {getAppStorage} from './getAppStorage'
 
 const getStorage = () => getAppStorage()
@@ -7,7 +7,7 @@ console.log('isNode', isNode)
 console.log('nowStorage is', getStorage())
 
 
-export const getUserStorage = (email) => {
+export const getUserStorage = (email:string) => {
     return {
         setItem: <T = any>(key: string, value: T) =>
             typeof value === 'undefined'

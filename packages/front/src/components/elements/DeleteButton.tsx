@@ -1,14 +1,16 @@
 import {Button, ButtonProps, Popconfirm} from 'antd'
 import {AntdIcons} from './AntdIcons'
 import {useHistory} from 'react-router'
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes, EntitySlice, GenericEntitySlice} from "@shammasov/mydux";
+import {AnyEntity} from "iso";
 
-export type DeleteButtonProps<RID extends string, Fields extends AnyFieldsMeta> = {
-    resource?: Resource<RID, Fields>
+export type DeleteButtonProps<Attrs extends AnyAttributes,EID extends string> = {
+    resource?:AnyEntity
     id?: string
     onDeleted?: (id: string | undefined) => any
 } & ButtonProps
-export default <RID extends string, Fields extends AnyFieldsMeta>({resource,id,onDeleted, onClick, ...props}: DeleteButtonProps<RID,Fields>) => {
+
+export default <EID extends string, Attrs extends AnyAttributes>({resource,id,onDeleted, onClick, ...props}: DeleteButtonProps<Attrs,EID>) => {
 
     const history = useHistory()
 

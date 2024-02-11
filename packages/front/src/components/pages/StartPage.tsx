@@ -3,7 +3,6 @@ import {ArrowDownOutlined, ArrowUpOutlined} from '@ant-design/icons';
 import {Card, Col, Row, Statistic} from 'antd';
 
 import {useSelector} from 'react-redux'
-import {bootstrapDuck} from 'iso/src/store/bootstrapDuck'
 import AppLayout from '../app/AppLayout'
 
 export default () => {

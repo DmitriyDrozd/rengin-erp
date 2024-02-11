@@ -1,6 +1,6 @@
 import {ProForm, ProFormDatePicker} from "@ant-design/pro-components";
 import {Input} from "antd";
-import {ExtractProps} from "@sha/react-fp";
+import {ExtractProps} from "@shammasov/utils";
 
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z

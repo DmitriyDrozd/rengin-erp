@@ -7,9 +7,6 @@ import {Router} from 'react-router-dom'
 import {ConfigProvider, Empty} from 'antd'
 import 'dayjs/locale/ru'
 import ruRU from 'antd/locale/en_US'
-import {BlinkDbProvider} from '@blinkdb/react'
-import {createDB} from 'blinkdb'
-import {blinkModel} from './blink-db-model'
 import {FrontStore} from "../../hooks/common/useFrontStore";
 
 
@@ -19,7 +16,6 @@ const App = ({store}: {store: FrontStore}) => {
         setRendered(true)
     })
     return (
-        <BlinkDbProvider db={createDB()} model={blinkModel}>
         <Provider store={store}>
             <Router history={history}>
             <ConnectedRouter history={history} >
@@ -60,7 +56,7 @@ const App = ({store}: {store: FrontStore}) => {
             </ConnectedRouter>
             </Router>
         </Provider>
-        </BlinkDbProvider>
+
 
     )
 

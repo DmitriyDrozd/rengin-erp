@@ -3,7 +3,7 @@ import {ColDef} from 'ag-grid-community'
 import getCrudPathname from '../hooks/getCrudPathname'
 import {EditOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
-import {AnyFieldsMeta, ItemWithId} from 'iso/src/store/bootstrap/core/createResource'
+import {AnyAttributes,ItemByAttrs} from '@shammasov/mydux'
 
 
 type RCellRenderProps<D = any,V = any> = {
@@ -13,8 +13,8 @@ type RCellRenderProps<D = any,V = any> = {
 }
 
 
-export type RCol<RID extends string, Fields extends AnyFieldsMeta, Prop extends keyof ItemWithId<RID, Fields>> =
-    ColDef<ItemWithId<RID, Fields>,ItemWithId<RID, Fields>[Prop],RID, Fields,Prop>
+export type RCol<EID extends string, Attrs extends AnyAttributes, Prop extends keyof ItemByAttrs<Attrs>> =
+    ColDef<ItemByAttrs<Attrs>,ItemByAttrs<Attrs>[Prop],EID, Attrs,Prop>
 
 export const RCellRender = {
     ClickToEdit: <D,V>(props:RCellRenderProps<D,V>) => {

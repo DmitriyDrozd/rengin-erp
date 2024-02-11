@@ -1,16 +1,16 @@
-import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import {EntitySlice,AnyAttributes} from "@shammasov/mydux";
 
 
-export default <RID extends string, Fields extends AnyFieldsMeta>(resource:Resource<RID,Fields> ) => ({
-    view: () => '/app/in/'+resource.collection,
-    create: (defaultProps:Partial< Record<keyof Fields, string>> = {}) =>
-        (['issue','user','brand'].includes(resource.rid))
-            ? '/app/in/'+resource.collection+'/#create'
-            : '/app/in/'+resource.collection+'/create?'+(new URLSearchParams(defaultProps as any).toString()),
+export default <Attrs extends AnyAttributes,EID extends string>(resource:EntitySlice<Attrs,EID> ) => ({
+    view: () => '/app/in/'+resource.EID,
+    create: (defaultProps:Partial< Record<keyof Attrs, string>> = {}) =>
+        (['issue','user','brand'].includes(resource.EID))
+            ? '/app/in/'+resource.EID+'/#create'
+            : '/app/in/'+resource.EID+'/create?'+(new URLSearchParams(defaultProps as any).toString()),
     edit: (id: string) =>
-        (['issue','user','brand'].includes(resource.rid))
-            ? '/app/in/'+resource.collection+'/#'+id
-            :'/app/in/'+resource.collection+'/'+id,
+        (['issue','user','brand'].includes(resource.EID))
+            ? '/app/in/'+resource.EID+'/#'+id
+            :'/app/in/'+resource.EID+'/'+id,
 })
 
 
