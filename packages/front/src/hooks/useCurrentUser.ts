@@ -1,20 +1,17 @@
-import useFrontSelector from './common/useFrontSelector';
-import {USERS} from "iso";
+import useAdminState from './common/useAdminState';
+import {USERS, UserVO} from "iso";
+import {AdminState} from "../app/buildAdminStore";
 
-export const selectCurrentUser = (state: ORM): UserVO => {
-    const email = state.ui.login
-    const user = USERS.selectUserByEmail(email as any as string)(state)
+export const selectCurrentUser = (state: AdminState): UserVO => {
+    const userId = state.dispatcher.userId
+    const user = USERS.selectors.selectById(userId)(state)
 
     return user as any as UserVO
 }
 export default () => {
 
-    const currentUser = useFrontSelector(selectCurrentUser)
+    const currentUser = useAdminState(selectCurrentUser)
 
         // const updateGridPreferences  = (gridName, )
-    return {
-        currentUser,
-
-
-    }
+    return currentUser
 }

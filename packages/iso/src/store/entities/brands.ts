@@ -1,8 +1,8 @@
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux";
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux";
 
 
 export const BRANDS = createEntitySlice('BRANDS',{
-        ...commonAttrs,
+
         brandName: AttrFactories_ex.string({required: true,headerName: 'Компания', unique:true}),
         brandType: AttrFactories_ex.enum({required: true,  headerName: 'Сторона',enum: ['Заказчик','Исполнитель']}),
         person: AttrFactories_ex.string({headerName: 'Контактное лицо'}),
@@ -23,6 +23,5 @@ export const BRANDS = createEntitySlice('BRANDS',{
     }
 )
 export default BRANDS
-
 
 export type BrandVO =typeof BRANDS.exampleItem

@@ -21,6 +21,7 @@
     "@shammasov/mydux-backend": "workspace:^0.2.0",
     "@shammasov/utils": "workspace:^0.2.0",
     "content-disposition": "^0.5.4",
-    "iso": "^0.1.0"
+    "front": "workspace:^0.2.0",
+    "iso": "workspace:^0.2.0"
   }
 }

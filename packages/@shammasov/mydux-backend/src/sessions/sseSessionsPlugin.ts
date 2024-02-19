@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyPluginAsync } from 'fastify';
+import {FastifyInstance, FastifyPluginAsync, FastifyRequest} from 'fastify';
 import zlib from 'zlib'
 import {Store} from "@reduxjs/toolkit"
-import {bootstrapAction, SSE_REDUX_EVENT, StateWith, StateWithEntity, StateWithSlice} from "@shammasov/mydux";
+import {bootstrapAction, SSE_REDUX_EVENT, StateWithSlice} from "@shammasov/mydux";
 import {getAllSSESessionsChannel, getSSEAdminChannel} from "./sse-channels";
 
 import {SSESessionState, startSSESession} from "./startSSESession";
@@ -60,13 +60,16 @@ export const sseSessionsPlugin: FastifyPluginAsync<SSESessionsRouterProps> =  as
             if(events && events[0])
             return reply.send(store.dispatch(events[0]))
 
-            return reply.status(400).send('No events found')
+            return reply.status(400).send({Error:'No events sent'})
         }
     )
 
         fastify.get<{Querystring:{userId: string, storeGuid: string}}>('/api/sse/find',
             async (request, reply) => {
+
                 const userId = getUserIdByRequest(request)
+                if(!userId)
+                  return  reply.status(403).send({"Error":'Unauthorized'})
                 const params = {storeGuid: generateGuid(), userId}
                 reply.redirect('/api/sse/channel?'+ new URLSearchParams(params))
             }
@@ -75,15 +78,17 @@ export const sseSessionsPlugin: FastifyPluginAsync<SSESessionsRouterProps> =  as
         fastify.get<{Querystring:{userId: string, storeGuid: string}}>(
             '/api/sse/channel',
          async (request, reply) => {
-
+             const userId = getUserIdByRequest(request)
+             if(!userId)
+                 return  reply.status(403).send({"Error":'Unauthorized'})
                 const state = fastify.store.getState()
                 const { storeGuid} = request.query as { [key in string]: string }
-                const userId = getUserIdByRequest(request)
+
                 const sessionState = {userId, storeGuid}
                 const sseSession = await startSSESession(request.raw, reply.raw, sessionState)
                 const boot = selectBootstrapByUserID(state, userId)
                 sseSession.push(bootstrapAction({...boot,
-                    connection: {preloaded: true, userId, storeGuid},
+                    connection: {preloaded: true},
                     dispatcher: {userId, storeGuid,grade:'user'}
                 }),SSE_REDUX_EVENT)
 
@@ -93,7 +98,10 @@ export const sseSessionsPlugin: FastifyPluginAsync<SSESessionsRouterProps> =  as
             '/api/sse/admin',
             async (request, reply) => {
             const state = fastify.store.getState()
-            const {userId, storeGuid} = request.query as { [key in string]: string }
+                const userId = getUserIdByRequest(request)
+                if(!userId)
+                    return  reply.status(403).send({"Error":'Unauthorized'})
+            const {storeGuid} = request.query as { [key in string]: string }
             const sseSession = await startSSESession(request.raw, reply.raw, {
                 userId,
                 storeGuid,

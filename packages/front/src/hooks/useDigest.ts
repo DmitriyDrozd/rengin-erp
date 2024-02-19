@@ -1,5 +1,4 @@
-
-import {selectDigest, ENTITIES_MAP, DigestMaps, Digest} from "iso";
+import {DigestMaps, selectDigest} from "iso";
 import {useSelector} from "react-redux";
 
 export const useDigest = () => {

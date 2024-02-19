@@ -1,6 +1,6 @@
 import {ProForm, ProFormDatePicker} from "@ant-design/pro-components";
 import {Checkbox} from "antd";
-import {ExtractProps} from "@shammasov/utils";
+import {ExtractProps} from "@shammasov/react";
 
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z

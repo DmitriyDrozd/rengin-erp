@@ -2,7 +2,7 @@ import axios from "axios";
 import {Action} from "redux";
 import {isArray} from "@shammasov/utils";
 
-export const getRestApi = async () => {
+export const getRestApi = () => {
     const axiosInstance = axios//.create({})
     /*{baseURL: window.location.hostname.includes('localhost')
             ? 'http://localhost:9380'
@@ -19,8 +19,14 @@ export const getRestApi = async () => {
             return response.data
         },
         login: async (payload: { email: string; password: string; remember: boolean }) => {
-            const response = await axiosInstance.post('/api/user/login', payload)
+            const response = await axiosInstance.post('/api/login', payload)
 
+            return response.data
+        },
+        logout: async () => {
+            const response = await axiosInstance.post('/api/logout')
+
+            debugger
             return response.data
         },
 

@@ -1,6 +1,6 @@
 import {FastifyInstance, FastifyPluginAsync, FastifyPluginOptions} from 'fastify';
 import '@fastify/multipart';
-import { Auth } from 'googleapis';
+import {Auth} from 'googleapis';
 import fp from "fastify-plugin";
 
 export const G_SCOPES = [
@@ -12,7 +12,7 @@ export const G_SCOPES = [
 
 export const getGAuth = async () =>
      new Auth.GoogleAuth({
-        keyFile: './src/rest/gapis-token/rengindesk-377517-7cc80b9e8d57.json',
+        keyFile: './src/fastify/gapis-token/rengindesk-377517-7cc80b9e8d57.json',
         clientOptions: { lifetime: 3600 * 12 },
         scopes: G_SCOPES,
     });

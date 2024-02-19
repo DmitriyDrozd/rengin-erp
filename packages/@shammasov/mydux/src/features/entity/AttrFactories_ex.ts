@@ -1,7 +1,18 @@
 import {ColDef} from "ag-grid-community"
 import {mapObjIndexed} from "ramda"
-import {EmptyObject, Return} from "@shammasov/utils";
+import {EmptyObject, generateGuid, Tagged} from "@shammasov/utils";
+import {CamelCase} from "type-fest";
 
+export const commonAttrs = <EID extends string>(eid:EID) => ({
+    id: AttrFactories_ex.string({headerName: 'ID', default: () => generateGuid(),isIDProp: true,unique: true, colDef:false}) as AttrMeta<'string', TaggedID<EID>>,
+    removed: AttrFactories_ex.boolean({select: false, colDef: false}),
+    addedAtTS: AttrFactories_ex.timestamp({headerName:'Добавлен', default: () => new Date().getTime()})
+})
+export type CommonAttrs<EID extends string> = {
+    id: AttrMeta<'string', TaggedID<EID>>
+    removed: AttrMeta<'boolean'>
+    addedAtTs: AttrMeta<'timestamp'>
+}
 
 export type _AttrMetaCommonExtra = {
     required?:boolean
@@ -14,7 +25,7 @@ export type _AttrMetaCommonExtra = {
 }
 export type AttrMetaDefault<TSType = any> = {(): TSType} | TSType
 // export type AttrMetaDefault<TSType = any, Attrs extends AnyAttributes = AnyAttributes> = {
-//     (item: Partial<ItemByAttrs<Attrs>>): TSType
+//     (item: Partial<ItemByAttrs<Attrs,EID>>): TSType
 // }  | {(): TSType} | TSType
 type _AttrMeta<MT extends string, TSType = any,> = {
     type?: MT
@@ -43,8 +54,8 @@ const attrFactory = <TS = string, Extra extends _AttrMetaCommonExtra = _AttrMeta
 
 const addKeyNameToProperty = <Attrs extends {[key: string]: AttrMeta<any>}>(prop: _AttrMeta<any, any>, key: keyof Attrs, obj: Attrs) => ({...prop, name: key})
 
-const arrayMeta = <Attrs extends EmpheralAttributes , Extra = Empty>(extra: Partial<_AttrMeta<'array', ItemByAttrs<Attrs>[]>> & Partial<Extra> & {attributes: Attrs} ) =>
-    ({...extra, type:'array',attributes: mapObjIndexed(addKeyNameToProperty as any,extra.attributes||{}), tsType: {} as any as Array<ItemByAttrs<Attrs>>}) as any as  AttrMeta<'array', ItemByAttrs<Attrs>[]>
+const arrayMeta = <Attrs extends EmpheralAttributes ,EID extends string, Extra = Empty>(extra: Partial<_AttrMeta<'array', ItemByAttrs<Attrs,EID>[]>> & Partial<Extra> & {attributes: Attrs} ) =>
+    ({...extra, type:'array',attributes: mapObjIndexed(addKeyNameToProperty as any,extra.attributes||{}), tsType: {} as any as Array<ItemByAttrs<Attrs,EID>>}) as any as  AttrMeta<'array', ItemByAttrs<Attrs,EID>[]>
 
 const itemMeta = <Item>(extra: Partial<_AttrMeta<'item', Item>> ) =>
     ({...extra, type: 'item'}) as _AttrMeta<'item', Item>
@@ -58,14 +69,14 @@ const itemOfAttr = <L extends string>(extra: _AttrMeta<'itemOf', string> & {
         type: 'itemOf' as const
     })
 
-const arrayOfAttr = <L extends string, Extra = EmptyObject>(extra: Partial<_AttrMeta<'arrayOf', string[]>> & Extra & {
+const arrayOfAttr = <L extends string, EID extends string, Extra = EmptyObject>(extra: Partial<_AttrMeta<'arrayOf', Tagged<IdTagType<L>>[]>> & Extra & {
     linkedEID: L, defaultAsPropRef?: string, filterLinkedResourceItems?: Function}  ) =>
     ({...extra, type: 'arrayOf' as const, tsType: [] as any as string[]})
 
 export type TupleElement = string | number | boolean | undefined | null | void | {};
 
 const enumAttr = <Tuple extends any[]>(extra: Partial<_AttrMeta<'enum', Tuple[keyof Tuple]>> & {enum: Readonly<[...Tuple]>} ) =>
-    ({...extra, type: 'enum' as 'enum',tsType:{} as any as Tuple[keyof Tuple]})
+    ({...extra, type: 'enum' as 'enum',tsType:{} as any as Tuple[number]})
 
 export type EnumAttr = ReturnType<typeof enumAttr>
 export type InferredVOByMetaMap<P extends {[key in string]: PropMetas}> = Readonly<{
@@ -82,8 +93,8 @@ export type PropMetas = {
 
 export type StringMeta = _AttrMeta<'string',string>
 
-export type ItemOfAttr<ResName extends string= string> = _AttrMeta<'itemOf', string> & {
-    linkedEID: ResName
+export type ItemOfAttr<EID extends string= string> = _AttrMeta<'itemOf', TaggedID<EID>> & {
+    linkedEID: EID
 }
 
 export const isItemOfAttr = (value: unknown): value is ItemOfAttr =>
@@ -158,13 +169,19 @@ export {
 }
 export type EmpheralAttributes = {[key: string]: AttrMeta<any>}
 
-export type AnyAttributes =  EmpheralAttributes & {
-    id: AttrMeta<'string'>
-    addedAtTS: AttrMeta<'timestamp'>
-    removed: AttrMeta<'boolean'>
-}
+export type AnyAttributes<EID extends string = string> =  EmpheralAttributes & Partial<CommonAttrs<EID>>
 
-export type ItemByAttrs<Attrs extends EmpheralAttributes> = ItemWithoutId<Attrs>
+export type IdTagType<EID extends string>= CamelCase<EID> extends `${infer Singular}es`
+    ? `${Singular}Id`
+    :CamelCase<EID> extends `${infer Singular}s`
+        ? `${Singular}Id`
+        : `${CamelCase<EID>}Id`
+export type TaggedID<EID extends string> = Tagged<IdTagType<EID>>
+export type IdAttrByEID<EID extends string = string> =    AttrMeta<'string', TaggedID<EID>>
+
+export type ItemCommon<EID extends string = string> =ItemWithoutId< CommonAttrs<EID>>
+
+export type ItemByAttrs<Attrs extends EmpheralAttributes,EID extends string = string> = ItemWithoutId<Attrs> & ItemCommon<EID>
 
 export type ItemWithoutId<Attrs extends EmpheralAttributes> = {
     [K in keyof Attrs]: Attrs[K]['tsType']

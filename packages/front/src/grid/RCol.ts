@@ -2,24 +2,24 @@ import {ColDef} from 'ag-grid-community'
 import {AnyAttributes, EntitySlice, isItemOfAttr, ItemByAttrs} from '@shammasov/mydux'
 import {RCellRender} from './RCellRender'
 import useDigest from '../hooks/useDigest'
-import useFrontSelector from '../hooks/common/useFrontSelector'
+import useAdminState from '../hooks/common/useAdminState'
 import {CellClassRules, ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
 import {getEntityByEID} from "iso";
 
 export const useAllColumns = <
     EID extends string,
     Attrs extends AnyAttributes,
->(res: EntitySlice<Attrs, EID>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
-    type Item = ItemByAttrs<Attrs>
+>(entity: EntitySlice<Attrs, EID>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
+    type Item = ItemByAttrs<Attrs, EID>
 
     type CommonColsMap = { clickToEditCol: ColDef<Item, string,EID, Attrs>, checkboxCol: ColDef }
     type ColsMap = CommonColsMap & {
 
         [K in keyof Attrs]: ColDef<Item, Item[K], EID, Attrs, K>
     }
-const sourceResourceName = res.EID
+const sourceResourceName = entity.EID
     const digest = useDigest()
-    const state = useFrontSelector(state => state)
+    const state = useAdminState(state => state)
     //const clickToEditColumn = () =>
 
     const checkboxCol: ColDef= {
@@ -36,12 +36,12 @@ const sourceResourceName = res.EID
         headerName:'',
         field:'id',
 
-        sourceResourceName: res.getItemName,
+        sourceResourceName: entity.getItemName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
         width:120,
         fieldName: 'id',
         resizable: false,
-        resource: res,
+        entity,
 
     }
 
@@ -49,7 +49,7 @@ const sourceResourceName = res.EID
     const storedColumn = <K extends keyof Item> (
         property: K
     ): ColDef<Item,Item[K]> => {
-        const fieldMeta = res.attributes[property]
+        const fieldMeta = entity.attributes[property]
         const colInit :ColDef<Item, Item[K],EID,Attrs ,K>= {
             editable: false,
             headerName: fieldMeta.headerName,
@@ -59,7 +59,7 @@ const sourceResourceName = res.EID
             fieldName:property,
 
 
-            resource: res,
+            entity,
             filter:true,
             width: 120
         }
@@ -76,7 +76,7 @@ const sourceResourceName = res.EID
            // colInit. = 'dateString'
         }
         if(isItemOfAttr(fieldMeta)){
-            const RES = getEntityByEID(fieldMeta.linkedEID)
+            const entity = getEntityByEID(fieldMeta.linkedEID)
 
             const cellClassRules:CellClassRules<Item> = {}
             if(fieldMeta.required) {
@@ -91,11 +91,11 @@ const sourceResourceName = res.EID
 
                     const id = params.data[params.colDef.field]
                     try {
-                        const it = RES.selectors.selectById(id)(state)
-                        return RES.getItemName(it)
+                        const it = entity.selectors.selectById(id)(state)
+                        return entity.getItemName(it)
                     } catch (e){
                         console.error(e)
-                        console.error(res.EID, params,params.colDef.field)
+                        console.error(entity.EID, params,params.colDef.field)
                         return id ? 'Удалён '+id : 'Не указан'
                     }
 
@@ -106,7 +106,7 @@ const sourceResourceName = res.EID
     }
 
 
-    const columnsList = res.attributesList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
+    const columnsList = entity.attributesList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
        const col = storedColumn(f.name)
         const colComposed = f.colDef? {...col, ...f.colDef} : col
 
@@ -116,12 +116,12 @@ const sourceResourceName = res.EID
         return colComposed
     })
     return [[map.clickToEditCol, ...columnsList], map] as const
-  //  return res.attributes
+  //  return entity.attributes
 
 }
 
 export type StoredColumn<D,V, EID extends string, Attrs extends AnyAttributes> = {
-    resource: EntitySlice<Attrs, EID>
+    entity: EntitySlice<Attrs, EID>
 } & ColDef<D, V>
 
 export type ResCol = {}

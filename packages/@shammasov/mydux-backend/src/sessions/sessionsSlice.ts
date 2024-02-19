@@ -1,4 +1,4 @@
-import {createAction, createSlice, current, PayloadAction, UnknownAction} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction, UnknownAction} from "@reduxjs/toolkit";
 
 export type SessionVO = {
     sessionId: string

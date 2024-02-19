@@ -1,10 +1,10 @@
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux";
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux";
 
 
 export const contractStatusesList = ['Новый','Действующий','Завершён']  as const
 
 const rawResource = createEntitySlice('CONTRACTS', {
-    ...commonAttrs,
+
         contractNumber: AttrFactories_ex.string({headerName: 'Номер договора'}),
         brandId: AttrFactories_ex.itemOf({headerName: 'Заказчик',linkedEID: 'BRANDS',required: true,immutable:true}),
         legalId: AttrFactories_ex.itemOf({headerName: 'Юр. Лицо',linkedEID: 'LEGALS',required: true,immutable:true}),

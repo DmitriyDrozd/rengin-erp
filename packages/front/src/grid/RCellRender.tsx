@@ -3,7 +3,7 @@ import {ColDef} from 'ag-grid-community'
 import getCrudPathname from '../hooks/getCrudPathname'
 import {EditOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
-import {AnyAttributes,ItemByAttrs} from '@shammasov/mydux'
+import {AnyAttributes, ItemByAttrs} from '@shammasov/mydux'
 
 
 type RCellRenderProps<D = any,V = any> = {
@@ -13,13 +13,13 @@ type RCellRenderProps<D = any,V = any> = {
 }
 
 
-export type RCol<EID extends string, Attrs extends AnyAttributes, Prop extends keyof ItemByAttrs<Attrs>> =
-    ColDef<ItemByAttrs<Attrs>,ItemByAttrs<Attrs>[Prop],EID, Attrs,Prop>
+export type RCol<EID extends string, Attrs extends AnyAttributes, Prop extends keyof ItemByAttrs<Attrs,EID>> =
+    ColDef<ItemByAttrs<Attrs,EID>,ItemByAttrs<Attrs,EID>[Prop],EID, Attrs,Prop>
 
 export const RCellRender = {
     ClickToEdit: <D,V>(props:RCellRenderProps<D,V>) => {
-        const resource = props.colDef.resource
-        const url = getCrudPathname(resource).edit(props.value)
+        const entity = props.colDef.entity
+        const url = getCrudPathname(entity).edit(props.value)
             return (
                 <Link to={url}>
                     <EditOutlined  />

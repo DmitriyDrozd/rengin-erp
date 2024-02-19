@@ -1,6 +1,6 @@
 import {ProFormDatePicker} from "@ant-design/pro-components";
 import {Button, Checkbox, DatePicker, Divider, Form, Input, Select, Space, Typography} from "antd";
-import {useContextEditorProperty} from "../pages/chapter-modal/useEditor";
+
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
 import {PlusOutlined} from "@ant-design/icons";
@@ -9,6 +9,7 @@ import React from "react";
 import {AnyAttr, isItemOfAttr} from "@shammasov/mydux";
 import {getEntityByEID, useORMState} from "iso";
 import {ExtractProps} from "@shammasov/react";
+import {useContextEditorProperty} from "../in-app/chapter-modal/useEditor";
 
 const { Text, Link } = Typography;
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>

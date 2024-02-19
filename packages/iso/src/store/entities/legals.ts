@@ -1,4 +1,4 @@
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux";
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux";
 
 
 import {ORMState} from "../orm";
@@ -7,7 +7,6 @@ import {ORMState} from "../orm";
 const rawResource = createEntitySlice(
         'LEGALS',
         {
-            ...commonAttrs,
             legalName: AttrFactories_ex.string({
                 headerName: 'Юр. Лицо',
                 required: true,

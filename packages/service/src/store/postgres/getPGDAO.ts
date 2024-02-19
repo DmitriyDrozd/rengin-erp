@@ -1,17 +1,18 @@
 import {clone, dissoc, project} from "ramda"
 import {AnyAttributes, EntitySlice, ItemByAttrs} from '@shammasov/mydux'
+import {ServerContext} from "../buildServerStore";
 
 
-export const getPGDAO = async < EID extends string, Attrs extends AnyAttributes, T extends ItemByAttrs<Attrs>= ItemByAttrs<Attrs>>(io: SagaOptions, res: EntitySlice<Attrs, EID>) => {
-    const tableName = res.EID
+export const getPGDAO = async < EID extends string, Attrs extends AnyAttributes, T extends ItemByAttrs<Attrs,EID>= ItemByAttrs<Attrs,EID>>(io: ServerContext, entity: EntitySlice<Attrs, EID>) => {
+    const tableName = entity.EID
 
     const tb = io.pg(tableName)
-    const arrayProps = Object.values(res.attributes).filter(p => p.type === 'array')
+    const arrayProps = Object.values(entity.attributes).filter(p => p.type === 'array')
     const dissocArrays = (item: T) => {
         let r = item
         const keys = Object.keys(item)
         keys.forEach(k => {
-            const prop = res.attributes[k]
+            const prop = entity.attributes[k]
             if (!prop || prop.type === 'array')
                 r = dissoc(k, r)
         })
@@ -29,10 +30,10 @@ export const getPGDAO = async < EID extends string, Attrs extends AnyAttributes,
         return await Promise.all(arrayProps.map( sub => {
                 list.forEach(i => {
                     if(i[sub.name] && i[sub.name].length)
-                        i[sub.name].forEach(s => s[res.idKey] = i[res.idKey])
+                        i[sub.name].forEach(s => s[entity.idKey] = i[entity.idKey])
                 })
                const parts =  list.filter(i => i[sub.name]).map(i => i[sub.name]).flat()
-               const data =  project([...Object.keys(sub.attributes),res.idKey], parts)
+               const data =  project([...Object.keys(sub.attributes),entity.idKey], parts)
               if(data && data.length)
                   return  io.pg(tableName + '_' + sub.name).insert(data)
             return new Promise(resolve => resolve())
@@ -92,7 +93,7 @@ export const getPGDAO = async < EID extends string, Attrs extends AnyAttributes,
         try {
 
             const list = items.map(dissocArrays)
-           /* if(res.factoryPrefix==='issues') {
+           /* if(entity.factoryPrefix==='issues') {
                 for(let obj of list) {
                     console.log(obj.issueId)
                     try {

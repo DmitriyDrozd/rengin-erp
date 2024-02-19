@@ -7,8 +7,7 @@
     "src"
   ],
   "name": "iso",
-  "version": "0.1.0",
-  "homepage": "",
+  "version": "0.2.0",
   "dependencies": {
     "@shammasov/mydux": "workspace:^0.2.0",
     "@shammasov/utils": "workspace:^0.2.0",

@@ -58,13 +58,13 @@ export const getGServices = async (keyFile:string, scopes= G_SCOPES) => {
 
                 }
             });
-            return res.data.id
+            return entity.data.id
         }
 
         const withSpreadsheet = <SheetName extends string>(spreadsheetId: string) => ({
             fetchRangesData:  async (ranges: A1Range[] = undefined, rowsToSkip = 0):Promise<sheets_v4.Schema$ValueRange[]> => {
                 const res = await gSheetService.values.batchGet({spreadsheetId,auth,ranges})
-                return res.data.valueRanges.map(v => ({...v, values: v.values.slice(rowsToSkip)}))
+                return entity.data.valueRanges.map(v => ({...v, values: v.values.slice(rowsToSkip)}))
             },
             updateRangesData: async (rangeUpdates: {range: A1Range, values:RangeData }[]) =>
                 (await gSheetService.values.batchUpdate({spreadsheetId,auth,requestBody: {

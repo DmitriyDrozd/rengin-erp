@@ -1,5 +1,5 @@
 import {END, eventChannel} from 'redux-saga'
-import {actionChannel, call, fork, put, select, take, takeEvery, takeLatest} from 'typed-redux-saga'
+import {actionChannel, call, cancel, cancelled, fork, put, select, take, takeEvery, takeLatest} from 'typed-redux-saga'
 
 import * as R from 'ramda'
 import ReconnectingEventSource from 'reconnecting-eventsource'
@@ -25,10 +25,31 @@ const defaultOptions = {
 }
 export function* connectionSaga(options = defaultOptions) {
 
+    while(true) {
+        const action = yield* take(connectionSlice.actions.findConnectionRequested.match)
+        const state = yield* select()
+        const connectionTask = yield* fork(runConnection, state.connection.findConnectionURL,options)
+        yield* take(connectionSlice.actions.disconnectRequested.match)
+        // user clicked stop. cancel the background task
+        // this will cause the forked bgSync task to jump into its finally block
+        yield* cancel(connectionTask)
+    }
+
+
+}
+
+
+
+function* runConnection(route: string, options = defaultOptions) {
+    const state = yield* select()
+    let source = new ReconnectingEventSource(route+'?storeGuid='+state.dispatcher.storeGuid)
+    source
+
+    try {
     const sentGuids: EventGUID[] = []
     const receivedGuids: EventGUID[] = []
 
-    yield* takeEvery(
+        yield* takeEvery(
         connectionSlice.actions.serverPushed.match,
         function* (action) {
             if (!sentGuids.includes(action.payload.guid)) {
@@ -38,12 +59,8 @@ export function* connectionSaga(options = defaultOptions) {
         }
     )
 
-    function* connectSSERoute(action: ReturnType<typeof connectionSlice.actions.findConnectionRequested>) {
-        const route = action.payload//channel?userId=107269858252184362813&storeGuid=dasdas`// + new URLSearchParams(info).toString()
-
         const channel = eventChannel<MyDuxEvent<any, any> | ReturnType<typeof connectionSlice.actions[keyof typeof connectionSlice.actions]>>(emitter => {
-            let source = new ReconnectingEventSource(route)
-            const onMessageHandler = (e: MessageEvent) => {
+              const onMessageHandler = (e: MessageEvent) => {
                 console.log('SSE message', e)
                 if (e.type === SSE_REDUX_EVENT)
                     emitter(JSON.parse(e.data))
@@ -54,7 +71,10 @@ export function* connectionSaga(options = defaultOptions) {
                 emitter(connectionSlice.actions.error(JSON.stringify(e)))
                 emitter(END)
             }
-
+            const onDisconnect = (e: Event) =>{
+                  console.log('onDiconnect', e)
+                emitter(connectionSlice.actions.disconnected())
+            }
             const onOpenHandler = (e: Event) => {
                 emitter(connectionSlice.actions.connected(undefined))
             }
@@ -65,6 +85,7 @@ export function* connectionSaga(options = defaultOptions) {
             source.addEventListener('open', onOpenHandler)
             source.addEventListener("disconnect", e => {
                 console.log('Disconnected', e)
+                onDisconnect(e)
             });
             /* const interval = setInterval(() => {
                console.log('readyState', source.readyState)
@@ -79,16 +100,18 @@ export function* connectionSaga(options = defaultOptions) {
             }
         })
 
-        while (true) {
-            const action = yield* take(channel)
-            if(isPersistentAction(action) && action.guid) {
-                if (receivedGuids.includes(action.guid) || sentGuids.includes(action.guid))
-                    continue
-                receivedGuids.push(action.guid)
+        function* readSSE() {
+            while (true) {
+                const action = yield* take(channel)
+                if (isPersistentAction(action) && action.guid) {
+                    if (receivedGuids.includes(action.guid) || sentGuids.includes(action.guid))
+                        continue
+                    receivedGuids.push(action.guid)
+                }
+                yield* put(action)
             }
-            yield* put(action)
         }
-    }
+
 
     function* postEventsSaga() {
 
@@ -105,8 +128,8 @@ export function* connectionSaga(options = defaultOptions) {
 
             if (!sentGuids.includes(action.guid) &&
                 !receivedGuids.includes(action.guid) && (
-                action.storeGuid === storeGuid
-            )) {
+                    action.storeGuid === storeGuid
+                )) {
                 if (!action.external) {
                     sentGuids.push(action.guid)
                     // const actionToSend = R.assocPath(['info', 'storeGuid'], storeGuid, action)
@@ -146,10 +169,15 @@ export function* connectionSaga(options = defaultOptions) {
 
 
     yield* fork(postEventsSaga)
-    yield* takeLatest(connectionSlice.actions.findConnectionRequested.match, connectSSERoute)
+    yield* fork(readSSE)
 
-
+    } finally {
+        if (yield* cancelled()) {
+            if(source && source.readyState !== 2)
+                source.close()
+            yield* put(connectionSlice.actions.disconnected())
+        }
+    }
 }
-
 
 export default connectionSaga

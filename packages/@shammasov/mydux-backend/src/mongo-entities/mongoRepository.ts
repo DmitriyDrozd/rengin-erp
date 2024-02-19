@@ -117,7 +117,7 @@ export const getMongoModel = <EID extends string, Attrs extends AnyAttributes>(s
       const ItemModel = mongoose.models[collectionName] || model(collectionName,schema,);
 // 3. Create a Model.
  //   class Person extends Model { }
-  //  const Item = model<typeof res.exampleItem>(res.collection,schema);
+  //  const Item = model<typeof entity.exampleItem>(entity.collection,schema);
 
     return ItemModel
 }
@@ -142,10 +142,10 @@ const mapMetaProp = <M extends AnyAttr= AnyAttr>(prop: M) => {
 
 
 }
-const buildMongooseByResource =  <Properties extends AnyAttributes>(resource: EntitySlice<Properties>) => {
+const buildMongooseByResource =  <Properties extends AnyAttributes>(entity: EntitySlice<Properties>) => {
     const obj = {} as any as  EntitySlice<Properties>['attributes']
-    Object.keys(resource.attributes).map( k =>
-        obj[k] = mapMetaProp(resource.attributes[k]))
-    const schema = createSchema(obj,  {strict: false, timestamps: false, versionKey: false})
+    Object.keys(entity.attributes).map( k =>
+        obj[k] = mapMetaProp(entity.attributes[k]))
+    const schema = createSchema({...obj},  {strict: false,  timestamps: false, versionKey: false,})
     return schema
 }

@@ -1,7 +1,7 @@
 import {combineReducers, PayloadAction, UnknownAction} from "@reduxjs/toolkit";
-import * as R from "ramda";
-import {indexTupleByProperty, MapFromTupleByProperty} from "@shammasov/utils";
+import {indexTupleByProperty, MapFromTupleByProperty, toCamelCase} from "@shammasov/utils";
 import {GenericEntitySlice} from "./createEntitySlice";
+import {CamelCase} from "type-fest";
 
 
 export const composeEntitiesOrm = <T extends readonly any[] >(...tuple: T) => {
@@ -9,13 +9,15 @@ export const composeEntitiesOrm = <T extends readonly any[] >(...tuple: T) => {
     
     const entitiesMap = indexTupleByProperty(tuple,'EID') as any as MapFromTupleByProperty<T,'EID'>
 
-    const reducersMap =R.map( (res: T[number]) => res.reducer, entitiesMap)  as any as {[K in keyof T]: T[K]['reducer']}
-
+    const reducersMap ={} as any as {[K in keyof typeof entitiesMap as  `${CamelCase<string & K>}`]: typeof entitiesMap[K]['reducer']}
+    Object.keys(  entitiesMap).forEach( <K extends keyof typeof entitiesMap>(k: K)=>
+        reducersMap[toCamelCase(k)] = entitiesMap[k].reducer
+    )
     const entityTypeNames =Object.keys(entitiesMap)
     type EntityTypeNameTuple = typeof entityTypeNames
     type EntityTypeName = keyof typeof entitiesMap
     type AnyLedgerEntity = T[number]
-    const resourcesList =tuple
+    const entitysList =tuple
     const ormEntitiesReducer = combineReducers(reducersMap)
     type ORMState = ReturnType<typeof ormEntitiesReducer>
     const selectORMState = (state: any) => state as any as ORMState
@@ -23,13 +25,14 @@ export const composeEntitiesOrm = <T extends readonly any[] >(...tuple: T) => {
         EntityTypeName: '' as any as EntityTypeName,
         tuple,
             selectORMState,
+            ormEntitiesReducer,
         exampleORMState: {} as any as ORMState,
         entitiesMap,
             reducersMap,
         match: (action: UnknownAction): boolean =>
-            resourcesList.some(res => res.match(action)),
+            entitysList.some(entity => entity.match(action)),
         getResourceByAction: (action: PayloadAction) =>
-            (resourcesList).find(res => res.match(action)),
+            (entitysList).find(entity => entity.match(action)),
         getEntityByTypeName: <N extends EntityTypeName>(name: N) =>
             entitiesMap[name],
     }

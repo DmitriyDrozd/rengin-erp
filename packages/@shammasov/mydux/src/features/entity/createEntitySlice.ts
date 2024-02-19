@@ -4,8 +4,10 @@ import {UnknownAction} from "@reduxjs/toolkit"
 import {createAdvancedEntityAdapter, EntityState} from "./create-advanced-entity-adapter"
 import * as R from "ramda"
 import {uniq} from "ramda"
-import { generateGuid, Return, toAssociativeArray, toIndexedArray} from "@shammasov/utils"
-import {AnyAttributes, AttrFactories_ex, ItemByAttrs, ItemOfAttr} from "./AttrFactories_ex";
+import {generateGuid, Return, toAssociativeArray, toCamelCase} from "@shammasov/utils"
+import type {AnyAttributes,  EmpheralAttributes, ItemByAttrs, ItemOfAttr} from "./AttrFactories_ex";
+import {  commonAttrs} from "./AttrFactories_ex";
+import {CamelCase} from "type-fest";
 
 
 export type ResourceLang = Partial<{
@@ -16,43 +18,45 @@ export type ResourceLang = Partial<{
     gender: 'm' | 'n' | 'f',
 }>
 
-export type EntityOptions<Attrs extends AnyAttributes> = {
+export type EntityOptions<Attrs extends AnyAttributes, EID extends string> = {
     nameProp?: keyof Attrs
     langRU: ResourceLang
-    extraEntityReducers?:  (builder: ActionReducerMapBuilder<EntityState<Attrs>>) => void
-    getItemName?: (item: ItemByAttrs<Attrs>) => string
+    extraEntityReducers?:  (builder: ActionReducerMapBuilder<EntityState<Attrs,EID>>) => void
+    getItemName?: (item: ItemByAttrs<Attrs,EID>) => string
 }
+
+
 
 export type StateWith<K extends string, T> =
    {
-        [x in  K]: T
+        [x in  K ]: T
     }
-export const commonAttrs = {
-    id: AttrFactories_ex.string({headerName: 'ID', default: () => generateGuid(),isIDProp: true,unique: true, colDef:false}),
-    removed: AttrFactories_ex.boolean({select: false, colDef: false}),
-    addedAtTS: AttrFactories_ex.timestamp({headerName:'Добавлен', default: () => new Date().getTime()})
-}
+
+
 
 export type LinkedAttrsKeys<Attrs extends AnyAttributes> =Extract<keyof Attrs,`${string}Id`>
 
 export type StateWithEntity<E> = E extends EntitySlice<infer Attrs, infer EID>
-    ?  StateWith<EID,EntityState<Attrs>>
+    ?  StateWith<EID,EntityState<Attrs, EID>>
     : unknown
 export type StateWithEntityByEIDAttrs<Attrs extends AnyAttributes,EID extends string = string> = {
-    [k in EID]: ItemByAttrs<Attrs>
+    [k in EID]: ItemByAttrs<Attrs, EID>
 }
-export const createEntitySlice = <Attrs extends AnyAttributes,EID extends string = string,Item extends ItemByAttrs<Attrs>=  ItemByAttrs<Attrs>>
-(EID: EID, attributes: Attrs,{langRU,...rest}: EntityOptions< Attrs>) => {
-type RootState = StateWith<EID, EntityState<Attrs>>
+
+
+export const createEntitySlice = <Attrs extends EmpheralAttributes ,EID extends string = string,Item extends ItemByAttrs<Attrs, EID>=  ItemByAttrs<Attrs,EID>>
+(EID: EID, attributes: Attrs,{langRU,...rest}: EntityOptions< Attrs,EID>) => {
+type RootState = StateWith<CamelCase<EID>, EntityState<Attrs, EID>>
+    const  reducerPath= toCamelCase(EID)
     const props = {
         langRU,
         EID,
-        reducerPath: EID,
+        reducerPath,
         attributes,
         exampleItem: {} as any as Item
     }
     const attributesList:(Attrs[keyof Attrs])[]  = []
-
+type   IdType = typeof props.attributes.id['tsType']
     Object.keys(props.attributes).forEach( k => {
         const p =props.attributes[k]
         attributesList.push(p as any)
@@ -69,15 +73,16 @@ type RootState = StateWith<EID, EntityState<Attrs>>
 
     const slice = createAdvancedEntityAdapter<Attrs, EID>({
         name: EID,
+        reducerPath,
         extraEntityReducers: (builder) => builder,
-        attributes
+        attributes: {...commonAttrs(EID), ...attributes}
     })
-    const selectById = (id: string) => (state: RootState) =>
-        state[EID].entities[id] as any as Item
+    const selectById = (id: IdType) => (state: RootState) =>
+        state[reducerPath].entities[id] as any as Item
 
 
     const selectAll = (state:RootState) =>
-        Object.values(state[EID].entities) as Item[]
+        Object.values(state[reducerPath].entities) as Item[]
 
     const selectEq = (query: Partial<Item>) => (state: any) => {
         const array: Item[] =selectAll(state)
@@ -130,10 +135,11 @@ type RootState = StateWith<EID, EntityState<Attrs>>
 
     const result = {
         ...props,
+        IdType: '' as any as IdType,
         match: (action: UnknownAction): action is SliceActions<typeof slice> =>
             action.type.startsWith(EID+'/') || action.type.startsWith(EID.toLowerCase()+'/'),
 
-        getPropByName: <K extends keyof ItemByAttrs<Attrs>>(key: K) =>
+        getPropByName: <K extends keyof ItemByAttrs<Attrs,EID>>(key: K) =>
             attributes[key],
         attributesList: attributesList as   any as $Values<Attrs>[],
         asOptions: (init?: Item[]) => (state: RootState) => {
@@ -161,6 +167,7 @@ type RootState = StateWith<EID, EntityState<Attrs>>
         getItemName,
         ...rest,
         ...props,
+        generateId: ()=> generateGuid() as any as TaggedID<EID>,
         selectors: {
             selectDistinctFieldValues: <P extends keyof Attrs>(p: P) => (state:RootState): Item[] => {
                 const items = selectAll(state)
@@ -173,10 +180,10 @@ type RootState = StateWith<EID, EntityState<Attrs>>
             selectEqOne,
             selectById,
             selectAll,
-            selectAsMap:  (state: StateWithEntityByEIDAttrs<Attrs,EID>) =>
-                state[EID].entities,
-            selectEntities:  (state: StateWithEntityByEIDAttrs<Attrs,EID>) =>
-                state[EID].entities,
+            selectAsMap:  (state: StateWithEntityByEIDAttrs<Attrs,EID>):  Record<string, Item>  =>
+                state[reducerPath].entities,
+            selectEntities:  (state: StateWithEntityByEIDAttrs<Attrs,EID>):  Record<string, Item>  =>
+                state[reducerPath].entities,
         },
         slice,
         reducer: slice.reducer,
@@ -198,7 +205,7 @@ type SliceActions<T> = {
 }[keyof T]
 
 class Clazz<Attrs extends AnyAttributes,EID extends string = string>{
-    public create = (rid: EID, props: Attrs, opts: EntityOptions<Attrs>)=> {
+    public create = (rid: EID, props: Attrs, opts: EntityOptions<Attrs, EID>)=> {
         return createEntitySlice(rid,props, opts)
     }
 }

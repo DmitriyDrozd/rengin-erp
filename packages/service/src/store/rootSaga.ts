@@ -2,7 +2,8 @@ import {call, fork, put, select} from 'typed-redux-saga'
 
 import {getServerContext} from "./getServerContext";
 import {createApp} from "../fastify/create-app"
-import {broadcastSSEEventsSaga,mongoEntitiesSaga} from "@shammasov/mydux-backend";
+import {broadcastSSEEventsSaga, mongoEntitiesSaga} from "@shammasov/mydux-backend";
+import {defaultAdminUser, USERS} from "iso";
 
 
 export function* rootSaga() {
@@ -15,7 +16,9 @@ export function* rootSaga() {
     const users = yield* select(state => state.users)
 
 
-
+    if(users.ids.length === 0) {
+        yield* put(USERS.actions.added(defaultAdminUser))
+    }
     const fastify = yield* call(createApp, ctx)
 
     const listen = async () => {
@@ -33,5 +36,4 @@ export function* rootSaga() {
     }
 
     yield* call(listen)
-    // yield* fork(syncWBSaga)
 }

@@ -18,7 +18,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "allowJs": true,
-
+    "strictFunctionTypes": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -31,7 +31,7 @@
     "useUnknownInCatchVariables": true,
     "suppressExcessPropertyErrors": false,
     "strictNullChecks": true,
-    "importsNotUsedAsValues": "remove",
+
     "strictBindCallApply": false,
     //"exactOptionalPropertyTypes": false,
     //"strictFunctionTypes": true,

@@ -1,20 +1,20 @@
 import React from 'react'
 import {ExtractRouteParams, routeBuilder, RoutePath} from '@sha/router'
-import LoginPage from './pages/LoginPage'
+import LoginPage from './auth-views/LoginPage'
 import {Route, RouteComponentProps} from 'react-router'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ForgotPasswordPage from './auth-views/ForgotPasswordPage'
 
-import StartPage from './pages/StartPage'
-import BrandsChapter from './pages/brands/BrandsChapter.js'
-import LegalsChapter from './pages/clients/LegalsChapter'
-import SitesChapter from './pages/clients/SitesChapter'
-import ContractsChapter from './pages/contracts/ContractsChapter'
-import SubsChapter from './pages/contracts/SubsChapter'
-import ImportSItesPage from './pages/ImportSItesPage'
-import IssuesListPage from './pages/tickets/TicketsListPage'
-import AddIssuePage from './pages/tickets/AddTicketPage'
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import UsersChapter from "./pages/users/UsersListPage";
+import StartPage from './in-app/StartPage'
+import BrandsChapter from './auth-views/brands/BrandsChapter.js'
+import LegalsChapter from './auth-views/clients/LegalsChapter'
+import SitesChapter from './auth-views/clients/SitesChapter'
+import ContractsChapter from './auth-views/contracts/ContractsChapter'
+import SubsChapter from './auth-views/contracts/SubsChapter'
+import ImportSItesPage from './in-app/ImportSItesPage'
+import IssuesListPage from './in-app/tickets/TicketsListPage'
+import AddIssuePage from './in-app/tickets/AddTicketPage'
+import DashboardPage from "./auth-views/dashboard/DashboardPage";
+import UsersChapter from "./in-app/users/UsersListPage";
 import moize from "moize";
 
 
@@ -37,12 +37,11 @@ export type BuildNav = ReturnType<typeof buildNav>
 export const getNav = moize(() => {
     return  {
         index: buildNav('/', () => <div></div>),
-            login: buildNav('/app/login', LoginPage),
+        login: buildNav('/app/login', LoginPage),
         forgot: buildNav('/app/forgot', ForgotPasswordPage),
         start: buildNav('/app/in/start', StartPage),
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),
         usersList: buildNav('/app/in/users', UsersChapter),
-
 
         brandsList: buildNav('/app/in/brands', BrandsChapter),
 

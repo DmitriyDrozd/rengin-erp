@@ -5,6 +5,7 @@ import {generateEventGuid} from '@shammasov/utils';
 import {getMongoModel} from "../mongo-entities";
 
 export const EventSchema = createSchema({
+
     guid: Type.string({unique: true, required: true}),
     type: Type.string({required: true}),
     payload: Type.mixed(),
@@ -15,7 +16,7 @@ export const EventSchema = createSchema({
     parentGuid: Type.string(),
     storeGuid: Type.string(),
     createdAt: Type.date({required: false, default: Date.now as any }),
-}, {_id: false, versionKey:false})
+}, {versionKey:false, strict: false})
 
 export type EventDoc = ExtractDoc<typeof EventSchema>
 

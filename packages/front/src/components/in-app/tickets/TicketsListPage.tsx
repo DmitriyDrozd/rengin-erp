@@ -1,0 +1,207 @@
+import {useAllColumns} from '../../../grid/RCol'
+import PanelRGrid from '../../../grid/PanelRGrid'
+import {isIssueOutdated, statusesColorsMap, statusesList, TICKETS, TicketVO} from 'iso'
+import AppLayout from '../../../app/layout/AppLayout'
+import React, {useRef} from 'react'
+import {ColDef} from "ag-grid-community";
+import {Badge, Button, Checkbox, message, Space, Tag} from "antd";
+import {NewValueParams} from "ag-grid-community/dist/lib/entities/colDef";
+import {useDispatch, useSelector} from "react-redux";
+import useCurrentUser from "../../../hooks/useCurrentUser";
+import IssueModal_NEW from "./IssueModal_NEW";
+import dayjs from "dayjs";
+import useLocalStorageState from "../../../hooks/useLocalStorageState";
+import StatusFilterSelector from "./StatusFilterSelector";
+import IsssueStatusCellEditor from "./TicketStatusCellEditor";
+import {ClockCircleOutlined} from "@ant-design/icons";
+import {AgGridReact} from "ag-grid-react";
+
+import copy from 'copy-to-clipboard';
+import {AntdIcons} from "../../elements/AntdIcons";
+import axios from "axios";
+import ImportIssuesButton from "../../in-app/tickets/import-gsheet/ImportTicketsButton.js";
+
+const getEstimationApprovedTag = (data: TicketVO) =>
+    data.estimationsApproved === true
+        ? <Tag color={'green'}>Да</Tag>
+        : <Tag color={'red'}>Нет</Tag>
+
+const getStatusTag = (issue: TicketVO) => {
+    const currentDJ = dayjs()
+    const plannedDJ =issue.plannedDate ? dayjs(issue.plannedDate) : undefined
+    const completedDJ = issue.completedDate ? dayjs(issue.completedDate) : undefined
+
+    const workStartedDJ =  issue.workStartedDate ? dayjs(issue.workStartedDate) : undefined
+    const registerDJ = issue.registerDate ? dayjs(issue.registerDate) : undefined
+    const getTag = () => {
+        return <Tag color={statusesColorsMap[issue.status]}>{issue.status}</Tag>
+    }
+    let node = getTag()
+    if(issue.status === 'В работе') {
+        if(currentDJ.isAfter(plannedDJ))
+        node = <Badge count={currentDJ.diff(plannedDJ,'d')} offset={[8,12]}>{node}</Badge>
+    }
+    if(issue.status === 'Выполнена') {
+        if(issue.plannedDate && issue.completedDate) {
+         if(dayjs(issue.completedDate).isAfter(issue.plannedDate))
+            node = <Badge color={'lightpink'} count={dayjs(issue.completedDate).diff(dayjs(issue.plannedDate),'d')} offset={[-2,5]}>{node}</Badge>
+        }
+        if(!issue.plannedDate || !issue.completedDate) {
+            node = <Badge  count={<ClockCircleOutlined style={{ color: '#d5540a' }} />} offset={[5,10]}>{node}</Badge>
+        }
+    }
+    return <>{node}</>
+}
+
+
+
+export default () => {
+
+    const routeMatch = useRouteMatch<{id:string}>()
+
+    const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1)
+    console.log('RouteMatch ', routeMatch)
+    const allIssues: TicketVO[] = useSelector(TICKETS.selectors.selectAll)
+    const currentUser = useCurrentUser()
+
+    const dispatch = useDispatch()
+    const onCreateClick = (defaults) => {
+        console.log(defaults)
+    }
+    const [cols,colMap] = useAllColumns(TICKETS)
+
+    const columns: ColDef<TicketVO>[] = [
+        {...colMap.clickToEditCol, headerName:'id', width: 30},
+        {
+            ...colMap.clientsIssueNumber, width: 100,
+            cellRenderer: (props:{rowIndex:number}) => {
+                return <a onClick={() => {
+                    copy(props.value);
+                    message.info('Cкопировано "'+props.value+'"')
+                }}>{props.value}</a>
+            }
+        },
+        {
+            ...colMap.registerDate,
+        },
+        {
+            field: 'status',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
+            headerName: 'Статус',
+            width: 125,
+            editable: currentUser.role !== 'сметчик',
+            onCellValueChanged: (event: NewValueParams<TicketVO, TicketVO['status']> ) => {
+                const issue: Partial<TicketVO> = {id: event.data.id, status: event.newValue}
+                if(event.newValue === 'Выполнена')
+                    issue.completedDate = dayjs().startOf('d').toISOString()
+
+                dispatch(TICKETS.actions.patched(issue))
+            },
+            cellEditor: IsssueStatusCellEditor,
+            cellEditorParams: {
+                values: (params) => [params.data.status,'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
+                valueListGap: 0,
+            },
+            cellRenderer: (props:{rowIndex:number}) =>
+                getStatusTag(props.data)
+        },
+        {...colMap.brandId, width: 65},
+        {...colMap.siteId, width: 170},
+        {...colMap.description, width: 260},
+        {...colMap.plannedDate,headerName:'План'},
+        {...colMap.completedDate,headerName:'Завершена'},
+        {...colMap.estimationsApproved,
+            headerName:'Смета',
+            cellRenderer: (props) =>
+                getEstimationApprovedTag(props.data)
+            , width: 80
+        },
+        {...colMap.estimationPrice, editable: false, width: 80},
+        {...colMap.expensePrice,editable: false, width: 80},
+    ]
+
+    const [statuses, setStatuses] = useLocalStorageState('statusFilter',statusesList)
+    const [outdated, setOutdated] = useLocalStorageState('outdatedFilter', false)
+
+    const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues
+
+    const dataForUser = currentUser.role === 'менеджер'
+        ? outdatedIssues.filter(i => i.managerUserId === currentUser.id)
+        : outdatedIssues
+
+    console.log('statuses', statuses)
+    const gridRef = useRef<AgGridReact<TicketVO>>(null);
+    const rowData = dataForUser.filter(s => statuses.includes(s.status) )
+
+    return  <AppLayout
+                hidePageContainer={true}
+                proLayout={{contentStyle:{
+                        padding: '0px'
+                    }
+                }}
+            >
+                <div>
+                    {
+                        currentItemId ? <IssueModal_NEW id={currentItemId} /> : null
+                    }
+
+
+                    <PanelRGrid
+
+                        toolbar={<Space>
+                            <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+<StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+                    </Space>}
+                        rowData={rowData}
+                        onCreateClick={onCreateClick}
+                        fullHeight={true}
+                        entity={TICKETS}
+                        columnDefs={columns}
+                        title={'Все заявки'}
+                        bottomBar={({ag}) => {
+                            const onEmailExport = async () => {
+                              //  const email = prompt('Укажите почтовый ящик, куда нужн отправить выгрузку')
+                                const blob = ag.api.getDataAsExcel({}) as any as Blob
+                                //const api = await getRestApi()
+                                const formData = new FormData();
+                                formData.append("file[]", blob, 'report.xlsx');
+                                const response = await axios.post(
+                                    '/api/email-export?images=true&email=',
+                                    formData,
+                                    {
+                                        headers: {
+                                            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                                        },
+                                    })//?email=miramaxis@ya.ru&images=true', formData);
+                                    console.log(response.data)
+
+                                    const url= response.data.url
+                                    const element = document.createElement("a");
+                                    element.href = url
+                                    element.download = url
+// simulate link click
+                                    document.body.appendChild(element); // Required for this to work in FireFox
+                                    element.click();
+                                    document.body.removeChild(element)
+
+                            }
+                            return <Space><Button icon={<AntdIcons.MailTwoTone />} onClick={onEmailExport} >Выгрузить заявки</Button>
+                            <ImportIssuesButton/>
+                            </Space>
+                        }}
+                    />
+                    {
+                        /**
+                         <FooterToolbar extra="extra information">
+                     <Button>Cancel</Button>
+                     <Button type="primary">Submit</Button>
+                     </FooterToolbar>
+                         */
+                    }</div>
+
+            </AppLayout>
+
+}

@@ -25,6 +25,8 @@ export type AttrsByEntity<E extends GenericEntitySlice> = E['attributes']
 export const getEntityByEID = <EID extends keyof typeof ENTITIES_MAP>(eid: EID): typeof ENTITIES_MAP[EID] =>
     ENTITIES_MAP[eid]
 export type ORMState = ORM['exampleORMState']
+const s = {} as any as ORMState
+//s.brands.ids[0]
 export type DigestMaps =  {
     [K in keyof typeof ENTITIES_MAP as Lowercase<K> ]: ReturnType<ORM['entitiesMap'][Uppercase<K>]['selectors']['selectEntityDigest']>
 }

@@ -1,10 +1,8 @@
 import {Readable} from 'stream';
 import {IncomingMessage as Http1ServerRequest, OutgoingHttpHeaders, ServerResponse as Http1ServerResponse,} from 'http';
 import {Http2ServerRequest, Http2ServerResponse} from 'http2';
-import {EventMap, TypedEmitter} from './lib/TypedEmitter';
-import {serialize, SerializerFunction} from './lib/serialize';
-import {sanitize, SanitizerFunction} from './lib/sanitize';
-import {generateId} from './lib/generateId';
+import {EventMap, TypedEmitter} from './TypedEmitter';
+import {serialize, SerializerFunction,sanitize, SanitizerFunction,generateId} from './utils'
 
 interface SessionOptions {
 	/**
@@ -475,3 +473,19 @@ export type {
 	SessionEvents,
 };
 export {SSESession};
+
+/**
+ * Create a new session and return the session instance once it has connected.
+ */
+const createSSESession = <State extends Record<string, unknown> = SessionState>(
+	...args: ConstructorParameters<typeof SSESession>
+): Promise<SSESession<State>> =>
+	new Promise((resolve) => {
+		const session = new SSESession<State>(...args);
+
+		session.once("connected", () => {
+			resolve(session);
+		});
+	});
+
+export {createSSESession};

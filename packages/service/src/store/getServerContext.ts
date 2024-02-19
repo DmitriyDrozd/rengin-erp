@@ -1,6 +1,8 @@
 import {getContext} from "typed-redux-saga";
-import {ServerContext, ServerStore} from "./configureServerStore";
-
+import {ServerContext} from "./buildServerStore";
+export {
+    ServerContext
+}
 export function* getServerContext() {
     const ctx: ServerContext = yield* getContext<ServerContext>('context')
     return ctx

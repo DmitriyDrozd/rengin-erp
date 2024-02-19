@@ -1,5 +1,6 @@
 {
   "name": "front",
+  "version": "0.2.0",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@ant-design/icons": "^5.3.0",
@@ -8,6 +9,7 @@
     "@types/react": "^18.2.55",
     "@vitejs/plugin-react": "^4.2.1",
     "antd": "^5.14.0",
+    "iso": "workspace:^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup-plugin-visualizer": "^5.12.0",

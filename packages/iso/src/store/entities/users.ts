@@ -1,6 +1,6 @@
 import chroma from 'chroma-js'
 
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux"
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux"
 
 const  stringToHashInt = (str: string) => {
     let arr = String(str).split('');
@@ -28,8 +28,7 @@ export const roleEnum = {
 export type RoleType = typeof roleTypes[number]
 
 const usersRaw = createEntitySlice('USERS',{
-    ...commonAttrs,
-    role: AttrFactories_ex.enum({required: true, enum: roleTypes, headerName: 'Роль',tsType: '' as any as RoleType}),
+    role: AttrFactories_ex.enum({required: true, enum: roleTypes, headerName: 'Роль'}),
     brandId: AttrFactories_ex.itemOf({
 
         headerName:'Организация',
@@ -38,8 +37,6 @@ const usersRaw = createEntitySlice('USERS',{
     lastname: AttrFactories_ex.string({required: true, colDef:{width: 250}, headerName:'Фамилия'},),
     name: AttrFactories_ex.string({required: true, colDef:{width: 250}, headerName:'Имя'},),
     title: AttrFactories_ex.string({headerName: 'Должность', colDef: {width: 200}}),
-
-
     email: AttrFactories_ex.string({required: true, toLowerCase: true, colDef: {width: 250}}),
     phone: AttrFactories_ex.string({ toLowerCase: true, colDef: {width: 250}}),
     avatarUrl: AttrFactories_ex.string({colDef:false}),
@@ -126,7 +123,7 @@ export const defaultAdminUser = {
     role: 'Admin',
     removed: false,
     avatarUrl: undefined,
-    userId: 'root',
+    id: 'root',
     email: 'miramaxis@gmail.com',
     company: 'shammasov.com',
     fullName: 'Шаммасов Максим Тимурович',

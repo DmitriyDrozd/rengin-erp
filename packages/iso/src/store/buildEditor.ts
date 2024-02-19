@@ -13,7 +13,7 @@ export const optionsFromValuesList = (values: readonly string[]): RenSelectOptio
 
 import {
     AnyAttr,
-    AnyAttributes, EmpheralAttributes,
+    AnyAttributes,
     EntitySlice,
     EnumAttr,
     isEnumAttr,
@@ -55,17 +55,17 @@ export type ResourceParts<Res = any> = Res extends {rid: infer EID, properties: 
             Errors: Partial<{[k in keyof Attrs]: string}>
             Attrs: Attrs
             EID: EID
-            Item: ItemByAttrs<Attrs>
-            ItemAttrs: ItemByAttrs<Attrs>
+            Item: ItemByAttrs<Attrs,EID>
+            ItemAttrs: ItemByAttrs<Attrs,EID>
         } & EntitySlice<Attrs, EID>
             : never
         :never
     :never
 
 export type RuleArguments<EID extends string, Attrs extends AnyAttributes, K extends keyof EntitySlice<Attrs,EID>['attributes']> = {
-    value: ItemByAttrs<Attrs>[K]
+    value: ItemByAttrs<Attrs,EID>[K]
     propertyName: K
-    item: ItemByAttrs<Attrs>,
+    item: ItemByAttrs<Attrs,EID>,
     property: Attrs[K]
     state: ORMState
     role: typeof USERS.attributes.role.enum[number]
@@ -75,7 +75,7 @@ export type RuleArguments<EID extends string, Attrs extends AnyAttributes, K ext
 type PropertyUpdater< Attrs extends AnyAttributes,
     K extends keyof Attrs,
     EID extends string = string > =
-    (args: RuleArguments<EID, Attrs, K>) =>  ItemByAttrs<Attrs>//<EID, F>
+    (args: RuleArguments<EID, Attrs, K>) =>  ItemByAttrs<Attrs,EID>//<EID, F>
 
 type PropertyGetParams <Attrs extends AnyAttributes,  K extends keyof EntitySlice<Attrs, EID>['attributes'],EID extends string = string> =
     (args: RuleArguments<EID,Attrs, K>) =>
@@ -98,13 +98,13 @@ export type Rules <EID extends string, Attrs extends AnyAttributes>= {
 
 export const buildEditor = <EID extends string,
     Attrs extends AnyAttributes
->(resource: EntitySlice<Attrs, EID>, mergeRules: Partial<Rules<EID, Attrs>>) => {
+>(entity: EntitySlice<Attrs, EID>, mergeRules: Partial<Rules<EID, Attrs>>) => {
    type Res = EntitySlice<Attrs, EID>
-    type Item =  ItemByAttrs<Attrs>
+    type Item =  ItemByAttrs<Attrs,EID>
     type Parts = ResourceParts<Res>
 
     const rulesObj: Record<string, PropRule<Attrs, keyof Attrs,EID>> = {} as any
-    resource.attributesList.forEach( prop => {
+    entity.attributesList.forEach( prop => {
 
         rulesObj[prop.name!] = {
             getParams: ({value, item, property, state}) => {
@@ -129,7 +129,7 @@ export const buildEditor = <EID extends string,
                 if(property.required && value=== undefined)
                     return 'Не может быть пустым'
                 if(property.unique) {
-                    const items = resource.selectors.selectAll(state)
+                    const items = entity.selectors.selectAll(state)
                     const match = items.find(i => i[property.name!] === value && item.id !== i.id)
                     if(match)
                         return "Значение должно быть уникальным"
@@ -145,7 +145,7 @@ export const buildEditor = <EID extends string,
         const errors:Partial< {[K in keyof Attrs]: string}> = {}
         Object.keys(rules).forEach((k: keyof Parts['Attrs']) =>
             //@ts-ignore
-            errors[k] = rules[k].getErrors({value: item[k],item,property: resource.attributes[k], state, propertyName: k})
+            errors[k] = rules[k].getErrors({value: item[k],item,property: entity.attributes[k], state, propertyName: k})
         )
         return errors
     }
@@ -154,22 +154,22 @@ export const buildEditor = <EID extends string,
         const params:Partial< {[K in keyof Attrs]: GetParamsByMeta<Attrs[K]>}> = {}
         Object.keys(rules).forEach((k: keyof Parts['Attrs']) =>
             //@ts-ignore
-            params[k] = rules[k].getParams({value: item[k],item,property: resource.attributes[k], state, propertyName: k})
+            params[k] = rules[k].getParams({value: item[k],item,property: entity.attributes[k], state, propertyName: k})
         )
 
         return params
     }
 
     const updateProperty = <K extends keyof Attrs>(propName: K) =>
-        ({value,item,state, mode}: {value: ItemByAttrs<Attrs>[K], item:  ItemByAttrs<Attrs>, state: ORMState, mode: 'edit'| 'create'})=>
+        ({value,item,state, mode}: {value: ItemByAttrs<Attrs,EID>[K], item:  ItemByAttrs<Attrs,EID>, state: ORMState, mode: 'edit'| 'create'})=>
             rules[propName].getUpdate({
                 propertyName: propName,
-                property: resource.attributes[propName],
+                property: entity.attributes[propName],
                 item,state,value
             })
 
     return {
-        resource,
+        entity,
         rules,
         getAllErrors,
         getAllParams,

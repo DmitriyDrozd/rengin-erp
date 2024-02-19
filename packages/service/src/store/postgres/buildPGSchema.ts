@@ -33,9 +33,9 @@ export default async (ctx: ServerContext) => {
         return col
     }
 
-    const addResource =  <EID extends string, Attrs extends AnyAttributes>( res:EntitySlice<Attrs,EID>)=> {
-        const tableName = res.EID
-        const propsList: AttrMeta<any>[] = Object.values(res.attributes)
+    const addResource =  <EID extends string, Attrs extends AnyAttributes>( entity:EntitySlice<Attrs,EID>)=> {
+        const tableName = entity.EID
+        const propsList: AttrMeta<any>[] = Object.values(entity.attributes)
         const columnsPropsList: AttrMeta<any>[] = propsList.filter(m => m.type!=='array')
         const subTablesPropsList: AttrMeta<'array'>[] = propsList.filter(m => m.type==='array')
         scheme.createTable(tableName, function (table) {
@@ -55,9 +55,9 @@ export default async (ctx: ServerContext) => {
         })
         return scheme
     }
-    const addForeignKeys = <EID extends string, Attrs extends AnyAttributes>( res:EntitySlice<Attrs,EID>)=> {
-        const tableName = res.EID
-        const propsList: AttrMeta<any>[] = Object.values(res.attributes)
+    const addForeignKeys = <EID extends string, Attrs extends AnyAttributes>( entity:EntitySlice<Attrs,EID>)=> {
+        const tableName = entity.EID
+        const propsList: AttrMeta<any>[] = Object.values(entity.attributes)
         const columnsPropsList: AttrMeta<any>[] = propsList.filter(m => m.type !== 'array')
 
         console.log(scheme.alterTable(tableName, function (table) {

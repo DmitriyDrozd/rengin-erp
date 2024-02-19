@@ -1,11 +1,10 @@
 import {envConfig} from "@shammasov/utils";
 import './typings'
-import service from './fastify'
 import {createMongoConnection} from "@shammasov/mydux-backend";
 import getGServices from "./fastify/gapis-token/getGServices";
 import path from "path";
 import knex from "knex";
-import configureServiceStore from "./store/configureServerStore";
+import configureServiceStore from "./store/buildServerStore";
 import {orm} from "iso";
 import {rootSaga} from "./store/rootSaga";
 
@@ -30,7 +29,7 @@ envConfig({
 async function main() {
 
     const mongo = (await createMongoConnection())
-    const gServices = await getGServices(path.join(__dirname,'rest','settings','stroi-monitroing-1590ca45292b.json'))
+    const gServices = await getGServices(path.join(__dirname,'fastify','gapis-token','stroi-monitroing-1590ca45292b.json'))
     const connectionString =  envConfig().getString('POSTGRES_URI')
     const pg = knex({
         client: 'pg',
@@ -38,7 +37,7 @@ async function main() {
     });
 
     const store = await configureServiceStore({mongo, pg, orm, gServices})
-    store.runSaga(rootSaga)
+    store.run(rootSaga)
 
 }
 console.time('startup')

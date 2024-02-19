@@ -1,22 +1,23 @@
-import useFrontDispatch from '../../hooks/common/useFrontDispatch'
-import {uiDuck} from '../../store/ducks/uiDuck'
+import useAdminDispatch from '../../hooks/common/useAdminDispatch'
+import {uiSlice} from '../../store/uiSlice'
 import {getNav} from '../getNav'
 import {Button} from 'antd'
 import React from 'react'
 import {AntdIcons} from './AntdIcons'
-import {useHistory} from 'react-router'
+import {useNavigate} from 'react-router-dom'
+import {getRestApi} from "iso";
+import {pathnames} from "../../app/pathnames";
 
 export default ({onExit}: {onExit?: Function})=> {
-    const dispatch = useFrontDispatch()
-    const history = useHistory()
+    const dispatch = useAdminDispatch()
+    const navigate = useNavigate()
     const onConfirmExit = async () => {
-
-        dispatch(uiDuck.actions.logout(undefined))
-        history.replace(getNav().login({}))
-        window.location.reload()
+        debugger
+        await getRestApi().logout()
+        navigate(pathnames.LOGIN)
     }
 
     return  <Button danger type="text" icon={<AntdIcons.LogoutOutlined />} onClick={onConfirmExit}  >
-                Выйти
+                Выйти lf
             </Button>
 }

@@ -1,10 +1,10 @@
 import {useSelector} from 'react-redux';
 import {Preferences, preferencesDuck} from '../../store/ducks/preferencesDuck';
-import useFrontDispatch from './useFrontDispatch';
+import useAdminDispatch from './useAdminDispatch';
 
 export type PrefKey = keyof Preferences
 export default () => {
-    const dispatch = useFrontDispatch()
+    const dispatch = useAdminDispatch()
     const preferences = useSelector(preferencesDuck.selectPreferences)
 
     return {

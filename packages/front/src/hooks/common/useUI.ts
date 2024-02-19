@@ -1,8 +1,7 @@
 import {useSelector} from 'react-redux';
-import {uiDuck, UIState} from '../../store/ducks/uiDuck';
+import {uiSlice, UIState} from '../../store/uiSlice';
 
 export default () => {
-    const state: UIState = useSelector(uiDuck.selectUI)
+    const state: UIState = useSelector(uiSlice.selectSlice)
     return state
-
 }

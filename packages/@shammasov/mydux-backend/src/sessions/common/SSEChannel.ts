@@ -1,5 +1,5 @@
-import {EventMap, TypedEmitter} from './lib/TypedEmitter';
-import {generateId} from './lib/generateId';
+import {EventMap, TypedEmitter} from './TypedEmitter';
+import {generateId} from './utils';
 import {SSESession} from './SSESession';
 
 interface BroadcastOptions {
@@ -134,3 +134,9 @@ class SSEChannel<
 
 export type {BroadcastOptions, ChannelEvents};
 export {SSEChannel};
+
+const createSSEChannel = <State extends Record<string, unknown>>(
+	...args: ConstructorParameters<typeof SSEChannel>
+): SSEChannel<State> => new SSEChannel<State>(...args);
+
+export {createSSEChannel};

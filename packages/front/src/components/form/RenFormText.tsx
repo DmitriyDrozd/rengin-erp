@@ -9,7 +9,7 @@ export default ({value,onValueChange, label,multiline,disabled, ...props}:RenFor
     return (
         <ProForm.Item label={label} {...props} >
 
-                 <Input  value={value}  multiline={multiline} disabled={disabled}  onChange={ e => {
+                 <Input.TextArea  value={value}  disabled={disabled}  onChange={ e => {
                     console.log("DatePicker onChange",e)
 
 

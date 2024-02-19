@@ -1,38 +1,61 @@
-import { FastifyInstance, FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
+import {FastifyInstance, FastifyPluginAsync, FastifyPluginOptions} from 'fastify';
 import fastifyPassport from '@fastify/passport';
-import { Strategy  } from 'passport-local';
+import {Strategy} from 'passport-local';
 import fastifySecureSession from '@fastify/secure-session';
-import { ServerStore } from '../../store/configureServerStore.js';
+import {ServerStore} from '../../store/buildServerStore.js';
 import fp from "fastify-plugin";
+import {httpErrors} from "../../errors";
+import '../../typings'
+import {toIndexedArray} from "@shammasov/utils";
 
+const fs = require('fs')
+const path = require('path')
 interface User {
-    username: string;
+    email: string;
     password: string;
+    id: string
     // Add other user info fields here
 }
 
-const users: User[] = []; // Add your user data here
 
-const localStrategy = new Strategy((username, password, done) => {
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-        done(null, user);
-    } else {
-        done(null, false);
-    }
-});
 
  const authRaw: FastifyPluginAsync<ServerStore & FastifyPluginOptions> = async  (fastify: FastifyInstance, opts) => {
     fastify.register(fastifySecureSession, {
-        key: 'your-secret-key'
+        key: fs.readFileSync(path.join(__dirname, 'secret-key')),
+        cookie: {
+            path: '/'
+        }
     });
 
     fastify.register(fastifyPassport.initialize());
     fastify.register(fastifyPassport.secureSession());
-    fastifyPassport.use(localStrategy)
+     const localStrategy = new Strategy({
+         usernameField: 'email',
+         passwordField: 'password'
+     },(email, password, done) => {
 
+         const user = toIndexedArray(fastify.store.getState().users.entities).find(u => u.email === email && u.password === password);
 
-    fastify.post('/login',
+         if (user) {
+             done(null, user);
+         } else {
+             done(null, false);
+         }
+     });
+
+     fastifyPassport.use(localStrategy)
+
+     fastifyPassport.registerUserDeserializer(async (userId, req) => {
+
+         const users =  req.store.getState().users
+         return toIndexedArray(users.entities).find(u => u.id === userId)
+     })
+
+     fastifyPassport.registerUserSerializer(async (user, req) => {
+
+         return user.id
+     })
+    fastify.post('/api/login',
         {  preValidation: fastifyPassport.authenticate('local', { authInfo: false }) },
         (req, reply) => {
         console.log('post /login', req.user)
@@ -42,21 +65,25 @@ const localStrategy = new Strategy((username, password, done) => {
     });
 
 
-    fastify.get('/api/self', (req,res) => {
-        return res.send(req.user)
+    fastify.get('/api/self',(req,reply) => {
+        if(req.isUnauthenticated())
+            throw new httpErrors.UnauthorizedError('Вы не авторизованы', {
+                header: { 'X-Req-Id': req.id, cookies: req.cookies},
+
+            })
+        return reply.send(req.user ?  req.user : {Error:'Unauthorized'})
       })
 
   
-      fastify.get('/login', async (req,res) =>
-         await res.sendFile('login.html')
+      fastify.get('/login', async (req,reply) =>
+         await reply.sendFile('index.html')
       )
+
   
-      fastify.get('/login/google', fastifyPassport.authenticate('google', {scope: ['profile', 'email']}))
-  
-      fastify.get('/logout',
+      fastify.post('/api/logout',
           async (req, res) => {
               req.logout()
-              return res.redirect('/login')
+              //return entity.redirect('/login')
           }
       )
 

@@ -1,31 +1,29 @@
 import {useLocation} from 'react-router'
 import {useSelector} from 'react-redux'
-import {RESOURCES_LIST} from "iso";
+import {ENTITIES_LIST} from "iso";
 
-export const RESOURCE_VERBS = ['LIST', 'VIEW',  'EDIT', 'CREATE'] as const
-export type Verb = typeof RESOURCE_VERBS[number]
 
 export default () => {
 
     const {pathname} = useLocation()
-    const resource = RESOURCES_LIST.find(r => pathname.includes(r.RID))
-    if(!resource)
+    const entity = ENTITIES_LIST.find(r => pathname.includes(r.EID))
+    if(!entity)
         throw new Error('Resource for page ' + pathname+' is not found')
     const id = pathname.split('/').pop()
-    const item = useSelector(resource.selectors.selectById(id))
-    const verb: Verb = pathname.endsWith(resource.RID)
+    const item = useSelector(entity.selectors.selectById(id))
+    const verb = pathname.endsWith(entity.EID)
         ? 'LIST'
         : pathname.endsWith('create')
             ? 'CREATE'
             : 'EDIT'
 
     return verb === 'EDIT' ? {
-        resource,
+        entity,
         verb,
         item,
         id
     } : {
-        resource,
+        entity,
         verb
     }
 }

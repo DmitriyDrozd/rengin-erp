@@ -24,9 +24,9 @@ export type CellEditorProps<Res extends ResVal, VType = any> =  {
 }
 
 
-export type RGridProps<EID extends string, Attrs extends AnyAttributes> = AgGridReactProps<ItemByAttrs<Attrs>> & {
-    resource: EntitySlice<Attrs, EID>
-    createItemProps?: Partial<ItemByAttrs<Attrs>>
+export type RGridProps<EID extends string, Attrs extends AnyAttributes> = AgGridReactProps<ItemByAttrs<Attrs,EID>> & {
+    entity: EntitySlice<Attrs, EID>
+    createItemProps?: Partial<ItemByAttrs<Attrs,EID>>
     search?: string
     fullHeight?: boolean
 
@@ -52,7 +52,7 @@ export default React.forwardRef( <EID extends string, Attrs extends AnyAttribute
          console.log(columnDefs)
 
         return <> <div className="ag-theme-alpine" style={{height: fullHeight ?  'calc(100vh - 144px)':'calc(100vh - 244px)', width: '100%'}}>
-                    <AgGridReact<ItemByAttrs<Attrs>>
+                    <AgGridReact<ItemByAttrs<Attrs,EID>>
                         ref={ref}
                         localeText={localeText}
 columnDefs={columnDefs}

@@ -9,31 +9,31 @@ import {
 } from "@reduxjs/toolkit";
 import {clone, compose, equals, map, mergeRight} from "ramda";
 import {isArray, isFunction} from "@shammasov/utils";
-import {AnyAttributes, ItemByAttrs} from "./AttrFactories_ex"
+import {AnyAttributes, ItemByAttrs, TaggedID} from "./AttrFactories_ex"
 import {bootstrapAction} from "../../connection";
 
 
-export type EntityState<Attrs extends AnyAttributes  = AnyAttributes> =
-    EntityStateRaw<ItemByAttrs<Attrs>, string>
+export type EntityState<Attrs extends AnyAttributes  = AnyAttributes, EID extends string = string> =
+    EntityStateRaw<ItemByAttrs<Attrs,EID>, TaggedID<EID>>
 export  const preparePersistent = <A>() => (payload: A) =>
     ({payload, meta:{persistent: true}})
 
-export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, N extends string,Item extends ItemByAttrs<Attrs> =  ItemByAttrs<Attrs> >(
-    {name, attributes, extraEntityReducers}: {name: N, attributes: Attrs, extraEntityReducers: (builder: ActionReducerMapBuilder<EntityState<Attrs>>) => void}
+export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, EID extends string,Item extends ItemByAttrs<Attrs, EID> =  ItemByAttrs<Attrs,EID> , RPath extends string = string>(
+    {name, attributes, extraEntityReducers, reducerPath}: {name: EID, reducerPath: RPath, attributes: Attrs, extraEntityReducers: (builder: ActionReducerMapBuilder<EntityState<Attrs, EID>>) => void}
 ) => {
     const defaults: Partial<Item> = {} as any
     Object.values(attributes).forEach(
         f => defaults[f.name as any as keyof typeof defaults] = f.default as any
     )
 
-    const entityAdapter = createEntityAdapter<Item, string>({
+    const entityAdapter = createEntityAdapter<Item, TaggedID<EID>>({
+
         selectId: item =>
-            item.id
-        ,
+            item.id as any as TaggedID<EID>,
         sortComparer: (a,b) => b.addedAtTS - a.addedAtTS,
     });
 
-    const entitySelectors = entityAdapter.getSelectors((state: any) => state[name as any] as EntityState<Attrs>)
+    const entitySelectors = entityAdapter.getSelectors((state: any) => state[name as any] as EntityState<Attrs, EID>)
 
     const withDefaults = mergeRight(defaults)
     const initialState = entityAdapter.getInitialState();
@@ -52,13 +52,13 @@ export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, N exten
         return {...defaultObject,...item}
 
     }
-    const prepareManyAddedWithDefaults = <Item>(items: Item[] | Record<string, Item>): Item[] | Record<string, Item> =>
+    const prepareManyAddedWithDefaults = <Item>(items: Item[] | Record<TaggedID<EID>, Item>): Item[] | Record<TaggedID<EID>, Item> =>
         (isArray(items)
             ? items.map( item => withDefaults(item as any))
             : map(withDefaults, items)) as any
     const prepareSimple = <A>() => (payload: A) =>
         ({payload})
-    const patchedCreator = createAction(name+'/patched', preparePersistent<Update<Item, string>>())
+    const patchedCreator = createAction(name+'/patched', preparePersistent<Update<Item, TaggedID<EID>>>())
     const acts = {
        // addOne2: createAction<Readonly<Item>>(name+'/addOne'),
         added: createAction(name+'/added',compose(preparePersistent<Item>(),prepareAddedWithDefaults)),
@@ -87,10 +87,10 @@ export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, N exten
 
         ),
         updated: createAction(name+'/updated',
-            preparePersistent<Update<Item, string>>()),
-        allSet: createAction(name+'/allSet', prepareSimple<Item[] | Record<string, Item>>()),
-        removed: createAction(name+'/removed', preparePersistent<string>()),
-        removedMany: createAction(name+'/removedMany', preparePersistent<string[]>())
+            preparePersistent<Update<Item, TaggedID<EID>>>()),
+        allSet: createAction(name+'/allSet', prepareSimple<Item[] | Record<TaggedID<EID>, Item>>()),
+        removed: createAction(name+'/removed', preparePersistent<TaggedID<EID>>()),
+        removedMany: createAction(name+'/removedMany', preparePersistent<TaggedID<EID>[]>())
     }
 
     const entitySlice = createSlice({
@@ -102,7 +102,7 @@ export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, N exten
         extraReducers: builder => {
                 builder
                     .addCase(bootstrapAction, (state, action)=> {
-                        const map = action.payload[name]
+                        const map = action.payload[reducerPath]
                         const result =  entityAdapter.setAll(state, map.entities)
                     })
                     .addCase(acts.added, (state, action: PayloadAction<Readonly<Item>>) => {
@@ -111,19 +111,19 @@ export const createAdvancedEntityAdapter = <Attrs extends AnyAttributes, N exten
                     .addCase(acts.manyAdded,(state, action: PayloadAction<Readonly<Item[]>>) => {
                        const result = entityAdapter.addMany(state, action.payload)
                     })
-                    .addCase(acts.allSet,(state, action: PayloadAction<Readonly<Item[] | Record<string, Item>>>) => {
+                    .addCase(acts.allSet,(state, action: PayloadAction<Readonly<Item[] | Record<TaggedID<EID>, Item>>>) => {
                         const result =  entityAdapter.setAll(state, action.payload)
                     })
-                    .addCase(acts.removed,(state, action: PayloadAction<string>) => {
+                    .addCase(acts.removed,(state, action: PayloadAction<TaggedID<EID>>) => {
                        const result = entityAdapter.removeOne(state, action.payload)
                     })
-                    .addCase(acts.removedMany,(state, action: PayloadAction<string[]>) => {
+                    .addCase(acts.removedMany,(state, action: PayloadAction<TaggedID<EID>[]>) => {
                         const result = entityAdapter.removeMany(state, action.payload)
                     })
-                    .addCase(acts.updated,(state, action: PayloadAction<Update<Item, string>>) => {
+                    .addCase(acts.updated,(state, action: PayloadAction<Update<Item, TaggedID<EID>>>) => {
                         const result = entityAdapter.updateOne(state, action.payload)
                     })
-                    .addCase(acts.patched,(state, action: PayloadAction<Update<Item, string>>) => {
+                    .addCase(acts.patched,(state, action: PayloadAction<Update<Item, TaggedID<EID>>>) => {
                         const result = entityAdapter.updateOne(state, action.payload)
                     })
             if(extraEntityReducers)

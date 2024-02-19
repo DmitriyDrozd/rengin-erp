@@ -34,17 +34,17 @@ const items: MenuProps['items'] =
 
 export type BottomGridApiBar = React.FC<{ag: AgGridReact}>
 
-export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef, bottomBar,toolbar, columnDefs, resource,rowData,createItemProps , ...props}: RGridProps<EID, Attrs> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode,bottomBar?: BottomGridApiBar}) => {
+export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef, bottomBar,toolbar, columnDefs, entity,rowData,createItemProps , ...props}: RGridProps<EID, Attrs> & {title: string; onCreateClick: (defaults: any) => any, toolbar?: React.ReactNode,bottomBar?: BottomGridApiBar}) => {
     const dispatch = useDispatch()
     const [isDeleteMode, setDeleteMode,] = useState(false)
-    const [defaultColumns, columnsMap] = useAllColumns(resource,isDeleteMode? 'multiple':undefined)
+    const [defaultColumns, columnsMap] = useAllColumns(entity,isDeleteMode? 'multiple':undefined)
     const usedColumns = columnDefs || defaultColumns
     const [editColumn, ...restColumns] = usedColumns
     const firstCol = isDeleteMode ? columnsMap.checkboxCol:editColumn
 
     const resultCols =  [firstCol,...restColumns]
 
-    const defaultList = useSelector(resource.selectors.selectAll)
+    const defaultList = useSelector(entity.selectors.selectAll)
     const list = rowData || defaultList
     const [searchText, setSearchText] = useState('')
 
@@ -62,7 +62,7 @@ export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef
     }
 
     const onDelete = () => {
-        const action = resource.actions.removedBatch(selectedIds)
+        const action = entity.actions.removedBatch(selectedIds)
         dispatch(action)
         setSelectedIds([])
         setDeleteMode(false)
@@ -89,7 +89,7 @@ export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef
         return role === 'сметчик'
             ? <Typography.Text>Вы можете редактировать сметы</Typography.Text>
             :<>
-            <CrudCreateButton resource={resource} defaultProps={createItemProps} />
+            <CrudCreateButton entity={entity} defaultProps={createItemProps} />
             <Dropdown menu={{
                 items,onClick: e => {
                     onMenuClick(e.key)
@@ -134,7 +134,7 @@ export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef
             </Space>
         </div>
     </div>
-        <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={list} resource={resource} quickFilterText={searchText} ref={innerGridRef}/>
+        <RGrid onSelectionChanged={onSelectionChanged}   rowSelection={isDeleteMode?'multiple':undefined} {...props} columnDefs={resultCols} rowData={list} entity={entity} quickFilterText={searchText} ref={innerGridRef}/>
         <div style={{paddingTop: '4px', display: 'flex', justifyContent:'space-between' }}>
             <Space>
 

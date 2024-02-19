@@ -1,6 +1,6 @@
 import {Days} from '../../utils'
 import SITES, {SiteVO} from "./sites";
-import {AttrFactories_ex, commonAttrs, createEntitySlice, StateWithEntity} from "@shammasov/mydux"
+import {AttrFactories_ex, createEntitySlice, StateWithEntity} from "@shammasov/mydux"
 
 export const statusesList = ['Новая','В работе','Выполнена','Отменена','Приостановлена']  as const
 
@@ -25,7 +25,6 @@ export const statusesColorsMap: Record<Status, string> = {
 export const paymentTypesList = ['Наличные', 'Безналичные'] as const
 
 const ticketsRaw = createEntitySlice('TICKETS',{
-        ...commonAttrs,
         clientsIssueNumber: AttrFactories_ex.string({headerName:'Номер заявки', required: true, immutable: true}),
         status: AttrFactories_ex.enum({headerName: 'Статус',enum:statusesList}),
         brandId: AttrFactories_ex.itemOf({headerName: 'Заказчик',linkedEID: 'BRANDS',required: true,immutable:true}),

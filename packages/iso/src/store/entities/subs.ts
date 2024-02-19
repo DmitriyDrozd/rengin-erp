@@ -1,8 +1,9 @@
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux";
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux";
+import {Tagged} from "@shammasov/utils";
 
+type a = Tagged<any, any>
 
 export const SUBS = createEntitySlice('SUBS',{
-    ...commonAttrs,
         contractId: AttrFactories_ex.itemOf({headerName: 'Договор',linkedEID: 'CONTRACTS',required: true, immutable: true}),
         subscribeDate: AttrFactories_ex.date({headerName: 'Дата подключения'}),
         unsubscribeDate: AttrFactories_ex.date({headerName: 'Дата отключения'}),
@@ -20,5 +21,4 @@ export const SUBS = createEntitySlice('SUBS',{
 )
 
 export default SUBS
-
 export type SubVO = typeof SUBS.exampleItem

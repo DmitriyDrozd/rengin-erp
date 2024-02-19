@@ -1,9 +1,9 @@
 import {LegalVO} from './legals'
-import {AttrFactories_ex, commonAttrs, createEntitySlice} from "@shammasov/mydux";
+import {AttrFactories_ex, createEntitySlice} from "@shammasov/mydux";
 
 
 export const siteResource = createEntitySlice('SITES',{
-    ...commonAttrs,
+
         brandId: AttrFactories_ex.itemOf({
             headerName: 'Заказчик',
             linkedEID: 'BRANDS',

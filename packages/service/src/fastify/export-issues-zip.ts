@@ -8,7 +8,6 @@ import fse from 'fs-extra'
 import {execSync} from 'node:child_process'
 
 
-
 const { pipeline } = require('node:stream')
 const util = require("node:util");
 const exec = util.promisify(require("node:child_process").exec);
@@ -50,7 +49,7 @@ export const exportIssuesZip = async (xlsxPath: string, state: ORMState = {} as 
     const fullZipPath = publicDir+relativeZipPath
     const notFoundFiles: {issueFolder: string, filePath?: string}[] = []
     const issueHasImages = (issue: TicketVO) =>
-        issueFilesArrayProps.some( name => issue[name] && issue[name].length)
+        issueFilesArrayProps.some( name => issue[name] && issue[name]!.length)
     const issuesWithImages = issues.filter(issueHasImages)
     //const zip = new AdmZip()
     const issuesImageFolders = [] as string[]
