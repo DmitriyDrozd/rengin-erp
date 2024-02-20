@@ -12,24 +12,23 @@ export function* rootSaga() {
 
     yield* fork(broadcastSSEEventsSaga)
     const state = yield* select()
-    console.log('state',state)
+
     const users = yield* select(state => state.users)
-
-
     if(users.ids.length === 0) {
         yield* put(USERS.actions.added(defaultAdminUser))
     }
+
     const fastify = yield* call(createApp, ctx)
 
     const listen = async () => {
         try {
             const host = '0.0.0.0'
-            const port =  35080
+            const port =  37080
             console.log('SERVICE listen to ', host, port)
             await fastify.listen({host,port})
             // fastify.blipp()
             fastify.printRoutes({commonPrefix: false})
-            console.info(`server listening on `, 35080)
+            console.info(`server listening on `, port)
         } catch (err) {
             console.error('Could not instantiate Fastify server', err)
         }

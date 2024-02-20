@@ -11,17 +11,17 @@ import {rootSaga} from "./store/rootSaga";
 envConfig({
     "local": {
         "MONGO_URI": "mongodb://dev:BuildMeUp@dev.rengindesk.ru:37017/local_dev",
-        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:35432/local_dev',
+        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:37432/local_dev',
         WRITE_PG: false,
     },
     "development": {
         "MONGO_URI": "mongodb://dev:BuildMeUp@dev.rengindesk.ru:37017/dev",
-        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:35432/dev',
+        POSTGRES_URI: 'postgres://root:BuildMeUp@dev.rengindesk.ru:37432/dev',
         WRITE_PG: false,
     },
     "production": {
         "MONGO_URI": "mongodb://dev:BuildMeUp@rengindesk.ru:37017/prod",
-        POSTGRES_URI: 'postgres://root:BuildMeUp@rengindesk.ru:35432/prod',
+        POSTGRES_URI: 'postgres://root:BuildMeUp@rengindesk.ru:37432/prod',
         WRITE_PG: false,
     }})
 // you're best off initializing config ASAP in your program

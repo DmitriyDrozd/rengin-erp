@@ -3,10 +3,7 @@ import {Action} from "redux";
 import {isArray} from "@shammasov/utils";
 
 export const getRestApi = () => {
-    const axiosInstance = axios//.create({})
-    /*{baseURL: window.location.hostname.includes('localhost')
-            ? 'http://localhost:9380'
-            :''})*/
+    const axiosInstance = axios
     return {
         getNewGToken: async () => {
             const response = await axiosInstance.get('/api/gapis/get-token')

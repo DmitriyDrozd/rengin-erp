@@ -11,6 +11,7 @@
     "license": "MIT",
     "packageManager": "yarn@4.1.0",
     "scripts": {
+        "push": "yarn git:push",
         "git:push": " git add ./ && git commit -m 'w' && git push",
         "start": "yarn front:start",
         "front:demo": "cd ./packages/front && yarn front:demo",

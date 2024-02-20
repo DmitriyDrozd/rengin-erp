@@ -20,7 +20,7 @@ export const useEditor =  <
 
 
     const navigate = useNavigate()
-    history.location.state
+
     const dispatch = useDispatch()
     type Item = ItemByAttrs<Attrs,EID>
     const entity = editor.entity

@@ -1,13 +1,13 @@
 import {Button, ButtonProps, Popconfirm} from 'antd'
 import {AntdIcons} from './AntdIcons'
 import {useNavigate} from 'react-router-dom'
-import {AnyAttributes} from "@shammasov/mydux";
+import {AnyAttributes, TaggedID} from "@shammasov/mydux";
 import {AnyEntity} from "iso";
 
 export type DeleteButtonProps<Attrs extends AnyAttributes,EID extends string> = {
     entity?:AnyEntity
     id?: string
-    onDeleted?: (id: string | undefined) => any
+    onDeleted?: (id: TaggedID<EID>) => any
 } & ButtonProps
 
 export default <EID extends string, Attrs extends AnyAttributes>({entity,id,onDeleted, onClick, ...props}: DeleteButtonProps<Attrs,EID>) => {

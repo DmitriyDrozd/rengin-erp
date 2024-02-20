@@ -40,9 +40,9 @@ export type ParamsEnumAttr = {
     disabled?: boolean
     options: RenSelectOption[]
 }
+
 export type ParamsDefaultMeta = {
     disabled?: boolean
-
 }
 
 
@@ -91,6 +91,7 @@ export type PropRule< Attrs extends AnyAttributes, K extends keyof EntitySlice<A
     getParams: PropertyGetParams<Attrs, K,EID>
     getErrors: PropertyGetErrors<Attrs, K,EID >
 }>
+
 export type Rules <EID extends string, Attrs extends AnyAttributes>= {
     [K in keyof Attrs]:PropRule<Attrs, K,EID >
 }
@@ -104,6 +105,7 @@ export const buildEditor = <EID extends string,
     type Parts = ResourceParts<Res>
 
     const rulesObj: Record<string, PropRule<Attrs, keyof Attrs,EID>> = {} as any
+
     entity.attributesList.forEach( prop => {
 
         rulesObj[prop.name!] = {

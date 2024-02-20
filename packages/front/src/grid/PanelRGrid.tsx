@@ -62,7 +62,7 @@ export default  <EID extends string, Attrs extends AnyAttributes>({title,gridRef
     }
 
     const onDelete = () => {
-        const action = entity.actions.removedBatch(selectedIds)
+        const action = entity.actions.removedMany(selectedIds)
         dispatch(action)
         setSelectedIds([])
         setDeleteMode(false)

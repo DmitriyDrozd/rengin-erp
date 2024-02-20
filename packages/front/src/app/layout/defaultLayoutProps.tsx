@@ -7,7 +7,7 @@ import {RoleType} from "iso"
 export default (role: RoleType) =>{
     const routesInit = role === 'руководитель'?
         [{
-            path: "/app/in/dashboard",
+            path: "/in/dashboard",
             name: "Дашборд",
             icon: <BarChartOutlined />,
         }] : []
@@ -17,7 +17,7 @@ export default (role: RoleType) =>{
             routes: [
                 ...routesInit,
                 {
-                    path: "/app/in/issues",
+                    path: "/in/issues",
                     name: "Заявки",
                     icon: <MailOutlined />,
                 },

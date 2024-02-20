@@ -4,8 +4,8 @@ import {visualizer} from 'rollup-plugin-visualizer'
 //import appConfig from '@app-config/vite';
 //import react from "@vitejs/plugin-react-swc";
 
-const RENGIN_VITE_PORT = process.env.RENGIN_VITE_PORT || 9302
-const RENGIN_SERVICE_API =  process.env.RENGIN_SERVICE_API || 'http://127.0.0.1:'+35080
+const RENGIN_VITE_PORT = 37081
+const RENGIN_SERVICE_API =  process.env.RENGIN_SERVICE_API || 'http://127.0.0.1:'+37080
 
 const env = {
     RENGIN_VITE_PORT,
