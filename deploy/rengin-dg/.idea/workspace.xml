@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8f577e82-d504-449a-9564-3a85f3d23cac" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../packages/iso/src/utils/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../packages/service/.env.prod.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/app/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/app/_defaultProps.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/app/_defaultProps.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/elements/UploadSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/elements/UploadSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/form/RenFormSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/form/RenFormSelect.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/IssueModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/IssueModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/EditIssueFormTab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/EditIssueFormTab.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/EstimationsTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/EstimationsTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/ExpensesTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/components/pages/issues/tabs/ExpensesTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/grid/RGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/grid/RGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/store/ducks/frontConfigDuck.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/store/ducks/frontConfigDuck.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/store/ducks/preferencesDuck.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/store/ducks/preferencesDuck.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/store/ducks/routerDuck.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/store/ducks/routerDuck.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/front/src/store/frontReducer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/front/src/store/frontReducer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/getMongoRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/getMongoRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/core/createResource.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/core/createResource.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/core/valueTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/core/valueTypes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/brands.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/brands.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/issues.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/issues.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/legals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/legals.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/sites.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/sites.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/repos/users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/resourcesList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/iso/src/store/bootstrap/resourcesList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/sse-next/SSEDuck.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/sse-next/SSESaga.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/iso/src/store/sse-next/SSEUtil.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/.env.dev.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/.env.dev.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/repositories/bootstrapRepositories.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/repositories/bootstrapRepositories.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/repositories/duckRepoSaga.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/repositories/duckRepoSaga.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/repositories/eventStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/repositories/eventStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/repositories/getMongoDAO.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/repositories/getMongoDAO.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/repositories/getPGDAO.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/repositories/getPGDAO.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/sagaOptions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/sagaOptions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/service/serviceSaga.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/service/serviceSaga.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/store/buildPGSchema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/store/buildPGSchema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/service/src/store/configureServiceStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/service/src/store/configureServiceStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../packages/sha/fsa/src/createCRUDDuck.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../packages/sha/fsa/src/createCRUDDuck.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2YDMbeL5oocdEB2TWAOxxlTEnqR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenDatabaseViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/work/rengin-erp/rengin-dg&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;,
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+</project>

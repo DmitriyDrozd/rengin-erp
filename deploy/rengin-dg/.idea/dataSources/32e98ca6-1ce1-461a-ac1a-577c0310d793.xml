@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="rengindesk.ru mongo">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.49">
+    <root id="1">
+      <ServerVersion>7.0.2</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="rengin">
+      <Current>1</Current>
+      <LocalIntrospectionTimestamp>2023-11-22.20:43:39</LocalIntrospectionTimestamp>
+    </schema>
+    <table id="3" parent="2" name="brands"/>
+    <table id="4" parent="2" name="contracts"/>
+    <table id="5" parent="2" name="events"/>
+    <table id="6" parent="2" name="issues"/>
+    <table id="7" parent="2" name="legals"/>
+    <table id="8" parent="2" name="sites"/>
+    <table id="9" parent="2" name="subs"/>
+    <table id="10" parent="2" name="users"/>
+    <column id="11" parent="3" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="12" parent="3" name="brandId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="13" parent="3" name="brandName">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="14" parent="3" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="15" parent="3" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="16" parent="4" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="17" parent="4" name="brandId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="18" parent="4" name="contractId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="19" parent="4" name="contractNumber">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="20" parent="4" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="21" parent="4" name="endDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="22" parent="4" name="legalId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="23" parent="4" name="rate">
+      <DasType>Int32|4s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="24" parent="4" name="signDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="25" parent="4" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="26" parent="5" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="27" parent="5" name="__v">
+      <DasType>Int32|4s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="28" parent="5" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="29" parent="5" name="guid">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="30" parent="5" name="meta">
+      <DasType>Object|4999544s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="31" parent="5" name="payload">
+      <DasType>Object|4999544s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="32" parent="5" name="tags">
+      <DasType>list|4999545s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="33" parent="5" name="type">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="34" parent="5" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="35" parent="5" name="userId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="36" parent="5" name="isCommand">
+      <DasType>Boolean|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="37" parent="5" name="meta.persistent">
+      <DasType>Boolean|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="38" parent="5" name="payload.brandId">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="39" parent="5" name="payload.brandName">
+      <DasType>String|12s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="40" parent="5" name="payload.legalId">
+      <DasType>String|12s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="41" parent="5" name="payload.legalName">
+      <DasType>String|12s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="42" parent="6" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="43" parent="6" name="actFiles">
+      <DasType>list|4999545s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="44" parent="6" name="brandId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="45" parent="6" name="checkFiles">
+      <DasType>list|4999545s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="46" parent="6" name="clientsIssueNumber">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="47" parent="6" name="completedDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="48" parent="6" name="contractId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="49" parent="6" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="50" parent="6" name="estimatePrice">
+      <DasType>Int32|4s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="51" parent="6" name="issueId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="52" parent="6" name="legalId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="53" parent="6" name="plannedDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="54" parent="6" name="registerDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="55" parent="6" name="removed">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="56" parent="6" name="siteId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="57" parent="6" name="subId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="58" parent="6" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="59" parent="6" name="workFiles">
+      <DasType>list|4999545s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="60" parent="6" name="checkFiles.name">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="61" parent="6" name="description">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="62" parent="6" name="estimationPrice">
+      <DasType>Int32|4s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="63" parent="6" name="registeredDate">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="64" parent="6" name="responsibleEngineer">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="65" parent="6" name="status">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="66" parent="6" name="workStartedDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="67" parent="6" name="checkFiles.url">
+      <DasType>String|12s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="68" parent="6" name="estimations">
+      <DasType>list|4999545s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="69" parent="6" name="responsibleManagerId">
+      <DasType>String|12s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="70" parent="6" name="estimations.amount">
+      <DasType>String|12s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="71" parent="6" name="estimations.comment">
+      <DasType>String|12s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="72" parent="6" name="estimations.title">
+      <DasType>String|12s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="73" parent="6" name="estimationsApproved">
+      <DasType>Boolean|12s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="74" parent="6" name="expensePrice">
+      <DasType>Int32|4s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="75" parent="6" name="expenses">
+      <DasType>list|4999545s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="76" parent="6" name="expenses.amount">
+      <DasType>String|12s</DasType>
+      <Position>10</Position>
+    </column>
+    <column id="77" parent="6" name="expenses.comment">
+      <DasType>String|12s</DasType>
+      <Position>11</Position>
+    </column>
+    <column id="78" parent="6" name="expenses.date">
+      <DasType>String|12s</DasType>
+      <Position>12</Position>
+    </column>
+    <column id="79" parent="6" name="expenses.paymentType">
+      <DasType>String|12s</DasType>
+      <Position>13</Position>
+    </column>
+    <column id="80" parent="6" name="expenses.purposeType">
+      <DasType>String|12s</DasType>
+      <Position>14</Position>
+    </column>
+    <column id="81" parent="6" name="expenses.purpuseType">
+      <DasType>String|12s</DasType>
+      <Position>15</Position>
+    </column>
+    <column id="82" parent="6" name="expenses.title">
+      <DasType>String|12s</DasType>
+      <Position>16</Position>
+    </column>
+    <column id="83" parent="7" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="84" parent="7" name="brandId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="85" parent="7" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="86" parent="7" name="legalId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="87" parent="7" name="legalName">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="88" parent="7" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="89" parent="8" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="90" parent="8" name="address">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="91" parent="8" name="brandId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="92" parent="8" name="city">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="93" parent="8" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="94" parent="8" name="legalId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="95" parent="8" name="siteId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="96" parent="8" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="97" parent="9" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="98" parent="9" name="contractId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="99" parent="9" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="100" parent="9" name="siteId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="101" parent="9" name="subId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="102" parent="9" name="subscribeDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="103" parent="9" name="unsubscribeDate">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="104" parent="9" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="105" parent="10" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="106" parent="10" name="company">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="107" parent="10" name="createdAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="108" parent="10" name="email">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="109" parent="10" name="fullName">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="110" parent="10" name="password">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="111" parent="10" name="removed">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="112" parent="10" name="role">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="113" parent="10" name="title">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="114" parent="10" name="updatedAt">
+      <DasType>ISODate|91s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="115" parent="10" name="userId">
+      <DasType>String|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="116" parent="10" name="grids">
+      <DasType>Object|4999544s</DasType>
+      <Position>2</Position>
+    </column>
+  </database-model>
+</dataSource>
