@@ -1,5 +1,5 @@
+import type FastifyHttpErrorsEnhanced from 'fastify-http-errors-enhanced'
 
-import type  FastifyHttpErrorsEnhanced from 'fastify-http-errors-enhanced'
 const _importDynamic = new Function("modulePath", "return import(modulePath)")
 export let fastifyErrors: typeof FastifyHttpErrorsEnhanced
 const preload = async () => {

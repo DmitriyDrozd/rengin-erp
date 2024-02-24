@@ -1,6 +1,4 @@
 import useAdminDispatch from '../../hooks/common/useAdminDispatch'
-import {uiSlice} from '../../store/uiSlice'
-import {getNav} from '../getNav'
 import {Button} from 'antd'
 import React from 'react'
 import {AntdIcons} from './AntdIcons'

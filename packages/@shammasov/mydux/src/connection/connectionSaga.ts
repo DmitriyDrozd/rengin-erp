@@ -1,13 +1,13 @@
 import {END, eventChannel} from 'redux-saga'
-import {actionChannel, call, cancel, cancelled, fork, put, select, take, takeEvery, takeLatest} from 'typed-redux-saga'
+import {actionChannel, call, cancel, cancelled, fork, put, select, take, takeEvery} from 'typed-redux-saga'
 
 import * as R from 'ramda'
 import ReconnectingEventSource from 'reconnecting-eventsource'
 import {connectionSlice, ConnectionState, SSE_REDUX_EVENT} from './connectionSlice'
-import {ActorState, EventGUID, isPersistentAction, MyDuxEvent} from "../features/dispatcher";
-import {Action} from "redux";
-import {isArray} from "@shammasov/utils";
-import axios from "axios";
+import {ActorState, EventGUID, isPersistentAction, MyDuxEvent} from '../features/dispatcher'
+import {Action} from 'redux'
+import {isArray} from '@shammasov/utils'
+import axios from 'axios'
 
 const defaultOptions = {
     pushCommands: async (events: Action[] | Action) => {
@@ -43,7 +43,6 @@ export function* connectionSaga(options = defaultOptions) {
 function* runConnection(route: string, options = defaultOptions) {
     const state = yield* select()
     let source = new ReconnectingEventSource(route+'?storeGuid='+state.dispatcher.storeGuid)
-    source
 
     try {
     const sentGuids: EventGUID[] = []
@@ -81,7 +80,7 @@ function* runConnection(route: string, options = defaultOptions) {
             source.addEventListener(SSE_REDUX_EVENT, onMessageHandler)
 
             source.addEventListener('error', onErrorHandler)
-
+            source.onerror = (onErrorHandler)
             source.addEventListener('open', onOpenHandler)
             source.addEventListener("disconnect", e => {
                 console.log('Disconnected', e)
@@ -140,8 +139,7 @@ function* runConnection(route: string, options = defaultOptions) {
                         if (!action.userId)
                             action.userId = action.payload ? action.payload.userId : userId
                     }
-                    if (action.userId)
-                        action.userId = action.userId
+
                     else
                         action.userId = 'admin'
 

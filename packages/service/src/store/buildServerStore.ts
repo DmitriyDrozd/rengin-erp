@@ -4,9 +4,10 @@ import {dispatcherMiddleware, dispatcherSlice} from "@shammasov/mydux"
 
 import {Connection} from "mongoose";
 import {GServices} from "../fastify/gapis-token/getGServices";
-import {ORM} from "iso";
+
 import knex from "knex";
 import {createEventStoreMiddleware} from "@shammasov/mydux-backend"
+import {ORM} from "@rengin/iso";
 
 export type ServerContextParts = { mongo: Connection, gServices: GServices, orm: ORM, pg: ReturnType<typeof knex> }
 const configureBackendStore = async ({orm,gServices, mongo, pg}:ServerContextParts) =>{

@@ -14,6 +14,7 @@ import {useMount} from "react-use";
 import {pathnames} from "../../app/pathnames";
 import {Navigate} from "react-router";
 import {connectionSlice} from "@shammasov/mydux";
+
 const api = getRestApi()
 export default () => {
     useMount(() => {

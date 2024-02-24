@@ -42,7 +42,13 @@
     ],
     "types": [
       "node"
-    ]
+    ],
+   /* "paths": {
+      "@/iso": ["packages/iso/src"],
+      "@/service": ["packages/service/src"],
+      "@/front": ["packages/front/src"],
+      "@shammasov/*": ["packages/@shammasov"],
+    }*/
   },
   "include": [
     "src"

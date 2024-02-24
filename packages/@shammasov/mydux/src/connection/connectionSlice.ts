@@ -1,18 +1,18 @@
-import {createAction, createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {MyDuxEvent} from "../features/dispatcher";
-import ReconnectingEventSource from "reconnecting-eventsource";
+import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {MyDuxEvent} from '../features/dispatcher'
 
 export const SSE_REDUX_EVENT = 'SSE_REDUX_EVENT'
 export enum SSEReadyStatesEnum { 
     CONNECTING, 
     OPEN,
-    CLOSED
+    CLOSED,
+    INITIALIZING = -1
 }
 const initialState = {
     findConnectionURL: '/api/sse/find',
     bootstraped: false,
     isConnected: false,
-    sseReadyState: SSEReadyStatesEnum.CLOSED as any as SSEReadyStatesEnum,
+    sseReadyState: SSEReadyStatesEnum.INITIALIZING as any as SSEReadyStatesEnum,
     error: undefined as any,
     pushingEvents: [] as PayloadAction<MyDuxEvent<any, any>>[],
     completedPushes: [] as PayloadAction<MyDuxEvent>[],

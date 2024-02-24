@@ -1,8 +1,8 @@
-import {Readable} from 'stream';
-import {IncomingMessage as Http1ServerRequest, OutgoingHttpHeaders, ServerResponse as Http1ServerResponse,} from 'http';
-import {Http2ServerRequest, Http2ServerResponse} from 'http2';
-import {EventMap, TypedEmitter} from './TypedEmitter';
-import {serialize, SerializerFunction,sanitize, SanitizerFunction,generateId} from './utils'
+import {Readable} from 'stream'
+import {IncomingMessage as Http1ServerRequest, OutgoingHttpHeaders, ServerResponse as Http1ServerResponse} from 'http'
+import {Http2ServerRequest, Http2ServerResponse} from 'http2'
+import {EventMap, TypedEmitter} from './TypedEmitter'
+import {generateId, sanitize, SanitizerFunction, serialize, SerializerFunction} from './utils'
 
 interface SessionOptions {
 	/**
@@ -201,94 +201,6 @@ class SSESession<
 		setImmediate(this.initialize);
 	}
 
-	private initialize = () => {
-		const url = `http://${this.req.headers.host}${this.req.url}`;
-		const params = new URL(url).searchParams;
-
-		if (this.trustClientEventId) {
-			const givenLastEventId =
-				this.req.headers["last-event-id"] ??
-				params.get("lastEventId") ??
-				params.get("evs_last_event_id") ??
-				"";
-
-			this.lastId = givenLastEventId as string;
-		}
-
-		const headers: OutgoingHttpHeaders = {};
-
-		if (this.res instanceof Http1ServerResponse) {
-			headers["Content-Type"] = "text/event-stream";
-			headers["Cache-Control"] =
-				"private, no-cache, no-store, no-transform, must-revalidate, max-age=0";
-			headers["Connection"] = "keep-alive";
-			headers["Pragma"] = "no-cache";
-			headers["X-Accel-Buffering"] = "no";
-		} else {
-			headers["content-type"] = "text/event-stream";
-			headers["cache-control"] =
-				"private, no-cache, no-store, no-transform, must-revalidate, max-age=0";
-			headers["pragma"] = "no-cache";
-			headers["x-accel-buffering"] = "no";
-		}
-
-		for (const [name, value] of Object.entries(this.headers)) {
-			headers[name] = value ?? "";
-		}
-
-		this.res.writeHead(this.statusCode, headers);
-
-		if (params.has("padding")) {
-			this.comment(" ".repeat(2049)).dispatch();
-		}
-
-		if (params.has("evs_preamble")) {
-			this.comment(" ".repeat(2056)).dispatch();
-		}
-
-		if (this.initialRetry !== null) {
-			this.retry(this.initialRetry).dispatch();
-		}
-
-		this.flush();
-
-		if (this.keepAliveInterval !== null) {
-			this.keepAliveTimer = setInterval(
-				this.keepAlive,
-				this.keepAliveInterval
-			);
-		}
-
-		this.isConnected = true;
-
-		this.emit("connected");
-	};
-
-	private onDisconnected = () => {
-		if (this.keepAliveTimer) {
-			clearInterval(this.keepAliveTimer);
-		}
-
-		this.isConnected = false;
-
-		this.emit("disconnected");
-	};
-
-	/**
-	 * Write a line with a field key and value appended with a newline character.
-	 */
-	private writeField = (name: string, value: string): this => {
-		const sanitized = this.sanitize(value);
-
-		this.buffer += name + ":" + sanitized + "\n";
-
-		return this;
-	};
-
-	private keepAlive = () => {
-		this.comment().dispatch().flush();
-	};
-
 	/**
 	 * Set the event to the given name (also referred to as "type" in the specification).
 	 *
@@ -462,6 +374,94 @@ class SSESession<
 		for await (const data of iterable) {
 			this.push(data, eventName);
 		}
+	};
+
+	private initialize = () => {
+		const url = `http://${this.req.headers.host}${this.req.url}`;
+		const params = new URL(url).searchParams;
+
+		if (this.trustClientEventId) {
+			const givenLastEventId =
+				this.req.headers["last-event-id"] ??
+				params.get("lastEventId") ??
+				params.get("evs_last_event_id") ??
+				"";
+
+			this.lastId = givenLastEventId as string;
+		}
+
+		const headers: OutgoingHttpHeaders = {};
+
+		if (this.res instanceof Http1ServerResponse) {
+			headers["Content-Type"] = "text/event-stream";
+			headers["Cache-Control"] =
+				"private, no-cache, no-store, no-transform, must-revalidate, max-age=0";
+			headers["Connection"] = "keep-alive";
+			headers["Pragma"] = "no-cache";
+			headers["X-Accel-Buffering"] = "no";
+		} else {
+			headers["content-type"] = "text/event-stream";
+			headers["cache-control"] =
+				"private, no-cache, no-store, no-transform, must-revalidate, max-age=0";
+			headers["pragma"] = "no-cache";
+			headers["x-accel-buffering"] = "no";
+		}
+
+		for (const [name, value] of Object.entries(this.headers)) {
+			headers[name] = value ?? "";
+		}
+
+		this.res.writeHead(this.statusCode, headers);
+
+		if (params.has("padding")) {
+			this.comment(" ".repeat(2049)).dispatch();
+		}
+
+		if (params.has("evs_preamble")) {
+			this.comment(" ".repeat(2056)).dispatch();
+		}
+
+		if (this.initialRetry !== null) {
+			this.retry(this.initialRetry).dispatch();
+		}
+
+		this.flush();
+
+		if (this.keepAliveInterval !== null) {
+			this.keepAliveTimer = setInterval(
+				this.keepAlive,
+				this.keepAliveInterval
+			);
+		}
+
+		this.isConnected = true;
+
+		this.emit("connected");
+	};
+
+	private onDisconnected = () => {
+		if (this.keepAliveTimer) {
+			clearInterval(this.keepAliveTimer);
+		}
+
+		this.isConnected = false;
+
+		this.emit("disconnected");
+	};
+
+	/**
+	 * Write a line with a field key and value appended with a newline character.
+	 */
+	private writeField = (name: string, value: string): this => {
+		const sanitized = this.sanitize(value);
+
+		this.buffer += name + ":" + sanitized + "\n";
+
+		return this;
+	};
+
+	private keepAlive = () => {
+		this.comment().dispatch().flush();
 	};
 }
 

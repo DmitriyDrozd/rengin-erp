@@ -4,16 +4,16 @@ import Fastify, {FastifyLoggerOptions, FastifyRequest, RawServerBase} from 'fast
 import fastifyStatic from '@fastify/static'
 import {PinoLoggerOptions} from 'fastify/types/logger'
 import fastifyPrettier from 'fastify-prettier'
-import {DateTime,} from 'luxon'
-import {uploadPlugin} from "./upload";
-import {gsapiTokenPlugin} from "./gapis-token/gapis-token";
-import {ServerContext} from "../store/buildServerStore";
-import {sessionsSlice, sseSessionsPlugin} from "@shammasov/mydux-backend";
-import {authPlugin} from "./auth/auth-plugin";
-import {StateWithSlice} from "@shammasov/mydux";
+import {DateTime} from 'luxon'
+import {uploadPlugin} from './upload'
+import {gsapiTokenPlugin} from './gapis-token/gapis-token'
+import {ServerContext} from '../store/buildServerStore'
+import {sessionsSlice, sseSessionsPlugin} from '@shammasov/mydux-backend'
+import {authPlugin} from './auth/auth-plugin'
+import {StateWithSlice} from '@shammasov/mydux'
 import './../typings'
-import {propOr} from "ramda";
-import {fastifyErrors, fastifyHttpErrorsPromise} from "../errors";
+import {propOr} from 'ramda'
+import {fastifyErrors, fastifyHttpErrorsPromise} from '../errors'
 
 const events = {}
 
@@ -81,9 +81,7 @@ logger,
         return reply.sendFile(req.raw.url!)
     })
 
-
     fastify.register(authPlugin)
-
 
     await fastify.register(sseSessionsPlugin,{
         store: ctx.store as any as Store<StateWithSlice<typeof sessionsSlice>>,

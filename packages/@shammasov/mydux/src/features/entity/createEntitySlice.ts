@@ -1,13 +1,13 @@
-import {$Values} from "utility-types"
-import type {ActionReducerMapBuilder} from "@reduxjs/toolkit"
-import {UnknownAction} from "@reduxjs/toolkit"
-import {createAdvancedEntityAdapter, EntityState} from "./create-advanced-entity-adapter"
-import * as R from "ramda"
-import {uniq} from "ramda"
-import {generateGuid, Return, toAssociativeArray, toCamelCase} from "@shammasov/utils"
-import type {AnyAttributes,  EmpheralAttributes, ItemByAttrs, ItemOfAttr} from "./AttrFactories_ex";
-import {  commonAttrs} from "./AttrFactories_ex";
-import {CamelCase} from "type-fest";
+import {$Values} from 'utility-types'
+import type {ActionReducerMapBuilder} from '@reduxjs/toolkit'
+import {UnknownAction} from '@reduxjs/toolkit'
+import {createAdvancedEntityAdapter, EntityState} from './create-advanced-entity-adapter'
+import * as R from 'ramda'
+import {uniq} from 'ramda'
+import {generateGuid, Return, toAssociativeArray, toCamelCase} from '@shammasov/utils'
+import type {AnyAttributes, EmpheralAttributes, ItemByAttrs, ItemOfAttr, TaggedID} from './AttrFactories_ex'
+import {commonAttrs} from './AttrFactories_ex'
+import {CamelCase} from 'type-fest'
 
 
 export type ResourceLang = Partial<{
@@ -48,11 +48,12 @@ export const createEntitySlice = <Attrs extends EmpheralAttributes ,EID extends 
 (EID: EID, attributes: Attrs,{langRU,...rest}: EntityOptions< Attrs,EID>) => {
 type RootState = StateWith<CamelCase<EID>, EntityState<Attrs, EID>>
     const  reducerPath= toCamelCase(EID)
+    const allAttributes = {...commonAttrs(EID),...attributes}
     const props = {
         langRU,
         EID,
         reducerPath,
-        attributes,
+        attributes: allAttributes,
         exampleItem: {} as any as Item
     }
     const attributesList:(Attrs[keyof Attrs])[]  = []
@@ -75,7 +76,7 @@ type   IdType = typeof props.attributes.id['tsType']
         name: EID,
         reducerPath,
         extraEntityReducers: (builder) => builder,
-        attributes: {...commonAttrs(EID), ...attributes}
+        attributes: {...allAttributes}
     })
     const selectById = (id: IdType) => (state: RootState) =>
         state[reducerPath].entities[id] as any as Item
