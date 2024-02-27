@@ -1,6 +1,19 @@
 version: '3.5'
 
 services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    volumes:
+      - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rengin
+      - MONGO_INITDB_ROOT_PASSWORD=BuildMeUp
+    command: [--auth]
+
   postgres:
     container_name: postgres_container
     image: postgres
@@ -35,5 +48,6 @@ networks:
     driver: bridge
 
 volumes:
+  mongodb-data:
   postgres:
   pgadmin:

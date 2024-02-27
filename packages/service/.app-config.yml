@@ -1,10 +1,10 @@
 MONGO_URI:
     $env:
-      default: mongodb://rengin:BuildMeUp@dev.rengindesk.ru:27017/rengin
-      production: mongodb://rengin:BuildMeUp@rengindesk.ru:27017rengin
+      default: mongodb://rengin:BuildMeUp@rengindesk.ru:27017/rengin?authSource=admin
+      production: mongodb://rengin:BuildMeUp@rengindesk.ru:27017rengin?authSource=admin
 POSTGRES_URI:
     $env:
-      default: postgres://rengin:BuildMeUp@dev.rengindesk.ru:5432/rengin
+      default: postgres://rengin:BuildMeUp@rengindesk.ru:5432/rengin
       production: postgres://rengin:BuildMeUp@rengindesk.ru:5432/rengin
 WRITE_PG:
     $env:
