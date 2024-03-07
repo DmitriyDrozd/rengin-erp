@@ -1,20 +1,4 @@
 {
-  "config": {
-    "NODE_ENV": {
-      "local": {
-        "CALLBACL_URL": "http://localhost:19001/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj-local"
-      },
-      "development": {
-        "CALLBACL_URL": "https://dev.godj.pro/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj-dev"
-      },
-      "production": {
-        "CALLBACL_URL": "https://dev.godj.pro/api/oauth/google/callback",
-        "MONGO_URI": "mongodb://godj:BuildMeUp@dev.godj.pro:27017/godj"
-      }
-    }
-  },
   "name": "service",
   "version": "0.1.0",
   "repository": {

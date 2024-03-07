@@ -1,4 +1,3 @@
-import {USERS} from "iso/src/store/bootstrap"
 import React from "react"
 import {EditorContext, useEditor} from "../chapter-modal/useEditor"
 import BaseEditModal from "../BaseItemModal"
@@ -19,12 +18,12 @@ export default ({id}: {id: string}) => {
     const resource = BRANDS
     const {removed, ...propsToRender} = BRANDS.properties
     const ledger = useLedger()
-    const sites = ledger.sites.filter(s => s.brandId == id)
-    const [sitesCols] = useAllColumns(SITES)
+    const sites = ledger.sites.list.filter(s => s.brandId == id)
+    // const [sitesCols] = useAllColumns(SITES)
     const name = resource.getItemName(useEditorData.item)
-    const legals = ledger.legals.filter(s => s.brandId== id)
-    const [legalsCols] = useAllColumns(LEGALS)
-    const contracts = ledger.contracts.filter(c => c.brandId === id)
+    const legals = ledger.legals.list.filter(s => s.brandId== id)
+    // const [legalsCols] = useAllColumns(LEGALS)
+    const contracts = ledger.contracts.list.filter(c => c.brandId === id)
     const addon=  <ProCard
         tabs={{
             type: 'card',

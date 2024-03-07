@@ -11,8 +11,8 @@ export default () =>
     </g>
     <defs>
         <linearGradient id="b" x1="255.421" x2="216.902" y1="69.863" y2="-58.285" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#2AF598"/>
-            <stop offset="1" stop-color="#009EFD"/>
+            <stop stopColor="#2AF598"/>
+            <stop offset="1" stopColor="#009EFD"/>
         </linearGradient>
     </defs>
 </svg>

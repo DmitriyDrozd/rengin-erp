@@ -13,7 +13,7 @@ import SUBS from 'iso/src/store/bootstrap/repos/subs'
 
 export default () => {
     const ledger = useLedger()
-    const list = ledger.contracts
+    // const list = ledger.contracts
     const [cols,map] = useAllColumns(CONTRACTS)
 
     return <ItemChapter
@@ -43,12 +43,12 @@ export default () => {
         }
         renderItemInfo={({verb,item,id, resource,}) => {
             const ledger = useLedger()
-            const subList = ledger.subs.filter(s => s.contractId === item.contractId)
-            const sites = ledger.sites.filter(s => s.brandId == id)
-            const [sitesCols] = useAllColumns(SITES)
+            const subList = ledger.subs.list.filter(s => s.contractId === item.contractId)
+            // const sites = ledger.sites.list.filter(s => s.brandId == id)
+            // const [sitesCols] = useAllColumns(SITES)
 
-            const legals = ledger.legals.filter(s => s.brandId== id)
-            const [legalsCols] = useAllColumns(LEGALS)
+            // const legals = ledger.legals.list.filter(s => s.brandId== id)
+            // const [legalsCols] = useAllColumns(LEGALS)
             return <PanelRGrid
                 createItemProps={{contractId:id}}
                 resource={SUBS}
