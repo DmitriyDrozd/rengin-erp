@@ -61,8 +61,10 @@ function* importObjectsSaga(data: Datum[]) {
     ) {
         const byQueryGetter = byQueryGetters(ledger, updateLedger);
 
-        const brand = byQueryGetter.brandByName(brandName);
-        const legal = byQueryGetter.legalByName(legalName, brand.brandId);
+        // @ts-ignore
+        const brand = yield byQueryGetter.brandByName(brandName);
+        // @ts-ignore
+        const legal = yield byQueryGetter.legalByName(legalName, brand.brandId);
 
         // Проверка на существование такой заявки
         let issue = ledger.issues.list.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId && s.clientsIssueNumber === clientsIssueNumber);

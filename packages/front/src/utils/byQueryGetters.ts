@@ -1,6 +1,6 @@
 import { generateGuid } from '@sha/random';
 import { sleep } from '@sha/utils';
-import BRANDS from 'iso/src/store/bootstrap/repos/brands';
+import BRANDS, { BrandVO } from 'iso/src/store/bootstrap/repos/brands';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import {
@@ -22,7 +22,7 @@ export const byQueryGetters = (ledger: ReturnType<typeof selectLedger>, updateLe
                 console.log(`Brand ${brandName} found`);
             }
 
-            return ledger.brands.byName[brandName];
+            return ledger.brands.byName[brandName] as BrandVO;
         },
         legalByName: function* (legalName: string, brandId: string) {
             if (!ledger.legals.byName[legalName]) {
