@@ -24,7 +24,7 @@ export default <D,>(props: ImportCardProps<D>) => {
                     cover={<img alt="example" src={props.imgURL} />}
                 >
 
-        <Meta title={props.title} description={     <p>Подготовьте excel файл с данными как показано в примере <a href={props.sampleFileURL} download>Образец импорта{props.title}.xlsx</a></p>
+        <Meta title={props.title} description={     <p>Подготовьте excel файл с данными как показано в примере <a href={props.sampleFileURL} download>Образец импорта {props.title}.xlsx</a></p>
         } />
         <Upload
             accept=".xls, .xlsx"
@@ -69,6 +69,6 @@ export default <D,>(props: ImportCardProps<D>) => {
             <Button icon={<UploadOutlined />}>
                 Загрузить xls/xlsx файл
             </Button>
-        </Upload>;
+        </Upload>
     </Card>
 }

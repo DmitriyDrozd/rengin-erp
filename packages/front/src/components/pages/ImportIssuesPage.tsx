@@ -1,9 +1,10 @@
+import {
+    ISSUES,
+    IssueVO
+} from 'iso/src/store/bootstrap/repos/issues';
+import { byQueryGetters } from '../../utils/byQueryGetters';
 import AppLayout from '../app/AppLayout';
 import React from 'react';
-import BRANDS from 'iso/src/store/bootstrap/repos/brands';
-import LEGALS from 'iso/src/store/bootstrap/repos/legals';
-import SITES, { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
-import { sleep } from '@sha/utils';
 import { useStore } from 'react-redux';
 import {
     call,
@@ -14,8 +15,24 @@ import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
 import ImportCard from '../elements/ImportCard';
 
-export const importIssuesXlsxCols = ['brandName', 'legalName', 'city', 'address'] as const;
-type Datum = Record<typeof importIssuesXlsxCols[number], string>
+// todo: тайтл страницы: [object Object]
+//Объект	Договор	Описание	Дата регистрации	Начало работ	Дата завершения	Смета согласована	Смета сумма	Расходы	Статус
+export const importIssuesXlsxCols = [
+    'clientsIssueNumber',
+    'brandName',
+    'legalName',
+    'siteAddress',
+    'contractNumber',
+    'description',
+    'registerDate',
+    'workStartedDate',
+    'completedDate',
+    'estimationsApproved',
+    'estimatePrice',
+    'expensePrice',
+    'status',
+] as const;
+type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
 function* importObjectsSaga(data: Datum[]) {
 
@@ -25,58 +42,68 @@ function* importObjectsSaga(data: Datum[]) {
         ledger = yield* select(selectLedger);
     }
 
-    const newSites: Partial<SiteVO>[] = [];
+    const newIssues: Partial<IssueVO>[] = [];
 
-    function* getOrCreateSite(brandName: string, legalName: string, city: string, address: string) {
-        let brand = ledger.brandsByName[brandName];
-        if (!brand) {
+    function* getOrCreateIssue(
+        clientsIssueNumber: string,
+        brandName: string,
+        legalName: string,
+        siteAddress: string,
+        contractNumber: string,
+        description: string,
+        registerDate: Date,
+        workStartedDate: Date,
+        completedDate: Date,
+        estimationsApproved: boolean,
+        estimatePrice: number,
+        expensePrice: number,
+        status: string,
+    ) {
+        const byQueryGetter = byQueryGetters(ledger, updateLedger);
 
-            const action = BRANDS.actions.added({brandId: generateGuid(), brandName});
-            console.log(`Brand ${brandName} not found, create one`, action);
-            yield* put(action);
+        const brand = byQueryGetter.brandByName(brandName);
+        const legal = byQueryGetter.legalByName(legalName, brand.brandId);
 
-            yield* call(sleep, 10);
-            yield* call(updateLedger);
-        } else {
-            console.log(`Brand ${brandName} found`);
-        }
-        brand = ledger.brandsByName[brandName];
+        // Проверка на существование такой заявки
+        let issue = ledger.issues.list.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId && s.clientsIssueNumber === clientsIssueNumber);
 
-
-        let legal = ledger.legalsByName[legalName];
-        if (!legal) {
-            const action = LEGALS.actions.added({brandId: brand.brandId, legalId: generateGuid(), legalName});
-            console.log(`Legal ${legalName} not found, create one`, action);
-            yield* put(action);
-
-
-            yield* call(sleep, 10);
-            yield* call(updateLedger);
-        }
-        legal = ledger.legalsByName[legalName];
-
-
-        let site = ledger.sites.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
-            s.city === city && s.address === address
-        );
-        if (!site) {
-
-            const site = {brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()};
-            console.log(`Site not found, create one`, site.address);
-            newSites.push(site);
+        // Если заявка новая
+        if (!issue) {
+            const newIssue = {
+                brandId: brand.brandId,
+                legalId: legal.legalId,
+                clientsIssueNumber,
+                [ISSUES.idProp]: generateGuid(),
+            };
+            console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
+            newIssues.push(newIssue);
         }
 
-        return site;
+        return issue;
     }
 
     for (let i = 0; i < data.length; i++) {
         const d = data[i];
-        yield* call(getOrCreateSite, d.brandName, d.legalName, d.city, d.address);
-
+        yield* call(getOrCreateIssue,
+            d.clientsIssueNumber,
+            d.brandName,
+            d.legalName,
+            d.siteAddress,
+            d.contractNumber,
+            d.description,
+            d.registerDate,
+            d.workStartedDate,
+            d.completedDate,
+            d.estimationsApproved,
+            d.estimatePrice,
+            d.expensePrice,
+            d.status,
+        );
     }
-    if (newSites.length)
-        yield* put(SITES.actions.addedBatch(newSites));
 
+    if (newIssues.length) {
+        yield* put(ISSUES.actions.addedBatch(newIssues));
+    }
 }
 
 export const ImportIssuesPage = () => {
@@ -92,9 +119,9 @@ export const ImportIssuesPage = () => {
                 onImport={importFile}
                 sampleFileURL={'/assets/import-issues-example.xlsx'}
                 xlsxCols={importIssuesXlsxCols}
-                title={'Импорт объектов и заказчиков'}
-                imgURL={'/assets/import-objects-example.png'}
-                importedItemsFound={'объектов с данными об адресах и заказчиках'}
+                title={'Импорт заявок'}
+                imgURL={'/assets/import-issues-example.png'}
+                importedItemsFound={'объектов с данными о заявках'}
             />
         </AppLayout>
     );
