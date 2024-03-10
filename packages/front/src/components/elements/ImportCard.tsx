@@ -3,7 +3,6 @@ import Meta from "antd/es/card/Meta";
 import * as XLSX from "xlsx";
 import {UploadOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
-import {sleep} from "@sha/utils";
 
 const {confirm, info} = Modal
 
@@ -13,7 +12,7 @@ export type ImportCardProps<D extends any, K extends keyof D = keyof D> = {
     title: string
     importedItemsFound: string
     xlsxCols: Readonly<Array<K>>
-    onImport: (items: D[]) => Promise<any>
+    onImport: (items: D[], callback?: () => void) => Promise<any>
 }
 export default <D,>(props: ImportCardProps<D>) => {
     const [isLoading, setLoading] = useState(false)
@@ -46,17 +45,16 @@ export default <D,>(props: ImportCardProps<D>) => {
                         cancelText:'Отмена',
                         onOk: async () => {
                             setLoading(true)
-                           await  props.onImport(arr)
-                            await sleep(2000)
-                            const res =  info({
-                                title:"Записи успешно импортированы",
-                                content:props.title
-                            })
-                            setLoading(false)
-
+                            props.onImport(arr as any, () => {
+                                console.log('Import file complete');
+                                info({
+                                    title:"Записи успешно импортированы",
+                                    content:props.title
+                                })
+                                setLoading(false)
+                            });
                         }
                     })
-
 
                     /* DO SOMETHING WITH workbook HERE */
                 };

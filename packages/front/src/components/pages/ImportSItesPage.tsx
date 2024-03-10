@@ -39,7 +39,6 @@ function* importObjectsSaga(data: Datum[]) {
         }
         brand = ledger.brands.byName[brandName]
 
-
         let legal = ledger.legals.byName[legalName]
         if(!legal) {
             const action = LEGALS.actions.added({brandId: brand.brandId, legalId: generateGuid(), legalName})
@@ -52,12 +51,10 @@ function* importObjectsSaga(data: Datum[]) {
         }
         legal = ledger.legals.byName[legalName]
 
+        let site = ledger.sites.list.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
+            s.city === city && s.address === address)
 
-        let site = ledger.sites.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
-                s.city === city && s.address === address
-            )
         if(!site) {
-
             const site = {brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()}
             console.log(`Site not found, create one`, site.address)
             newSites.push(site)
@@ -78,15 +75,14 @@ function* importObjectsSaga(data: Datum[]) {
 
 export default () => {
     const store = useStore()
-    const importFile = async (data: Array<string[]>) => {
-       const task =  store.runSaga(importObjectsSaga, data)
+    const importFile = async (data: Datum[], callback?: () => void) => {
+        // @ts-ignore
+        const task = store.runSaga(importObjectsSaga, data)
         await task
 
-
+        callback?.();
     }
     return <AppLayout>
-
-
             <ImportCard<Datum>
                 onImport={importFile}
                 sampleFileURL={'/assets/import-objects-example.xlsx'}
@@ -94,7 +90,6 @@ export default () => {
                 title={"Импорт объектов и заказчиков"}
                 imgURL={'/assets/import-objects-example.png'}
                 importedItemsFound={"объектов с данными об адресах и заказчиках"}
-            ></ImportCard>
-
+            />
     </AppLayout>
 }

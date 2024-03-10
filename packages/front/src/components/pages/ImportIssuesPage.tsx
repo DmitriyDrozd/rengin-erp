@@ -147,10 +147,12 @@ function* importObjectsSaga(data: Datum[]) {
 
 export const ImportIssuesPage = () => {
     const store = useStore();
-    const importFile = async (data: Datum[]) => {
+    const importFile = async (data: Datum[], callback?: () => void) => {
         // @ts-ignore
         const task = store.runSaga(importObjectsSaga, data);
         await task;
+
+        callback?.();
     };
 
     return (
