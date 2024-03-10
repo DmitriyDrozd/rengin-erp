@@ -46,7 +46,7 @@ export const siteResource = createResource('site',{
 
     },
     {
-        getItemName: item => item.city+', '+item.address,
+        getItemName: item => item?.city+', '+item?.address,
         langRU: {
             singular: 'Адрес',
             plural: 'Адреса',
@@ -59,6 +59,4 @@ export const siteResource = createResource('site',{
 export type SiteVO = (typeof siteResource)['exampleItem']
 
 export const SITES = siteResource
-
-
 export default SITES

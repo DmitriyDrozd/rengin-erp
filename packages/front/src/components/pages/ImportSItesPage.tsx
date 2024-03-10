@@ -24,7 +24,7 @@ function* importObjectsSaga(data: Datum[]) {
     const newSites: Partial<SiteVO>[] = []
 
     function* getOrCreateSite(brandName: string, legalName: string,city: string, address: string) {
-        let brand = ledger.brandsByName[brandName]
+        let brand = ledger.brands.byName[brandName]
         if(!brand) {
 
             const action = BRANDS.actions.added({brandId: generateGuid(), brandName})
@@ -37,10 +37,10 @@ function* importObjectsSaga(data: Datum[]) {
         else  {
             console.log(`Brand ${brandName} found`)
         }
-        brand = ledger.brandsByName[brandName]
+        brand = ledger.brands.byName[brandName]
 
 
-        let legal = ledger.legalsByName[legalName]
+        let legal = ledger.legals.byName[legalName]
         if(!legal) {
             const action = LEGALS.actions.added({brandId: brand.brandId, legalId: generateGuid(), legalName})
             console.log(`Legal ${legalName} not found, create one`, action)
@@ -50,7 +50,7 @@ function* importObjectsSaga(data: Datum[]) {
             yield* call(sleep, 10)
             yield* call(updateLedger)
         }
-        legal = ledger.legalsByName[legalName]
+        legal = ledger.legals.byName[legalName]
 
 
         let site = ledger.sites.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
