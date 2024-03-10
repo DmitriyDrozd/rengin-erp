@@ -39,7 +39,7 @@ const p = path
                 return {
                     //  method: request.method,
                     //  proto: request.protocol,
-                    path: request.routerPath,
+                    path: request.routeOptions.url,
                     body: request.body,
                     // You should use the "redact" option to
                     // remove sensitive fields. It could also leak authentication data in
