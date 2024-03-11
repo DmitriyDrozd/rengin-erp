@@ -46,12 +46,7 @@ export const importIssuesXlsxCols = [
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
 function* importObjectsSaga(data: Datum[]) {
-
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
-
-    function* updateLedger() {
-        ledger = yield* select(selectLedger);
-    }
 
     const newIssues: Partial<IssueVO>[] = [];
 
@@ -66,7 +61,7 @@ function* importObjectsSaga(data: Datum[]) {
                                    engineerId,
                                    technicianId,
                                }: IIssue) {
-        const byQueryGetter = byQueryGetters(ledger, updateLedger);
+        const byQueryGetter = yield* byQueryGetters();
 
         // @ts-ignore
         const site = yield byQueryGetter.siteById(siteId);
@@ -144,7 +139,9 @@ export const ImportIssuesPage = () => {
     };
 
     return (
-        <AppLayout>
+        <AppLayout
+            title='Импорт заявок'
+        >
             <ImportCard<Datum>
                 onImport={importFile}
                 sampleFileURL={'/assets/import-issues-example.xlsx'}

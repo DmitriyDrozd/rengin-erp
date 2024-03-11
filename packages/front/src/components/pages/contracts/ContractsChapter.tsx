@@ -8,13 +8,12 @@ import useLedger from '../../../hooks/useLedger'
 import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts'
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
-import SITES from 'iso/src/store/bootstrap/repos/sites'
 import SUBS from 'iso/src/store/bootstrap/repos/subs'
 
 export default () => {
-    const ledger = useLedger()
+    // const ledger = useLedger()
     // const list = ledger.contracts
-    const [cols,map] = useAllColumns(CONTRACTS)
+    const [cols] = useAllColumns(CONTRACTS)
 
     return <ItemChapter
                 resource={RESOURCES_MAP.CONTRACTS}
@@ -59,11 +58,10 @@ export default () => {
         renderList={({form,verb,resource}) => {
             return  <div>
                         <PanelRGrid
-
                             fullHeight={true}
                             resource={CONTRACTS}
                             title={'Все договоры'}
-                            columnDefs={[map.clickToEditCol, ...cols]}
+                            columnDefs={[...cols]}
                         />
                         {/**<FooterToolbar extra="extra information">
                             <Button>Cancel</Button>

@@ -53,12 +53,11 @@ const selectUserByEmail = (email: string) => (state) => {
     if (!email)
         return undefined
 
-    const userByEmail = (users as any as UserVO[]).find(user =>
+    return (users as any as UserVO[]).find(user =>
             user.email && (
                 user.email.toLowerCase() === email.toLowerCase()
             )
     )
-    return userByEmail
 }
 
 var uiAvatarColors = [
@@ -81,13 +80,13 @@ var uiAvatarColors = [
     '#d8cfc3',
     '#14c5ff',
 ] as const
-let fontColors = ['#f5f6f9', '#383a3e'] as const
+// let fontColors = ['#f5f6f9', '#383a3e'] as const
 var generateGravatar = (index, n, s) => {
     const num = index % uiAvatarColors.length
     const bgColor = uiAvatarColors[num]
 
-    const c1 = chroma.contrast(bgColor, '#f5f6f9')
-    const c2 = chroma.contrast(bgColor, '#383a3e')
+    // const c1 = chroma.contrast(bgColor, '#f5f6f9')
+    // const c2 = chroma.contrast(bgColor, '#383a3e')
 
     const color = chroma.contrast(bgColor, '#f5f6f9') > chroma.contrast(bgColor, '#383a3e')
         ? 'f5f6f9' : '383a3e'
@@ -95,7 +94,8 @@ var generateGravatar = (index, n, s) => {
 }
 
 export const getAbbrName = (user) =>  {
-    const parts = (user.fullName || "Новый Пользователь Отчество").split(' ')
+    // fixme: !user workaround
+    const parts = (user?.fullName || "Новый Пользователь Отчество").split(' ')
     const getPart = (index: number) => {
         const part = parts[index]
         if(index === 0) {

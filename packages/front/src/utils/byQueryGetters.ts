@@ -9,9 +9,15 @@ import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import {
     call,
     put,
+    select,
 } from 'typed-redux-saga';
 
-export const byQueryGetters = (ledger: ReturnType<typeof selectLedger>, updateLedger: () => void) => {
+export function* byQueryGetters () {
+    let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
+    function* updateLedger() {
+        ledger = yield* select(selectLedger);
+    }
+
     function* brandById (brandId: string) {
         let actualBrandId = brandId;
 
@@ -78,7 +84,6 @@ export const byQueryGetters = (ledger: ReturnType<typeof selectLedger>, updateLe
             actualSiteId = generateGuid();
 
             const newBrand = yield* call(brandById, '');
-            debugger;
             const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
 
             const action = SITES.actions.added({
@@ -122,4 +127,4 @@ export const byQueryGetters = (ledger: ReturnType<typeof selectLedger>, updateLe
         siteById,
         userById,
     };
-};
+}

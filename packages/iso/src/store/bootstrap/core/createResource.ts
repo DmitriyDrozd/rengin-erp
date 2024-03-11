@@ -101,7 +101,8 @@ export const createResource = <RID extends string,  Fields extends AnyFieldsMeta
         const defaultGetItemName =  ((item: Item): string => {
             const i = item
             const propName =fieldsList[1].name
-           return i[propName] as string
+            // fixme: !item workaround
+            return i?.[propName] as string
         }) as any
         const getItemName = rest.getItemName || defaultGetItemName
         const {idProp, ...crud} = createCRUDDuck<Item,IDProp,PluralEngindEng<RID>>(collection, idPropThis)
@@ -171,26 +172,26 @@ const selectMapByNames= (state: ISOState) => {
 }
 
 
-    const TEST_RESOURCE = createResource('test',
-        {
-            brandName: valueTypes.string(),
-        },
-        {
-
-            langRU: {
-
-                singular: 'заказчик',
-                some: 'заказчиков',
-                plural: 'заказчики',
-}},
-
-
-        )
+//     const TEST_RESOURCE = createResource('test',
+//         {
+//             brandName: valueTypes.string(),
+//         },
+//         {
+//
+//             langRU: {
+//
+//                 singular: 'заказчик',
+//                 some: 'заказчиков',
+//                 plural: 'заказчики',
+// }},
+//
+//
+//         )
 
 
 //export const resourceListAsValueEnum = <RID extends string, Fields extends AnyFieldsMeta>(list: ItemWithId<RID, Fields>[]) =>
 
-const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',testId:'sds'}
+// const b : typeof TEST_RESOURCE.exampleItem = {brandName: '',testId:'sds'}
 
 class Clazz<RID extends string, Fields extends AnyFieldsMeta>{
     public create = (rid: RID, props: Fields, opts: ResourceOptions<RID ,Fields>)=> {

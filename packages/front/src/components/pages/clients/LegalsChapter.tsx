@@ -11,8 +11,6 @@ export default () => {
     const list = ledger.legals
     // const [cols,colMap] = useAllColumns(LEGALS)
 
-
-
     // const RES = LEGALS
     return <ItemChapter
         resource={RESOURCES_MAP.LEGALS}
