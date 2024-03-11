@@ -12,67 +12,114 @@ import {
 } from 'typed-redux-saga';
 
 export const byQueryGetters = (ledger: ReturnType<typeof selectLedger>, updateLedger: () => void) => {
-    return {
-        brandById: function* (brandId: string) {
-            let actualBrandId = brandId;
+    function* brandById (brandId: string) {
+        let actualBrandId = brandId;
 
-            if (!ledger.brands.byId[brandId]) {
-                // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
-                actualBrandId = generateGuid();
-                const action = BRANDS.actions.added({brandId: actualBrandId});
-                console.log(`Brand ${brandId} not found, create one`, action);
-                yield* put(action);
+        if (!ledger.brands.byId[actualBrandId]) {
+            // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
+            actualBrandId = generateGuid();
+            const action = BRANDS.actions.added({
+                brandId: actualBrandId,
+                brandName: 'Автоматически созданный заказчик',
+                brandType: 'Заказчик',
+                person: '',
+                email: '',
+                phone: '',
+                address: '',
+                web: '',
+                managerUserId: '',
+                removed: false
+            });
 
-                yield* call(sleep, 10);
-                yield* call(updateLedger);
-            } else {
-                console.log(`Brand ${brandId} found`);
-            }
+            yield* put(action);
+            yield* call(sleep, 10);
+            yield* call(updateLedger);
 
-            return ledger.brands.byId[actualBrandId] as BrandVO;
-        },
-        legalById: function* ({legalId, brandId}: { legalId: string, brandId: string }) {
-            let actualLegalId = legalId;
-
-            if (!ledger.legals.byId[legalId]) {
-                actualLegalId = generateGuid();
-                const action = LEGALS.actions.added({legalId: actualLegalId, brandId});
-                console.log(`Legal ${legalId} not found, create one`, action);
-                yield* put(action);
-
-                yield* call(sleep, 10);
-                yield* call(updateLedger);
-            } else {
-                console.log(`Legal ${legalId} found`);
-            }
-
-            return ledger.legals.byId[actualLegalId];
-        },
-        siteById: function* ({siteId, brandId, legalId}: { siteId: string, brandId: string, legalId: string }) {
-            let actualSiteId = siteId;
-
-            if (!ledger.sites.byId[siteId]) {
-                actualSiteId = generateGuid();
-                const action = SITES.actions.added({siteId: actualSiteId, brandId, legalId});
-                console.log(`Site ${siteId} not found, create one`, action);
-                yield* put(action);
-
-                yield* call(sleep, 10);
-                yield* call(updateLedger);
-            } else {
-                console.log(`Site ${siteId} found`);
-            }
-
-            return ledger.sites.byId[actualSiteId];
-        },
-        userById: function* (userId: string) {
-            if (!userId || !ledger.users.byId[userId]) {
-                console.log(`User ${userId} not found`);
-                return {};
-            } else {
-                console.log(`User ${userId} found`);
-                return ledger.users.byId[userId];
-            }
+            console.log(`Brand ${brandId} not found, create one`, action);
+        } else {
+            console.log(`Brand ${brandId} found`);
         }
+
+        return ledger.brands.byId[actualBrandId] as BrandVO;
+    }
+
+    function* legalById ({legalId, brandId}: {
+        legalId: string,
+        brandId: string
+    }) {
+        let actualLegalId = legalId;
+
+        if (!ledger.legals.byId[actualLegalId]) {
+            actualLegalId = generateGuid();
+            const action = LEGALS.actions.added({
+                brandId,
+                legalId: actualLegalId,
+                legalName: 'Автоматически созданное юр. лицо',
+                region: ''
+            });
+
+            yield* put(action);
+            yield* call(sleep, 10);
+            yield* call(updateLedger);
+
+            console.log(`Legal ${legalId} not found, create one`, action);
+        } else {
+            console.log(`Legal ${legalId} found`);
+        }
+
+        return ledger.legals.byId[actualLegalId];
+    }
+
+    // @ts-ignore
+    function* siteById (siteId: string) {
+        let actualSiteId = siteId;
+
+        if (!ledger.sites.byId[siteId]) {
+            actualSiteId = generateGuid();
+
+            const newBrand = yield* call(brandById, '');
+            debugger;
+            const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
+
+            const action = SITES.actions.added({
+                siteId: actualSiteId,
+                brandId: newBrand.brandId,
+                legalId: newLegal.legalId,
+                address: 'Автоматически созданный объект',
+                city: '-',
+                contactInfo: '',
+                KPP: '',
+                managerUserId: '',
+                techUserId: '',
+                clientsEngineerUserId: ''
+            });
+
+            yield* put(action);
+            yield* call(sleep, 10);
+            yield* call(updateLedger);
+
+            console.log(`Site ${siteId} not found, create one`, action);
+        } else {
+            console.log(`Site ${siteId} found`);
+        }
+
+        return ledger.sites.byId[actualSiteId];
+    }
+
+    function* userById (userId: string) {
+        if (!userId || !ledger.users.byId[userId]) {
+            console.log(`User ${userId} not found`);
+            return {};
+        } else {
+            console.log(`User ${userId} found`);
+            return ledger.users.byId[userId];
+        }
+    }
+
+    return {
+        brandById,
+        legalById,
+        siteById,
+        userById,
     };
 };

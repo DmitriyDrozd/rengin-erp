@@ -17,8 +17,6 @@ import ImportCard from '../elements/ImportCard';
 
 interface IIssue {
     clientsIssueNumber: string,
-    brandId: string,
-    legalId: string,
     siteId: string,
     description: string,
     registerDate: number,
@@ -36,8 +34,6 @@ const formatExcelDate = (excelDate: number): string => {
 // fixme: тайтл страницы: [object Object]
 export const importIssuesXlsxCols = [
     'clientsIssueNumber',
-    'brandId',
-    'legalId',
     'siteId',
     'description',
     'registerDate',
@@ -61,8 +57,6 @@ function* importObjectsSaga(data: Datum[]) {
 
     function* getOrCreateIssue({
                                    clientsIssueNumber,
-                                   brandId,
-                                   legalId,
                                    siteId,
                                    description,
                                    registerDate,
@@ -75,11 +69,7 @@ function* importObjectsSaga(data: Datum[]) {
         const byQueryGetter = byQueryGetters(ledger, updateLedger);
 
         // @ts-ignore
-        const brand = yield byQueryGetter.brandById(brandId);
-        // @ts-ignore
-        const legal = yield byQueryGetter.legalById({legalId, brandId});
-        // @ts-ignore
-        const site = yield byQueryGetter.siteById({siteId, legalId, brandId});
+        const site = yield byQueryGetter.siteById(siteId);
         // @ts-ignore
         const manager = yield byQueryGetter.userById(managerId);
         // @ts-ignore
@@ -89,8 +79,8 @@ function* importObjectsSaga(data: Datum[]) {
 
         // Проверка на существование такой заявки
         const foundIssue = ledger.issues.list.find(({brandId, legalId, siteId, clientsIssueNumber: issueNumber}) => {
-            return brandId === brand.brandId &&
-                legalId === legal.legalId &&
+            return brandId === site.brandId &&
+                legalId === site.legalId &&
                 siteId === site.siteId &&
                 issueNumber === clientsIssueNumber;
         });
@@ -105,8 +95,8 @@ function* importObjectsSaga(data: Datum[]) {
                 registerDate: formatExcelDate(registerDate),
                 plannedDate: formatExcelDate(plannedDate),
                 completedDate: formatExcelDate(completedDate),
-                brandId: brand.brandId,
-                legalId: legal.legalId,
+                brandId: site.brandId,
+                legalId: site.legalId,
                 siteId: site.siteId,
                 managerUserId: manager?.userId,
                 clientsEngineerUserId: engineer?.userId,
@@ -126,8 +116,6 @@ function* importObjectsSaga(data: Datum[]) {
         const d = data[i];
         yield getOrCreateIssue({
             clientsIssueNumber: d.clientsIssueNumber,
-            brandId: d.brandId,
-            legalId: d.legalId,
             siteId: d.siteId,
             description: d.description,
             registerDate: d.registerDate,
