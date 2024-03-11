@@ -1,8 +1,10 @@
 import {ColDef} from 'ag-grid-community'
+import { message } from 'antd';
+import copy from 'copy-to-clipboard';
 import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
+import React from 'react';
 import {RCellRender} from './RCellRender'
 import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
-import useLedger from '../hooks/useLedger'
 import {getRes} from 'iso/src/store/bootstrap/resourcesList'
 import useFrontSelector from '../hooks/common/useFrontSelector'
 import {CellClassRules, ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
@@ -13,40 +15,51 @@ export const useAllColumns = <
 >(res: Resource<RID, Fields>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
     type Item = ItemWithId<RID, Fields>
 
-    type CommonColsMap = { clickToEditCol: ColDef<Item, string,RID, Fields>, checkboxCol: ColDef }
+    type CommonColsMap = { clickToEditCol: ColDef<Item, string,RID, Fields>, checkboxCol: ColDef, idCol: ColDef }
     type ColsMap = CommonColsMap & {
 
         [K in keyof Fields]: ColDef<Item, Item[K], RID, Fields, K>
     }
-const sourceResourceName = res.resourceName
-    const ledger = useLedger()
     const state = useFrontSelector(state => state)
-    //const clickToEditColumn = () =>
 
     const checkboxCol: ColDef= {
         checkboxSelection:true,
         headerCheckboxSelectionFilteredOnly:true,
         headerCheckboxSelection:  true,
-
         width:30,
-
         resizable: false,
-
     }
+
     const clickToEditCol: ColDef<Item, string,RID, Fields> = {
         headerName:'',
-        field:res.idProp,
-
+        field: res.idProp,
         sourceResourceName: res.resourceName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
         width:120,
         fieldName: res.idProp,
         resizable: false,
         resource: res,
-
     }
 
-    const map: ColsMap = {clickToEditCol,checkboxCol} as any
+    const idCol: ColDef<Item, string,RID, Fields> = {
+        headerName:'',
+        field: res.idProp,
+        sourceResourceName: res.resourceName,
+        width:120,
+        fieldName: res.idProp,
+        resizable: false,
+        resource: res,
+        cellRenderer: (props: {
+            value: string,
+        }) => {
+            return <a onClick={() => {
+                copy(props.value);
+                message.info('Cкопировано "' + props.value + '"');
+            }}>{props.value}</a>;
+        }
+    }
+
+    const map: ColsMap = {clickToEditCol,checkboxCol, idCol} as any
     const storedColumn = <K extends keyof Item> (
         property: K
     ): ColDef<Item,Item[K]> => {

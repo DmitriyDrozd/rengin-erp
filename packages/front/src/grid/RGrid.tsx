@@ -55,8 +55,6 @@ export default React.forwardRef( <RID extends string, Fields extends AnyFieldsMe
                 return AG_GRID_LOCALE_RU;
             }, []);
 
-         console.log(columnDefs)
-
         return <> <div className="ag-theme-alpine" style={{height: fullHeight ?  'calc(100vh - 144px)':'calc(100vh - 244px)', width: '100%'}}>
                     <AgGridReact<ItemWithId<RID, Fields>>
                         ref={ref}

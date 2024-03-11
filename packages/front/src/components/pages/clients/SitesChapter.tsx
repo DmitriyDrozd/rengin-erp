@@ -1,45 +1,59 @@
+import { ColDef } from 'ag-grid-community';
+import React from 'react';
+import { useAllColumns } from '../../../grid/RCol';
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
-import {useAllColumns} from '../../../grid/RCol'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
-import useLedger from '../../../hooks/useLedger'
-import SITES from 'iso/src/store/bootstrap/repos/sites'
+import SITES, { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
 import {useSelector} from 'react-redux'
 import PanelRGrid from '../../../grid/PanelRGrid'
 
-export default () => {
-    const ledger = useLedger()
-    const RES = SITES
-    const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
-    const [cols] = useAllColumns(SITES)
+const RESOURCE = SITES
 
+export default () => {
+    const [cols, colMap] = useAllColumns(RESOURCE);
+    const columns: ColDef<SiteVO>[] = [
+        {...colMap.clickToEditCol, width: 70},
+        {...colMap.idCol, headerName: 'id', width: 170},
+        {...colMap.brandId, width: 100},
+        {...colMap.legalId, width: 150},
+        {...colMap.city, width: 120},
+        {...colMap.address, width: 150},
+        {...colMap.KPP, width: 80},
+        {...colMap.clientsEngineerUserId, width: 100},
+        {...colMap.managerUserId, width: 100},
+        {...colMap.techUserId, width: 100},
+        {...colMap.contactInfo, width: 120},
+    ] as ColDef<SiteVO>[];
 
     return <ItemChapter
-                resource={RES}
+                resource={RESOURCE}
                 renderForm={({item, id,verb, resource}) => {
                     const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
                     return <>
-                        <ProFormSelect  {...fieldMetaToProProps(RES, 'brandId')} rules={[{required: true}]}/>
-                        <ProFormSelect  {...fieldMetaToProProps(RES, 'legalId')} valueEnum={legalValueEnum}
+                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'siteId')} rules={[{required: true}]}/>
+                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'brandId')} rules={[{required: true}]}/>
+                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId')} valueEnum={legalValueEnum}
                                         rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'city')} rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'address')} rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'KPP')}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'clientsEngineerUserId')}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'managerUserId')}/>
-                        <ProFormText {...fieldMetaToProProps(RES, 'techUserId')}/>
-                        <ProFormTextArea {...fieldMetaToProProps(RES, 'contactInfo')}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'city')} rules={[{required: true}]}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'address')} rules={[{required: true}]}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'KPP')}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'clientsEngineerUserId')}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'managerUserId')}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'techUserId')}/>
+                        <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')}/>
                     </>
                 }
         }
-        renderList={({form,verb,resource}) => {
-            const list = ledger.sites//(SITES.selectList) as any as typeof LEGALS.exampleItem
-            const [cols] = useAllColumns(SITES)
-            return         <PanelRGrid
-                resource={SITES}
-                fullHeight={true}
-                title={'Все объекты'}
-            />
+        renderList={() => {
+            return (
+                <PanelRGrid
+                    columnDefs={columns}
+                    resource={SITES}
+                    fullHeight={true}
+                    title={'Все объекты'}
+                />
+            )
         }}
     />
 }
