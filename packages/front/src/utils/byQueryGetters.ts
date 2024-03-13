@@ -32,10 +32,11 @@ export function* byQueryGetters () {
         if (!ledger.brands.byId[actualBrandId]) {
             // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
             actualBrandId = generateGuid();
+            const clientsBrandNumber = generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber');
             const action = BRANDS.actions.added({
-                clientsBrandNumber: generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
+                clientsBrandNumber: clientsBrandNumber,
                 brandId: actualBrandId,
-                brandName: 'Автоматически созданный заказчик',
+                brandName: 'Автоматически созданный заказчик' + clientsBrandNumber,
                 brandType: 'Заказчик',
                 person: '',
                 email: '',
@@ -66,11 +67,12 @@ export function* byQueryGetters () {
 
         if (!ledger.legals.byId[actualLegalId]) {
             actualLegalId = generateGuid();
+            const clientsLegalNumber = generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber');
             const action = LEGALS.actions.added({
                 brandId,
-                clientsLegalNumber: generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
+                clientsLegalNumber,
                 legalId: actualLegalId,
-                legalName: 'Автоматически созданное юр. лицо',
+                legalName: 'Автоматически созданное юр. лицо' + clientsLegalNumber,
                 region: ''
             });
 
@@ -104,7 +106,7 @@ export function* byQueryGetters () {
                 siteId: generateGuid(),
                 brandId: newBrand.brandId,
                 legalId: newLegal.legalId,
-                address: 'Автоматически созданный объект',
+                address: 'Автоматически созданный объект' + actualClientsSiteNumber,
                 city: '-',
                 contactInfo: '',
                 KPP: '',
