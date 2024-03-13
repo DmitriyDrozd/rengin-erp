@@ -1,6 +1,7 @@
 import { ColDef } from 'ag-grid-community';
 import React from 'react';
 import { useAllColumns } from '../../../grid/RCol';
+import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
 import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
 import {ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
@@ -13,8 +14,8 @@ const RESOURCE = SITES
 export default () => {
     const [cols, colMap] = useAllColumns(RESOURCE);
     const columns: ColDef<SiteVO>[] = [
-        {...colMap.clickToEditCol, width: 70},
-        {...colMap.idCol, headerName: 'id', width: 170},
+        {...colMap.clickToEditCol},
+        {...colMap.clientsNumberCol},
         {...colMap.brandId, width: 100},
         {...colMap.legalId, width: 150},
         {...colMap.city, width: 120},

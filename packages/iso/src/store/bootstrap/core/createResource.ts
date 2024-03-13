@@ -48,6 +48,7 @@ export type Resource<RID extends string, Fields extends AnyFieldsMeta>  =
     rid: RID,
     fields: Fields
     idProp: IdKey<RID>
+    clientsNumberProp: string
     idKey: IdKey<RID>
     selectFirstByName: (name: string) => (state) => ItemWithId<RID, Fields>
     collection: PluralEngindEng<RID>

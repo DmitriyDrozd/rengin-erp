@@ -20,12 +20,12 @@ const formItemLayout = {
     },
 };
 
-export default ({children}) => {
+export default ({children, title}: { children: React.ReactNode, title?: string }) => {
 
     const editor = useContextEditor()
     console.log('editor IN MODAL ', editor)
     const history = useHistory()
-    const title = editor.resource.getItemName(editor.item)
+    const modalTitle = title || editor.resource.getItemName(editor.item)
 
     const onSave = () =>{
         editor.save()
@@ -53,12 +53,12 @@ export default ({children}) => {
     return    <Modal
         width={'80%'}
         style={{top:"20px"}}
-        title={title}
+        title={modalTitle}
         open={true}
 
         footer={[
             <DeleteButton  onDeleted={onDelete}/>,
-            <CancelButton onCancel={onBack}  disabled={!editor.hasChanges} />,
+            <CancelButton onCancel={onBack} disabled={!editor.hasChanges} />,
             <Button type={'primary'} disabled={!editor.hasChanges}  icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
         ]}
         onCancel={onCancel}

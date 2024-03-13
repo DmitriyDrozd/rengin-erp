@@ -17,7 +17,7 @@ import ImportCard from '../elements/ImportCard';
 
 interface IIssue {
     clientsIssueNumber: string,
-    siteId: string,
+    clientsSiteNumber: string,
     description: string,
     registerDate: number,
     plannedDate: number,
@@ -34,7 +34,7 @@ const formatExcelDate = (excelDate: number): string => {
 // fixme: тайтл страницы: [object Object]
 export const importIssuesXlsxCols = [
     'clientsIssueNumber',
-    'siteId',
+    'clientsSiteNumber',
     'description',
     'registerDate',
     'plannedDate',
@@ -52,7 +52,7 @@ function* importObjectsSaga(data: Datum[]) {
 
     function* getOrCreateIssue({
                                    clientsIssueNumber,
-                                   siteId,
+                                   clientsSiteNumber,
                                    description,
                                    registerDate,
                                    plannedDate,
@@ -64,7 +64,7 @@ function* importObjectsSaga(data: Datum[]) {
         const byQueryGetter = yield* byQueryGetters();
 
         // @ts-ignore
-        const site = yield byQueryGetter.siteById(siteId);
+        const site = yield byQueryGetter.siteByClientsNumber(clientsSiteNumber);
         // @ts-ignore
         const manager = yield byQueryGetter.userById(managerId);
         // @ts-ignore
@@ -73,10 +73,10 @@ function* importObjectsSaga(data: Datum[]) {
         const technician = yield byQueryGetter.userById(technicianId);
 
         // Проверка на существование такой заявки
-        const foundIssue = ledger.issues.list.find(({brandId, legalId, siteId, clientsIssueNumber: issueNumber}) => {
+        const foundIssue = ledger.issues.list.find(({brandId, legalId, clientsIssueNumber: issueNumber}) => {
             return brandId === site.brandId &&
                 legalId === site.legalId &&
-                siteId === site.siteId &&
+                clientsSiteNumber === site.clientsSiteNumber &&
                 issueNumber === clientsIssueNumber;
         });
 
@@ -111,7 +111,7 @@ function* importObjectsSaga(data: Datum[]) {
         const d = data[i];
         yield getOrCreateIssue({
             clientsIssueNumber: d.clientsIssueNumber,
-            siteId: d.siteId,
+            clientsSiteNumber: String(d.clientsSiteNumber),
             description: d.description,
             registerDate: d.registerDate,
             plannedDate: d.plannedDate,
@@ -127,6 +127,44 @@ function* importObjectsSaga(data: Datum[]) {
         yield* put(ISSUES.actions.addedBatch(newIssues));
     }
 }
+
+/**
+ * Deprecated: Задает цифровые номера для удобства копирования номеров в Excel
+ *
+ * function* prepareIdsObjectsSaga() {
+ *     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
+ *     function* updateLedger() {
+ *         ledger = yield* select(selectLedger);
+ *     }
+ *
+ *     const mapper = (field) => (item, index) => ({ ...item, [field]: String(index) });
+ *
+ *     const newIssues = ledger.issues.list.reverse().map(mapper('clientsIssueNumber'));
+ *     const newBrands = ledger.brands.list.reverse().map(mapper('clientsBrandNumber'));
+ *     const newLegals = ledger.legals.list.reverse().map(mapper('clientsLegalNumber'));
+ *     const newSites = ledger.sites.list.reverse().map(mapper('clientsSiteNumber'));
+ *
+ *     yield* put(ISSUES.actions.updatedBatch(newIssues));
+ *     yield* put(BRANDS.actions.updatedBatch(newBrands));
+ *     yield* put(LEGALS.actions.updatedBatch(newLegals));
+ *     yield* put(SITES.actions.updatedBatch(newSites));
+ * }
+ *
+ *  ImportIssuesPage:
+ *
+ *      const prepareIds = async () => {
+ *         // @ts-ignore
+ *         const task = store.runSaga(prepareIdsObjectsSaga);
+ *         await task;
+ *
+ *         console.log('prepare ids complete');
+ *     }
+ *
+ *     > return:
+ *
+ *         <Button onClick={prepareIds} disabled>обработать базу</Button>
+ *
+ */
 
 export const ImportIssuesPage = () => {
     const store = useStore();

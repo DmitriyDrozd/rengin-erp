@@ -7,15 +7,12 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import AppLayout from '../../app/AppLayout';
-import React, {
-    useRef
-} from 'react';
+import React from 'react';
 import { ColDef } from 'ag-grid-community';
 import {
     Badge,
     Button,
     Checkbox,
-    message,
     Space,
     Tag
 } from 'antd';
@@ -34,9 +31,6 @@ import StatusFilterSelector from './StatusFilterSelector';
 import { isIssueOutdated } from 'iso/src/utils/date-utils';
 import IsssueStatusCellEditor from './IsssueStatusCellEditor';
 import { ClockCircleOutlined } from '@ant-design/icons';
-import { AgGridReact } from 'ag-grid-react';
-
-import copy from 'copy-to-clipboard';
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
 import ImportIssuesButton from './import-gsheet/ImportIssuesButton.js';
@@ -94,21 +88,9 @@ export default () => {
     const [cols, colMap] = useAllColumns(ISSUES);
 
     const columns: ColDef<IssueVO>[] = [
-        {...colMap.clickToEditCol, headerName: 'id', width: 30},
-        {
-            ...colMap.clientsIssueNumber, width: 100,
-            cellRenderer: (props: {
-                rowIndex: number
-            }) => {
-                return <a onClick={() => {
-                    copy(props.value);
-                    message.info('Cкопировано "' + props.value + '"');
-                }}>{props.value}</a>;
-            }
-        },
-        {
-            ...colMap.registerDate,
-        },
+        {...colMap.clickToEditCol, headerName: 'id'},
+        {...colMap.clientsNumberCol},
+        {...colMap.registerDate, width: 150},
         {
             field: 'status',
             filter: 'agSetColumnFilter',
@@ -135,11 +117,11 @@ export default () => {
             }) =>
                 getStatusTag(props.data)
         },
-        {...colMap.brandId, width: 65},
-        {...colMap.siteId, width: 170},
-        {...colMap.description, width: 260},
+        {...colMap.brandId, width: 150},
+        {...colMap.siteId, width: 250},
+        {...colMap.description, width: 350},
         {...colMap.plannedDate, headerName: 'План'},
-        {...colMap.completedDate, headerName: 'Завершена'},
+        {...colMap.completedDate, headerName: 'Завершена', width: 115},
         {
             ...colMap.estimationsApproved,
             headerName: 'Смета',
@@ -147,8 +129,8 @@ export default () => {
                 getEstimationApprovedTag(props.data)
             , width: 80
         },
-        {...colMap.estimationPrice, editable: false, width: 80},
-        {...colMap.expensePrice, editable: false, width: 80},
+        {...colMap.estimationPrice, editable: false, width: 130},
+        {...colMap.expensePrice, editable: false, width: 100},
     ] as ColDef<IssueVO>[];
 
     const [statuses, setStatuses] = useLocalStorageState('statusFilter', statusesList);

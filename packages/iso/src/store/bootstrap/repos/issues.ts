@@ -1,10 +1,7 @@
-import {AnyFieldsMeta, createResource, ItemWithId, Resource} from '../core/createResource'
-import {ItemOfMeta, valueTypes} from '../core/valueTypes'
+import {createResource, Resource} from '../core/createResource'
+import {valueTypes} from '../core/valueTypes'
 import {Days} from '../../../utils/index'
 import SITES, {SiteVO} from "./sites";
-import {ISOState} from "../../../ISOState";
-import {toAssociativeArray} from "@sha/utils";
-import {USERS} from "./users";
 
 
 export const statusesList = ['Новая','В работе','Выполнена','Отменена','Приостановлена']  as const
@@ -108,12 +105,13 @@ const issuesRaw = createResource('issue',{
 
 const getIssueTitle = (issue: IssueVO) => {
     const site: SiteVO = SITES.selectById(issue.siteId)(SITES.getStore().getState()) as any as SiteVO
-    return `${issue.clientsIssueNumber} по адресу ${site ? site.city+ site.address: ' НЕ УКАЗАН '} от ${Days.toDayString(issue.registerDate)}`
+    return `${issue.clientsIssueNumber} по адресу ${site ? site.city + ' ' + site.address: ' НЕ УКАЗАН '} от ${Days.toDayString(issue.registerDate)}`
 }
 
 export const issueResource = {
         ...issuesRaw,
     getIssueTitle,
+    clientsNumberProp: 'clientsIssueNumber',
 }
 
 export type IssueVO = typeof issuesRaw.exampleItem

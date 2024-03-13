@@ -1,8 +1,6 @@
 import {ColDef} from 'ag-grid-community'
-import { message } from 'antd';
-import copy from 'copy-to-clipboard';
 import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
-import React from 'react';
+import { CellRendererWithCopy } from '../components/elements/CellRendererWithCopy';
 import {RCellRender} from './RCellRender'
 import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
 import {getRes} from 'iso/src/store/bootstrap/resourcesList'
@@ -15,7 +13,7 @@ export const useAllColumns = <
 >(res: Resource<RID, Fields>,rowSelection:'single' | 'multiple'|undefined  = undefined)=> {
     type Item = ItemWithId<RID, Fields>
 
-    type CommonColsMap = { clickToEditCol: ColDef<Item, string,RID, Fields>, checkboxCol: ColDef, idCol: ColDef }
+    type CommonColsMap = { clickToEditCol: ColDef<Item, string,RID, Fields>, checkboxCol: ColDef, clientsNumberCol: ColDef }
     type ColsMap = CommonColsMap & {
 
         [K in keyof Fields]: ColDef<Item, Item[K], RID, Fields, K>
@@ -35,31 +33,24 @@ export const useAllColumns = <
         field: res.idProp,
         sourceResourceName: res.resourceName,
         cellRenderer: rowSelection ? undefined : RCellRender.ClickToEdit,
-        width:120,
+        width:30,
         fieldName: res.idProp,
         resizable: false,
         resource: res,
     }
 
-    const idCol: ColDef<Item, string,RID, Fields> = {
-        headerName:'',
-        field: res.idProp,
-        sourceResourceName: res.resourceName,
-        width:120,
-        fieldName: res.idProp,
+    const clientsNumberCol: ColDef<Item, string,RID, Fields> = {
+        headerName:'Номер',
+        field: res.clientsNumberProp,
+        sourceResourceName: res.clientsNumberProp,
+        width:100,
+        fieldName: res.clientsNumberProp,
         resizable: false,
         resource: res,
-        cellRenderer: (props: {
-            value: string,
-        }) => {
-            return <a onClick={() => {
-                copy(props.value);
-                message.info('Cкопировано "' + props.value + '"');
-            }}>{props.value}</a>;
-        }
+        cellRenderer: CellRendererWithCopy,
     }
 
-    const map: ColsMap = {clickToEditCol,checkboxCol, idCol} as any
+    const map: ColsMap = {clickToEditCol,checkboxCol,clientsNumberCol} as any
     const storedColumn = <K extends keyof Item> (
         property: K
     ): ColDef<Item,Item[K]> => {

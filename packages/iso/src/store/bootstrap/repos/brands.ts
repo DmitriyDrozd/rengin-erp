@@ -2,7 +2,7 @@ import {valueTypes} from '../core/valueTypes'
 import {createResource} from '../core/createResource'
 
 
-export const BRANDS = createResource('brand',{
+const BRANDS_RAW = createResource('brand',{
         brandName: valueTypes.string({required: true,headerName: 'Компания', unique:true}),
         brandType: valueTypes.enum({required: true, headerName: 'Сторона',enum: ['Заказчик','Исполнитель']}),
         person: valueTypes.string({headerName: 'Контактное лицо'}),
@@ -11,7 +11,7 @@ export const BRANDS = createResource('brand',{
         address: valueTypes.string({headerName: 'Адрес'}),
         web: valueTypes.string({headerName: 'Вебсайт'}),
         managerUserId: valueTypes.itemOf({headerName: 'Отв. менеджер', linkedResourceName:'USERS'}),
-
+        clientsBrandNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
         removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
     },
     {
@@ -23,6 +23,12 @@ export const BRANDS = createResource('brand',{
         }
     }
 )
+
+export const BRANDS = {
+    ...BRANDS_RAW,
+    clientsNumberProp: 'clientsBrandNumber'
+};
+
 export default BRANDS
 
 

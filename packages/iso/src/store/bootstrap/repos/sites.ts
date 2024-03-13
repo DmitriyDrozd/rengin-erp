@@ -3,7 +3,8 @@ import {valueTypes} from '../core/valueTypes'
 import {LegalVO} from './legals'
 
 
-export const siteResource = createResource('site',{
+export const siteResourceRaw = createResource('site',{
+        clientsSiteNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
         brandId: valueTypes.itemOf({
             headerName: 'Заказчик',
             linkedResourceName: 'BRANDS',
@@ -55,6 +56,7 @@ export const siteResource = createResource('site',{
     }
 )
 
+const siteResource = { ...siteResourceRaw, clientsNumberProp: 'clientsSiteNumber' };
 
 export type SiteVO = (typeof siteResource)['exampleItem']
 

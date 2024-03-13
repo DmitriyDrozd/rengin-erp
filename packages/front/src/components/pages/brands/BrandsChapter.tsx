@@ -1,3 +1,4 @@
+import { ColDef } from 'ag-grid-community';
 import BRANDS, { BrandVO } from 'iso/src/store/bootstrap/repos/brands.js';
 import { useAllColumns } from '../../../grid/RCol.js';
 import useLedger from '../../../hooks/useLedger.js';
@@ -16,7 +17,46 @@ import BrandModal from './BrandModal';
 export default () => {
     const ledger = useLedger();
     const list = ledger.brands;
-    const [cols] = useAllColumns(BRANDS);
+    const [cols, colMap] = useAllColumns(BRANDS);
+
+    const columns: ColDef<BrandVO>[] = [
+        {...colMap.clickToEditCol, headerName: 'id'},
+        {...colMap.clientsNumberCol},
+        {...colMap.brandName, width: 150},
+        {...colMap.brandType, width: 100},
+        {...colMap.person, width: 100},
+        {...colMap.email, width: 100},
+        {...colMap.phone, width: 100},
+        {...colMap.address, width: 250},
+        {...colMap.web, width: 100},
+        {...colMap.managerUserId, width: 120},
+        {...colMap.removed},
+        {
+            colId: 'sitesCalc',
+            field: 'brandId',
+            headerName: 'Объекты',
+            editable: false,
+            width: 100,
+            valueGetter: (params => ledger.sites.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+        },
+        {
+            colId: 'legalsCals',
+            field: 'brandId',
+            headerName: 'Юр. лица',
+            editable: false,
+            width: 120,
+            valueGetter: (params => ledger.legals.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+        },
+        {
+            colId: 'issuesCalc',
+            field: 'brandId',
+            headerName: 'Всего заявок',
+            editable: false,
+            width: 150,
+            valueGetter: (params => ledger.issues.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
+        }
+    ];
+
 
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const history = useHistory();
@@ -24,7 +64,6 @@ export default () => {
     const onCreateClick = () => {
         history.push(getNav().brandsList({brandID: 'create'}));
     };
-
 
     return <AppLayout
         hidePageContainer={true}
@@ -42,32 +81,10 @@ export default () => {
             <PanelRGrid
                 fullHeight={true}
                 title={BRANDS.langRU.plural}
+                columnDefs={columns}
                 resource={BRANDS}
                 rowData={list.list}
                 onCreateClick={onCreateClick}
-                cols={[...cols,
-                    {
-                        colId: 'sitesCalc',
-                        field: 'brandId',
-                        headerName: 'Объекты',
-                        editable: false,
-                        valueGetter: (params => ledger.sites.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
-                    },
-                    {
-                        colId: 'legalsCals',
-                        field: 'brandId',
-                        headerName: 'Юр. лица',
-                        editable: false,
-                        valueGetter: (params => ledger.legals.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
-                    },
-                    {
-                        colId: 'issuesCalc',
-                        field: 'brandId',
-                        headerName: 'Всего заявок',
-                        editable: false,
-                        valueGetter: (params => ledger.issues.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
-                    },]}
-
             />
         </div>
     </AppLayout>;

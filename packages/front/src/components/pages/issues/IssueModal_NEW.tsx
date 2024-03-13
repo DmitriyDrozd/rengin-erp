@@ -29,7 +29,7 @@ export default ({id}: {id: string}) => {
     }
 
     return   <EditorContext.Provider value={useEditorData}>
-        <BaseEditModal>
+        <BaseEditModal title={ISSUES.getIssueTitle(useEditorData.item)}>
             <ProCard
                 tabs={{
                     type: 'card',

@@ -11,7 +11,8 @@ const rawResource = createResource(
                 required: true,
             }),
             region: valueTypes.string({headerName: 'Регион', required: false}),
-            brandId: valueTypes.itemOf({headerName:'Заказчик',linkedResourceName: 'BRANDS',required: true})
+            brandId: valueTypes.itemOf({headerName:'Заказчик',linkedResourceName: 'BRANDS',required: true}),
+            clientsLegalNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
         },
         {
             langRU: {
@@ -29,6 +30,7 @@ export const selectValueEnumByBrandId = (brandId: string | undefined) => (state:
 export const LEGALS = {
     ...rawResource,
     selectValueEnumByBrandId,
+    clientsNumberProp: 'clientsLegalNumber'
 }
 
 export default LEGALS

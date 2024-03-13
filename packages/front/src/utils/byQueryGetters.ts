@@ -12,6 +12,14 @@ import {
     select,
 } from 'typed-redux-saga';
 
+const generateNewClientsNumber = (list: any[], accessor: string): string => {
+    const lastItemNumber = list.reduce((acc, item) => {
+        return +item[accessor] > acc ? +item[accessor] : acc;
+    }, 0);
+
+    return String(lastItemNumber + 1);
+};
+
 export function* byQueryGetters () {
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
     function* updateLedger() {
@@ -25,6 +33,7 @@ export function* byQueryGetters () {
             // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
             actualBrandId = generateGuid();
             const action = BRANDS.actions.added({
+                clientsBrandNumber: generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
                 brandId: actualBrandId,
                 brandName: 'Автоматически созданный заказчик',
                 brandType: 'Заказчик',
@@ -59,6 +68,7 @@ export function* byQueryGetters () {
             actualLegalId = generateGuid();
             const action = LEGALS.actions.added({
                 brandId,
+                clientsLegalNumber: generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
                 legalId: actualLegalId,
                 legalName: 'Автоматически созданное юр. лицо',
                 region: ''
@@ -76,18 +86,22 @@ export function* byQueryGetters () {
         return ledger.legals.byId[actualLegalId];
     }
 
-    // @ts-ignore
-    function* siteById (siteId: string) {
-        let actualSiteId = siteId;
 
-        if (!ledger.sites.byId[siteId]) {
-            actualSiteId = generateGuid();
+    // @ts-ignore
+    function* siteByClientsNumber (clientsSiteNumber: string) {
+        let actualClientsSiteNumber = clientsSiteNumber;
+
+        const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value === actualClientsSiteNumber);
+
+        if (!ledger.sites.list.find(siteByNumberFind)) {
+            actualClientsSiteNumber = generateNewClientsNumber(ledger.sites.list, 'clientsSiteNumber');
 
             const newBrand = yield* call(brandById, '');
             const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
 
             const action = SITES.actions.added({
-                siteId: actualSiteId,
+                clientsSiteNumber: actualClientsSiteNumber,
+                siteId: generateGuid(),
                 brandId: newBrand.brandId,
                 legalId: newLegal.legalId,
                 address: 'Автоматически созданный объект',
@@ -103,12 +117,12 @@ export function* byQueryGetters () {
             yield* call(sleep, 10);
             yield* call(updateLedger);
 
-            console.log(`Site ${siteId} not found, create one`, action);
+            console.log(`Site ${clientsSiteNumber} not found, create one`, action);
         } else {
-            console.log(`Site ${siteId} found`);
+            console.log(`Site ${clientsSiteNumber} found`);
         }
 
-        return ledger.sites.byId[actualSiteId];
+        return ledger.sites.list.find(siteByNumberFind);
     }
 
     function* userById (userId: string) {
@@ -124,7 +138,7 @@ export function* byQueryGetters () {
     return {
         brandById,
         legalById,
-        siteById,
+        siteByClientsNumber,
         userById,
     };
 }
