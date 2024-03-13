@@ -3,9 +3,11 @@ import {Breadcrumb, Button, Form, Typography} from 'antd'
 import React, {useRef, useState} from 'react'
 import {ISSUES, IssueVO} from 'iso/src/store/bootstrap/repos/issues'
 import {generateGuid} from '@sha/random'
+import useLedger from '../../../hooks/useLedger';
 import {useQueryObject} from '../../../hooks/useQueryObject'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router'
+import { generateNewClientsNumber } from '../../../utils/byQueryGetters';
 import {AntdIcons} from '../../elements/AntdIcons'
 import AppLayout from '../../app/AppLayout'
 import CancelButton from '../../elements/CancelButton'
@@ -28,6 +30,7 @@ import {Days} from "iso";
 const { Text, Link } = Typography;
 export default () => {
 
+    const ledger = useLedger();
     const {currentUser} = useCurrentUser()
     const layoutProps = {
         labelCol: { span: 6 },
@@ -39,11 +42,13 @@ export default () => {
     >();
     const idProp = ISSUES.idProp
     type Item = IssueVO
-    const id =generateGuid()
+    const id = generateGuid()
     const predefinedValues = useQueryObject<IssueVO>()
     const initialPlannedDate = ( Days.today().add(3,'day'))
-    const initialValues:IssueVO = {[idProp]: id,
-        ...predefinedValues,checkFiles: [],
+    const initialValues:IssueVO = {
+        [idProp]: id,
+        ...predefinedValues,
+        checkFiles: [],
         actFiles: [],
         workFiles: [],
         responsibleManagerId: currentUser.userId,
@@ -55,7 +60,12 @@ export default () => {
     const dispatch = useDispatch()
 
     const onSubmit = async (values: Item) => {
-        const patch = {[idProp]:id, ...values,}
+        const patch = {
+            [idProp]:id,
+            [ISSUES.clientsNumberProp]: generateNewClientsNumber(ledger.issues.list, ISSUES.clientsNumberProp),
+            ...values
+        };
+
         const action = ISSUES.actions.added(patch)
         console.log('Submit', values, action)
         dispatch(action)

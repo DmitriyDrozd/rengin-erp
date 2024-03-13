@@ -1,7 +1,12 @@
 import {AnyFieldsMeta, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import {generateGuid} from '@sha/random'
-import React, {useRef, useState} from 'react'
+import React, {
+    useRef,
+    useState
+} from 'react';
 import {useDispatch} from 'react-redux'
+import useLedger from '../../../hooks/useLedger';
+import { generateNewClientsNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout'
 import {ProFormInstance} from '@ant-design/pro-components'
 import type {CrudFormRender, CrudFormRenderProps} from './ItemChapter'
@@ -29,13 +34,24 @@ export const CrudCreateItemPage =  <
     >();
     const idProp = resource.idProp
     const id = generateGuid()//item[idProp]
+
+    const ledger = useLedger();
+
     const predefinedValues = useQueryObject<Item>()
     const initialValues:Item = {[idProp]: id, ...predefinedValues }as any as Item
     const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
     const dispatch = useDispatch()
 
     const onSubmit = async (values: Item) => {
-        const patch = {[idProp]:id, ...values}
+        const clientsNumberProp = resource.clientsNumberProp
+        // fixme: possible collision place. Front Ledger may be outdated with backend ledger info. Create backend function to generate clients number instead
+        const clientsNumber = clientsNumberProp ? generateNewClientsNumber(ledger[resource.collection].list, resource.clientsNumberProp) : undefined
+
+        const patch = {
+            [idProp]:id,
+            [clientsNumberProp]: clientsNumber,
+            ...values
+        }
         const action = resource.actions.added(patch)
         console.log('Submit', values, action)
         dispatch(action)

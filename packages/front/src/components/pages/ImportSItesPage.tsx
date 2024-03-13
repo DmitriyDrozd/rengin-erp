@@ -1,3 +1,4 @@
+import { generateNewClientsNumber } from '../../utils/byQueryGetters';
 import AppLayout from '../app/AppLayout'
 import React from 'react'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
@@ -27,7 +28,19 @@ function* importObjectsSaga(data: Datum[]) {
         let brand = ledger.brands.byName[brandName]
         if(!brand) {
 
-            const action = BRANDS.actions.added({brandId: generateGuid(), brandName})
+            const action = BRANDS.actions.added({
+                brandId: generateGuid(),
+                brandName,
+                clientsBrandNumber: generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
+                brandType: 'Заказчик',
+                person: '',
+                email: '',
+                phone: '',
+                address: '',
+                web: '',
+                managerUserId: '',
+                removed: false
+            })
             console.log(`Brand ${brandName} not found, create one`, action)
             yield* put(action)
 
@@ -41,7 +54,11 @@ function* importObjectsSaga(data: Datum[]) {
 
         let legal = ledger.legals.byName[legalName]
         if(!legal) {
-            const action = LEGALS.actions.added({brandId: brand.brandId, legalId: generateGuid(), legalName})
+            const action = LEGALS.actions.added({
+                brandId: brand.brandId, legalId: generateGuid(), legalName,
+                region: '',
+                clientsLegalNumber: generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
+            })
             console.log(`Legal ${legalName} not found, create one`, action)
             yield* put(action)
 
@@ -55,7 +72,14 @@ function* importObjectsSaga(data: Datum[]) {
             s.city === city && s.address === address)
 
         if(!site) {
-            const site = {brandId: brand.brandId, legalId: legal.legalId, city, address, siteId: generateGuid()}
+            const site = {
+                brandId: brand.brandId,
+                legalId: legal.legalId,
+                city,
+                address,
+                siteId: generateGuid(),
+                clientsSiteNumber: generateNewClientsNumber(ledger.sites.list, 'clientsSiteNumber'),
+            }
             console.log(`Site not found, create one`, site.address)
             newSites.push(site)
         }

@@ -12,7 +12,7 @@ import {
     select,
 } from 'typed-redux-saga';
 
-const generateNewClientsNumber = (list: any[], accessor: string): string => {
+export const generateNewClientsNumber = (list: any[], accessor: string): string => {
     const lastItemNumber = list.reduce((acc, item) => {
         return +item[accessor] > acc ? +item[accessor] : acc;
     }, 0);
