@@ -49,6 +49,7 @@ export default ({issues, color}: IssueChartData) => {
             value: issues.filter(i => i.managerUserId === undefined).length
         }
     ]
+
     return <ResponsiveContainer width="100%" height="100%">
         <BarChart
             width={500}

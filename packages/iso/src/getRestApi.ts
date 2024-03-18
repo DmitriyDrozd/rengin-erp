@@ -13,6 +13,11 @@ export default async () => {
 
             return response.data.token
         },
+        archiveExport: async (payload = {}) => {
+            const response = await axiosInstance.post('/api/archive-export', payload)
+
+            return response.data
+        },
         emailExport: async (payload: {email: string, images: boolean}) => {
             const response = await axiosInstance.post('/api/email-export', payload)
 

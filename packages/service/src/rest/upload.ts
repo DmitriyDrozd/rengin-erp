@@ -127,5 +127,48 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
             return  reply.send("NoData")
         }
     )
+
+    fastify.post('/api/archive-export',
+        async function (request, reply) {
+            const query = request.query;
+            const data = request.body as { selected: string[] };
+
+            if (data) {
+                const selectedIDs = data.selected;
+
+                const archiveName = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+                const publicDir = Path.join(__filename,'..','..','..','..','static')
+                const dir = path.join(publicDir, 'archives', archiveName)
+
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, {recursive: true});
+                }
+
+                const state = request.io.store.getState() as ISOState;
+                const issuesFromState = ISSUES.selectAll(state)
+                    .filter(i => selectedIDs.includes(i.issueId));
+
+                for (const item of issuesFromState) {
+                    await ensureMoved(
+                        allIssuesFolder+'\\'+item.issueId,
+                        allIssuesFolder+'\\'+BRANDS.selectById(item.brandId!)(state).brandName + '_' + item.clientsIssueNumber
+                    );
+                }
+
+                const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
+                const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
+
+                //const buff = await zip.toBufferPromise()
+                // const stream = fs.createReadStream(fullZipPath, 'utf8')
+              return  reply.send({url:relativeZipPath})//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
+                //return reply.header('Content-Disposition', 'attachment; filename="REFERRALS.xlsx"')
+               //.send(stream)
+              //  return reply.sendFile(fullZipPath)//.send(bufferZip)
+
+            }
+
+            return  reply.send("NoData")
+        }
+    )
     done()
 }

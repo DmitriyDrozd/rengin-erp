@@ -1,3 +1,4 @@
+import { AgGridReact } from 'ag-grid-react';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
@@ -34,7 +35,7 @@ import { ClockCircleOutlined } from '@ant-design/icons';
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
 import ImportIssuesButton from './import-gsheet/ImportIssuesButton.js';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const getEstimationApprovedTag = (data: IssueVO) =>
     data.estimationsApproved === true
@@ -69,6 +70,55 @@ const getStatusTag = (issue: IssueVO) => {
     return <>{node}</>;
 };
 
+const onEmailExport = async (ag: AgGridReact) => {
+    //  const email = prompt('Укажите почтовый ящик, куда нужн отправить выгрузку')
+    const blob = ag.api.getDataAsExcel({}) as any as Blob;
+    //const api = await getRestApi()
+    const formData = new FormData();
+    formData.append('file[]', blob, 'report.xlsx');
+    const response = await axios.post(
+        '/api/email-export?images=true',
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            },
+        });//?email=miramaxis@ya.ru&images=true', formData);
+    console.log(response.data);
+
+    const url = response.data.url;
+    const element = document.createElement('a');
+    element.href = url;
+    element.download = url;
+// simulate link click
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+    document.body.removeChild(element);
+
+};
+
+const onArchiveExport = async (selectedIssuesIds: string[]) => {
+    const response = await axios.post(
+        '/api/archive-export',
+        { selected: selectedIssuesIds },
+        {
+            headers: {
+                'Content-Type': `application/json`,
+            },
+        });
+    console.log(response.data);
+    debugger;
+
+    const url = response.data.url;
+    const element = document.createElement('a');
+    element.href = url;
+    element.download = url;
+
+    // simulate link click
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+    document.body.removeChild(element);
+};
 
 export default () => {
 
@@ -158,52 +208,24 @@ export default () => {
             {
                 currentItemId ? <IssueModal_NEW id={currentItemId}/> : null
             }
-
-
             <PanelRGrid
-
                 toolbar={<Space>
-                    <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
-                    <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
-                </Space>}
+                        <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+                        <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+                    </Space>
+                }
                 rowData={rowData}
                 onCreateClick={onCreateClick}
                 fullHeight={true}
                 resource={ISSUES}
                 columnDefs={columns}
                 title={'Все заявки'}
-                bottomBar={({ag}) => {
-                    const onEmailExport = async () => {
-                        //  const email = prompt('Укажите почтовый ящик, куда нужн отправить выгрузку')
-                        const blob = ag.api.getDataAsExcel({}) as any as Blob;
-                        //const api = await getRestApi()
-                        const formData = new FormData();
-                        formData.append('file[]', blob, 'report.xlsx');
-                        const response = await axios.post(
-                            '/api/email-export?images=true&email=',
-                            formData,
-                            {
-                                headers: {
-                                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-                                },
-                            });//?email=miramaxis@ya.ru&images=true', formData);
-                        console.log(response.data);
-
-                        const url = response.data.url;
-                        const element = document.createElement('a');
-                        element.href = url;
-                        element.download = url;
-// simulate link click
-                        document.body.appendChild(element); // Required for this to work in FireFox
-                        element.click();
-                        document.body.removeChild(element);
-
-                    };
-
+                onExportArchive={onArchiveExport}
+                bottomBar={(ag) => {
                     return (
                         <Space>
-                            <Button icon={<AntdIcons.MailTwoTone/>} onClick={onEmailExport}>
-                                Выгрузить заявки
+                            <Button icon={<AntdIcons.MailTwoTone/>} onClick={() => onEmailExport(ag)}>
+                                Выгрузить .xslx
                             </Button>
                             <Link to={getNav().importIssues}>
                                 <Button icon={<AntdIcons.UploadOutlined/>}>
@@ -215,15 +237,6 @@ export default () => {
                     );
                 }}
             />
-            {
-                /**
-                 <FooterToolbar extra="extra information">
-                 <Button>Cancel</Button>
-                 <Button type="primary">Submit</Button>
-                 </FooterToolbar>
-                 */
-            }</div>
-
+        </div>
     </AppLayout>;
-
 }
