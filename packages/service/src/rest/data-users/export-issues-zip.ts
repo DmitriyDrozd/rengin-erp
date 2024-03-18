@@ -28,19 +28,7 @@ const mailer =  nodemailer.createTransport({
         pass: emailCfg.SMTP_PASSWORD,
     },
     })
-export const ensureMoved = async (src: string, dest: string) => {
-    try {
-        const isExists=await fse.exists(src)
-        console.log(isExists, src, )
-        if (isExists) {
-            console.log('moveTo',dest)
-            await fse.move(src, dest,{})
-            console.log('moved')
-        }
-    }catch (e) {
-        console.log(src,e)
-    }
-}
+
 const issueFilesArrayProps = ['actFiles', 'workFiles', 'checkFiles'] as const
 export const publicDir = Path.join(__filename, '..','..','..','..','..','static')
 export const allIssuesFolder = Path.join(publicDir,'uploads', 'issues')

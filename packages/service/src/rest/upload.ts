@@ -9,9 +9,11 @@ import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {AnyMeta} from "iso/src/store/bootstrap/core/valueTypes";
 import * as R from "ramda";
 import {ISOState} from "iso/src/ISOState";
-import {allIssuesFolder, ensureMoved, exportIssuesZip, publicDir} from "./data-users/export-issues-zip";
+import { exportIssuesArchive } from './data-users/export-issues-archive';
+import {allIssuesFolder, exportIssuesZip} from "./data-users/export-issues-zip";
 import moment from "moment/moment";
 import Path from "path";
+import { ensureMoved } from './utils/fileUtils';
 const contentDisposition = require('content-disposition');
 const fs = require('node:fs')
 
@@ -21,9 +23,6 @@ const pump = util.promisify(pipeline)
 
 
 export default (fastify: FastifyInstance, opts: any, done: Function) => {
-
-
-
     const io = fastify.io
     fastify.post('/api/upload/:issueId', async function (req, reply) {
 
@@ -135,17 +134,17 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
             if (data) {
                 const selectedIDs = data.selected;
-
                 const archiveName = dayjs().format('YYYY-MM-DD_HH-mm-ss');
-                const publicDir = Path.join(__filename,'..','..','..','..','static')
-                const dir = path.join(publicDir, 'archives', archiveName)
+                const publicDir = Path.join(__filename,'..','..','..','..','static');
+                const dir = path.join(publicDir, 'archives', archiveName);
 
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {recursive: true});
                 }
 
                 const state = request.io.store.getState() as ISOState;
-                const issuesFromState = ISSUES.selectAll(state)
+                const issuesFromState = ISSUES
+                    .selectAll(state)
                     .filter(i => selectedIDs.includes(i.issueId));
 
                 for (const item of issuesFromState) {
@@ -155,16 +154,10 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                     );
                 }
 
-                const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
-                const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
+                const relativeZipPath = await exportIssuesArchive(state, issuesFromState);
 
-                //const buff = await zip.toBufferPromise()
-                // const stream = fs.createReadStream(fullZipPath, 'utf8')
-              return  reply.send({url:relativeZipPath})//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
-                //return reply.header('Content-Disposition', 'attachment; filename="REFERRALS.xlsx"')
-               //.send(stream)
-              //  return reply.sendFile(fullZipPath)//.send(bufferZip)
-
+                return reply.send({ url: relativeZipPath })
+                //.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
             }
 
             return  reply.send("NoData")
