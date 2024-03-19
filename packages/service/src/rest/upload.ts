@@ -11,10 +11,8 @@ import * as R from "ramda";
 import {ISOState} from "iso/src/ISOState";
 import { exportIssuesArchive } from './data-users/export-issues-archive';
 import {allIssuesFolder, exportIssuesZip} from "./data-users/export-issues-zip";
-import moment from "moment/moment";
-import Path from "path";
+// import moment from "moment/moment";
 import { ensureMoved } from './utils/fileUtils';
-const contentDisposition = require('content-disposition');
 const fs = require('node:fs')
 
 const util = require('node:util')
@@ -23,7 +21,7 @@ const pump = util.promisify(pipeline)
 
 
 export default (fastify: FastifyInstance, opts: any, done: Function) => {
-    const io = fastify.io
+    // const io = fastify.io
     fastify.post('/api/upload/:issueId', async function (req, reply) {
 
         // process a single file
@@ -69,8 +67,8 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
     fastify.post('/api/email-export',
         async function (request, reply) {
-            let {email, images} = request.query
-            email = 'miramaxis@ya.ru'
+            // let {email, images} = request.query;
+            const email = 'miramaxis@ya.ru';
             const data = await request.file()
 
             if(data) {
@@ -83,7 +81,7 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                 const buffer = await data.toBuffer()
                 var workbook = XLSX.read(buffer,{type:'buffer'})
                 const worksheet = workbook!.Sheets[workbook.SheetNames[0]]
-                 const publicDir = Path.join(__filename,'..','..','..','..','static')
+                const publicDir = path.join(__filename,'..','..','..','..','static')
                 var dir = path.join(publicDir, 'reports',  dayjs().format('YYYY-MM-DD_HH-mm-ss'))
 
                 if (!fs.existsSync(dir)) {
@@ -112,7 +110,7 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                     .filter(i => ids.includes(i.issueId))
                 for(let i of issuesFromState)
                     await ensureMoved(allIssuesFolder+'\\'+i.issueId, allIssuesFolder+'\\'+BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber)
-                const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
+                // const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
                 const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
 
                 //const buff = await zip.toBufferPromise()
@@ -129,19 +127,11 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
     fastify.post('/api/archive-export',
         async function (request, reply) {
-            const query = request.query;
+            // const query = request.query;
             const data = request.body as { selected: string[] };
 
             if (data) {
                 const selectedIDs = data.selected;
-                const archiveName = dayjs().format('YYYY-MM-DD_HH-mm-ss');
-                const publicDir = Path.join(__filename,'..','..','..','..','static');
-                const dir = path.join(publicDir, 'archives', archiveName);
-
-                if (!fs.existsSync(dir)) {
-                    fs.mkdirSync(dir, {recursive: true});
-                }
-
                 const state = request.io.store.getState() as ISOState;
                 const issuesFromState = ISSUES
                     .selectAll(state)
@@ -155,9 +145,7 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                 }
 
                 const relativeZipPath = await exportIssuesArchive(state, issuesFromState);
-
-                return reply.send({ url: relativeZipPath })
-                //.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
+                return reply.send({ url: relativeZipPath });
             }
 
             return  reply.send("NoData")

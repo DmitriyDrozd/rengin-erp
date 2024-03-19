@@ -2,8 +2,8 @@ import fse from 'fs-extra';
 
 export const ensureMoved = async (src: string, dest: string) => {
     try {
-        const isExists=await fse.exists(src)
-        console.log(isExists, src)
+        const isExists= fse.existsSync(src)
+        console.log('is folder exists: ', isExists, src)
         if (isExists) {
             console.log('moveTo',dest)
             await fse.move(src, dest,{})

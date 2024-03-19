@@ -106,8 +106,6 @@ const onArchiveExport = async (selectedIssuesIds: string[]) => {
                 'Content-Type': `application/json`,
             },
         });
-    console.log(response.data);
-    debugger;
 
     const url = response.data.url;
     const element = document.createElement('a');
