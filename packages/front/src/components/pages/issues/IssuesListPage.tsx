@@ -8,7 +8,7 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import AppLayout from '../../app/AppLayout';
-import React from 'react';
+import React, { useState } from 'react';
 import { ColDef } from 'ag-grid-community';
 import {
     Badge,
@@ -25,6 +25,7 @@ import {
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import { useRouteMatch } from 'react-router';
 import { getNav } from '../../getNav';
+import { ExportArchiveSelector } from './export-archive/ExportArchiveSelector';
 import IssueModal_NEW from './IssueModal_NEW';
 import dayjs from 'dayjs';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
@@ -97,10 +98,10 @@ const onEmailExport = async (ag: AgGridReact) => {
 
 };
 
-const onArchiveExport = async (selectedIssuesIds: string[]) => {
+const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
     const response = await axios.post(
         '/api/archive-export',
-        { selected: selectedIssuesIds }
+        { selected: selectedIds, types }
     );
 
     const url = response.data.url;
@@ -190,6 +191,18 @@ export default () => {
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
     const rowData = dataForUser.filter(s => statuses.includes(s.status));
 
+    const [isExportSelectorOpen, setIsExportSelectorOpen] = useState(false);
+    const [selectedIds, setSelectedIds] = useState([]);
+    const exportArchiveHandler = (values: string[]) => {
+        setSelectedIds(values);
+        setIsExportSelectorOpen(true);
+    }
+
+    const closeExportSelector = () => {
+        setSelectedIds([]);
+        setIsExportSelectorOpen(false);
+    }
+
     return <AppLayout
         hidePageContainer={true}
         proLayout={{
@@ -202,6 +215,12 @@ export default () => {
             {
                 currentItemId ? <IssueModal_NEW id={currentItemId}/> : null
             }
+            <ExportArchiveSelector
+                isOpen={isExportSelectorOpen}
+                selectedIds={selectedIds}
+                onClose={closeExportSelector}
+                onExport={onArchiveExport}
+            />
             <PanelRGrid
                 toolbar={<Space>
                         <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
@@ -214,7 +233,7 @@ export default () => {
                 resource={ISSUES}
                 columnDefs={columns}
                 title={'Все заявки'}
-                onExportArchive={onArchiveExport}
+                onExportArchive={exportArchiveHandler}
                 bottomBar={(ag) => {
                     return (
                         <Space>
