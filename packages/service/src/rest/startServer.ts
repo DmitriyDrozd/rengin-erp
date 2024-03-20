@@ -24,7 +24,7 @@ export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced
 let FastifyHTTPErrorsEnhanced: FastifyHTTPErrorsEnhanced = {} as any
 
 export default async (io: SagaOptions) => {
-const p = path
+    const p = path
     const root = path.join(__dirname, '..', '..', '..', 'static')
     const state = io.store.getState()
     const store = io.store
@@ -80,6 +80,9 @@ const p = path
         return reply.sendFile('index.html')
     })
     fastify.get('/uploads/*', async(req, reply)=> {
+        return reply.sendFile(req.raw.url!)
+    })
+    fastify.get('/archives/*', async(req, reply)=> {
         return reply.sendFile(req.raw.url!)
     })
 

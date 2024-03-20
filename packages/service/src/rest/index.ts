@@ -3,8 +3,6 @@ import {serverSaga} from './serverSaga';
 
 
 export default async () => {
-
-
     const store = await configureServiceStore()
 
     // @ts-ignore

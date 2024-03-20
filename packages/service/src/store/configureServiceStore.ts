@@ -42,10 +42,10 @@ const configureServiceStore = async () => {
     const mongo = (await createMongoConnection()).connection
 
     const connectionString =  config.POSTGRES_URI
-const pg = knex({
-        client: 'pg',
-        connection: { connectionString, pool: {max:20, min:3,}}
-    });
+    const pg = knex({
+            client: 'pg',
+            connection: { connectionString, pool: {max:20, min:3,}}
+        });
     const EventsRepo = await eventStore(mongo)
     const nativeDispatch = store.dispatch
 

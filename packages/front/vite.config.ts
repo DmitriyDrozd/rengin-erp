@@ -47,7 +47,7 @@ export default defineConfig({
            LASTCOMMITDATETIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),*/
     },//
     server: {
-host: '127.0.0.1',
+    host: '127.0.0.1',
         port: RENGIN_VITE_PORT,
         proxy: {
             '/api/': RENGIN_SERVICE_API,
@@ -55,7 +55,7 @@ host: '127.0.0.1',
             '/models/': RENGIN_SERVICE_API,
 
             '/uploads/': RENGIN_SERVICE_API,
-
+            '/archives/': RENGIN_SERVICE_API,
             '/reports/': RENGIN_SERVICE_API
         },
     } }as UserConfigExport
