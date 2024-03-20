@@ -98,7 +98,6 @@ const onEmailExport = async (ag: AgGridReact) => {
 };
 
 const onArchiveExport = async (selectedIssuesIds: string[]) => {
-    debugger;
     const response = await axios.post(
         '/api/archive-export',
         { selected: selectedIssuesIds }
