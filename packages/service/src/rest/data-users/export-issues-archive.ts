@@ -3,11 +3,11 @@ import * as fs from 'fs';
 import fse from 'fs-extra';
 
 import BRANDS from "iso/src/store/bootstrap/repos/brands";
+import { execSync } from 'node:child_process';
 import path from 'path';
 import dayjs from "dayjs";
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {ISOState} from "iso/src/ISOState";
-import AdmZip from "adm-zip";
 
 export type TIssueFileType = 'actFiles' | 'workFiles' | 'checkFiles';
 const typeToFolderName = {
@@ -27,9 +27,10 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
     const relativeZipPath = `/archives/${reportDateTime}.zip`;
     const fullZipPath = publicDir + relativeZipPath;
 
-    const zip = new AdmZip();
+    // const zip = new AdmZip();
 
     const issuesWithImages = issues.filter(issueHasImages(types));
+    const imagesToCompress: string[] = [];
 
     issuesWithImages.forEach(issue => {
         const issueFolder = BRANDS.selectById(issue.brandId!)(state).brandName + '_' + issue.clientsIssueNumber;
@@ -43,16 +44,27 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
                 (issue[type] as unknown as Array<{ name: string, url: string }>)
                     ?.filter(img => fse.existsSync(getFullImageFolder(img.name)))
                     .forEach((img) => {
-                            const content = fs.readFileSync(getFullImageFolder(img.name));
-                            const entryName = `${typeToFolderName[type]}/${img.name}`;
-                            zip.addFile(entryName, content, '');
+                            // const content = fs.readFileSync(getFullImageFolder(img.name));
+                            // const entryName = `${typeToFolderName[type]}/${img.name}`;
+
+                            imagesToCompress.push(getFullImageFolder(img.name));
+                            // zip.addFile(entryName, content, '');
+                            // myStream.add(fullZipPath, getFullImageFolder(img.name), {
+                            //     $bin: path7zip,
+                            // });
+                            // zipJobs.push(addZipFile(fullZipPath, getFullImageFolder(img.name)));
                         }
                     )
             });
         }
     });
 
-    await zip.writeZipPromise(fullZipPath.replace('\\', '\/'));
+    const command: string= `7z a ${fullZipPath} ${imagesToCompress.map(img => `"${img}"`).join(' ')}`;
+    await execSync(command);
+
+
+    // myStream.pipe(writeStream);
+    // await zip.writeZipPromise(fullZipPath);
 
     return relativeZipPath;
 }

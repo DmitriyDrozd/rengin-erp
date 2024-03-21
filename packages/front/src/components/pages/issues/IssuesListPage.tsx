@@ -1,4 +1,5 @@
 import { AgGridReact } from 'ag-grid-react';
+import getRestApi from 'iso/src/getRestApi';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
@@ -99,10 +100,8 @@ const onEmailExport = async (ag: AgGridReact) => {
 };
 
 const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
-    const response = await axios.post(
-        '/api/archive-export',
-        { selected: selectedIds, types }
-    );
+    const api = await getRestApi();
+    const response = await api.archiveExport({ selected: selectedIds, types });
 
     const url = response.data.url;
     const element = document.createElement('a');
