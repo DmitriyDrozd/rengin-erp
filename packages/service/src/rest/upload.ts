@@ -9,7 +9,10 @@ import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {AnyMeta} from "iso/src/store/bootstrap/core/valueTypes";
 import * as R from "ramda";
 import {ISOState} from "iso/src/ISOState";
-import { exportIssuesArchive } from './data-users/export-issues-archive';
+import {
+    exportIssuesArchive,
+    TIssueFileType
+} from './data-users/export-issues-archive';
 import {allIssuesFolder, exportIssuesZip} from "./data-users/export-issues-zip";
 // import moment from "moment/moment";
 import { ensureMoved } from './utils/fileUtils';
@@ -127,11 +130,11 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
     fastify.post('/api/archive-export',
         async function (request, reply) {
-            // const query = request.query;
-            const data = request.body as { selected: string[] };
+            const data = request.body as { selected: string[], types: TIssueFileType[] };
 
             if (data) {
                 const selectedIDs = data.selected;
+                const selectedTypes = data.types;
                 const state = request.io.store.getState() as ISOState;
                 const issuesFromState = ISSUES
                     .selectAll(state)
@@ -144,7 +147,7 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                     );
                 }
 
-                const relativeZipPath = await exportIssuesArchive(state, issuesFromState);
+                const relativeZipPath = await exportIssuesArchive(state, issuesFromState, selectedTypes);
                 return reply.send({ url: relativeZipPath });
             }
 
