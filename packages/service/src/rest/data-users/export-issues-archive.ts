@@ -24,7 +24,7 @@ export const allIssuesFolder = path.join(publicDir,'uploads', 'issues')
 
 export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], types: TIssueFileType[]) => {
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
-    const relativeZipPath = `\\archives\\${reportDateTime}.zip`;
+    const relativeZipPath = `/archives/${reportDateTime}.zip`;
     const fullZipPath = publicDir + relativeZipPath;
     const fullDirPath = `${publicDir}\\archives\\${reportDateTime}`;
 
