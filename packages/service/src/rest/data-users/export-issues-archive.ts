@@ -26,7 +26,7 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const relativeZipPath = `/archives/${reportDateTime}.zip`;
     const fullZipPath = publicDir + relativeZipPath;
-    const fullDirPath = `${publicDir}\\archives\\${reportDateTime}`;
+    const fullDirPath = `${publicDir}/archives/${reportDateTime}`;
 
     const issuesWithImages = issues.filter(issueHasImages(types));
 
@@ -76,7 +76,7 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
     // const sevenZip = '"C:\\Program Files\\7-Zip\\7z.exe"';
     const sevenZip = '7z';
 
-    const archiveFromFolder = `${sevenZip} a -r "${fullZipPath}" "${fullDirPath}\\*"`;
+    const archiveFromFolder = `${sevenZip} a -r "${fullZipPath}" "${fullDirPath}/*"`;
 
     execSync(archiveFromFolder);
 
