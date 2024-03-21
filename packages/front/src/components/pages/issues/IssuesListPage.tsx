@@ -101,9 +101,9 @@ const onEmailExport = async (ag: AgGridReact) => {
 
 const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
     const api = await getRestApi();
-    const response = await api.archiveExport({ selected: selectedIds, types });
+    const data = await api.archiveExport({ selected: selectedIds, types });
 
-    const url = response.data.url;
+    const url = data.url;
     const element = document.createElement('a');
     element.href = url;
     element.download = url;

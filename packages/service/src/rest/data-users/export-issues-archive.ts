@@ -31,6 +31,7 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
 
     const issuesWithImages = issues.filter(issueHasImages(types));
     const imagesToCompress: string[] = [];
+    const imagesNames: { src: string, dest: string }[] = [];
 
     issuesWithImages.forEach(issue => {
         const issueFolder = BRANDS.selectById(issue.brandId!)(state).brandName + '_' + issue.clientsIssueNumber;
@@ -44,27 +45,29 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
                 (issue[type] as unknown as Array<{ name: string, url: string }>)
                     ?.filter(img => fse.existsSync(getFullImageFolder(img.name)))
                     .forEach((img) => {
-                            // const content = fs.readFileSync(getFullImageFolder(img.name));
-                            // const entryName = `${typeToFolderName[type]}/${img.name}`;
+                        const src = img.name;
+                        const dest = `${typeToFolderName[type]}/${src}`;
 
-                            imagesToCompress.push(getFullImageFolder(img.name));
-                            // zip.addFile(entryName, content, '');
-                            // myStream.add(fullZipPath, getFullImageFolder(img.name), {
-                            //     $bin: path7zip,
-                            // });
-                            // zipJobs.push(addZipFile(fullZipPath, getFullImageFolder(img.name)));
-                        }
-                    )
+                        imagesToCompress.push(getFullImageFolder(src));
+                        imagesNames.push({ src, dest });
+                    })
             });
         }
     });
 
-    const command: string= `7z a ${fullZipPath} ${imagesToCompress.map(img => `"${img}"`).join(' ')}`;
-    await execSync(command);
+    /**
+     * Путь к команде 7zip. Для целей разработки на Windows использовать вариант с полным путем
+     */
+    // const sevenZip = '"C:\\Program Files\\7-Zip\\7z.exe"';
+    const sevenZip = '7z';
 
+    const archiveCreate = `${sevenZip} a "${fullZipPath}" ${imagesToCompress.map(img => `"${img}"`).join(' ')}`;
+    const archiveSubFolders = `${sevenZip} rn "${fullZipPath}" ${imagesNames.map(
+        ({ src, dest }) => `"${src}" "${dest}"`
+    ).join(' ')}`;
 
-    // myStream.pipe(writeStream);
-    // await zip.writeZipPromise(fullZipPath);
+    execSync(archiveCreate);
+    execSync(archiveSubFolders);
 
     return relativeZipPath;
 }
