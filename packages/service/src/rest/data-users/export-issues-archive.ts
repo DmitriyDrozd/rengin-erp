@@ -26,34 +26,49 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const relativeZipPath = `/archives/${reportDateTime}.zip`;
     const fullZipPath = publicDir + relativeZipPath;
-
-    // const zip = new AdmZip();
+    const fullDirPath = `${publicDir}/archives/${reportDateTime}`;
 
     const issuesWithImages = issues.filter(issueHasImages(types));
-    const imagesToCompress: string[] = [];
-    const imagesNames: { src: string, dest: string }[] = [];
 
-    issuesWithImages.forEach(issue => {
-        const issueFolder = BRANDS.selectById(issue.brandId!)(state).brandName + '_' + issue.clientsIssueNumber;
-        const fullIssueFolder = path.join(allIssuesFolder, issueFolder);
-        const getFullImageFolder = (name: string): string => `${fullIssueFolder}/${name}`;
+    if (!issuesWithImages.length) {
+        return;
+    }
 
+    fs.mkdirSync(fullDirPath);
 
-        if (fs.existsSync(fullIssueFolder)) {
-            types.forEach(type => {
+    issuesWithImages
+        .filter(({ clientsIssueNumber }) => clientsIssueNumber !== undefined && clientsIssueNumber !== null)
+        .forEach(issue => {
+            const { clientsIssueNumber, brandId } = issue;
+            const issueFolder = BRANDS.selectById(brandId!)(state).brandName + '_' + clientsIssueNumber;
+            const fullIssueFolder = path.join(allIssuesFolder, issueFolder);
 
-                (issue[type] as unknown as Array<{ name: string, url: string }>)
-                    ?.filter(img => fse.existsSync(getFullImageFolder(img.name)))
-                    .forEach((img) => {
-                        const src = img.name;
-                        const dest = `${typeToFolderName[type]}/${src}`;
+            if (fs.existsSync(fullIssueFolder)) {
+                const getFullImageFolder = (name: string): string => `${fullIssueFolder}/${name}`;
 
-                        imagesToCompress.push(getFullImageFolder(src));
-                        imagesNames.push({ src, dest });
-                    })
-            });
-        }
-    });
+                types.forEach(type => {
+                    (issue[type] as unknown as Array<{ name: string, url: string }>)
+                        ?.filter(img => fse.existsSync(getFullImageFolder(img.name)))
+                        .forEach((img) => {
+                            const issueFolder = `${fullDirPath}/${clientsIssueNumber}`;
+                            const typeFolder = `${issueFolder}/${typeToFolderName[type]}`;
+
+                            if (!fs.existsSync(issueFolder)) {
+                                fs.mkdirSync(issueFolder);
+                            }
+
+                            if (!fs.existsSync(typeFolder)) {
+                                fs.mkdirSync(typeFolder);
+                            }
+
+                            const src = img.name;
+                            const dest = `${typeFolder}/${src}`;
+
+                            fs.copyFileSync(getFullImageFolder(src), dest);
+                        })
+                });
+            }
+        });
 
     /**
      * Путь к команде 7zip. Для целей разработки на Windows использовать вариант с полным путем
@@ -61,13 +76,12 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
     // const sevenZip = '"C:\\Program Files\\7-Zip\\7z.exe"';
     const sevenZip = '7z';
 
-    const archiveCreate = `${sevenZip} a "${fullZipPath}" ${imagesToCompress.map(img => `"${img}"`).join(' ')}`;
-    const archiveSubFolders = `${sevenZip} rn "${fullZipPath}" ${imagesNames.map(
-        ({ src, dest }) => `"${src}" "${dest}"`
-    ).join(' ')}`;
+    const archiveFromFolder = `cd ${fullDirPath} & ${sevenZip} a -r ${fullZipPath} *`;
 
-    execSync(archiveCreate);
-    execSync(archiveSubFolders);
+    execSync(archiveFromFolder);
+
+    // @ts-ignore
+    fs.rm(fullDirPath, { recursive: true, force: true });
 
     return relativeZipPath;
 }
