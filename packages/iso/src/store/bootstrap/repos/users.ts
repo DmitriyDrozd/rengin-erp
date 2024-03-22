@@ -37,6 +37,7 @@ const usersRaw = createResource('user',{
     phone: valueTypes.string({ toLowerCase: true, colDef: {width: 250}}),
     avatarUrl: valueTypes.string({colDef:false}),
     password: valueTypes.string({required: true, colDef: false}),
+    clientsUserNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
     removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
 },{
    getItemName: item => item.lastname +' '+ item.name,
@@ -46,11 +47,6 @@ const usersRaw = createResource('user',{
         some: 'Пользователя'
     }
 })
-
-
-
-
-
 
 const selectUserByEmail = (email: string) => (state) => {
 
@@ -156,6 +152,7 @@ export const usersResource = {
         const num = stringToHashInt(userId)
         return generateGravatar(num, user.name ? user.name.charAt(0) : '', (user.lastname?user.lastname.charAt(0): ''))
     },
+    clientsNumberProp: 'clientsUserNumber',
 }
 export const USERS = usersResource
 

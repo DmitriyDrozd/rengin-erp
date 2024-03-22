@@ -10,7 +10,7 @@ import { usersEditor } from '../../../editors/usersEditor';
 
 const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
     const useEditorData = useEditor(usersEditor, id);
-    const {removed, ...propsToRender} = USERS.properties;
+    const {removed, clientsUserNumber, ...propsToRender} = USERS.properties;
     const list = Array.from(Object.values(propsToRender));
     const customOptions = roles.map(r => ({ value: r, label: r }));
 

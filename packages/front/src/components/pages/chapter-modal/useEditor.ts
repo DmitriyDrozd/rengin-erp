@@ -6,6 +6,8 @@ import {useISOState} from "iso/src/ISOState";
 import {GetParamsByMeta, RenEditor} from "iso/src/store/bootstrap/buildEditor";
 import {generateGuid} from "@sha/random";
 import {useHistory} from "react-router";
+import useLedger from '../../../hooks/useLedger';
+import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 
 const getArrayPropsForNewItem = <Fields extends AnyFieldsMeta>(fields: Fields) => {
     const obj : any = []
@@ -41,8 +43,8 @@ export const useEditor =  <
             : idOrInitItem
 
     const [item, setItem] = useState(initItem)
-
-
+    const ledger = useLedger();
+    const list = ledger[editor.resource.collection].list;
 
     const updateItemProperty = <K extends keyof Fields>(prop: K) =>
         (value: ItemWithId<RID,Fields>[K]) => {
@@ -64,10 +66,23 @@ export const useEditor =  <
             dispatch(editor.resource.actions.removed(id))
         },
         save: () => {
-            if(mode === 'create')
-                dispatch(editor.resource.actions?.added(item))
-           else  if(JSON.stringify(initItem) !== JSON.stringify(item))
-            dispatch(editor.resource.actions?.patched(item))
+            let savingItem = item;
+            const clientsNumberProp = editor.resource.clientsNumberProp;
+
+            if (clientsNumberProp && !item[clientsNumberProp]) {
+                const clientsNumber = clientsNumberProp ? generateNewListItemNumber(list, clientsNumberProp) : undefined
+
+                savingItem = {
+                    ...item,
+                    [clientsNumberProp]: clientsNumber
+                };
+            }
+
+            if (mode === 'create') {
+                dispatch(editor.resource.actions?.added(savingItem))
+            } else if (JSON.stringify(initItem) !== JSON.stringify(savingItem)) {
+                dispatch(editor.resource.actions?.patched(savingItem))
+            }
         },
         updateItemProperty,
         validateProps: () => {
