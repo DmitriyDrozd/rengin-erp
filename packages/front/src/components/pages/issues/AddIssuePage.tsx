@@ -7,7 +7,7 @@ import useLedger from '../../../hooks/useLedger';
 import {useQueryObject} from '../../../hooks/useQueryObject'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router'
-import { generateNewClientsNumber } from '../../../utils/byQueryGetters';
+import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import {AntdIcons} from '../../elements/AntdIcons'
 import AppLayout from '../../app/AppLayout'
 import CancelButton from '../../elements/CancelButton'
@@ -62,7 +62,7 @@ export default () => {
     const onSubmit = async (values: Item) => {
         const patch = {
             [idProp]:id,
-            [ISSUES.clientsNumberProp]: generateNewClientsNumber(ledger.issues.list, ISSUES.clientsNumberProp),
+            [ISSUES.clientsNumberProp]: generateNewListItemNumber(ledger.issues.list, ISSUES.clientsNumberProp),
             ...values
         };
 

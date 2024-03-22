@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import {useDispatch} from 'react-redux'
 import useLedger from '../../../hooks/useLedger';
-import { generateNewClientsNumber } from '../../../utils/byQueryGetters';
+import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout'
 import {ProFormInstance} from '@ant-design/pro-components'
 import type {CrudFormRender, CrudFormRenderProps} from './ItemChapter'
@@ -45,7 +45,7 @@ export const CrudCreateItemPage =  <
     const onSubmit = async (values: Item) => {
         const clientsNumberProp = resource.clientsNumberProp
         // fixme: possible collision place. Front Ledger may be outdated with backend ledger info. Create backend function to generate clients number instead
-        const clientsNumber = clientsNumberProp ? generateNewClientsNumber(ledger[resource.collection].list, resource.clientsNumberProp) : undefined
+        const clientsNumber = clientsNumberProp ? generateNewListItemNumber(ledger[resource.collection].list, resource.clientsNumberProp) : undefined
 
         const patch = {
             [idProp]:id,

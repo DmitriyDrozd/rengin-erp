@@ -12,7 +12,7 @@ import {
     select,
 } from 'typed-redux-saga';
 
-export const generateNewClientsNumber = (list: any[], accessor: string): string => {
+export const generateNewListItemNumber = (list: any[], accessor: string): string => {
     const lastItemNumber = list.reduce((acc, item) => {
         return +item[accessor] > acc ? +item[accessor] : acc;
     }, 0);
@@ -32,7 +32,7 @@ export function* byQueryGetters () {
         if (!ledger.brands.byId[actualBrandId]) {
             // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
             actualBrandId = generateGuid();
-            const clientsBrandNumber = generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber');
+            const clientsBrandNumber = generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber');
             const action = BRANDS.actions.added({
                 clientsBrandNumber: clientsBrandNumber,
                 brandId: actualBrandId,
@@ -67,7 +67,7 @@ export function* byQueryGetters () {
 
         if (!ledger.legals.byId[actualLegalId]) {
             actualLegalId = generateGuid();
-            const clientsLegalNumber = generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber');
+            const clientsLegalNumber = generateNewListItemNumber(ledger.legals.list, 'clientsLegalNumber');
             const action = LEGALS.actions.added({
                 brandId,
                 clientsLegalNumber,
@@ -96,7 +96,7 @@ export function* byQueryGetters () {
         const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value === actualClientsSiteNumber);
 
         if (!ledger.sites.list.find(siteByNumberFind)) {
-            actualClientsSiteNumber = generateNewClientsNumber(ledger.sites.list, 'clientsSiteNumber');
+            actualClientsSiteNumber = generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber');
 
             const newBrand = yield* call(brandById, '');
             const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});

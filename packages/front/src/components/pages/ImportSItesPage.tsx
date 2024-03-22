@@ -1,4 +1,4 @@
-import { generateNewClientsNumber } from '../../utils/byQueryGetters';
+import { generateNewListItemNumber } from '../../utils/byQueryGetters';
 import AppLayout from '../app/AppLayout'
 import React from 'react'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
@@ -31,7 +31,7 @@ function* importObjectsSaga(data: Datum[]) {
             const action = BRANDS.actions.added({
                 brandId: generateGuid(),
                 brandName,
-                clientsBrandNumber: generateNewClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
+                clientsBrandNumber: generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber'),
                 brandType: 'Заказчик',
                 person: '',
                 email: '',
@@ -57,7 +57,7 @@ function* importObjectsSaga(data: Datum[]) {
             const action = LEGALS.actions.added({
                 brandId: brand.brandId, legalId: generateGuid(), legalName,
                 region: '',
-                clientsLegalNumber: generateNewClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
+                clientsLegalNumber: generateNewListItemNumber(ledger.legals.list, 'clientsLegalNumber'),
             })
             console.log(`Legal ${legalName} not found, create one`, action)
             yield* put(action)
@@ -78,7 +78,7 @@ function* importObjectsSaga(data: Datum[]) {
                 city,
                 address,
                 siteId: generateGuid(),
-                clientsSiteNumber: generateNewClientsNumber(ledger.sites.list, 'clientsSiteNumber'),
+                clientsSiteNumber: generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber'),
             }
             console.log(`Site not found, create one`, site.address)
             newSites.push(site)
