@@ -3,7 +3,6 @@ import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
 
-export const roleTypes = ['руководитель','менеджер','сметчик','техник','ответственный инженер'] as const
 
 export const roleEnum = {
     'руководитель':'руководитель',
@@ -13,6 +12,13 @@ export const roleEnum = {
     'техник':'техник',
     'ответственный инженер':'ответственный инженер'
 }
+export const roleTypes = [
+    roleEnum.руководитель,
+    roleEnum.менеджер,
+    roleEnum.сметчик,
+    roleEnum.техник,
+    roleEnum['ответственный инженер']
+] as const
 
 export type RoleType = typeof roleTypes[number]
 
@@ -94,7 +100,6 @@ var generateGravatar = (index, n, s) => {
 }
 
 export const getAbbrName = (user) =>  {
-    // fixme: !user workaround
     const parts = (user?.fullName || "Новый Пользователь Отчество").split(' ')
     const getPart = (index: number) => {
         const part = parts[index]
@@ -131,10 +136,10 @@ export const usersResource = {
       //  usersListUpdated: rawUsersResource.factory<UserVO[]>('usersListUpdated')
     },
     selectUserByEmail,
-selectAbbrName: (userId: string) => (state) => {
-        const user = usersRaw.selectById(userId)(state)
-    return getAbbrName(user as any)
-},
+    selectAbbrName: (userId: string) => (state) => {
+            const user = usersRaw.selectById(userId)(state)
+        return getAbbrName(user as any)
+    },
     selectUserByCredentials: ({email, password}) => (state) => {
         const user = selectUserByEmail(email)(state)
         return (user && user.password === password)
@@ -143,12 +148,14 @@ selectAbbrName: (userId: string) => (state) => {
     },
     selectAvatar: (userId: string) => (state): string => {
         const user:UserVO = usersRaw.selectById(userId)(state) as any
-        if(user.avatarUrl)
-            return user.avatarUrl
+
+        if (user.avatarUrl) {
+            return user.avatarUrl;
+        }
+
         const num = stringToHashInt(userId)
         return generateGravatar(num, user.name ? user.name.charAt(0) : '', (user.lastname?user.lastname.charAt(0): ''))
     },
-
 }
 export const USERS = usersResource
 

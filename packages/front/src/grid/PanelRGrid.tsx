@@ -75,6 +75,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         rowData,
         createItemProps,
         onExportArchive,
+        createHandler,
         ...props
     }: RGridProps<RID, Fields> & {
         title: string;
@@ -82,6 +83,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         toolbar?: React.ReactNode,
         bottomBar?: BottomGridApiBar
         onExportArchive?: (selectedIds: string[]) => void,
+        gridRef: React.RefObject<typeof RGrid>,
+        createHandler: () => void,
     }) => {
     const dispatch = useDispatch();
     const [isDeleteMode, setDeleteMode,] = useState(false);
@@ -163,11 +166,11 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const role = useRole();
     const items = getItems(!!onExportArchive);
 
-    const renderStandartToolBar = () => {
+    const renderStandardToolBar = () => {
         return role === 'сметчик'
             ? <Typography.Text>Вы можете редактировать сметы</Typography.Text>
             : <>
-                <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                <CrudCreateButton resource={resource} defaultProps={createItemProps} onCreate={createHandler}/>
                 <Dropdown menu={{
                     items,
                     onClick: e => {
@@ -211,7 +214,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                     />
                     { isDeleteMode && renderDeleteModeToolBar() }
                     { isExportMode && renderExportModeToolBar() }
-                    { !isDeleteMode && !isExportMode && renderStandartToolBar()}
+                    { !isDeleteMode && !isExportMode && renderStandardToolBar()}
                 </Space>
             </div>
         </div>

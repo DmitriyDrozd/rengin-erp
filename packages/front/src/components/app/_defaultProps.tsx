@@ -39,23 +39,22 @@ export default (role: RoleType) =>{
                         {
                             path: "/app/in/brands",
                             name: "Заказчики",
-                            icon: <AppstoreOutlined />,
                         },
                         {
                             path: "/app/in/legals",
                             name: "Юр Лица",
-                            icon: <AppstoreOutlined />,
                         },
                         {
                             path: "/app/in/sites",
                             name: "Объекты",
-                            icon: <AppstoreOutlined />,
                         },
                         {
-
+                            path: "/app/in/users-employees",
+                            name: "Сотрудники",
+                        },
+                        {
                             path: "/app/in/import-sites",
                             name: "Импорт",
-                            icon: <ImportOutlined />,
                         }
                     ]
                 },

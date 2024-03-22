@@ -4,26 +4,27 @@ import {
     routeBuilder,
     RoutePath
 } from '@sha/router';
-import LoginPage from './pages/LoginPage';
 import {
     Route,
     RouteComponentProps
 } from 'react-router';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import moize from 'moize';
 
+import LoginPage from './pages/LoginPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import StartPage from './pages/StartPage';
 import BrandsChapter from './pages/brands/BrandsChapter.js';
 import LegalsChapter from './pages/clients/LegalsChapter';
 import SitesChapter from './pages/clients/SitesChapter';
 import ContractsChapter from './pages/contracts/ContractsChapter';
 import SubsChapter from './pages/contracts/SubsChapter';
-import ImportSItesPage from './pages/ImportSItesPage';
+import ImportSitesPage from './pages/ImportSItesPage';
 import { ImportIssuesPage } from './pages/ImportIssuesPage';
 import IssuesListPage from './pages/issues/IssuesListPage';
 import AddIssuePage from './pages/issues/AddIssuePage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import UsersChapter from './pages/users/UsersListPage';
-import moize from 'moize';
+import EmployeesChapter from './pages/users/EmployeesListPage';
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -51,6 +52,9 @@ export const getNav = moize(() => {
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),
         usersList: buildNav('/app/in/users', UsersChapter),
 
+        employeesList: buildNav('/app/in/users-employees', EmployeesChapter),
+        employeesCreate: buildNav('/app/in/users-employees/create', EmployeesChapter),
+        employeesEdit: buildNav('/app/in/users-employees/:employeeId', EmployeesChapter),
 
         brandsList: buildNav('/app/in/brands', BrandsChapter),
 
@@ -69,8 +73,10 @@ export const getNav = moize(() => {
         subsList: buildNav('/app/in/subs', SubsChapter),
         subsCreate: buildNav('/app/in/subs/create', SubsChapter),
         subsEdit: buildNav('/app/in/subs/:subId', SubsChapter),
-        importSites: buildNav('/app/in/import-sites', ImportSItesPage),
+
+        importSites: buildNav('/app/in/import-sites', ImportSitesPage),
         importIssues: buildNav('/app/in/import-issues', ImportIssuesPage),
+
         issues: buildNav('/app/in/issues', IssuesListPage),
         issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
         issuesEdit: buildNav('/app/in/issues/:issueId', IssuesListPage),

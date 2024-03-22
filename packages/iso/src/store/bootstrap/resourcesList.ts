@@ -58,8 +58,6 @@ export const getResourcesByNames = () => ({
     sub: SUBS,
 })
 
-export type BrandsResource = typeof BRANDS
-
 export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
     const res = RESOURCES_MAP[rName]
 

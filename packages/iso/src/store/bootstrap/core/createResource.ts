@@ -71,12 +71,12 @@ addProp('a')(5)
 export const createResource = <RID extends string,  Fields extends AnyFieldsMeta>
     (RID: RID, properties: Fields,{langRU, ...rest}: ResourceOptions<RID, Fields>) => {
         type Item = ItemWithId<RID,Fields>
+        type IDProp = IdKey<RID>
+
         const collection: PluralEngindEng<RID> = pluralEngindEnd(RID)
-    type IDProp = IdKey<RID>
         const idPropThis = RID+'Id' as IdKey<RID>
 
         const propsWithOnlyId: {[ke in IDProp]: StringMeta}= ({
-
             [idPropThis as IDProp]: valueTypes.string({headerName: 'id',isIDProp: true,unique: true})
         }) as any
 
@@ -88,11 +88,12 @@ export const createResource = <RID extends string,  Fields extends AnyFieldsMeta
             properties: {
                 ...propsWithOnlyId,
                 ...properties,
-                removed: valueTypes.string({headerName: 'Удалёно',sealed:true}),
+                removed: valueTypes.string({headerName: 'Удалено',sealed:true}),
             },
             exampleItem: {} as any as Item
         }
-        const fieldsList:(Meta<any, any>)[]  = []
+        const fieldsList:(Meta<any, any>)[]  = [];
+
         Object.keys(props.properties).forEach( k => {
             const p =props.properties[k]
             fieldsList.push(p)
