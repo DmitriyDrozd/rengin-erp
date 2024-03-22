@@ -23,7 +23,6 @@ const employeesFilter = ({role}: UserVO) => employeesRoles.includes(role);
 const crud = getCrudPathname(USERS);
 const getCrudUrl = (url: string) => url.replace('users', 'users-employees');
 
-// todo: ограничить роли для создаваемых и редактируемых
 // todo: показывать только для менеджеров, контакты тоже? или ограничить возможность редактирования
 export default () => {
     const ledger = useLedger();
