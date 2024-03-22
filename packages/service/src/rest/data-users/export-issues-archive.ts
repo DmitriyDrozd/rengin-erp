@@ -8,6 +8,7 @@ import path from 'path';
 import dayjs from "dayjs";
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {ISOState} from "iso/src/ISOState";
+import { env } from 'process';
 
 export type TIssueFileType = 'actFiles' | 'workFiles' | 'checkFiles';
 const typeToFolderName = {
@@ -71,11 +72,9 @@ export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], ty
         });
 
     /**
-     * Путь к команде 7zip. Для целей разработки на Windows использовать вариант с полным путем
+     * Путь к команде 7zip. Для целей разработки на Windows.
      */
-    // const sevenZip = '"C:\\Program Files\\7-Zip\\7z.exe"';
-    const sevenZip = '7z';
-
+    const sevenZip = env['7z'] || '7z';
     const archiveFromFolder = `${sevenZip} a -r "${fullZipPath}" "${fullDirPath}/*"`;
 
     execSync(archiveFromFolder);
