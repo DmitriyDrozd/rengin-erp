@@ -59,7 +59,7 @@ export default () => {
     const outdatedIssues = periodIssues.filter(Days.isIssueOutdated);
 
     const closedIssues = periodIssues.filter(i => i.status === 'Выполнена');
-    const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start, end));
+    const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start || dayjs(new Date(0)), end));
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
 
