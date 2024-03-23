@@ -1,27 +1,18 @@
-import {Bar, BarChart, CartesianGrid, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
-import {useSelector} from "react-redux";
-import {USERS} from "iso/src/store/bootstrap";
-import {UserVO} from "iso/src/store/bootstrap/repos/users";
-
-const data = [
-    {
-        name: 'Всего',
-        value: 120,
-    },
-    {
-        name: 'Мышланов Р.С.',
-        value: 32
-    },
-    {
-        name: 'Фёдоров',
-        value: 40
-    },
-    {
-        name: 'Не указан',
-        value: 48
-    }
-];
+import { useCallback } from 'react';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Rectangle,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from 'recharts';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
+import { useSelector } from 'react-redux';
+import { USERS } from 'iso/src/store/bootstrap';
+import { UserVO } from 'iso/src/store/bootstrap/repos/users';
 
 export type Datum = {
     name: string
@@ -34,21 +25,22 @@ export type  IssueChartData = {
 }
 
 export default ({issues, color}: IssueChartData) => {
-    const users: UserVO[] = useSelector(USERS.selectAll)
+    const users: UserVO[] = useSelector(USERS.selectAll);
+
+    const getProcessedByUser = useCallback((user?: UserVO) => ({
+        name: user ? user.fullName : 'Без менеджера',
+        value: issues.filter(issue => issue.responsibleManagerId === (user ? user.userId : undefined)).length,
+    }), [issues]);
+
+    const processedTotal = { name: 'Всего', value: issues.length };
+    const processedByUser = users.map(getProcessedByUser);
+    const processedByNotDefined = getProcessedByUser();
+
     const data: Datum[] = [
-        {
-            name: 'Всего',
-            value: issues.length
-        },
-        ...users.map ( u => ({
-            name: u.fullName,
-            value: issues.filter(i => i.managerUserId === u.userId).length
-        })).filter( d => d.value > 0),
-        {
-            name: 'Не задан',
-            value: issues.filter(i => i.managerUserId === undefined).length
-        }
-    ]
+        processedTotal,
+        ...processedByUser,
+        processedByNotDefined,
+    ].filter((d, i) => i === 0 || d.value > 0);
 
     return <ResponsiveContainer width="100%" height="100%">
         <BarChart
@@ -62,14 +54,11 @@ export default ({issues, color}: IssueChartData) => {
                 bottom: 5,
             }}
         >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            {
-                //<Legend />
-                 }
-            <Bar dataKey="value" fill={color || 'pink'} activeBar={<Rectangle fill={color || "pink"} stroke={color} />} />
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis dataKey="name"/>
+            <YAxis/>
+            <Tooltip label={'Количество'} />
+            <Bar dataKey="value" fill={color || 'pink'} activeBar={<Rectangle fill={color || 'pink'} stroke={color}/>}/>
         </BarChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer>;
 }

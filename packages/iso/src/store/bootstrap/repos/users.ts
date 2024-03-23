@@ -31,8 +31,6 @@ const usersRaw = createResource('user',{
     lastname: valueTypes.string({required: true, colDef:{width: 250}, headerName:'Фамилия'},),
     name: valueTypes.string({required: true, colDef:{width: 250}, headerName:'Имя'},),
     title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
-
-
     email: valueTypes.string({required: true, toLowerCase: true, colDef: {width: 250}}),
     phone: valueTypes.string({ toLowerCase: true, colDef: {width: 250}}),
     avatarUrl: valueTypes.string({colDef:false}),
