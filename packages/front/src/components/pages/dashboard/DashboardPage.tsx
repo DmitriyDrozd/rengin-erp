@@ -87,6 +87,7 @@ export default () => {
                     />
                     <span style={{ padding: '0 24px' }}>За период:</span>
                     <Select
+                        defaultValue={'one,today'}
                         onSelect={onOptionChange}
                         style={{width: '150px'}}
                         options={periodOptions}
