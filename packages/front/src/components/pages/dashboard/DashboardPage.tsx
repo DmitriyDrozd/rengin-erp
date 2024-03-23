@@ -4,24 +4,48 @@ import { useSelector } from 'react-redux';
 import IssueChart from './IssueChart';
 import {
     Card,
-    DatePicker
+    DatePicker,
+    Select
 } from 'antd';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
-import { useState } from 'react';
-import dayjs from 'dayjs';
+import { CSSProperties, useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { Days } from 'iso';
-import { Period } from 'iso/src/utils/date-utils';
+import {
+    asDayOrToday,
+    Period
+} from 'iso/src/utils/date-utils';
 
 dayjs.extend(isBetween);
-const {RangePicker} = DatePicker;
-const gridStyle: React.CSSProperties = {
+
+const { RangePicker } = DatePicker;
+const gridStyle: CSSProperties = {
     width: '50%',
     height: '300px',
     textAlign: 'center',
 };
 
-const month = 1;
+const today = dayjs(Date.now());
+const offsetDates: { [offset: string]: Dayjs } = {
+    today,
+    one: today.subtract(1, 'month'),
+    two: today.subtract(2, 'month'),
+    three: today.subtract(3, 'month'),
+    six: today.subtract(6, 'month'),
+    year: today.subtract(1, 'year'),
+    all: null,
+};
+
+const periodOptions = [
+    { value: 'one,today', label: 'Месяц' },
+    { value: 'two,today', label: '2 Месяца' },
+    { value: 'three,today', label: '3 Месяца' },
+    { value: 'six,today', label: 'Полгода' },
+    { value: 'year,today', label: 'Год' },
+    { value: 'all,today', label: 'Все время' },
+];
+const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
 export default () => {
     const defaultPeriod = [dayjs(dayjs().subtract(1, 'month')), dayjs(Date.now())] as Period;
@@ -39,6 +63,10 @@ export default () => {
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
 
+    const onOptionChange = (option: string) => {
+        setPeriod(mapOffsetToPeriod(option));
+    }
+
     return (
         <AppLayout
             hidePageContainer
@@ -52,8 +80,16 @@ export default () => {
                 <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
                     <span style={{ paddingRight: '24px' }}>Период:</span>
                     <RangePicker
-                        value={period}
+                        allowClear={false}
+                        placeholder={['Дата начала', 'Дата конца']}
+                        value={period || defaultPeriod}
                         onChange={setPeriod}
+                    />
+                    <span style={{ padding: '0 24px' }}>За период:</span>
+                    <Select
+                        onSelect={onOptionChange}
+                        style={{width: '150px'}}
+                        options={periodOptions}
                     />
                 </Card.Grid>
 

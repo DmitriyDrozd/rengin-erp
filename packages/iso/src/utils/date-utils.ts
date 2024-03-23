@@ -65,25 +65,25 @@ export const asDayOrUndefined = (value: ConfigType) =>
 
 export const getIssueDays = (issue: IssueVO) => {
     return {
-        plannedDay: asDay(issue.plannedDate),
-        completedDay: asDay(issue.completedDate),
-        workStartedDay: asDay(issue.workStartedDate),
-        registerDay: asDay(issue.registerDate)
+        plannedDate: asDay(issue.plannedDate),
+        completedDate: asDay(issue.completedDate),
+        workStartedDate: asDay(issue.workStartedDate),
+        registerDate: asDay(issue.registerDate)
     };
 };
 
 
 export const getIssueDelayOrUndefined = (issue: IssueVO) => {
-    const {plannedDay, completedDay, registerDay, workStartedDay} = getIssueDays(issue);
+    const {plannedDate, completedDate, registerDate, workStartedDate} = getIssueDays(issue);
 
-    console.log(plannedDay ? plannedDay.toString() : '-', completedDay ? completedDay.toString() : '-');
-    if (plannedDay) {
+    // console.log(plannedDate ? plannedDate.toString() : '-', completedDate ? completedDate.toString() : '-');
+    if (plannedDate) {
         const endDay = asDayOrToday(issue.completedDate);
 
-        if (endDay.isAfter(plannedDay))
-            return endDay.diff(plannedDay, 'day');
+        if (endDay.isAfter(plannedDate))
+            return endDay.diff(plannedDate, 'day');
     }
-    if (completedDay)
+    if (completedDate)
         return 0;
     return 0;
 };
@@ -112,10 +112,11 @@ export const isDayPropInPeriod = (prop: DayProp) =>
             const day = dayjs(issue[prop]);
             return day.isInPeriod(period);
         };
-export const isRegisteredIn = isDayPropInPeriod('registerDay');
-export const isCompletedIn = isDayPropInPeriod('completedDay');
-export const isWorkStartedIn = isDayPropInPeriod('workStartedDay');
-export const isPlannedIn = isDayPropInPeriod('plannedDay');
+
+export const isRegisteredIn = isDayPropInPeriod('registerDate');
+export const isCompletedIn = isDayPropInPeriod('completedDate');
+export const isWorkStartedIn = isDayPropInPeriod('workStartedDate');
+export const isPlannedIn = isDayPropInPeriod('plannedDate');
 
 const anyIssueDayInPeriod = (period: Period) => (issue: IssueVO) => {
     return isRegisteredIn(period)(issue) ||
@@ -125,19 +126,13 @@ const anyIssueDayInPeriod = (period: Period) => (issue: IssueVO) => {
 };
 
 export const isIssueInPeriod = (period: Period) => (issue: IssueVO) => {
-    if (anyIssueDayInPeriod(period)(issue)) {
-        return true;
-    }
-
-    const {
-        plannedDay,
-        completedDay,
-        registerDay,
-        workStartedDay
-    } = getIssueDays(issue);
-    const end = asDayOrToday(period[1]);
-
-    return !completedDay && registerDay && registerDay.isBefore(today());
+    return anyIssueDayInPeriod(period)(issue);
+    // if (anyIssueDayInPeriod(period)(issue)) {
+    //     return true;
+    // }
+    //
+    // const { completedDate, registerDate } = getIssueDays(issue);
+    // return !completedDate && registerDate && registerDate.isBefore(period[1]);
 };
 
 
