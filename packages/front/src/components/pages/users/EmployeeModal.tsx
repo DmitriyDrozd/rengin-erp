@@ -1,16 +1,17 @@
-import { USERS } from 'iso/src/store/bootstrap';
+import { EMPLOYEES } from 'iso/src/store/bootstrap';
 import React from 'react';
+import { employeesditor } from '../../../editors/employeesEditor';
 import {
     EditorContext,
     useEditor
 } from '../chapter-modal/useEditor';
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
-import { usersEditor } from '../../../editors/usersEditor';
 
 const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
-    const useEditorData = useEditor(usersEditor, id);
-    const {removed, clientsUserNumber, ...propsToRender} = USERS.properties;
+    debugger;
+    const useEditorData = useEditor(employeesditor, id);
+    const {removed, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
     const list = Array.from(Object.values(propsToRender));
     const customOptions = roles.map(r => ({ value: r, label: r }));
 

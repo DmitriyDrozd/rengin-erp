@@ -11,7 +11,7 @@ export type CrudCreateButtonProps<RID extends string, Fields extends AnyFieldsMe
     href?: string
     onCreate?: (props?: Partial<ItemWithId<RID, Fields>>) => any
 }
-export default <RID extends string, Fields extends AnyFieldsMeta>({resource,defaultProps,href,onCreate}: CrudCreateButtonProps<RID,Fields>) => {
+export default <RID extends string, Fields extends AnyFieldsMeta>({resource,defaultProps,href}: CrudCreateButtonProps<RID,Fields>) => {
     const pathRes = usePathnameResource()
     let url = href || getCrudPathname(pathRes.resource).create()
     if(resource)
@@ -21,5 +21,5 @@ export default <RID extends string, Fields extends AnyFieldsMeta>({resource,defa
     const onButtonClick = (e: any) => {
         history.push(url)
     }
-    return <Button type={'primary'} icon={<AntdIcons.PlusOutlined/>} onClick={onCreate||onButtonClick}></Button>
+    return <Button type={'primary'} icon={<AntdIcons.PlusOutlined/>} onClick={onButtonClick}></Button>
 }

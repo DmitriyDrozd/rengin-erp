@@ -1,3 +1,4 @@
+import { EMPLOYEES } from './repos/employees';
 import {USERS} from './repos/users'
 import {BRANDS} from './repos/brands'
 import {LEGALS} from './repos/legals'
@@ -20,6 +21,7 @@ export const RESOURCES_MAP = {
     CONTRACTS,
     SUBS,
     ISSUES,
+    EMPLOYEES,
 }
 export type {Resource} from './core/createResource'
 export type ResourcesMap = typeof RESOURCES_MAP
@@ -36,6 +38,7 @@ export type UnionRes =
     typeof SITES |
     typeof CONTRACTS|
     typeof ISSUES|
+    typeof EMPLOYEES|
     typeof SUBS
 export const RESOURCES_LIST = [
     USERS,
@@ -45,6 +48,7 @@ export const RESOURCES_LIST = [
     CONTRACTS,
     SUBS,
     ISSUES,
+    EMPLOYEES,
 ] as const
 
 
@@ -56,6 +60,7 @@ export const getResourcesByNames = () => ({
     contract:CONTRACTS,
     issue:ISSUES,
     sub: SUBS,
+    employee: EMPLOYEES,
 })
 
 export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
@@ -67,12 +72,14 @@ export type ItemByRID<RID extends keyof typeof RESOURCES_MAP> = ItemWithId<RID, 
 export type ResourceByRID<RID extends keyof typeof RESOURCES_MAP> = RID extends keyof typeof RESOURCES_MAP ? typeof RESOURCES_MAP[RID] : never
 
 // 👇️ type Keys = "name" | "age" | "country"
-const ResourceNames =  ['USERS',
+const ResourceNames =  [
+    'USERS',
     'BRANDS',
     'LEGALS','SITES',
     'CONTRACTS',
     'SUBS',
-    'ISSUES'] as const
+    'ISSUES',
+    'EMPLOYEES'] as const
 export type ResourceName=   typeof ResourceNames[number]
 
 export type Res = $Values<typeof RESOURCES_LIST>

@@ -75,7 +75,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         rowData,
         createItemProps,
         onExportArchive,
-        createHandler,
         ...props
     }: RGridProps<RID, Fields> & {
         title: string;
@@ -84,7 +83,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         bottomBar?: BottomGridApiBar
         onExportArchive?: (selectedIds: string[]) => void,
         gridRef: React.RefObject<typeof RGrid>,
-        createHandler: () => void,
     }) => {
     const dispatch = useDispatch();
     const [isDeleteMode, setDeleteMode,] = useState(false);
@@ -170,7 +168,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         return role === 'сметчик'
             ? <Typography.Text>Вы можете редактировать сметы</Typography.Text>
             : <>
-                <CrudCreateButton resource={resource} defaultProps={createItemProps} onCreate={createHandler}/>
+                <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
                 <Dropdown menu={{
                     items,
                     onClick: e => {
@@ -189,7 +187,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         <div
             style={{
                 height: '48px',
-
                 boxShadow: '0 1px 4px rgba(0,21,41,.12)',
                 padding: '0 10px 0 10px',
                 width: '100%',

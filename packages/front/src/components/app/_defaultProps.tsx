@@ -49,7 +49,7 @@ export default (role: RoleType) =>{
                             name: "Объекты",
                         },
                         {
-                            path: "/app/in/users-employees",
+                            path: "/app/in/employees",
                             name: "Сотрудники",
                         },
                         {

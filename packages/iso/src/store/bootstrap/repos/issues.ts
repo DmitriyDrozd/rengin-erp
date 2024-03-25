@@ -81,13 +81,13 @@ const issuesRaw = createResource('issue',{
 
             techUserId: valueTypes.itemOf({
                     headerName: 'Техник',
-                    linkedResourceName:'USERS',
+                    linkedResourceName:'EMPLOYEES',
                     defaultAsPropRef:'siteId'
             }),
 
             clientsEngineerUserId: valueTypes.itemOf({
                     headerName:'Отв. инженер',
-                    linkedResourceName:'USERS',
+                    linkedResourceName:'EMPLOYEES',
                     defaultAsPropRef:'siteId'
             }),
     },

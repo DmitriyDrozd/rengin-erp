@@ -52,9 +52,9 @@ export const getNav = moize(() => {
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),
         usersList: buildNav('/app/in/users', UsersChapter),
 
-        employeesList: buildNav('/app/in/users-employees', EmployeesChapter),
-        employeesCreate: buildNav('/app/in/users-employees/create', EmployeesChapter),
-        employeesEdit: buildNav('/app/in/users-employees/:employeeId', EmployeesChapter),
+        employeesList: buildNav('/app/in/employees', EmployeesChapter),
+        employeesCreate: buildNav('/app/in/employees/create', EmployeesChapter),
+        employeesEdit: buildNav('/app/in/employees/:employeeId', EmployeesChapter),
 
         brandsList: buildNav('/app/in/brands', BrandsChapter),
 

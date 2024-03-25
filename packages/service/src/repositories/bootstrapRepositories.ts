@@ -4,6 +4,7 @@ import {BRANDS} from 'iso/src/store/bootstrap/repos/brands'
 import USERS from 'iso/src/store/bootstrap/repos/users'
 import {LEGALS} from 'iso/src/store/bootstrap/repos/legals'
 import {SITES} from 'iso/src/store/bootstrap/repos/sites'
+import {EMPLOYEES} from 'iso/src/store/bootstrap/repos/employees'
 import SUBS from 'iso/src/store/bootstrap/repos/subs'
 import {SagaOptions} from "../sagaOptions";
 import buildPGSchema from "../store/buildPGSchema";
@@ -27,6 +28,7 @@ export function* bootstrapRepositories(io: SagaOptions) {
             ContractsRepo: await getRepo(CONTRACTS, io),
             SubsRepo: await getRepo(SUBS, io),
             IssuesRepo: await getRepo(ISSUES, io),
+            EmployeesRepo: await getRepo(EMPLOYEES, io),
 
             // IssuesRepo: await makeRepo({mongo}, issuesCrud, IssuesSchema),
             // AddressesRepo: await makeRepo({mongo}, addressesCrud, AddressesSchema),

@@ -32,19 +32,16 @@ export const siteResourceRaw = createResource('site',{
 
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         KPP: valueTypes.string({headerName: 'КПП'}),
-
-
         managerUserId: valueTypes.itemOf({headerName: 'Менеджер',
             linkedResourceName:'USERS',
             defaultAsPropRef:'legalId'
         }),
-        techUserId: valueTypes.itemOf({headerName: 'Техник',linkedResourceName:'USERS'}),
 
+        techUserId: valueTypes.itemOf({headerName: 'Техник',linkedResourceName:'EMPLOYEES'}),
         clientsEngineerUserId: valueTypes.itemOf({headerName:'Отв. инженер',
-            linkedResourceName:'USERS',
+            linkedResourceName:'EMPLOYEES',
             defaultAsPropRef:'legalId'
         }),
-
     },
     {
         getItemName: item => item?.city+', '+item?.address,

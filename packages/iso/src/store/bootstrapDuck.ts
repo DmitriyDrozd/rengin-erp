@@ -11,6 +11,7 @@ import {isCRUD} from '@sha/fsa/src/createCRUDDuck'
 import {BootableDuck} from '@sha/fsa/src/createBootableDuck'
 import {BRANDS, BrandVO} from './bootstrap/repos/brands'
 import {LEGALS, LegalVO} from './bootstrap/repos/legals'
+import {EMPLOYEES, EmployeesV0} from './bootstrap/repos/employees'
 import SUBS, {SubVO} from './bootstrap/repos/subs'
 import {RESOURCES_MAP} from "./bootstrap/resourcesList"
 import {ExtractResource, getResLedger, LinkedProps} from "./bootstrap/core/createResource"
@@ -32,6 +33,7 @@ export const bootstrapCrudsMap = {
     brands: BRANDS,
     legals: LEGALS,
     subs: SUBS,
+    employees: EMPLOYEES,
 }
 
 export const bootstrapDucksMap = {
@@ -64,6 +66,7 @@ const reducer =combineReducers(getReducersMapByDucks(bootstrapDucksMap))/* combi
     addresses: addressesCrud.reducer,
     contracts: contractsCrud.reducer,
     issues: issuesCrud.reducer,
+    employees: employeesCrud.reducer,
     settings: settingsDuck.reducer,
 
 })*/
@@ -94,6 +97,7 @@ export const selectLedger = (state: ISOState) => {
     const brands = getResLedger(BRANDS)(state)
     const legals = getResLedger(LEGALS)(state)
     const subs = getResLedger(SUBS)(state)
+    const employees = getResLedger(EMPLOYEES)(state)
     const all: {[K in Lowercase<keyof typeof RESOURCES_MAP>] :{
         list: typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][],
         byId: Record<string, typeof RESOURCES_MAP[Uppercase<K>]['exampleItem']>,
@@ -105,7 +109,7 @@ export const selectLedger = (state: ISOState) => {
         brands,
         legals,
         subs,
-
+        employees,
         users,
         sites,
         contracts,

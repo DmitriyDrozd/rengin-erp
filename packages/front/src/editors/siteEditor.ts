@@ -1,4 +1,5 @@
 import {buildEditor, PropRule} from "iso/src/store/bootstrap/buildEditor";
+import { EMPLOYEES } from 'iso/src/store/bootstrap/repos/employees';
 import {USERS} from "iso/src/store/bootstrap/repos/users";
 import ISSUES from "iso/src/store/bootstrap/repos/issues";
 import BRANDS from "iso/src/store/bootstrap/repos/brands";
@@ -7,7 +8,7 @@ import SITES from "iso/src/store/bootstrap/repos/sites";
 
 export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISSUES.properties.clientsEngineerUserId}, 'clientsEngineerUserId', any> = {
     getErrors: ({value, item, state}) => {
-        const currentUser = USERS.selectById(value)(state)
+        const currentUser = EMPLOYEES.selectById(value)(state)
         if(currentUser) {
             const usersBrand = BRANDS.selectById(currentUser.brandId)(state)
             const currentBrand = BRANDS.selectById(item.brandId)(state)
@@ -16,16 +17,16 @@ export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISS
         }
     },
     getParams: ({item, state}) => {
-        var engeneers = USERS.selectEq({role: 'ответственный инженер'})(state)
+        var engeneers = EMPLOYEES.selectEq({role: 'ответственный инженер'})(state)
         if(item.brandId)
             engeneers = engeneers.filter(e => e.brandId === item.brandId)
         return {
-            options: USERS.asOptions(engeneers),
+            options: EMPLOYEES.asOptions(engeneers),
             addNewItemDefaults: {}
         }
     },
     getUpdate: ({item, value, state}) => {
-        const currentUser = USERS.selectById(value)(state)
+        const currentUser = EMPLOYEES.selectById(value)(state)
         const newItem = clone(item)
         if(!item.brandId && currentUser && currentUser.brandId)
             newItem.brandId = currentUser.brandId
@@ -45,9 +46,9 @@ export const managerUserId:PropRule<{ managerUserId: typeof ISSUES.properties.ma
 
 export const techUserId: PropRule<{ techUserId: typeof ISSUES.properties.techUserId }, any> = {
     getParams: ({item, state}) => {
-        var managers = USERS.selectAll(state).filter(m => m.role==='техник')
+        var techs = EMPLOYEES.selectAll(state).filter(m => m.role==='техник')
         return {
-            options: USERS.asOptions(managers),
+            options: EMPLOYEES.asOptions(techs),
         }
     },
 }

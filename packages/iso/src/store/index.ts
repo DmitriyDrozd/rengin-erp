@@ -3,7 +3,7 @@
 export {default as connectionDuck} from './sse/sseConnectionDuck'
 export {default as connectionSaga} from './sse/sseClientSaga'
 import {defaultMeta, metaDuck} from './metaDuck'
-import {contractsCrud, ISSUES, settingsDuck, SITES, USERS} from './bootstrap/index'
+import {contractsCrud, ISSUES, settingsDuck, SITES, USERS, EMPLOYEES} from './bootstrap/index'
 
 export const ducks  = {
     settingsDuck,
@@ -11,7 +11,8 @@ export const ducks  = {
      USERS,
     ISSUES,
     CONTRACTS: contractsCrud,
-    SITES
+    SITES,
+    EMPLOYEES
 }
 export {metaDuck}
 
