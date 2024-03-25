@@ -1,5 +1,8 @@
 import {buildEditor, PropRule} from "iso/src/store/bootstrap/buildEditor";
-import { EMPLOYEES } from 'iso/src/store/bootstrap/repos/employees';
+import {
+    employeeRoleEnum,
+    EMPLOYEES
+} from 'iso/src/store/bootstrap/repos/employees';
 import {USERS} from "iso/src/store/bootstrap/repos/users";
 import ISSUES from "iso/src/store/bootstrap/repos/issues";
 import BRANDS from "iso/src/store/bootstrap/repos/brands";
@@ -17,7 +20,7 @@ export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISS
         }
     },
     getParams: ({item, state}) => {
-        var engeneers = EMPLOYEES.selectEq({role: 'ответственный инженер'})(state)
+        var engeneers = EMPLOYEES.selectEq({role: employeeRoleEnum['ответственный инженер']})(state)
         if(item.brandId)
             engeneers = engeneers.filter(e => e.brandId === item.brandId)
         return {

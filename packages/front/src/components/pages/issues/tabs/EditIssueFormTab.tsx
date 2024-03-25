@@ -66,12 +66,8 @@ export default () => {
                   disabled={role==='сметчик'}
                   width={'sm'}/>
         <RenField meta={ISSUES.properties.clientsEngineerUserId}
-
-                  disabled={role==='сметчик'}
                   width={'sm'}/>
         <RenField meta={ISSUES.properties.techUserId}
-
-                  disabled={role==='сметчик'}
                   width={'sm'}/>
 
         <RenField meta={ISSUES.properties.contactInfo}
