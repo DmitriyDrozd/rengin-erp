@@ -60,6 +60,7 @@ export default ({id}: {id: string}) => {
         </ProCard.TabPane>
 
     </ProCard>
+
     return   <EditorContext.Provider value={useEditorData}>
         <BaseEditModal>
             <GenericRenFields list={Array.from(Object.values(propsToRender))}/>
