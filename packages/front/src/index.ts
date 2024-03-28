@@ -23,9 +23,7 @@ store.runSaga(rootFrontSaga, store, history)
 window['store'] = store
 window['R'] = R
 
-const root = ReactDOM.createRoot(
-    document.getElementById("root")
-);
+const root = ReactDOM.createRoot(div);
 root.render(React.createElement(App, {store}));
 
 

@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Layout, Spin, theme} from 'antd';
 import {Switch} from '@sha/router'
 
-
 import {rootRoutes} from '../getNav'
 import {useSelector} from 'react-redux'
 import {uiDuck} from '../../store/ducks/uiDuck'
