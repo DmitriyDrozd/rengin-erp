@@ -1,8 +1,10 @@
 import { AgGridReact } from 'ag-grid-react';
 import getRestApi from 'iso/src/getRestApi';
+import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/employees';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
+    EstimationStatus,
     estimationStatuses,
     ISSUES,
     IssueVO,
@@ -41,27 +43,14 @@ import ImportIssuesButton from './import-gsheet/ImportIssuesButton.js';
 import { Link } from 'react-router-dom';
 
 const getEstimationStatusTag = (data: IssueVO) => {
-    switch (data.estimationsStatus) {
-        case estimationStatuses['Новая']:
-            return <Tag color={"green"}>{data.estimationsStatus}</Tag>
-        case estimationStatuses['Согласована']:
-            return <Tag color={"blue"}>{data.estimationsStatus}</Tag>
-        case estimationStatuses['Выставлена в оплату']:
-            return <Tag color={"orange"}>{data.estimationsStatus}</Tag>
-        case estimationStatuses['Отклонена']:
-            return <Tag color={"red"}>{data.estimationsStatus}</Tag>
-        default:
-            return null;
-    }
+    const { estimationsStatus } = data;
+    return <Tag color={estimationsStatusesColorsMap[estimationsStatus]}>{estimationsStatus}</Tag>;
 }
 
 const getStatusTag = (issue: IssueVO) => {
     const currentDJ = dayjs();
     const plannedDJ = issue.plannedDate ? dayjs(issue.plannedDate) : undefined;
-    // const completedDJ = issue.completedDate ? dayjs(issue.completedDate) : undefined;
 
-    // const workStartedDJ = issue.workStartedDate ? dayjs(issue.workStartedDate) : undefined;
-    // const registerDJ = issue.registerDate ? dayjs(issue.registerDate) : undefined;
     const getTag = () => {
         return <Tag color={statusesColorsMap[issue.status]}>{issue.status}</Tag>;
     };

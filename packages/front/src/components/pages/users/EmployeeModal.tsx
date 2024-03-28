@@ -20,7 +20,6 @@ import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 
 const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
-    debugger;
     const ledger = useLedger()
     const useEditorData = useEditor(employeesditor, id);
     const {removed, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
@@ -34,7 +33,6 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
 
     const addon=  <ProCard
         tabs={{ type: 'card' }}
-        actions={[null,<AntdIcons.PlusSquareOutlined/>]}
     >
         <ProCard.TabPane key="tab1" tab="Объекты">
             <PanelRGrid

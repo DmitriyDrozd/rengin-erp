@@ -1,5 +1,8 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
+import {
+    EstimationStatus,
+} from './issues';
 
 export const employeeRoleEnum = {
     'техник':'техник',
@@ -10,6 +13,13 @@ export const employeeRoleTypes = [
     employeeRoleEnum.техник,
     employeeRoleEnum['ответственный инженер']
 ] as const
+
+export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
+    "Новая": 'green',
+    "Согласована": 'blue',
+    "Выставлена в оплату": 'orange',
+    "Отклонена": 'red',
+}
 
 const employeesRaw = createResource('employee',{
     role: valueTypes.enum({required: true, enum: employeeRoleTypes, headerName: 'Роль'}),

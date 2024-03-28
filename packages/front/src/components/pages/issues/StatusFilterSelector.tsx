@@ -1,17 +1,22 @@
 import {Space, Tag} from "antd";
-import {Status, statusesColorsMap, statusesList} from "iso/src/store/bootstrap/repos/issues";
+import {
+    statusesColorsMap,
+    statusesList
+} from 'iso/src/store/bootstrap/repos/issues';
 import {reject} from "ramda";
 
 export type StatusFilterProps = {
-    statuses: Status[],
-    setStatuses: (statuses: Status[]) => any
+    list: string[],
+    statuses: string[],
+    setStatuses: (statuses: string[]) => any,
+    colorMap: Record<string, string>,
 }
 
-export default ({statuses,setStatuses}: StatusFilterProps) => {
+export default ({list = statusesList, statuses, setStatuses, colorMap = statusesColorsMap}: StatusFilterProps) => {
 
     return     <Space size={[0, 8]} wrap>
         {
-            statusesList.map( s =>
+            list.map( s =>
                 statuses.includes(s)
                     ?
                     <Tag key={s} style={{cursor:'pointer', border:'1px'}}  onClick={
@@ -20,7 +25,7 @@ export default ({statuses,setStatuses}: StatusFilterProps) => {
 
                             setStatuses(newStatuses)
                         }
-                    } color={statusesColorsMap[s]}>
+                    } color={colorMap[s]}>
                         {s}
                     </Tag>
                 : <Tag key={s} style={{cursor:'pointer'}} onClick={

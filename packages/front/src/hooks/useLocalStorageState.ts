@@ -8,7 +8,7 @@ export default <S>(localStorageItemName: string, defaultState: S | undefined =  
     const setState = (newState: S) => {
 
         setStateInternal(newState)
-        localStorage.setItem(localStorageState, JSON.stringify(newState))
+        localStorage.setItem(localStorageItemName, JSON.stringify(newState))
     }
 
     return [state, setState]
