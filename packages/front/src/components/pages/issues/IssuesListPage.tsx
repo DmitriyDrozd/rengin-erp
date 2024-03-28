@@ -169,7 +169,10 @@ export default () => {
         {...colMap.description, width: 350},
         {...colMap.plannedDate, headerName: 'План'},
         {...colMap.completedDate, headerName: 'Завершена', width: 115},
-        {...colMap.estimatorUserId, headerName: 'Сметчик', width: 115},
+        {...colMap.managerUserId, headerName: 'Менеджер', width: 130},
+        {...colMap.techUserId, headerName: 'Техник', width: 130},
+        {...colMap.clientsEngineerUserId, headerName: 'Отв. Инженер', width: 130},
+        {...colMap.estimatorUserId, headerName: 'Сметчик', width: 130},
         {
             ...colMap.estimationsApproved,
             headerName: 'Смета',

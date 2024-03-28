@@ -34,7 +34,8 @@ const employeesRaw = createResource('employee',{
 })
 
 export const getAbbrName = (user) =>  {
-    const parts = (user?.fullName || "Новый Сотрудник Отчество").split(' ')
+    const parts = user ? [user.lastname, user.name] : ['-'];
+
     const getPart = (index: number) => {
         const part = parts[index]
         if(index === 0) {
@@ -43,7 +44,7 @@ export const getAbbrName = (user) =>  {
         return (part && part.length ) ? (' '+part[0]+'.') : ""
     }
 
-    return getPart(0)+getPart(1)+ getPart(2)
+    return getPart(0)+getPart(1)
 }
 
 export const ROLES = ['engineer','worker'] as const

@@ -90,7 +90,8 @@ var generateGravatar = (index, n, s) => {
 }
 
 export const getAbbrName = (user) =>  {
-    const parts = (user?.fullName || "Новый Пользователь Отчество").split(' ')
+    const parts = user ? [user.lastname, user.name] : ['-'];
+
     const getPart = (index: number) => {
         const part = parts[index]
         if(index === 0) {
