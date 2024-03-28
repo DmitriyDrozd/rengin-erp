@@ -2,6 +2,7 @@ import chroma from 'chroma-js'
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
+import { getItemNameWithContacts } from './employees';
 
 
 export const roleEnum = {
@@ -34,7 +35,7 @@ const usersRaw = createResource('user',{
     clientsUserNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
     removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
 },{
-   getItemName: item => item.lastname +' '+ item.name,
+   getItemName: getItemNameWithContacts,
     langRU: {
         singular: 'Пользователь',
         plural: 'Пользователи',
