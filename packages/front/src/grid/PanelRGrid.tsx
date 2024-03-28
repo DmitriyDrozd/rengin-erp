@@ -68,7 +68,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
         title,
         gridRef,
-        bottomBar,
+        BottomBar,
         toolbar,
         columnDefs,
         resource,
@@ -80,7 +80,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         title: string;
         onCreateClick: (defaults: any) => any,
         toolbar?: React.ReactNode,
-        bottomBar?: BottomGridApiBar
+        BottomBar?: BottomGridApiBar
         onExportArchive?: (selectedIds: string[]) => void,
         gridRef: React.RefObject<typeof RGrid>,
     }) => {
@@ -230,7 +230,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 <Typography.Text>Всего записей: {list.length}</Typography.Text>
             </Space>
             <Space>
-                {bottomBar && innerGridRef.current && bottomBar({ag: innerGridRef.current})}
+                {BottomBar && <BottomBar />}
                 <Button icon={<DownloadOutlined/>} onClick={onBtExport}>Скачать .xlsx</Button>
             </Space>
         </div>

@@ -107,7 +107,6 @@ const BottomBar = () => {
                     Импортировать заявки
                 </Button>
             </Link>
-            <ImportIssuesButton/>
         </Space>
     );
 };
@@ -237,7 +236,7 @@ export default () => {
                 columnDefs={columns}
                 title={'Все заявки'}
                 onExportArchive={exportArchiveHandler}
-                bottomBar={BottomBar}
+                BottomBar={BottomBar}
             />
         </div>
     </AppLayout>;
