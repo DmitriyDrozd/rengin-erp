@@ -5,8 +5,10 @@ import SITES, {SiteVO} from "./sites";
 
 
 export const statusesList = ['Новая','В работе','Выполнена','Отменена','Приостановлена']  as const
+export const estimationStatusesList = ['Новая', 'Согласована', 'Выставлена в оплату', 'Отклонена'] as const;
 
 export type Status = typeof statusesList[number]
+export type EstimationStatus = typeof estimationStatusesList[number]
 
 export const statusesRulesForManager: Record<Status, Status[]> = {
         'Новая': ['В работе'],
@@ -22,6 +24,13 @@ export const statusesColorsMap: Record<Status, string> = {
         "Выполнена": 'green',
         "Отменена": 'lightgrey',
         "Приостановлена": 'grey'
+}
+
+export const estimationStatuses: Record<EstimationStatus, string> = {
+    'Новая': 'Новая',
+    'Согласована': 'Согласована',
+    'Выставлена в оплату': 'Выставлена в оплату',
+    'Отклонена': 'Отклонена'
 }
 
 export const paymentTypesList = ['Наличные', 'Безналичные'] as const
@@ -71,7 +80,7 @@ const issuesRaw = createResource('issue',{
         checkFiles: valueTypes.array({properties: {
                     url: valueTypes.string()
                 }}),
-        estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована', internal: true}),
+        estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: estimationStatusesList}),
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         managerUserId: valueTypes.itemOf({
                 headerName: 'Менеджер',

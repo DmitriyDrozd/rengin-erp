@@ -3,6 +3,7 @@ import getRestApi from 'iso/src/getRestApi';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
+    estimationStatuses,
     ISSUES,
     IssueVO,
     statusesColorsMap,
@@ -39,10 +40,20 @@ import axios from 'axios';
 import ImportIssuesButton from './import-gsheet/ImportIssuesButton.js';
 import { Link } from 'react-router-dom';
 
-const getEstimationApprovedTag = (data: IssueVO) =>
-    data.estimationsApproved === true
-        ? <Tag color={'green'}>Да</Tag>
-        : <Tag color={'red'}>Нет</Tag>;
+const getEstimationStatusTag = (data: IssueVO) => {
+    switch (data.estimationsStatus) {
+        case estimationStatuses['Новая']:
+            return <Tag color={"green"}>{data.estimationsStatus}</Tag>
+        case estimationStatuses['Согласована']:
+            return <Tag color={"blue"}>{data.estimationsStatus}</Tag>
+        case estimationStatuses['Выставлена в оплату']:
+            return <Tag color={"orange"}>{data.estimationsStatus}</Tag>
+        case estimationStatuses['Отклонена']:
+            return <Tag color={"red"}>{data.estimationsStatus}</Tag>
+        default:
+            return null;
+    }
+}
 
 const getStatusTag = (issue: IssueVO) => {
     const currentDJ = dayjs();
@@ -113,7 +124,7 @@ const BottomBar = () => {
 
 const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
     const api = await getRestApi();
-    const data = await api.archiveExport({ selected: selectedIds, types });
+    const data = await api.archiveExport({selected: selectedIds, types});
 
     const url = data.url;
     const element = document.createElement('a');
@@ -174,11 +185,10 @@ export default () => {
         {...colMap.clientsEngineerUserId, headerName: 'Отв. Инженер', width: 130},
         {...colMap.estimatorUserId, headerName: 'Сметчик', width: 130},
         {
-            ...colMap.estimationsApproved,
-            headerName: 'Смета',
+            ...colMap.estimationsStatus,
             cellRenderer: (props) =>
-                getEstimationApprovedTag(props.data)
-            , width: 80
+                getEstimationStatusTag(props.data)
+            , width: 150
         },
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
@@ -201,46 +211,49 @@ export default () => {
     const exportArchiveHandler = (values: string[]) => {
         setSelectedIds(values);
         setIsExportSelectorOpen(true);
-    }
+    };
 
     const closeExportSelector = () => {
         setSelectedIds([]);
         setIsExportSelectorOpen(false);
-    }
+    };
 
-    return <AppLayout
-        hidePageContainer={true}
-        proLayout={{
-            contentStyle: {
-                padding: '0px'
-            }
-        }}
-    >
-        <div>
-            {
-                currentItemId ? <IssueModal_NEW id={currentItemId}/> : null
-            }
-            <ExportArchiveSelector
-                isOpen={isExportSelectorOpen}
-                selectedIds={selectedIds}
-                onClose={closeExportSelector}
-                onExport={onArchiveExport}
-            />
-            <PanelRGrid
-                fullHeight
-                toolbar={(
-                    <Space>
-                        <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
-                        <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
-                    </Space>
-                )}
-                rowData={rowData}
-                resource={ISSUES}
-                columnDefs={columns}
-                title={'Все заявки'}
-                onExportArchive={exportArchiveHandler}
-                BottomBar={BottomBar}
-            />
-        </div>
-    </AppLayout>;
+    return (
+        <AppLayout
+            hidePageContainer={true}
+            proLayout={{
+                contentStyle: {
+                    padding: '0px'
+                }
+            }}
+        >
+            <div>
+                {
+                    currentItemId ? <IssueModal_NEW id={currentItemId}/> : null
+                }
+                <ExportArchiveSelector
+                    isOpen={isExportSelectorOpen}
+                    selectedIds={selectedIds}
+                    onClose={closeExportSelector}
+                    onExport={onArchiveExport}
+                />
+                <PanelRGrid
+                    fullHeight
+                    toolbar={(
+                        <Space>
+                            <Checkbox checked={outdated}
+                                      onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+                            <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+                        </Space>
+                    )}
+                    rowData={rowData}
+                    resource={ISSUES}
+                    columnDefs={columns}
+                    title={'Все заявки'}
+                    onExportArchive={exportArchiveHandler}
+                    BottomBar={BottomBar}
+                />
+            </div>
+        </AppLayout>
+    );
 }

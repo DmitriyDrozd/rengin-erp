@@ -67,7 +67,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
                 maxCount={max}
                 disabled={role === 'сметчик'}
             >
-                {items.length >= maxCount ? null : uploadButton}
+                {items?.length >= maxCount ? null : uploadButton}
             </Upload>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                 <img alt="example" style={{ width: '100%' }} src={previewImage} />

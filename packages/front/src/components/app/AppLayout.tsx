@@ -117,7 +117,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                 pathname
             }}
             logo={<HeadLogo/>}
-            title={'Rengin'}
+            title={''}
             avatarProps={{
                 icon: <AntdIcons.ArrowDownOutlined/>,
                 src: userAvatarURL,
