@@ -69,6 +69,8 @@ export default () => {
                   width={'sm'}/>
         <RenField meta={ISSUES.properties.techUserId}
                   width={'sm'}/>
+        <RenField meta={ISSUES.properties.estimatorUserId}
+                  width={'sm'}/>
 
         <RenField meta={ISSUES.properties.contactInfo}
                   multiline={true}

@@ -14,7 +14,6 @@ export default ({id}: {id: string}) => {
     const useEditorData = useEditor(issuesEditor,id)
     const {removed,  ...propsToRender} = ISSUES.properties
     const getFilesProps = (listName: 'workFiles'|'checkFiles'|'actFiles',label: string, maxCount = 1) => {
-        const {updateItemProperty,value,editor} = useEditorData.getRenFieldProps(listName)
         return {
             items: useEditorData.item[listName],
             onItemsChange: (list: any[]) => {
@@ -24,7 +23,6 @@ export default ({id}: {id: string}) => {
             issueId: useEditorData.item.issueId,
             label,
             maxCount,
-
         }
     }
 

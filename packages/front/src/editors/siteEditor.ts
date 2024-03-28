@@ -20,11 +20,11 @@ export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISS
         }
     },
     getParams: ({item, state}) => {
-        var engeneers = EMPLOYEES.selectEq({role: employeeRoleEnum['ответственный инженер']})(state)
+        var engineers = EMPLOYEES.selectEq({role: employeeRoleEnum['ответственный инженер']})(state)
         if(item.brandId)
-            engeneers = engeneers.filter(e => e.brandId === item.brandId)
+            engineers = engineers.filter(e => e.brandId === item.brandId)
         return {
-            options: EMPLOYEES.asOptions(engeneers),
+            options: EMPLOYEES.asOptions(engineers),
             addNewItemDefaults: {}
         }
     },
@@ -56,6 +56,15 @@ export const techUserId: PropRule<{ techUserId: typeof ISSUES.properties.techUse
     },
 }
 
+export const estimatorUserId: PropRule<{ estimatorUserId: typeof ISSUES.properties.estimatorUserId }, any> = {
+    getParams: ({item, state}) => {
+        var techs = USERS.selectAll(state).filter(m => m.role==='сметчик')
+        return {
+            options: USERS.asOptions(techs),
+        }
+    },
+}
+
 
 export const siteEditor = buildEditor(SITES, {
     brandId: {
@@ -63,11 +72,9 @@ export const siteEditor = buildEditor(SITES, {
             return {...value, brandId: value, siteId: undefined, legalId: undefined, subId: undefined}
         }
     },
-    managerUserId: managerUserId,
-    clientsEngineerUserId: clientsEngineerUserId,
-    techUserId: techUserId,
-
-
-
+    managerUserId,
+    clientsEngineerUserId,
+    techUserId,
+    estimatorUserId,
 })
 

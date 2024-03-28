@@ -127,13 +127,23 @@ export function* byQueryGetters () {
         return ledger.sites.list.find(siteByNumberFind);
     }
 
-    function* userById (userId: string) {
-        if (!userId || !ledger.users.byId[userId]) {
-            console.log(`User ${userId} not found`);
+    function* userByClientsNumber (clientsNumber: string) {
+        if (!clientsNumber || !ledger.users.list.find(user => user.clientsUserNumber === clientsNumber)) {
+            console.log(`User ${clientsNumber} not found`);
             return {};
         } else {
-            console.log(`User ${userId} found`);
-            return ledger.users.byId[userId];
+            console.log(`User ${clientsNumber} found`);
+            return ledger.users.list.find(user => user.clientsUserNumber === clientsNumber);
+        }
+    }
+
+    function* employeeByClientsNumber (clientsNumber: string) {
+        if (!clientsNumber || !ledger.employees.list.find(user => user.clientsEmployeeNumber === clientsNumber)) {
+            console.log(`Employee ${clientsNumber} not found`);
+            return {};
+        } else {
+            console.log(`Employee ${clientsNumber} found`);
+            return ledger.employees.list.find(user => user.clientsEmployeeNumber === clientsNumber);
         }
     }
 
@@ -141,6 +151,7 @@ export function* byQueryGetters () {
         brandById,
         legalById,
         siteByClientsNumber,
-        userById,
+        userByClientsNumber,
+        employeeByClientsNumber,
     };
 }

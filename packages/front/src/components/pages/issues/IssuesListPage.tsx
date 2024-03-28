@@ -99,6 +99,19 @@ const onEmailExport = async (ag: AgGridReact) => {
 
 };
 
+const BottomBar = () => {
+    return (
+        <Space>
+            <Link to={getNav().importIssues}>
+                <Button icon={<AntdIcons.UploadOutlined/>}>
+                    Импортировать заявки
+                </Button>
+            </Link>
+            <ImportIssuesButton/>
+        </Space>
+    );
+};
+
 const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
     const api = await getRestApi();
     const data = await api.archiveExport({ selected: selectedIds, types });
@@ -115,20 +128,11 @@ const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], ty
 };
 
 export default () => {
-
-    const routeMatch = useRouteMatch<{
-        issueId: string
-    }>();
-
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
-    console.log('RouteMatch ', routeMatch);
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll);
     const {currentUser} = useCurrentUser();
 
     const dispatch = useDispatch();
-    const onCreateClick = (defaults) => {
-        console.log(defaults);
-    };
     const [cols, colMap] = useAllColumns(ISSUES);
 
     const columns: ColDef<IssueVO>[] = [
@@ -166,6 +170,7 @@ export default () => {
         {...colMap.description, width: 350},
         {...colMap.plannedDate, headerName: 'План'},
         {...colMap.completedDate, headerName: 'Завершена', width: 115},
+        {...colMap.estimatorUserId, headerName: 'Сметчик', width: 115},
         {
             ...colMap.estimationsApproved,
             headerName: 'Смета',
@@ -186,7 +191,6 @@ export default () => {
         ? outdatedIssues.filter(i => i.managerUserId === currentUser.userId)
         : outdatedIssues;
 
-    console.log('statuses', statuses);
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
     const rowData = dataForUser.filter(s => statuses.includes(s.status));
 
@@ -221,33 +225,19 @@ export default () => {
                 onExport={onArchiveExport}
             />
             <PanelRGrid
-                toolbar={<Space>
+                fullHeight
+                toolbar={(
+                    <Space>
                         <Checkbox checked={outdated} onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
                         <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
                     </Space>
-                }
+                )}
                 rowData={rowData}
-                onCreateClick={onCreateClick}
-                fullHeight={true}
                 resource={ISSUES}
                 columnDefs={columns}
                 title={'Все заявки'}
                 onExportArchive={exportArchiveHandler}
-                bottomBar={(ag) => {
-                    return (
-                        <Space>
-                            <Button icon={<AntdIcons.MailTwoTone/>} onClick={() => onEmailExport(ag)}>
-                                Выгрузить .xslx
-                            </Button>
-                            <Link to={getNav().importIssues}>
-                                <Button icon={<AntdIcons.UploadOutlined/>}>
-                                    Импортировать заявки
-                                </Button>
-                            </Link>
-                            <ImportIssuesButton/>
-                        </Space>
-                    );
-                }}
+                bottomBar={BottomBar}
             />
         </div>
     </AppLayout>;

@@ -52,44 +52,47 @@ const issuesRaw = createResource('issue',{
             }
         }),
         estimations: valueTypes.array({headerName: 'Смета',
+            properties: {
+                    paymentType: valueTypes.enum({enum:paymentTypesList}),
+                    title:valueTypes.string(),
+                    amount: valueTypes.number(),
+                    comment: valueTypes.string(),
+            }
+        }),
+        estimationPrice: valueTypes.number({headerName:'Смета сумма'}),
+        workFiles: valueTypes.array({
                 properties: {
-                        paymentType: valueTypes.enum({enum:paymentTypesList}),
-                        title:valueTypes.string(),
-                        amount: valueTypes.number(),
-                        comment: valueTypes.string(),
+                    url: valueTypes.string()
                 }
         }),
-            estimationPrice: valueTypes.number({headerName:'Смета сумма'}),
-            workFiles: valueTypes.array({
-                    properties: {
-                        url: valueTypes.string()
-                    }
-            }),
-            actFiles: valueTypes.array({properties: {
-                        url: valueTypes.string({required: true})
-                    }}),
-            checkFiles: valueTypes.array({properties: {
-                        url: valueTypes.string()
-                    }}),
-            estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована', internal: true}),
-            contactInfo: valueTypes.text({headerName:'Контакты'}),
-            managerUserId: valueTypes.itemOf({
-                    headerName: 'Менеджер',
-                    linkedResourceName:'USERS',
-                    defaultAsPropRef:'siteId'
-            }),
-
-            techUserId: valueTypes.itemOf({
-                    headerName: 'Техник',
-                    linkedResourceName:'EMPLOYEES',
-                    defaultAsPropRef:'siteId'
-            }),
-
-            clientsEngineerUserId: valueTypes.itemOf({
-                    headerName:'Отв. инженер',
-                    linkedResourceName:'EMPLOYEES',
-                    defaultAsPropRef:'siteId'
-            }),
+        actFiles: valueTypes.array({properties: {
+                    url: valueTypes.string({required: true})
+                }}),
+        checkFiles: valueTypes.array({properties: {
+                    url: valueTypes.string()
+                }}),
+        estimationsApproved: valueTypes.boolean({headerName: 'Смета согласована', internal: true}),
+        contactInfo: valueTypes.text({headerName:'Контакты'}),
+        managerUserId: valueTypes.itemOf({
+                headerName: 'Менеджер',
+                linkedResourceName:'USERS',
+                defaultAsPropRef:'siteId'
+        }),
+        techUserId: valueTypes.itemOf({
+                headerName: 'Техник',
+                linkedResourceName:'EMPLOYEES',
+                defaultAsPropRef:'siteId'
+        }),
+        clientsEngineerUserId: valueTypes.itemOf({
+                headerName:'Отв. инженер',
+                linkedResourceName:'EMPLOYEES',
+                defaultAsPropRef:'siteId'
+        }),
+        estimatorUserId: valueTypes.itemOf({
+                headerName:'Сметчик',
+                linkedResourceName:'USERS',
+                defaultAsPropRef:'siteId'
+        }),
     },
 
     {
@@ -116,11 +119,7 @@ export const issueResource = {
 
 export type IssueVO = typeof issuesRaw.exampleItem
 export type ExpenseItem = IssueVO['expenses'][number]
-export type EstimationItem = IssueVO['estimations'][number]
-
 
 export const ISSUES = issueResource
 
-export const getISSUES = () => ISSUES
-const iss: Resource<any, any> = ISSUES
 export default ISSUES

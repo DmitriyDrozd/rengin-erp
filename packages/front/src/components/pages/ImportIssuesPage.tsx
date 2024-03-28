@@ -3,7 +3,9 @@ import {
     IssueVO,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
-import { byQueryGetters } from '../../utils/byQueryGetters';
+import {
+    byQueryGetters,
+} from '../../utils/byQueryGetters';
 import AppLayout from '../app/AppLayout';
 import React from 'react';
 import { useStore } from 'react-redux';
@@ -25,13 +27,14 @@ interface IIssue {
     managerId?: string,
     engineerId?: string,
     technicianId?: string,
+    estimatorId?: string,
+    contacts?: string,
 }
 
 const formatExcelDate = (excelDate: number): string => {
     return excelDate ? new Date(Date.UTC(0, 0, excelDate - 1)).toDateString() : '';
-}
+};
 
-// fixme: тайтл страницы: [object Object]
 export const importIssuesXlsxCols = [
     'clientsIssueNumber',
     'clientsSiteNumber',
@@ -42,6 +45,8 @@ export const importIssuesXlsxCols = [
     'managerId',
     'engineerId',
     'technicianId',
+    'estimatorId',
+    'contacts'
 ] as const;
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
@@ -60,24 +65,25 @@ function* importObjectsSaga(data: Datum[]) {
                                    managerId,
                                    engineerId,
                                    technicianId,
+                                   estimatorId,
+                                   contacts
                                }: IIssue) {
         const byQueryGetter = yield* byQueryGetters();
 
         // @ts-ignore
         const site = yield byQueryGetter.siteByClientsNumber(clientsSiteNumber);
         // @ts-ignore
-        const manager = yield byQueryGetter.userById(managerId);
+        const manager = yield byQueryGetter.userByClientsNumber(managerId);
         // @ts-ignore
-        const engineer = yield byQueryGetter.userById(engineerId);
+        const estimator = yield byQueryGetter.userByClientsNumber(estimatorId);
         // @ts-ignore
-        const technician = yield byQueryGetter.userById(technicianId);
+        const engineer = yield byQueryGetter.employeeByClientsNumber(engineerId);
+        // @ts-ignore
+        const technician = yield byQueryGetter.employeeByClientsNumber(technicianId);
 
         // Проверка на существование такой заявки
-        const foundIssue = ledger.issues.list.find(({brandId, legalId, clientsIssueNumber: issueNumber}) => {
-            return brandId === site.brandId &&
-                legalId === site.legalId &&
-                clientsSiteNumber === site.clientsSiteNumber &&
-                issueNumber === clientsIssueNumber;
+        const foundIssue = ledger.issues.list.find(() => {
+            return clientsSiteNumber === site.clientsSiteNumber;
         });
 
         // Если заявка новая
@@ -87,6 +93,7 @@ function* importObjectsSaga(data: Datum[]) {
                 [ISSUES.idProp]: generateGuid(),
                 clientsIssueNumber,
                 description,
+                contacts,
                 registerDate: formatExcelDate(registerDate),
                 plannedDate: formatExcelDate(plannedDate),
                 completedDate: formatExcelDate(completedDate),
@@ -96,6 +103,7 @@ function* importObjectsSaga(data: Datum[]) {
                 managerUserId: manager?.userId,
                 clientsEngineerUserId: engineer?.userId,
                 techUserId: technician?.userId,
+                estimatorUserId: estimator?.userId,
                 subId: '',
                 contractId: '',
             };
@@ -119,6 +127,8 @@ function* importObjectsSaga(data: Datum[]) {
             managerId: d.managerId,
             engineerId: d.engineerId,
             technicianId: d.technicianId,
+            estimatorId: d.estimatorId,
+            contacts: d.contacts,
         });
     }
 
@@ -178,7 +188,7 @@ export const ImportIssuesPage = () => {
 
     return (
         <AppLayout
-            title='Импорт заявок'
+            title="Импорт заявок"
         >
             <ImportCard<Datum>
                 onImport={importFile}

@@ -1,6 +1,11 @@
 import {ISSUES, IssueVO, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
 import {buildEditor} from "iso/src/store/bootstrap/buildEditor";
-import {clientsEngineerUserId, managerUserId, techUserId} from "./siteEditor";
+import {
+    clientsEngineerUserId,
+    estimatorUserId,
+    managerUserId,
+    techUserId
+} from './siteEditor';
 import {optionsFromValuesList} from "../components/form/RenFormSelect";
 import {Days} from "iso";
 import LEGALS from "iso/src/store/bootstrap/repos/legals";
@@ -17,6 +22,7 @@ export const issuesEditor =  buildEditor(ISSUES,{
     clientsEngineerUserId,
     managerUserId,
     techUserId,
+    estimatorUserId,
     status: {
         getParams: ({value,property,state,role,currentUserId,item}) => {
             return {

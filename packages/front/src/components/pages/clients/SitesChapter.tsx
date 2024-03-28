@@ -15,7 +15,7 @@ export default () => {
     const [cols, colMap] = useAllColumns(RESOURCE);
     const columns: ColDef<SiteVO>[] = [
         {...colMap.clickToEditCol},
-        {...colMap.clientsNumberCol},
+        {...colMap.clientsNumberCol, headerName: 'Код обьекта', width: 120},
         {...colMap.brandId, width: 100},
         {...colMap.legalId, width: 150},
         {...colMap.city, width: 120},
