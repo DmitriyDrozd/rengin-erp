@@ -1,7 +1,9 @@
 import { ColDef } from 'ag-grid-community';
 import {
+    Button,
     Space
 } from 'antd';
+import { Link } from 'react-router-dom';
 import { useAllColumns } from '../../../grid/RCol';
 import useLedger from '../../../hooks/useLedger';
 import PanelRGrid from '../../../grid/PanelRGrid';
@@ -13,6 +15,8 @@ import {
 import React from 'react';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import AppLayout from '../../app/AppLayout';
+import { AntdIcons } from '../../elements/AntdIcons';
+import { getNav } from '../../getNav';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import EditEmployeeModal from './EmployeeModal';
 
@@ -21,6 +25,18 @@ const roleFilterColorMap = {
     [employeeRoleEnum.техник]: 'green',
     [employeeRoleEnum['ответственный инженер']]: 'blue',
 }
+
+const BottomBar = () => {
+    return (
+        <Space>
+            <Link to={getNav().importEmployees}>
+                <Button icon={<AntdIcons.UploadOutlined/>}>
+                    Импортировать сотрудников
+                </Button>
+            </Link>
+        </Space>
+    );
+};
 
 export default () => {
     const ledger = useLedger();
@@ -55,6 +71,7 @@ export default () => {
             <div>
                 {currentItemId && <EditEmployeeModal roles={employeesRoles} id={currentItemId}/>}
                 <PanelRGrid
+                    fullHeight
                     toolbar={(
                         <Space>
                             <StatusFilterSelector
@@ -64,11 +81,11 @@ export default () => {
                                 setStatuses={setFilter}/>
                         </Space>
                     )}
-                    fullHeight
                     columnDefs={columns}
                     title={'Сотрудники'}
                     resource={EMPLOYEES}
                     rowData={rowData}
+                    BottomBar={BottomBar}
                 />
             </div>
         </AppLayout>

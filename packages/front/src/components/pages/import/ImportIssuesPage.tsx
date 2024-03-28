@@ -5,8 +5,9 @@ import {
 } from 'iso/src/store/bootstrap/repos/issues';
 import {
     byQueryGetters,
-} from '../../utils/byQueryGetters';
-import AppLayout from '../app/AppLayout';
+    generateNewListItemNumber,
+} from '../../../utils/byQueryGetters';
+import AppLayout from '../../app/AppLayout';
 import React from 'react';
 import { useStore } from 'react-redux';
 import {
@@ -15,7 +16,7 @@ import {
 } from 'typed-redux-saga';
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
-import ImportCard from '../elements/ImportCard';
+import ImportCard from '../../elements/ImportCard';
 
 interface IIssue {
     clientsIssueNumber: string,
@@ -81,9 +82,10 @@ function* importObjectsSaga(data: Datum[]) {
         // @ts-ignore
         const technician = yield byQueryGetter.employeeByClientsNumber(technicianId);
 
+        const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
         // Проверка на существование такой заявки
-        const foundIssue = ledger.issues.list.find(() => {
-            return clientsSiteNumber === site.clientsSiteNumber;
+        const foundIssue = ledger.issues.list.find((issue) => {
+            return issueNumber === issue.clientsIssueNumber;
         });
 
         // Если заявка новая
@@ -91,7 +93,7 @@ function* importObjectsSaga(data: Datum[]) {
             const newIssue = {
                 status: statusesList[0],
                 [ISSUES.idProp]: generateGuid(),
-                clientsIssueNumber,
+                clientsIssueNumber: issueNumber,
                 description,
                 contacts,
                 registerDate: formatExcelDate(registerDate),
@@ -137,44 +139,6 @@ function* importObjectsSaga(data: Datum[]) {
         yield* put(ISSUES.actions.addedBatch(newIssues));
     }
 }
-
-/**
- * Deprecated: Задает цифровые номера для удобства копирования номеров в Excel
- *
- * function* prepareIdsObjectsSaga() {
- *     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
- *     function* updateLedger() {
- *         ledger = yield* select(selectLedger);
- *     }
- *
- *     const mapper = (field) => (item, index) => ({ ...item, [field]: String(index) });
- *
- *     const newIssues = ledger.issues.list.reverse().map(mapper('clientsIssueNumber'));
- *     const newBrands = ledger.brands.list.reverse().map(mapper('clientsBrandNumber'));
- *     const newLegals = ledger.legals.list.reverse().map(mapper('clientsLegalNumber'));
- *     const newSites = ledger.sites.list.reverse().map(mapper('clientsSiteNumber'));
- *
- *     yield* put(ISSUES.actions.updatedBatch(newIssues));
- *     yield* put(BRANDS.actions.updatedBatch(newBrands));
- *     yield* put(LEGALS.actions.updatedBatch(newLegals));
- *     yield* put(SITES.actions.updatedBatch(newSites));
- * }
- *
- *  ImportIssuesPage:
- *
- *      const prepareIds = async () => {
- *         // @ts-ignore
- *         const task = store.runSaga(prepareIdsObjectsSaga);
- *         await task;
- *
- *         console.log('prepare ids complete');
- *     }
- *
- *     > return:
- *
- *         <Button onClick={prepareIds} disabled>обработать базу</Button>
- *
- */
 
 export const ImportIssuesPage = () => {
     const store = useStore();

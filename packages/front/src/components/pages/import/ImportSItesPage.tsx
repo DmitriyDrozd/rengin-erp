@@ -1,5 +1,5 @@
-import { generateNewListItemNumber } from '../../utils/byQueryGetters';
-import AppLayout from '../app/AppLayout'
+import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
+import AppLayout from '../../app/AppLayout'
 import React from 'react'
 import BRANDS from 'iso/src/store/bootstrap/repos/brands'
 import LEGALS from 'iso/src/store/bootstrap/repos/legals'
@@ -9,7 +9,7 @@ import {useStore} from 'react-redux'
 import {call, put, select} from 'typed-redux-saga'
 import {selectLedger} from 'iso/src/store/bootstrapDuck'
 import {generateGuid} from '@sha/random'
-import ImportCard from "../elements/ImportCard";
+import ImportCard from "../../elements/ImportCard";
 
 export const importSitesXlsxCols = ['brandName','legalName','city','address'] as const
 type Datum =Record<typeof importSitesXlsxCols[number], string>
@@ -31,7 +31,7 @@ function* importObjectsSaga(data: Datum[]) {
             const action = BRANDS.actions.added({
                 brandId: generateGuid(),
                 brandName,
-                clientsBrandNumber: generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber'),
+                clientsBrandNumber: generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber', newSites.length),
                 brandType: 'Заказчик',
                 person: '',
                 email: '',

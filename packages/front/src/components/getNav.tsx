@@ -9,6 +9,7 @@ import {
     RouteComponentProps
 } from 'react-router';
 import moize from 'moize';
+import { ImportEmployeesPage } from './pages/import/ImportEmployeesPage';
 
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -18,13 +19,13 @@ import LegalsChapter from './pages/clients/LegalsChapter';
 import SitesChapter from './pages/clients/SitesChapter';
 import ContractsChapter from './pages/contracts/ContractsChapter';
 import SubsChapter from './pages/contracts/SubsChapter';
-import ImportSitesPage from './pages/ImportSItesPage';
-import { ImportIssuesPage } from './pages/ImportIssuesPage';
+import ImportSitesPage from './pages/import/ImportSItesPage';
+import { ImportIssuesPage } from './pages/import/ImportIssuesPage';
 import IssuesListPage from './pages/issues/IssuesListPage';
 import AddIssuePage from './pages/issues/AddIssuePage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import UsersChapter from './pages/users/UsersListPage';
-import EmployeesChapter from './pages/users/EmployeesListPage';
+import EmployeesChapter from './pages/employees/EmployeesListPage';
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -76,6 +77,7 @@ export const getNav = moize(() => {
 
         importSites: buildNav('/app/in/import-sites', ImportSitesPage),
         importIssues: buildNav('/app/in/import-issues', ImportIssuesPage),
+        importEmployees: buildNav('/app/in/import-employees', ImportEmployeesPage),
 
         issues: buildNav('/app/in/issues', IssuesListPage),
         issueCreate: buildNav('/app/in/issues/create', AddIssuePage),

@@ -49,12 +49,12 @@ export const getAbbrName = (user) =>  {
     const getPart = (index: number) => {
         const part = parts[index]
         if(index === 0) {
-            return part
+            return part || 'Новый сотрудник';
         }
-        return (part && part.length ) ? (' '+part[0]+'.') : ""
+        return (!!part && part.length ) ? (' '+part[0]+'.') : ""
     }
 
-    return getPart(0)+getPart(1)
+    return getPart(0)+getPart(1);
 }
 
 export const ROLES = ['engineer','worker'] as const

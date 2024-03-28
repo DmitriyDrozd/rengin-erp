@@ -95,7 +95,7 @@ export const getAbbrName = (user) =>  {
     const getPart = (index: number) => {
         const part = parts[index]
         if(index === 0) {
-            return part
+            return part || 'Новый пользователь'
         }
         return (part && part.length ) ? (' '+part[0]+'.') : ""
     }

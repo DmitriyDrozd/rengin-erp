@@ -12,12 +12,12 @@ import {
     select,
 } from 'typed-redux-saga';
 
-export const generateNewListItemNumber = (list: any[], accessor: string): string => {
+export const generateNewListItemNumber = (list: any[], accessor: string, shift?: number): string => {
     const lastItemNumber = list.reduce((acc, item) => {
         return +item[accessor] > acc ? +item[accessor] : acc;
     }, 0);
 
-    return String(lastItemNumber + 1);
+    return String(lastItemNumber + 1 + shift);
 };
 
 export function* byQueryGetters () {
@@ -26,17 +26,16 @@ export function* byQueryGetters () {
         ledger = yield* select(selectLedger);
     }
 
-    function* brandById (brandId: string) {
-        let actualBrandId = brandId;
+    function* brandByClientsNumber (clientsBrandNumber: string, createIfNotFound = true) {
+        let actualBrandNumber = clientsBrandNumber;
 
-        if (!ledger.brands.byId[actualBrandId]) {
+        if (!ledger.brands.list.find(brand => brand.clientsBrandNumber === actualBrandNumber) && createIfNotFound) {
+            actualBrandNumber = generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber');
             // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
-            actualBrandId = generateGuid();
-            const clientsBrandNumber = generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber');
             const action = BRANDS.actions.added({
-                clientsBrandNumber: clientsBrandNumber,
-                brandId: actualBrandId,
-                brandName: 'Автоматически созданный заказчик' + clientsBrandNumber,
+                clientsBrandNumber: actualBrandNumber,
+                brandId: generateGuid(),
+                brandName: 'Автоматически созданный заказчик' + actualBrandNumber,
                 brandType: 'Заказчик',
                 person: '',
                 email: '',
@@ -51,12 +50,12 @@ export function* byQueryGetters () {
             yield* call(sleep, 10);
             yield* call(updateLedger);
 
-            console.log(`Brand ${brandId} not found, create one`, action);
+            console.log(`Brand ${clientsBrandNumber} not found, create one`, action);
         } else {
-            console.log(`Brand ${brandId} found`);
+            console.log(`Brand ${clientsBrandNumber} found`);
         }
 
-        return ledger.brands.byId[actualBrandId] as BrandVO;
+        return ledger.brands.list.find(brand => brand.clientsBrandNumber === actualBrandNumber) as BrandVO;
     }
 
     function* legalById ({legalId, brandId}: {
@@ -98,7 +97,7 @@ export function* byQueryGetters () {
         if (!ledger.sites.list.find(siteByNumberFind)) {
             actualClientsSiteNumber = generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber');
 
-            const newBrand = yield* call(brandById, '');
+            const newBrand = yield* call(brandByClientsNumber, '');
             const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
 
             const action = SITES.actions.added({
@@ -148,7 +147,7 @@ export function* byQueryGetters () {
     }
 
     return {
-        brandById,
+        brandByClientsNumber,
         legalById,
         siteByClientsNumber,
         userByClientsNumber,
