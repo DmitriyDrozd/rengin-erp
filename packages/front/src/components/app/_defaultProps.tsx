@@ -26,11 +26,11 @@ export default (role: RoleType) =>{
                     name: "Договоры",
                     icon: <CalendarOutlined />,
                 },
-                {
-                    path: "/app/in/subs",
-                    name: "Подписки",
-                    icon: <AntdIcons.AccountBookOutlined />,
-                },
+                // {
+                //     path: "/app/in/subs",
+                //     name: "Подписки",
+                //     icon: <AntdIcons.AccountBookOutlined />,
+                // },
                 {
                     path: "/app/in/dicts",
                     name: "Справочники",
@@ -60,7 +60,7 @@ export default (role: RoleType) =>{
                 },
                 {
                     path: "/app/in/users",
-                    name: "Контакты",
+                    name: "Сотрудники",
                     icon: <Icons.UserOutlined/>
                 },
 
