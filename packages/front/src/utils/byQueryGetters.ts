@@ -12,8 +12,12 @@ import {
     select,
 } from 'typed-redux-saga';
 
-export const generateNewListItemNumber = (list: any[], accessor: string, shift?: number): string => {
+export const generateNewListItemNumber = (list: any[], accessor: string, shift: number = 0): string => {
     const lastItemNumber = list.reduce((acc, item) => {
+        if (isNaN(+item[accessor])) {
+            return acc;
+        }
+
         return +item[accessor] > acc ? +item[accessor] : acc;
     }, 0);
 

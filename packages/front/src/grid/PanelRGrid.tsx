@@ -33,26 +33,32 @@ import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
 
 
-const getItems = (isExportAvailable: boolean): MenuProps['items'] =>
+const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean): MenuProps['items'] =>
     [
+        // {
+        //     label: 'Сохранить',
+        //     icon: <AntdIcons.SaveFilled/>,
+        //     key: 'save'
+        // },
+        // {
+        //     label: 'Назначенные мне',
+        //     icon: <AntdIcons.EyeInvisibleFilled/>,
+        //     key: 'hide'
+        // },
+        // {
+        //     type: 'divider'
+        // },
+        isAddItemsAvailable &&
         {
-            label: 'Сохранить',
-            icon: <AntdIcons.SaveFilled/>,
-            key: 'save'
-        },
-        {
-            label: 'Назначенные мне',
-            icon: <AntdIcons.EyeInvisibleFilled/>,
-            key: 'hide'
-        },
-        {
-            type: 'divider'
+            label: 'Добавить к заявкам',
+            icon: <AntdIcons.FileZipOutlined/>,
+            key: GRID_MODES.addIssues,
         },
         isExportAvailable &&
         {
             label: 'Экспортировать записи',
             icon: <AntdIcons.FileZipOutlined/>,
-            key: 'export',
+            key: GRID_MODES.export,
         },
         {
             type: 'divider'
@@ -60,11 +66,25 @@ const getItems = (isExportAvailable: boolean): MenuProps['items'] =>
         {
             label: 'Удалить записи',
             icon: <AntdIcons.DeleteFilled/>,
-            key: 'delete',
+            key: GRID_MODES.delete,
             danger: true
         }];
 
 export type BottomGridApiBar = React.FC<{ ag: AgGridReact }>
+
+const GRID_MODES = {
+    off: 'off',
+    delete: 'delete',
+    export: 'export',
+    addIssues: 'addIssues',
+};
+
+const GRID_MODES_LIST = [
+    GRID_MODES.off,
+    GRID_MODES.delete,
+    GRID_MODES.export,
+    GRID_MODES.addIssues,
+]
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
@@ -78,20 +98,30 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         rowData,
         createItemProps,
         onExportArchive,
+        onAddToItems,
+        onShowAllItems,
+        onCancelClick,
         ...props
     }: RGridProps<RID, Fields> & {
         name?: string,
         title: string;
-        onCreateClick: (defaults: any) => any,
         toolbar?: React.ReactNode,
         BottomBar?: BottomGridApiBar
-        onExportArchive?: (selectedIds: string[]) => void,
         gridRef: React.RefObject<typeof RGrid>,
+        onExportArchive?(selectedIds: string[]): void,
+        onAddToItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
+        onShowAllItems?(): void,
+        onCancelClick?(): void,
     }) => {
     const dispatch = useDispatch();
-    const [isDeleteMode, setDeleteMode,] = useState(false);
-    const [isExportMode, setExportMode,] = useState(false);
-    const isMultipleSelection = isDeleteMode || isExportMode;
+
+    const [mode, setMode] = useState(GRID_MODES.off);
+    const resetMode = () => {
+        setMode(GRID_MODES.off);
+        onCancelClick?.();
+    }
+
+    const isMultipleSelection = mode !== GRID_MODES.off;
 
     const [defaultColumns, columnsMap] = useAllColumns(resource, isMultipleSelection ? 'multiple' : undefined);
     const usedColumns = columnDefs || defaultColumns;
@@ -111,14 +141,13 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     };
 
     const onMenuClick = (key: string) => {
-        if (key === 'delete') {
-            setExportMode(false);
-            setDeleteMode(true);
+        if (GRID_MODES_LIST.includes(key)) {
+            setMode(key);
             setSelectedIds([]);
-        } else if (key === 'export') {
-            setDeleteMode(false);
-            setExportMode(true);
-            setSelectedIds([]);
+        }
+
+        if (key === GRID_MODES.addIssues) {
+            onShowAllItems();
         }
     };
 
@@ -126,17 +155,28 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         const action = resource.actions.removedBatch(selectedIds);
         dispatch(action);
         setSelectedIds([]);
-        setDeleteMode(false);
+        resetMode();
     };
 
     const onExport = () => {
         onExportArchive(selectedIds);
         setSelectedIds([]);
-        setExportMode(false);
+        resetMode();
     };
+
+    const onAddToItemsHandler = () => {
+        const getAction = (items) => resource.actions.updatedBatch(items);
+
+        onAddToItems(selectedIds, (items) => dispatch(getAction(items)));
+        setSelectedIds([]);
+        resetMode();
+    }
 
     const innerGridRef = gridRef || useRef<AgGridReact>(null);
 
+    /**
+     * Сохранение состояния таблицы
+     */
     const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
     const [isColumnStateInitialized, setIsColumnStateInitialized] = useState(!columnState);
 
@@ -167,7 +207,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const renderDeleteModeToolBar = () => {
         return <>
             <DeleteButton disabled={selectedIds.length === 0} onDeleted={onDelete}/>
-            <CancelButton onCancel={() => setDeleteMode(false)}/>
+            <CancelButton onCancel={resetMode}/>
         </>;
     };
 
@@ -181,13 +221,28 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 >
                     Скачать архив
                 </Button>
-                <CancelButton onCancel={() => setExportMode(false)}/>
+                <CancelButton onCancel={resetMode}/>
+            </>
+        )
+    }
+
+    const renderAddToModeToolBar = () => {
+        return (
+            <>
+                <Button
+                    icon={<AntdIcons.PlusCircleFilled />}
+                    disabled={selectedIds.length === 0}
+                    onClick={onAddToItemsHandler}
+                >
+                    Добавить к записям
+                </Button>
+                <CancelButton onCancel={resetMode}/>
             </>
         )
     }
 
     const role = useRole();
-    const items = getItems(!!onExportArchive);
+    const items = getItems(!!onExportArchive, !!onAddToItems);
 
     const renderStandardToolBar = () => {
         return role === 'сметчик'
@@ -204,6 +259,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 </Dropdown>
             </>;
     };
+
     const onBtExport = useCallback(() => {
         innerGridRef.current!.api.exportDataAsExcel();
     }, []);
@@ -234,9 +290,10 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                         value={searchText}
                         onChange={onSearchTextChanged}
                     />
-                    { isDeleteMode && renderDeleteModeToolBar() }
-                    { isExportMode && renderExportModeToolBar() }
-                    { !isDeleteMode && !isExportMode && renderStandardToolBar()}
+                    { mode === GRID_MODES.delete && renderDeleteModeToolBar() }
+                    { mode === GRID_MODES.export && renderExportModeToolBar() }
+                    { mode === GRID_MODES.addIssues && renderAddToModeToolBar() }
+                    { mode === GRID_MODES.off && renderStandardToolBar()}
                 </Space>
             </div>
         </div>

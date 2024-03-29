@@ -29,7 +29,15 @@ type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
 //2023-09-21T04:32:05.151Z
 const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ';
 
-export default ({meta, disabled, customOptions}: { meta: AnyMeta, disabled?: boolean, customOptions?: { value: string, label: string }[] }) => {
+export default ({meta, disabled, customOptions, defaultValue}: {
+    meta: AnyMeta,
+    disabled?: boolean,
+    customOptions?: {
+        value: string,
+        label: string
+    }[],
+    defaultValue?: any,
+}) => {
     const editorProperty = useContextEditorProperty(meta.name);
 
     const state = useISOState();
@@ -50,83 +58,91 @@ export default ({meta, disabled, customOptions}: { meta: AnyMeta, disabled?: boo
                     text = reses.getItemName(linkedItem);
             }
             return (
-
                 <Text type="success">{text}</Text>
             );
         }
         if (isItemOfMeta(property)) {
-            return <Select
-                value={value}
-                optionFilterProp={'label'}
-                showSearch={true}
-                placeholder={property.headerName}
-                disabled={disabled}
-                onChange={e => {
-                    console.log('Select onChange', e);
-                    updateItemProperty(e);
-                }}
-                style={{minWidth: '200px'}}
-                options={params.options}
-                dropdownRender={(menu) => (
-                    <>
-                        {menu}
-                        <Divider style={{margin: '8px 0'}}/>
-                        <Space style={{padding: '0 8px 4px'}}>
-                            <Button type="text" icon={<PlusOutlined/>}>
-                                Добавить
-                            </Button>
-                        </Space>
-                    </>
-                )}
-                {...sharedProps}
-            />;
+            return (
+                <Select
+                    value={value}
+                    optionFilterProp={'label'}
+                    showSearch={true}
+                    placeholder={property.headerName}
+                    disabled={disabled}
+                    onChange={e => {
+                        console.log('Select onChange', e);
+                        updateItemProperty(e);
+                    }}
+                    style={{minWidth: '200px'}}
+                    options={params.options}
+                    dropdownRender={(menu) => (
+                        <>
+                            {menu}
+                            <Divider style={{margin: '8px 0'}}/>
+                            <Space style={{padding: '0 8px 4px'}}>
+                                <Button type="text" icon={<PlusOutlined/>}>
+                                    Добавить
+                                </Button>
+                            </Space>
+                        </>
+                    )}
+                    {...sharedProps}
+                />);
         }
         if (property.type === 'enum') {
-            return <Select
-                value={value}
-                optionFilterProp={'label'}
-                showSearch={true}
-                placeholder={property.headerName}
-                onChange={e => {
-                    console.log('Select onChange', e);
-                    updateItemProperty(e);
-                }}
-                style={{minWidth: '200px'}}
-                options={customOptions || params.options}
-                dropdownRender={(menu) => (
-                    <>
-                        {menu}
+            return (
+                <Select
+                    value={value}
+                    optionFilterProp={'label'}
+                    showSearch={true}
+                    placeholder={property.headerName}
+                    onChange={e => {
+                        console.log('Select onChange', e);
+                        updateItemProperty(e);
+                    }}
+                    style={{minWidth: '200px'}}
+                    options={customOptions || params.options}
+                    dropdownRender={(menu) => (
+                        <>
+                            {menu}
 
-                    </>
-                )}
-                {...sharedProps}
-            />;
+                        </>
+                    )}
+                    {...sharedProps}
+                />);
         } else if (editorProperty.property.type === 'boolean')
-            return <Checkbox
-                checked={value}
-                onChange={e => {
-                    console.log('DatePicker onChange', e);
-                    updateItemProperty(e.target.checked);
-                }}
-                {...sharedProps}/>;
+            return (
+                <Checkbox
+                    checked={value}
+                    onChange={e => {
+                        console.log('DatePicker onChange', e);
+                        updateItemProperty(e.target.checked);
+                    }}
+                    {...sharedProps}/>)
+                ;
         else if (editorProperty.property.type === 'date')
-            return <DatePicker
-                locale={locale}
-                value={value === undefined ? undefined : dayjs(value)}
-                onChange={e => {
-                    updateItemProperty(e ? e.toDate().toISOString() : e);
-                }}
-                {...sharedProps}
-            />;
+            return (
+                <DatePicker
+                    locale={locale}
+                    defaultValue={defaultValue}
+                    value={value === undefined ? undefined : dayjs(value)}
+                    onChange={e => {
+                        updateItemProperty(e ? e.toDate().toISOString() : e);
+                    }}
+                    {...sharedProps}
+                />
+            );
         else if (editorProperty.property.type === 'text')
-            return <TextArea
-                value={value}
+            return (
+                <TextArea
+                    value={value}
 
-                onBlur={e => {
-                    updateItemProperty(e.target.value);
-                }}
-                {...sharedProps}
-            />;
+                    onBlur={e => {
+                        updateItemProperty(e.target.value);
+                    }}
+                    {...sharedProps}
+                />)
+                ;
 
         else return (
                 <Input
@@ -143,9 +159,13 @@ export default ({meta, disabled, customOptions}: { meta: AnyMeta, disabled?: boo
     };
 
     if (error) {
-        return <Form.Item label={property.headerName} validateStatus={'error'} hasFeedback={true} help={error}
-                          required={property.required}>{renderInputControl()}</Form.Item>;
+        return (
+            <Form.Item label={property.headerName} validateStatus={'error'} hasFeedback={true} help={error}
+                       required={property.required}>{renderInputControl()}</Form.Item>)
+            ;
     }
-    return <Form.Item label={property.headerName}
-                      required={property.required}>{renderInputControl()}<span></span></Form.Item>;
+    return (
+        <Form.Item label={property.headerName}
+                   required={property.required}>{renderInputControl()}<span></span></Form.Item>)
+        ;
 };

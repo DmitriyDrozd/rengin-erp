@@ -22,7 +22,6 @@ import SubsChapter from './pages/contracts/SubsChapter';
 import ImportSitesPage from './pages/import/ImportSItesPage';
 import { ImportIssuesPage } from './pages/import/ImportIssuesPage';
 import IssuesListPage from './pages/issues/IssuesListPage';
-import AddIssuePage from './pages/issues/AddIssuePage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import UsersChapter from './pages/users/UsersListPage';
 import EmployeesChapter from './pages/employees/EmployeesListPage';
@@ -80,8 +79,8 @@ export const getNav = moize(() => {
         importEmployees: buildNav('/app/in/import-employees', ImportEmployeesPage),
 
         issues: buildNav('/app/in/issues', IssuesListPage),
-        issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
         issuesEdit: buildNav('/app/in/issues/:issueId', IssuesListPage),
+        // issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
 
         dashboard: buildNav('/app/in/dashboard', DashboardPage)
         //addressesList: buildNav('/app/in/addresses', AddressesListPage),
