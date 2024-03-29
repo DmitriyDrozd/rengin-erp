@@ -51,12 +51,12 @@ export default () => {
         checkFiles: [],
         actFiles: [],
         workFiles: [],
-        responsibleManagerId: currentUser.userId,
+        managerUserId: currentUser.userId,
         status: 'Новая',
         expensePrice: 0,estimationPrice: 0, expenses: [], estimations: [],
         plannedDate: initialPlannedDate.toString(),
         registerDate: Days.today()}
-    const [state, setState] = useState(initialValues) as any as [Item, (otem: Item)=>any]
+    const [state, setState] = useState(initialValues) as any as [Item, (item: Item)=>any]
     const dispatch = useDispatch()
 
     const onSubmit = async (values: Item) => {

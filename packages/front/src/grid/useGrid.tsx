@@ -15,7 +15,7 @@ export const useGrid = <T,>(props: RGridProps<T>) => {
     const {currentUser, } = useCurrentUser()
     const columnDefs = currentUser.grids
     const onGridReady = (event: GridReadyEvent<TData>) => {
-        event.
+        // event.
     }
     const Grid = () => {
         return <div className="ag-theme-alpine" style={{height: '100%', width: '100%'}}>

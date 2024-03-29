@@ -28,8 +28,8 @@ export default ({issues, color}: IssueChartData) => {
     const users: UserVO[] = useSelector(USERS.selectAll);
 
     const getProcessedByUser = useCallback((user?: UserVO) => ({
-        name: user ? user.fullName : 'Без менеджера',
-        value: issues.filter(issue => issue.responsibleManagerId === (user ? user.userId : undefined)).length,
+        name: user ? `${user.lastname} ${user.name}` : 'Без менеджера',
+        value: issues.filter(issue => issue.managerUserId === (user ? user.userId : undefined)).length,
     }), [issues]);
 
     const processedTotal = { name: 'Всего', value: issues.length };
