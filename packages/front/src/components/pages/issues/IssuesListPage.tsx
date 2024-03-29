@@ -39,7 +39,6 @@ import IsssueStatusCellEditor from './IsssueStatusCellEditor';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
-import ImportIssuesButton from './import-gsheet/ImportIssuesButton.js';
 import { Link } from 'react-router-dom';
 
 const getEstimationStatusTag = (data: IssueVO) => {
@@ -239,6 +238,7 @@ export default () => {
                     resource={ISSUES}
                     columnDefs={columns}
                     title={'Все заявки'}
+                    name={'IssuesList'}
                     onExportArchive={exportArchiveHandler}
                     BottomBar={BottomBar}
                 />

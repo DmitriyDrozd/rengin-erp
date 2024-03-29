@@ -1,5 +1,6 @@
 import { AgGridReact } from 'ag-grid-react';
 import { AnyFieldsMeta } from 'iso/src/store/bootstrap/core/createResource';
+import useLocalStorageState from '../hooks/useLocalStorageState';
 import RGrid, { RGridProps } from './RGrid';
 import {
     Button,
@@ -22,6 +23,7 @@ import CrudCreateButton from '../components/elements/CreateButton';
 import React, {
     ChangeEventHandler,
     useCallback,
+    useEffect,
     useRef,
     useState
 } from 'react';
@@ -66,6 +68,7 @@ export type BottomGridApiBar = React.FC<{ ag: AgGridReact }>
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
+        name,
         title,
         gridRef,
         BottomBar,
@@ -77,6 +80,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onExportArchive,
         ...props
     }: RGridProps<RID, Fields> & {
+        name?: string,
         title: string;
         onCreateClick: (defaults: any) => any,
         toolbar?: React.ReactNode,
@@ -131,7 +135,28 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         setExportMode(false);
     };
 
-    const innerGridRef = useRef<AgGridReact>(null);
+    const innerGridRef = gridRef || useRef<AgGridReact>(null);
+
+    const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
+    const [isColumnStateInitialized, setIsColumnStateInitialized] = useState(!columnState);
+
+    useEffect(() => {
+        if (innerGridRef.current && innerGridRef.current.columnApi && !isColumnStateInitialized) {
+            innerGridRef.current.columnApi.applyColumnState({ state: columnState, applyOrder: true });
+
+            setTimeout(() => {
+                setIsColumnStateInitialized(true);
+            }, 200)
+        }
+    }, [innerGridRef.current, isColumnStateInitialized]);
+
+    const onSortChanged = useCallback((ag: any) => {
+        if (!isColumnStateInitialized) {
+            return;
+        }
+
+        setColumnState(ag.columnApi.getColumnState());
+    }, [isColumnStateInitialized]);
 
     const onSelectionChanged = () => {
         const rows = innerGridRef.current!.api.getSelectedRows();
@@ -224,6 +249,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             resource={resource}
             quickFilterText={searchText}
             ref={innerGridRef}
+            onSortChanged={onSortChanged}
         />
         <div style={{paddingTop: '4px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
