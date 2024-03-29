@@ -5,7 +5,7 @@ import ProfileTopBar from './ProfileTopBar'
 
 export default () => {
     return  <Header style={{ display: 'flex', alignItems: 'center', justifyContent:'space-between' }}>
-                <HeadLogo></HeadLogo>
+                <HeadLogo />
                 <ProfileTopBar></ProfileTopBar>
             </Header>
 }
