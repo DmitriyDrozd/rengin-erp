@@ -1,4 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
+import { notification } from 'antd';
 import {
     EMPLOYEES,
     ISSUES
@@ -50,6 +51,10 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
             }));
 
         updateCollection(updated);
+        notification.open({
+            message: useEditorData.item.role + ' добавлен к заявкам',
+            type: 'success'
+        })
     };
     return (
         <EditorContext.Provider value={useEditorData}>

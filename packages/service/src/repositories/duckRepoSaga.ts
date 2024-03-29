@@ -53,7 +53,31 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                         if(config.WRITE_PG===true)
                         await repo.pgDao.removeById(action.payload)
                     })
-                } else if (
+                } if (repo.actions.removed.isType(action)) {
+                    yield* call(async () => {
+                        await repo.mongoDao.removeById(action.payload)
+                        if(config.WRITE_PG===true)
+                            await repo.pgDao.removeById(action.payload)
+                    })
+                } if (repo.actions.removedBatch.isType(action)) {
+                    yield* call(async () => {
+                        await Promise.all(action.payload.map(async (item) => repo.mongoDao.removeById(item, true)));
+
+                        if (config.WRITE_PG===true) {
+                            await Promise.all(action.payload.map(async (item) => repo.pgDao.removeById(item, true)));
+                        }
+                    })
+                }
+                if (repo.actions.updatedBatch.isType(action)) {
+                    yield* call(async () => {
+                        await Promise.all(action.payload.map(async (item) => repo.mongoDao.updateById(item)));
+
+                        if (config.WRITE_PG===true) {
+                            await Promise.all(action.payload.map(async (item) => repo.pgDao.updateById(item)));
+                        }
+                    })
+                }
+                else if (
                     isNamespace(repo.factory)(action) && action.meta.noRepo !== true
                 ) {
                     const id = action.payload[repo.idProp] || action[repo.idProp]
