@@ -34,7 +34,7 @@ const employeesRaw = createResource('employee', {
     title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
     email: valueTypes.string({toLowerCase: true, colDef: {width: 250}}),
     phone: valueTypes.string({toLowerCase: true, colDef: {width: 250}}),
-    clientsEmployeeNumber: valueTypes.string({headerName: 'Номер', required: true, immutable: true, unique: true}),
+    clientsEmployeeNumber: valueTypes.string({headerName: 'Номер', required: true, unique: true}),
     removed: valueTypes.boolean({select: false, colDef: false, internal: true}),
 }, {
     getItemName: getItemNameWithContacts,

@@ -25,9 +25,7 @@ const formItemLayout = {
 };
 
 export default ({children, title}: { children: React.ReactNode, title?: string }) => {
-
     const editor = useContextEditor();
-    console.log('editor IN MODAL ', editor);
     const history = useHistory();
     const modalTitle = title || editor.resource.getItemName(editor.item);
 

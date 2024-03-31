@@ -63,16 +63,12 @@ export const CrudCreateItemPage = <
             [clientsNumberProp]: clientsNumber,
             ...values
         };
-        const action = resource.actions.added(patch);
-        console.log('Submit', values, action);
-        dispatch(action);
 
-        //            dispatch(BRANDS.actions.added(values))
+        const action = resource.actions.added(patch);
+        dispatch(action);
     };
 
-    console.log('Initial alues', initialValues);
     const history = useHistory();
-
 
     const onSave = () => {
         formRef.current?.submit();
@@ -83,8 +79,8 @@ export const CrudCreateItemPage = <
     const onBack = () =>
         history.goBack();
 
-    const backButton = <Button type="primary" shape="circle" icon={<AntdIcons.ArrowLeftOutlined/>}/>;
-    const title = <span>{'Новый ' + resource.langRU.singular}</span>;
+    const title = 'Новый ' + resource.langRU.singular;
+
     return (
         <AppLayout
             proLayout={{
@@ -92,7 +88,7 @@ export const CrudCreateItemPage = <
                     <CancelButton onCancel={onBack}/>,
                     <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Создать</Button>
                 ],
-                title: 'Rengin',
+                title,
             }}
             onBack={onBack}
 

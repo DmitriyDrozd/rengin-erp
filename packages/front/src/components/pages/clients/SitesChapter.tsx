@@ -2,14 +2,18 @@ import { ColDef } from 'ag-grid-community';
 import React from 'react';
 import { useAllColumns } from '../../../grid/RCol';
 import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
-import ItemChapter, {fieldMetaToProProps} from '../chapter-routed/ItemChapter'
-import {ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components'
-import LEGALS from 'iso/src/store/bootstrap/repos/legals'
+import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
+import {
+    ProFormSelect,
+    ProFormText,
+    ProFormTextArea
+} from '@ant-design/pro-components';
+import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import SITES, { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
-import {useSelector} from 'react-redux'
-import PanelRGrid from '../../../grid/PanelRGrid'
+import { useSelector } from 'react-redux';
+import PanelRGrid from '../../../grid/PanelRGrid';
 
-const RESOURCE = SITES
+const RESOURCE = SITES;
 
 export default () => {
     const [cols, colMap] = useAllColumns(RESOURCE);
@@ -27,12 +31,16 @@ export default () => {
         {...colMap.contactInfo, width: 120},
     ] as ColDef<SiteVO>[];
 
-    return <ItemChapter
-                resource={RESOURCE}
-                renderForm={({item, id,verb, resource}) => {
-                    const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId))
-                    return <>
-                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'siteId')} rules={[{required: true}]}/>
+    return (
+        <ItemChapter
+            resource={RESOURCE}
+            renderForm={({item, id, verb, resource}) => {
+                const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId));
+                const isEdit = verb === 'EDIT';
+
+                return (
+                    <>
+                        { isEdit && <ProFormText  {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')} rules={[{required: true}]}/> }
                         <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'brandId')} rules={[{required: true}]}/>
                         <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId')} valueEnum={legalValueEnum}
                                         rules={[{required: true}]}/>
@@ -44,17 +52,19 @@ export default () => {
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'techUserId')}/>
                         <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')}/>
                     </>
-                }
-        }
-        renderList={() => {
-            return (
-                <PanelRGrid
-                    columnDefs={columns}
-                    resource={SITES}
-                    fullHeight={true}
-                    title={'Все объекты'}
-                />
-            )
-        }}
-    />
+                );
+            }
+            }
+            renderList={() => {
+                return (
+                    <PanelRGrid
+                        columnDefs={columns}
+                        resource={SITES}
+                        fullHeight={true}
+                        title={'Все объекты'}
+                    />
+                );
+            }}
+        />
+    );
 }

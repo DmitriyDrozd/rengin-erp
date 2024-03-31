@@ -25,7 +25,6 @@ export default () => {
         {...colMap.address, width: 250},
         {...colMap.web, width: 100},
         {...colMap.managerUserId, width: 120},
-        {...colMap.removed},
         {
             colId: 'sitesCalc',
             field: 'brandId',

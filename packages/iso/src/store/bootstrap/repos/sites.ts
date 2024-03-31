@@ -4,7 +4,7 @@ import {LegalVO} from './legals'
 
 
 export const siteResourceRaw = createResource('site',{
-        clientsSiteNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
+        clientsSiteNumber: valueTypes.string({headerName:'Код объекта', required: true, unique: true}),
         brandId: valueTypes.itemOf({
             headerName: 'Заказчик',
             linkedResourceName: 'BRANDS',

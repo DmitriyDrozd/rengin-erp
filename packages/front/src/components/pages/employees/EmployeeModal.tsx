@@ -27,8 +27,9 @@ import GenericRenFields from '../../form/GenericRenFields';
 const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
     const ledger = useLedger()
     const useEditorData = useEditor(employeesditor, id);
-    const {removed, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
-    const list = Array.from(Object.values(propsToRender));
+    const isEditMode = useEditorData.mode === 'edit';
+    const {removed, employeeId, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
+    const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsEmployeeNumber].filter(i => !!i);
     const customOptions = roles.map(r => ({ value: r, label: r }));
 
     const [isAddingMode, setIsAddingMode] = useState(false);

@@ -36,7 +36,7 @@ export const estimationStatuses: Record<EstimationStatus, string> = {
 export const paymentTypesList = ['Наличные', 'Безналичные'] as const
 
 const issuesRaw = createResource('issue',{
-        clientsIssueNumber: valueTypes.string({headerName:'Номер заявки', required: true}),
+        clientsIssueNumber: valueTypes.string({headerName:'Номер заявки', required: true, unique: true}),
         status: valueTypes.enum({headerName: 'Статус',enum:statusesList}),
         brandId: valueTypes.itemOf({headerName: 'Заказчик',linkedResourceName: 'BRANDS',required: true,immutable:true}),
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),

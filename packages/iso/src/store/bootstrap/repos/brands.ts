@@ -11,7 +11,7 @@ const BRANDS_RAW = createResource('brand',{
         address: valueTypes.string({headerName: 'Адрес'}),
         web: valueTypes.string({headerName: 'Вебсайт'}),
         managerUserId: valueTypes.itemOf({headerName: 'Отв. менеджер', linkedResourceName:'USERS'}),
-        clientsBrandNumber: valueTypes.string({headerName:'Номер', required: true, immutable: true}),
+        clientsBrandNumber: valueTypes.string({headerName:'Номер', required: true, unique: true}),
         removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
     },
     {

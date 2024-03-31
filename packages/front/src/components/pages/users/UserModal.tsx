@@ -10,12 +10,14 @@ import { usersEditor } from '../../../editors/usersEditor';
 
 export default ({id}: { id: string }) => {
     const useEditorData = useEditor(usersEditor, id);
-    const {removed, clientsUserNumber, ...propsToRender} = USERS.properties;
+    const {removed, userId, clientsUserNumber, ...propsToRender} = USERS.properties;
+    const isEditMode = useEditorData.mode === 'edit';
+    const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsUserNumber].filter(i => !!i);
 
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
-                <GenericRenFields list={Array.from(Object.values(propsToRender))}/>
+                <GenericRenFields list={list}/>
             </BaseEditModal>
         </EditorContext.Provider>
     );
