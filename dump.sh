@@ -5,10 +5,8 @@ mkdir -p $DEST
 FILE=$DEST/archive.gz
 echo $FILE
 
-docker exec -ti mongodb sh
-mongodump -h localhost:27017 -d rengin -u rengin -p BuildMeUp --authenticationDatabase admin --gzip --archive=$FILE
-exit
-docker cp mongodb:$FILE /dumps/rengin/
+docker exec -ti mongodb sh -c "mongodump -h localhost:27017 -d rengin -u rengin -p BuildMeUp --authenticationDatabase admin --gzip --archive=/dump/archive.gz"
+docker cp mongodb:/dump/archive.gz $DEST/
 
 rm -rf  /dumps/rengin/last
 
