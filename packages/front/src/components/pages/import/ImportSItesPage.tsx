@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React from 'react';
@@ -72,7 +73,6 @@ function* importObjectsSaga(data: Datum[]) {
             console.log(`Legal ${legalName} not found, create one`, action);
             yield* put(action);
 
-
             yield* call(sleep, 10);
             yield* call(updateLedger);
         }
@@ -88,10 +88,10 @@ function* importObjectsSaga(data: Datum[]) {
                 city,
                 address,
                 siteId: generateGuid(),
-                clientsSiteNumber: clientsSiteNumber || generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber', newSites.length),
+                clientsSiteNumber: String(clientsSiteNumber) || generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber', newSites.length),
             };
             console.log(`Site not found, create one`, site.address);
-            newSites.push(site);
+            newSites.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(site));
         }
 
         return site;

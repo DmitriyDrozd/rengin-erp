@@ -31,7 +31,7 @@ export function* byQueryGetters () {
     }
 
     function* brandByClientsNumber (clientsBrandNumber: string, createIfNotFound = true) {
-        let actualBrandNumber = clientsBrandNumber;
+        let actualBrandNumber = String(clientsBrandNumber);
 
         if (!ledger.brands.list.find(brand => brand.clientsBrandNumber === actualBrandNumber) && createIfNotFound) {
             actualBrandNumber = generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber');
@@ -94,7 +94,7 @@ export function* byQueryGetters () {
 
     // @ts-ignore
     function* siteByClientsNumber (clientsSiteNumber: string) {
-        let actualClientsSiteNumber = clientsSiteNumber;
+        let actualClientsSiteNumber = String(clientsSiteNumber);
 
         const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value === actualClientsSiteNumber);
 
@@ -131,22 +131,26 @@ export function* byQueryGetters () {
     }
 
     function* userByClientsNumber (clientsNumber: string) {
-        if (!clientsNumber || !ledger.users.list.find(user => user.clientsUserNumber === clientsNumber)) {
+        const foundUser = ledger.users.list.find(user => user.clientsUserNumber === String(clientsNumber));
+
+        if (!clientsNumber || !foundUser) {
             console.log(`User ${clientsNumber} not found`);
-            return {};
+            return null;
         } else {
             console.log(`User ${clientsNumber} found`);
-            return ledger.users.list.find(user => user.clientsUserNumber === clientsNumber);
+            return foundUser;
         }
     }
 
     function* employeeByClientsNumber (clientsNumber: string) {
-        if (!clientsNumber || !ledger.employees.list.find(user => user.clientsEmployeeNumber === clientsNumber)) {
+        const foundEmployee = ledger.employees.list.find(user => user.clientsEmployeeNumber === clientsNumber);
+
+        if (!clientsNumber || !foundEmployee) {
             console.log(`Employee ${clientsNumber} not found`);
-            return {};
+            return null;
         } else {
             console.log(`Employee ${clientsNumber} found`);
-            return ledger.employees.list.find(user => user.clientsEmployeeNumber === clientsNumber);
+            return foundEmployee;
         }
     }
 

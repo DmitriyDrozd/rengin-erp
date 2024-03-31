@@ -46,7 +46,6 @@ export default <D,>(props: ImportCardProps<D>) => {
                         onOk: async () => {
                             setLoading(true)
                             props.onImport(arr as any, () => {
-                                console.log('Import file complete');
                                 info({
                                     title:"Записи успешно импортированы",
                                     content:props.title

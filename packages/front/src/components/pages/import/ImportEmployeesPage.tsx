@@ -2,6 +2,7 @@ import {
     EMPLOYEES,
     EmployeeVO
 } from 'iso/src/store/bootstrap/repos/employees';
+import * as R from 'ramda';
 import {
     byQueryGetters,
     generateNewListItemNumber,
@@ -38,7 +39,7 @@ export const importIssuesXlsxCols = [
 ] as const;
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
-function* importObjectsSaga(data: Datum[]) {
+function* importEmployeesSaga(data: Datum[]) {
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
     const newEmployees: Partial<EmployeeVO>[] = [];
@@ -76,7 +77,7 @@ function* importObjectsSaga(data: Datum[]) {
             };
 
             console.log(`Employee not found, create one`, newEmployee.clientsEmployeeNumber);
-            newEmployees.push(newEmployee);
+            newEmployees.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(newEmployee));
         }
 
         return foundEmployee;
@@ -105,7 +106,7 @@ export const ImportEmployeesPage = () => {
     const store = useStore();
     const importFile = async (data: Datum[], callback?: () => void) => {
         // @ts-ignore
-        const task = store.runSaga(importObjectsSaga, data);
+        const task = store.runSaga(importEmployeesSaga, data);
         await task;
 
         callback?.();

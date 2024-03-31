@@ -17,6 +17,7 @@ import {
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
 import ImportCard from '../../elements/ImportCard';
+import * as R from "ramda";
 
 interface IIssue {
     clientsIssueNumber: string,
@@ -51,7 +52,7 @@ export const importIssuesXlsxCols = [
 ] as const;
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
-function* importObjectsSaga(data: Datum[]) {
+function* importIssuesSaga(data: Datum[]) {
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
     const newIssues: Partial<IssueVO>[] = [];
@@ -82,7 +83,7 @@ function* importObjectsSaga(data: Datum[]) {
         // @ts-ignore
         const technician = yield byQueryGetter.employeeByClientsNumber(technicianId);
 
-        const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
+        const issueNumber = String(clientsIssueNumber) || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
         // Проверка на существование такой заявки
         const foundIssue = ledger.issues.list.find((issue) => {
             return issueNumber === issue.clientsIssueNumber;
@@ -110,8 +111,9 @@ function* importObjectsSaga(data: Datum[]) {
                 contractId: '',
             };
 
+
             console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
-            newIssues.push(newIssue);
+            newIssues.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(newIssue));
         }
 
         return foundIssue;
@@ -144,8 +146,7 @@ export const ImportIssuesPage = () => {
     const store = useStore();
     const importFile = async (data: Datum[], callback?: () => void) => {
         // @ts-ignore
-        const task = store.runSaga(importObjectsSaga, data);
-        await task;
+        await store.runSaga(importIssuesSaga, data);
 
         callback?.();
     };
