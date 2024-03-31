@@ -24,6 +24,12 @@ import {
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 
+const addingModes = {
+    'off': 'off',
+    'issues': 'issues',
+    'sites': 'sites',
+}
+
 const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
     const ledger = useLedger()
     const useEditorData = useEditor(employeesditor, id);
@@ -32,20 +38,20 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
     const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsEmployeeNumber].filter(i => !!i);
     const customOptions = roles.map(r => ({ value: r, label: r }));
 
-    const [isAddingMode, setIsAddingMode] = useState(false);
-    const onShowAllItems = () =>  setIsAddingMode(true);
-    const disableAddingMode = () => setIsAddingMode(false);
+    const [addingMode, setAddingMode] = useState(addingModes.off);
+    const onShowAllItems = (addingMode: string) => () =>  setAddingMode(addingMode);
+    const disableAddingMode = () => setAddingMode(addingModes.off);
 
     const resource= EMPLOYEES;
     const name = resource.getItemName(useEditorData.item);
     const role = useEditorData.item.role === employeeRoleEnum.техник
         ? 'techUserId' : 'clientsEngineerUserId';
-    const sites = ledger.sites.list.filter(s => s.techUserId === id || s.clientsEngineerUserId === id)
-    const issues = ledger.issues.list.filter(s => isAddingMode ? s[role] !== id : s[role] === id);
+    const sites = ledger.sites.list.filter(s => addingMode === addingModes.sites ? s[role] !== id : s[role] === id);
+    const issues = ledger.issues.list.filter(s => addingMode === addingModes.issues ? s[role] !== id : s[role] === id);
 
-    const onAddToItems = (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
-        const updated = ledger.issues.list
-            .filter(s => selectedIds.includes(s.issueId))
+    const onAddToItems = (list, name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
+        const updated = list
+            .filter(s => selectedIds.includes(s[idProp]))
             .map(s => ({
                 ...s,
                 [role]: id,
@@ -53,7 +59,7 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
 
         updateCollection(updated);
         notification.open({
-            message: useEditorData.item.role + ' добавлен к заявкам',
+            message: useEditorData.item.role + ' добавлен к ' + name,
             type: 'success'
         })
     };
@@ -64,7 +70,10 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
                 <ProCard tabs={{ type: 'card' }}>
                     <ProCard.TabPane key="tab1" tab="Объекты">
                         <PanelRGrid
-                            createItemProps={{ techUserId:id, clientsEngineerUserId: id }}
+                            onCancelClick={disableAddingMode}
+                            onShowAllItems={onShowAllItems(addingModes.sites)}
+                            onAddToItems={onAddToItems(ledger.sites.list, 'объектам', SITES.idProp)}
+                            createItemProps={{ [role]: id }}
                             title={name}
                             resource={SITES}
                             rowData={sites}
@@ -73,9 +82,9 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
                     <ProCard.TabPane key="tab2" tab="Заявки">
                         <PanelRGrid
                             onCancelClick={disableAddingMode}
-                            onShowAllItems={onShowAllItems}
-                            onAddToItems={onAddToItems}
-                            createItemProps={{ techUserId:id }}
+                            onShowAllItems={onShowAllItems(addingModes.issues)}
+                            onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
+                            createItemProps={{ [role]: id }}
                             title={name}
                             resource={ISSUES}
                             rowData={issues}
