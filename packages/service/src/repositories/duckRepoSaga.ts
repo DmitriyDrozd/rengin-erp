@@ -49,7 +49,7 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                 }
                 if (repo.actions.removed.isType(action)) {
                     yield* call(async () => {
-                        await repo.mongoDao.removeById(action.payload)
+                        await repo.mongoDao.removeById(action.payload, true)
                         if(config.WRITE_PG===true)
                         await repo.pgDao.removeById(action.payload)
                     })
@@ -64,7 +64,7 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                         await Promise.all(action.payload.map(async (item) => repo.mongoDao.removeById(item, true)));
 
                         if (config.WRITE_PG===true) {
-                            await Promise.all(action.payload.map(async (item) => repo.pgDao.removeById(item, true)));
+                            await Promise.all(action.payload.map(async (item) => repo.pgDao.removeById(item)));
                         }
                     })
                 }
