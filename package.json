@@ -25,7 +25,8 @@
         "service:demo": "cross-env STONES_SPREADSHEET_ID=17bILUbTDEkavwoq7uLdBBbPspwPZq70U6595BNyvlwo yarn workspace service service:prod",
         "service:watch": "yarn && nodemon -e ts -w ./packages/service/src -x yarn service:start",
         "service:prod": "cross-env STONES_SPREADSHEET_ID=1d4DqlIgWEZCaQ5P2C8M8ambosgtNLHw4ml_OOziKarg yarn workspace service service:prod",
-        "mongo:dump:prod": "yarn rimraf ./mongo/dumps/ &&  cd mongo && mkdir dumps && ssh root@rengindesk.ru \"/home/rengin-erp/dump.sh\"   && scp -r root@stroy-monitoring.ru:/dumps/stones/last ./dumps",
+        "rimraf": "./node_modules/rimraf/bin.js",
+        "mongo:dump:prod": "yarn rimraf ./mongo/dumps/ && cd mongo && mkdir dumps && ssh root@rengindesk.ru \"/home/rengin-erp/dump.sh\"   && scp -r root@rengindesk.ru:/dumps/stones/last ./dumps",
         "mongo:restore": "docker exec -i mongo /usr/bin/mongorestore  --archive < ./mongo/dumps/last/archive.gz"
     },
     "dependencies": {
