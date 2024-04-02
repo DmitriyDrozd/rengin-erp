@@ -24,32 +24,49 @@ import {
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 
-const addingModes = {
-    'off': 'off',
-    'issues': 'issues',
-    'sites': 'sites',
-}
+const roleMap = {
+    [employeeRoleEnum['техник']]: 'techUserId',
+    [employeeRoleEnum['ответственный инженер']]: 'clientsEngineerUserId',
+    [employeeRoleEnum['менеджер']]: 'clientsEngineerUserId',
+    [employeeRoleEnum['сметчик']]: 'estimatorUserId',
+};
 
-const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
-    const ledger = useLedger()
+const rolesIssues = ISSUES.rolesProps;
+const rolesSites = SITES.rolesProps;
+
+const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
+    const ledger = useLedger();
     const useEditorData = useEditor(employeesditor, id);
     const isEditMode = useEditorData.mode === 'edit';
     const {removed, employeeId, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
     const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsEmployeeNumber].filter(i => !!i);
-    const customOptions = roles.map(r => ({ value: r, label: r }));
+    const customOptions = roles.map(r => ({value: r, label: r}));
 
-    const [addingMode, setAddingMode] = useState(addingModes.off);
-    const onShowAllItems = (addingMode: string) => () =>  setAddingMode(addingMode);
-    const disableAddingMode = () => setAddingMode(addingModes.off);
+    const [addingModes, setAddingModes] = useState({
+        issues: false,
+        sites: false,
+    });
+    const switchMode = (mode: string, value: boolean) => setAddingModes({
+        ...addingModes,
+        [mode]: value,
+    });
 
-    const resource= EMPLOYEES;
+    const onShowAllItems = (mode: string) => () => switchMode(mode, true);
+    const disableAddingMode = (mode: string) => () => switchMode(mode, false);
+
+    const resource = EMPLOYEES;
     const name = resource.getItemName(useEditorData.item);
-    const role = useEditorData.item.role === employeeRoleEnum.техник
-        ? 'techUserId' : 'clientsEngineerUserId';
-    const sites = ledger.sites.list.filter(s => addingMode === addingModes.sites ? s[role] !== id : s[role] === id);
-    const issues = ledger.issues.list.filter(s => addingMode === addingModes.issues ? s[role] !== id : s[role] === id);
+    const role = roleMap[useEditorData.item.role];
 
-    const onAddToItems = (list, name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
+    const showSites = isEditMode && rolesIssues.includes(role);
+    const showIssues = isEditMode && rolesSites.includes(role);
+
+    // @ts-ignore
+    const sites = showSites ? ledger.sites.list.filter(s => addingModes.sites ? s[role] !== id : s[role] === id) : [];
+    // @ts-ignore
+    const issues = showIssues ? ledger.issues.list.filter(s => addingModes.issues ? s[role] !== id : s[role] === id) : [];
+
+    const onAddToItems = (list: any[], name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
         const updated = list
             .filter(s => selectedIds.includes(s[idProp]))
             .map(s => ({
@@ -59,41 +76,50 @@ const EditEmployeeModal = ({ roles, id }: { roles: string[], id: string }) => {
 
         updateCollection(updated);
         notification.open({
-            message: useEditorData.item.role + ' добавлен к ' + name,
+            message: `${useEditorData.item.role} добавлен к ${updated.length} ${name}`,
             type: 'success'
-        })
+        });
     };
+
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
                 <GenericRenFields list={list} customOptions={customOptions}/>
-                <ProCard tabs={{ type: 'card' }}>
-                    <ProCard.TabPane key="tab1" tab="Объекты">
-                        <PanelRGrid
-                            onCancelClick={disableAddingMode}
-                            onShowAllItems={onShowAllItems(addingModes.sites)}
-                            onAddToItems={onAddToItems(ledger.sites.list, 'объектам', SITES.idProp)}
-                            createItemProps={{ [role]: id }}
-                            title={name}
-                            resource={SITES}
-                            rowData={sites}
-                        />
-                    </ProCard.TabPane>
-                    <ProCard.TabPane key="tab2" tab="Заявки">
-                        <PanelRGrid
-                            onCancelClick={disableAddingMode}
-                            onShowAllItems={onShowAllItems(addingModes.issues)}
-                            onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
-                            createItemProps={{ [role]: id }}
-                            title={name}
-                            resource={ISSUES}
-                            rowData={issues}
-                        />
-                    </ProCard.TabPane>
+                <ProCard tabs={{type: 'card'}}>
+                    {
+                        showSites && (
+                            <ProCard.TabPane key="tab1" tab="Объекты">
+                                <PanelRGrid
+                                    onCancelClick={disableAddingMode('sites')}
+                                    onShowAllItems={onShowAllItems('sites')}
+                                    onAddToItems={onAddToItems(ledger.sites.list, 'объектам', SITES.idProp)}
+                                    createItemProps={{[role]: id}}
+                                    title={name}
+                                    resource={SITES}
+                                    rowData={sites}
+                                />
+                            </ProCard.TabPane>
+                        )
+                    }
+                    {
+                        showIssues && (
+                            <ProCard.TabPane key="tab2" tab="Заявки">
+                                <PanelRGrid
+                                    onCancelClick={disableAddingMode('issues')}
+                                    onShowAllItems={onShowAllItems('issues')}
+                                    onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
+                                    createItemProps={{[role]: id}}
+                                    title={name}
+                                    resource={ISSUES}
+                                    rowData={issues}
+                                />
+                            </ProCard.TabPane>
+                        )
+                    }
                 </ProCard>
             </BaseEditModal>
         </EditorContext.Provider>
     );
-}
+};
 
 export default EditEmployeeModal;

@@ -1,11 +1,11 @@
-import {createResource, Resource} from '../core/createResource'
+import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
-import {Days} from '../../../utils/index'
+import {Days} from '../../../utils'
 import SITES, {SiteVO} from "./sites";
 
 
 export const statusesList = ['Новая','В работе','Выполнена','Отменена','Приостановлена']  as const
-export const estimationStatusesList = ['Новая', 'Согласована', 'Выставлена в оплату', 'Отклонена'] as const;
+export const estimationStatusesList = ['Новая', 'На согласовании', 'Согласована', 'Выставлена в оплату', 'Отклонена'] as const;
 
 export type Status = typeof statusesList[number]
 export type EstimationStatus = typeof estimationStatusesList[number]
@@ -28,6 +28,7 @@ export const statusesColorsMap: Record<Status, string> = {
 
 export const estimationStatuses: Record<EstimationStatus, string> = {
     'Новая': 'Новая',
+    'На согласовании': 'На согласовании',
     'Согласована': 'Согласована',
     'Выставлена в оплату': 'Выставлена в оплату',
     'Отклонена': 'Отклонена'
@@ -124,6 +125,7 @@ export const issueResource = {
         ...issuesRaw,
     getIssueTitle,
     clientsNumberProp: 'clientsIssueNumber',
+    rolesProps: ['managerUserId', 'techUserId', 'clientsEngineerUserId', 'estimatorUserId'],
 }
 
 export type IssueVO = typeof issuesRaw.exampleItem

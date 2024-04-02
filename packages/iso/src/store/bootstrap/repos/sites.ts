@@ -53,7 +53,11 @@ export const siteResourceRaw = createResource('site',{
     }
 )
 
-const siteResource = { ...siteResourceRaw, clientsNumberProp: 'clientsSiteNumber' };
+const siteResource = {
+    ...siteResourceRaw,
+    clientsNumberProp: 'clientsSiteNumber',
+    rolesProps: ['managerUserId', 'techUserId', 'clientsEngineerUserId'],
+};
 
 export type SiteVO = (typeof siteResource)['exampleItem']
 

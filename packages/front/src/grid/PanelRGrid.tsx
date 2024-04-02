@@ -107,7 +107,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         title: string;
         toolbar?: React.ReactNode,
         BottomBar?: BottomGridApiBar
-        gridRef: React.RefObject<typeof RGrid>,
+        gridRef?: React.RefObject<typeof RGrid>,
         onExportArchive?(selectedIds: string[]): void,
         onAddToItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
         onShowAllItems?(): void,

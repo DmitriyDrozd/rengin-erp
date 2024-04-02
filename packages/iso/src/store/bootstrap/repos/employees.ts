@@ -6,16 +6,21 @@ import {
 
 export const employeeRoleEnum = {
     'техник': 'техник',
-    'ответственный инженер': 'ответственный инженер'
+    'ответственный инженер': 'ответственный инженер',
+    'менеджер':'менеджер',
+    'сметчик':'сметчик',
 };
 
 export const employeeRoleTypes = [
     employeeRoleEnum.техник,
-    employeeRoleEnum['ответственный инженер']
+    employeeRoleEnum['ответственный инженер'],
+    employeeRoleEnum.менеджер,
+    employeeRoleEnum.сметчик,
 ] as const;
 
 export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Новая': 'green',
+    'На согласовании': 'yellow',
     'Согласована': 'blue',
     'Выставлена в оплату': 'orange',
     'Отклонена': 'red',

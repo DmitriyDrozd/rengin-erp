@@ -49,6 +49,7 @@ export type Resource<RID extends string, Fields extends AnyFieldsMeta>  =
     fields: Fields
     idProp: IdKey<RID>
     clientsNumberProp: string
+    rolesProps?: string[]
     idKey: IdKey<RID>
     selectFirstByName: (name: string) => (state) => ItemWithId<RID, Fields>
     collection: PluralEngindEng<RID>
@@ -136,7 +137,6 @@ const selectMapByNames= (state: ISOState) => {
                     value: String(item[idProp]),
                     label: getItemName(item as any as Item),
                 }))
-                console.log('asOptions', options)
                 return options
             },
             selectFirstByName: (name: string) => (state) => {
@@ -150,12 +150,9 @@ const selectMapByNames= (state: ISOState) => {
                 const state = getStore().getState()
                 const workList =list || crud.selectList( state as any)
                 const options: Record<string, string> = {}
-                console.log(crud.factoryPrefix+' list of ' + crud.factoryPrefix,list)
                 workList.map( item => {
-                    console.log('item',item)
                     options[String(item[idProp])] = String(getItemName(item))
                 })
-                console.log('asValueEnum', options)
                 return options
             },
             getItemName,

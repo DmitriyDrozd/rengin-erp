@@ -48,7 +48,7 @@ export default (role: RoleType) => {
             },
             {
                 path: "/app/in/users",
-                name: "Сотрудники",
+                name: "Пользователи",
                 icon: <Icons.UserOutlined/>
             },
         ] : [];

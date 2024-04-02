@@ -44,7 +44,6 @@ const App: React.FC = () => {
     console.log('segment', segment)
 
     return (
-
             <Menu
                 theme={'light'}
                 selectedKeys={[segment]}
@@ -54,7 +53,6 @@ const App: React.FC = () => {
                 }}
                 items={userItems}
             />
-
     );
 };
 
