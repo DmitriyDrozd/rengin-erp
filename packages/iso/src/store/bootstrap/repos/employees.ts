@@ -34,7 +34,7 @@ const employeesRaw = createResource('employee', {
         headerName: 'Организация',
         linkedResourceName: 'BRANDS'
     }),
-    lastname: valueTypes.string({required: true, colDef: {width: 250}, headerName: 'Фамилия'},),
+    lastname: valueTypes.string({colDef: {width: 250}, headerName: 'Фамилия'},),
     name: valueTypes.string({required: true, colDef: {width: 250}, headerName: 'Имя'},),
     title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
     email: valueTypes.string({toLowerCase: true, colDef: {width: 250}}),

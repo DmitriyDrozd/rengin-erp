@@ -14,11 +14,13 @@ import {
 
 export const generateNewListItemNumber = (list: any[], accessor: string, shift: number = 0): string => {
     const lastItemNumber = list.reduce((acc, item) => {
-        if (isNaN(+item[accessor])) {
+        const currentNumber = +item[accessor];
+
+        if (isNaN(currentNumber)) {
             return acc;
         }
 
-        return +item[accessor] > acc ? +item[accessor] : acc;
+        return currentNumber > acc ? currentNumber : acc;
     }, 0);
 
     return String(lastItemNumber + 1 + shift);

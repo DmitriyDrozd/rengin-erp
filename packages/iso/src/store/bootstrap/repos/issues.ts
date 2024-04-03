@@ -44,7 +44,7 @@ const issuesRaw = createResource('issue',{
         contractId: valueTypes.itemOf({headerName: 'Договор',linkedResourceName: 'CONTRACTS',required: true,immutable:true}),
         siteId: valueTypes.itemOf({headerName: 'Объект',linkedResourceName: 'SITES',required: true,immutable:true}),
         subId: valueTypes.itemOf({headerName: 'Подписка',linkedResourceName: 'SUBS',required: true,immutable:true, internal: true}),
-        registerDate: valueTypes.date({headerName:'Зарегистрировано', internal: true}),
+        registerDate: valueTypes.date({headerName:'Зарегистрировано'}),
         workStartedDate: valueTypes.date({headerName:'Начало работ'}),
         plannedDate: valueTypes.date({headerName: 'Запланировано'}),
         completedDate: valueTypes.date({headerName: 'Дата завершения'}),

@@ -75,15 +75,15 @@ function* importIssuesSaga(data: Datum[]) {
         // @ts-ignore
         const site = yield byQueryGetter.siteByClientsNumber(clientsSiteNumber);
         // @ts-ignore
-        const manager = yield byQueryGetter.userByClientsNumber(managerId);
+        const manager = yield byQueryGetter.employeeByClientsNumber(managerId);
         // @ts-ignore
-        const estimator = yield byQueryGetter.userByClientsNumber(estimatorId);
+        const estimator = yield byQueryGetter.employeeByClientsNumber(estimatorId);
         // @ts-ignore
         const engineer = yield byQueryGetter.employeeByClientsNumber(engineerId);
         // @ts-ignore
         const technician = yield byQueryGetter.employeeByClientsNumber(technicianId);
 
-        const issueNumber = String(clientsIssueNumber) || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
+        const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
         // Проверка на существование такой заявки
         const foundIssue = ledger.issues.list.find((issue) => {
             return issueNumber === issue.clientsIssueNumber;
@@ -122,7 +122,7 @@ function* importIssuesSaga(data: Datum[]) {
     for (let i = 0; i < data.length; i++) {
         const d = data[i];
         yield getOrCreateIssue({
-            clientsIssueNumber: d.clientsIssueNumber,
+            clientsIssueNumber: String(d.clientsIssueNumber),
             clientsSiteNumber: String(d.clientsSiteNumber),
             description: d.description,
             registerDate: d.registerDate,
@@ -148,7 +148,9 @@ export const ImportIssuesPage = () => {
         // @ts-ignore
         await store.runSaga(importIssuesSaga, data);
 
-        callback?.();
+        setTimeout(() => {
+            callback?.();
+        }, 1000);
     };
 
     return (

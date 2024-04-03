@@ -59,7 +59,7 @@ function* importEmployeesSaga(data: Datum[]) {
         const brand = yield byQueryGetter.brandByClientsNumber(clientsBrandNumber, false);
 
         const foundEmployee = ledger.employees.list.find((employee) => {
-            return role === employee.role && lastname === employee.lastname && name === employee.name;
+            return role === employee.role && name === employee.name && (lastname ? lastname === employee.lastname : true);
         });
 
         if (!foundEmployee) {
