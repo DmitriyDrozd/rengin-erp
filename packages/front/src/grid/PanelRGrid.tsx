@@ -87,7 +87,12 @@ const GRID_MODES_LIST = [
     GRID_MODES.delete,
     GRID_MODES.export,
     GRID_MODES.addIssues,
-]
+];
+
+const EDITABLE_CELLS_ID = [
+    'status',
+    'estimationsStatus',
+];
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
@@ -203,6 +208,12 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     }, [isColumnStateInitialized]);
 
     const onRowDoubleClicked = (e: RowDoubleClickedEvent) => {
+        const cellIds = [e.eventPath[0]?.getAttribute('col-id'), e.eventPath[1]?.getAttribute('col-id')];
+
+        if (cellIds.some(cellId => EDITABLE_CELLS_ID.includes(cellId))) {
+            return;
+        }
+
         const url = getCrudPathname(resource).edit(e.data[resource.idProp])
         history.push(url);
     }

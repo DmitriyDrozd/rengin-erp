@@ -34,6 +34,14 @@ export const estimationStatuses: Record<EstimationStatus, string> = {
     'Отклонена': 'Отклонена'
 }
 
+export const estimationsStatusesRulesForManager: Record<EstimationStatus, EstimationStatus[]> = {
+    'Новая': ['На согласовании'],
+    'На согласовании': ['Согласована', 'Отклонена'],
+    'Согласована': ['Выставлена в оплату'],
+    'Выставлена в оплату': ['Отклонена'],
+    'Отклонена': ['Новая', 'На согласовании']
+}
+
 export const paymentTypesList = ['Наличные', 'Безналичные'] as const
 
 const issuesRaw = createResource('issue',{

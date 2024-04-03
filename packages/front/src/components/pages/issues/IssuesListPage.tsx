@@ -32,7 +32,8 @@ import dayjs from 'dayjs';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import StatusFilterSelector from './StatusFilterSelector';
 import { isIssueOutdated } from 'iso/src/utils/date-utils';
-import IsssueStatusCellEditor from './IsssueStatusCellEditor';
+import IssueStatusCellEditor from './IssueStatusCellEditor';
+import IssueEstimationsStatusCellEditor from './IssueEstimationsStatusCellEditor';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
@@ -150,7 +151,7 @@ export default () => {
 
                 dispatch(ISSUES.actions.patched(issue));
             },
-            cellEditor: IsssueStatusCellEditor,
+            cellEditor: IssueStatusCellEditor,
             cellEditorParams: {
                 values: (params) => [params.data.status, 'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
                 valueListGap: 0,
@@ -170,10 +171,25 @@ export default () => {
         {...colMap.clientsEngineerUserId, headerName: 'Отв. Инженер', width: 130},
         {...colMap.estimatorUserId, headerName: 'Сметчик', width: 130},
         {
-            ...colMap.estimationsStatus,
+            field: 'estimationsStatus',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
+            headerName: 'Статус',
+            width: 150,
+            editable: true,
+            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
+                const issue: Partial<IssueVO> = {issueId: event.data.issueId, estimationsStatus: event.newValue};
+                dispatch(ISSUES.actions.patched(issue));
+            },
+            cellEditor: IssueEstimationsStatusCellEditor,
+            cellEditorParams: {
+                values: (params) => [params.data.estimationsStatus, 'sd'],
+                valueListGap: 0,
+            },
             cellRenderer: (props) =>
                 getEstimationStatusTag(props.data)
-            , width: 150
         },
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
