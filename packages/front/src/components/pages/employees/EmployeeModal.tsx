@@ -27,8 +27,6 @@ import GenericRenFields from '../../form/GenericRenFields';
 const roleMap = {
     [employeeRoleEnum['техник']]: 'techUserId',
     [employeeRoleEnum['ответственный инженер']]: 'clientsEngineerUserId',
-    [employeeRoleEnum['менеджер']]: 'clientsEngineerUserId',
-    [employeeRoleEnum['сметчик']]: 'estimatorUserId',
 };
 
 const rolesIssues = ISSUES.rolesProps;

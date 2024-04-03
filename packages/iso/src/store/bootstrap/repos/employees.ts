@@ -7,15 +7,11 @@ import {
 export const employeeRoleEnum = {
     'техник': 'техник',
     'ответственный инженер': 'ответственный инженер',
-    'менеджер':'менеджер',
-    'сметчик':'сметчик',
 };
 
 export const employeeRoleTypes = [
     employeeRoleEnum.техник,
     employeeRoleEnum['ответственный инженер'],
-    employeeRoleEnum.менеджер,
-    employeeRoleEnum.сметчик,
 ] as const;
 
 export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
@@ -26,7 +22,7 @@ export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Отклонена': 'red',
 };
 
-export const getItemNameWithContacts = (item) => `${item.lastname} ${item.name}${item.brand ? ` - ${item.brand}` : ''}${item.phone ? ` - ${item.phone}` : ''}`;
+export const getItemNameWithContacts = (item) => `${item.lastname ? `${item.lastname} ` : ''}${item.name}${item.brand ? ` - ${item.brand}` : ''}${item.phone ? ` - ${item.phone}` : ''}`;
 
 const employeesRaw = createResource('employee', {
     role: valueTypes.enum({required: true, enum: employeeRoleTypes, headerName: 'Роль'}),
@@ -51,7 +47,7 @@ const employeesRaw = createResource('employee', {
 });
 
 export const getAbbrName = (user) => {
-    const parts = user ? [user.lastname, user.name] : ['-'];
+    const parts = user ? [user.lastname, user.name].filter(i => i !== undefined) : ['-'];
 
     const getPart = (index: number) => {
         const part = parts[index];

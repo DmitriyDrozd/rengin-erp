@@ -133,7 +133,7 @@ export function* byQueryGetters () {
     }
 
     function* userByClientsNumber (clientsNumber: string) {
-        const foundUser = ledger.users.list.find(user => user.clientsUserNumber === String(clientsNumber));
+        const foundUser = ledger.users.list.find(user => String(user.clientsUserNumber) === String(clientsNumber));
 
         if (!clientsNumber || !foundUser) {
             console.log(`User ${clientsNumber} not found`);

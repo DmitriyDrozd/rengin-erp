@@ -75,9 +75,9 @@ function* importIssuesSaga(data: Datum[]) {
         // @ts-ignore
         const site = yield byQueryGetter.siteByClientsNumber(clientsSiteNumber);
         // @ts-ignore
-        const manager = yield byQueryGetter.employeeByClientsNumber(managerId);
+        const manager = yield byQueryGetter.userByClientsNumber(managerId);
         // @ts-ignore
-        const estimator = yield byQueryGetter.employeeByClientsNumber(estimatorId);
+        const estimator = yield byQueryGetter.userByClientsNumber(estimatorId);
         // @ts-ignore
         const engineer = yield byQueryGetter.employeeByClientsNumber(engineerId);
         // @ts-ignore

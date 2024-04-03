@@ -4,8 +4,6 @@ import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/empl
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
-    EstimationStatus,
-    estimationStatuses,
     ISSUES,
     IssueVO,
     statusesColorsMap,
@@ -27,7 +25,6 @@ import {
     useSelector
 } from 'react-redux';
 import useCurrentUser from '../../../hooks/useCurrentUser';
-import { useRouteMatch } from 'react-router';
 import { getNav } from '../../getNav';
 import { ExportArchiveSelector } from './export-archive/ExportArchiveSelector';
 import IssueModal_NEW from './IssueModal_NEW';

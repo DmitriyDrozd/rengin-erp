@@ -23,14 +23,10 @@ import EditEmployeeModal from './EmployeeModal';
 const employeesRoles = [
     employeeRoleEnum.техник,
     employeeRoleEnum['ответственный инженер'],
-    employeeRoleEnum.менеджер,
-    employeeRoleEnum.сметчик
 ];
 const roleFilterColorMap = {
     [employeeRoleEnum.техник]: 'green',
     [employeeRoleEnum['ответственный инженер']]: 'blue',
-    [employeeRoleEnum.менеджер]: 'red',
-    [employeeRoleEnum.сметчик]: 'orange',
 }
 
 const BottomBar = () => {
