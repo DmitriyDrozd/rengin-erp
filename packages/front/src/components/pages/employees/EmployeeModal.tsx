@@ -56,8 +56,8 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
     const name = resource.getItemName(useEditorData.item);
     const role = roleMap[useEditorData.item.role];
 
-    const showSites = isEditMode && rolesIssues.includes(role);
-    const showIssues = isEditMode && rolesSites.includes(role);
+    const showSites = isEditMode && rolesSites.includes(role);
+    const showIssues = isEditMode && rolesIssues.includes(role);
 
     // @ts-ignore
     const sites = showSites ? ledger.sites.list.filter(s => addingModes.sites ? s[role] !== id : s[role] === id) : [];
