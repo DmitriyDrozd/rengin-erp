@@ -20,7 +20,11 @@ import {
     AnyMeta,
     isItemOfMeta
 } from 'iso/src/store/bootstrap/core/valueTypes';
-import React from 'react';
+import React, {
+    useEffect,
+    useRef,
+    useState
+} from 'react';
 import { getRes } from 'iso/src/store/bootstrap/resourcesList';
 import { useISOState } from 'iso/src/ISOState';
 
@@ -38,14 +42,33 @@ export default ({meta, disabled, customOptions, defaultValue}: {
     }[],
     defaultValue?: any,
 }) => {
+    const [itemToFocus, setItemToFocus] = useState(null);
     const editorProperty = useContextEditorProperty(meta.name);
 
     const state = useISOState();
-    const {value, updateItemProperty, property, error, mode, params, editor} = editorProperty;
+    const {
+        value,
+        updateItemProperty,
+        property,
+        error,
+        mode,
+        params,
+        editor
+    } = editorProperty;
 
     const sharedProps = {
         disabled: (mode === 'edit' ? (property.immutable) : false) || disabled
     };
+
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (itemToFocus) {
+            itemToFocus?.current?.focus();
+            setItemToFocus(null);
+        }
+    }, [error]);
+
     const renderInputControl = () => {
 
         if (property.immutable && mode === 'edit') {
@@ -136,17 +159,6 @@ export default ({meta, disabled, customOptions, defaultValue}: {
             return (
                 <TextArea
                     value={value}
-
-                    onBlur={e => {
-                        updateItemProperty(e.target.value);
-                    }}
-                    {...sharedProps}
-                />)
-                ;
-
-        else return (
-                <Input
-                    value={editorProperty.value}
                     onBlur={e => {
                         updateItemProperty(e.target.value);
                     }}
@@ -156,6 +168,20 @@ export default ({meta, disabled, customOptions, defaultValue}: {
                     {...sharedProps}
                 />
             );
+        else return (
+            <Input
+                ref={inputRef}
+                value={editorProperty.value}
+                onBlur={e => {
+                    updateItemProperty(e.target.value);
+                }}
+                onChange={e => {
+                    setItemToFocus(inputRef);
+                    updateItemProperty(e.target.value);
+                }}
+                {...sharedProps}
+            />
+        );
     };
 
     if (error) {

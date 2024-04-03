@@ -48,7 +48,12 @@ export const useEditor =  <
 
     const updateItemProperty = <K extends keyof Fields>(prop: K) =>
         (value: ItemWithId<RID,Fields>[K]) => {
-            setItem(editor.updateProperty(prop)({item,value,state, mode}))
+            setItem(editor.updateProperty(prop)({
+                item,
+                value,
+                state,
+                mode,
+            }));
         }
     const errors = editor.getAllErrors(item)(state)
     const params = editor.getAllParams(item)(state)

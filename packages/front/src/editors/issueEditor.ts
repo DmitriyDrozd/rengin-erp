@@ -70,7 +70,6 @@ export const issuesEditor =  buildEditor(ISSUES,{
                     newItem.brandId =  LEGALS.selectById(value)(state).brandId
                 }
 
-
                 return newItem
 
             }
@@ -124,6 +123,7 @@ export const issuesEditor =  buildEditor(ISSUES,{
                 options = options.filter(o => o.legalId === item.legalId)
             }
             console.log('options', options)
+
             return {
                 options : SITES.asOptions(options),
                 addNewItemDefaults: {}
