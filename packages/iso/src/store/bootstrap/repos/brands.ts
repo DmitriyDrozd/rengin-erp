@@ -26,7 +26,8 @@ const BRANDS_RAW = createResource('brand',{
 
 export const BRANDS = {
     ...BRANDS_RAW,
-    clientsNumberProp: 'clientsBrandNumber'
+    clientsNumberProp: 'clientsBrandNumber',
+    rolesProps: ['managerUserId'],
 };
 
 export default BRANDS

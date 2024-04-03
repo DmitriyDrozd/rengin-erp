@@ -4,6 +4,7 @@ import {
     ISSUES,
     USERS
 } from 'iso/src/store/bootstrap';
+import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import SITES from 'iso/src/store/bootstrap/repos/sites';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, { useState } from 'react';
@@ -18,13 +19,13 @@ import GenericRenFields from '../../form/GenericRenFields';
 import { usersEditor } from '../../../editors/usersEditor';
 
 const roleMap = {
-    [roleEnum['менеджер']]: 'clientsEngineerUserId',
+    [roleEnum['менеджер']]: 'managerUserId',
     [roleEnum['сметчик']]: 'estimatorUserId',
 };
 
 const rolesIssues = ISSUES.rolesProps;
+const rolesBrands = BRANDS.rolesProps;
 const rolesSites = SITES.rolesProps;
-
 
 export default ({id}: { id: string }) => {
     const ledger = useLedger();
@@ -34,6 +35,7 @@ export default ({id}: { id: string }) => {
     const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsUserNumber].filter(i => !!i);
 
     const [addingModes, setAddingModes] = useState({
+        brands: false,
         issues: false,
         sites: false,
     });
@@ -52,7 +54,10 @@ export default ({id}: { id: string }) => {
 
     const showSites = isEditMode && rolesSites.includes(role);
     const showIssues = isEditMode && rolesIssues.includes(role);
+    const showBrands = isEditMode && rolesBrands.includes(role);
 
+    // @ts-ignore
+    const brands = showBrands ? ledger.brands.list.filter(s => addingModes.brands ? s[role] !== id : s[role] === id) : [];
     // @ts-ignore
     const sites = showSites ? ledger.sites.list.filter(s => addingModes.sites ? s[role] !== id : s[role] === id) : [];
     // @ts-ignore
@@ -104,6 +109,21 @@ export default ({id}: { id: string }) => {
                                     title={name}
                                     resource={ISSUES}
                                     rowData={issues}
+                                />
+                            </ProCard.TabPane>
+                        )
+                    }
+                    {
+                        showBrands && (
+                            <ProCard.TabPane key="tab3" tab="Заказчики">
+                                <PanelRGrid
+                                    onCancelClick={disableAddingMode('brands')}
+                                    onShowAllItems={onShowAllItems('brands')}
+                                    onAddToItems={onAddToItems(ledger.brands.list, 'заказчикам', BRANDS.idProp)}
+                                    createItemProps={{[role]: id}}
+                                    title={name}
+                                    resource={BRANDS}
+                                    rowData={brands}
                                 />
                             </ProCard.TabPane>
                         )
