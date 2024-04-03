@@ -1,5 +1,8 @@
+import { RowDoubleClickedEvent } from 'ag-grid-community/dist/lib/events';
 import { AgGridReact } from 'ag-grid-react';
+import { useHistory } from 'react-router-dom';
 import { AnyFieldsMeta } from 'iso/src/store/bootstrap/core/createResource';
+import getCrudPathname from '../hooks/getCrudPathname';
 import useLocalStorageState from '../hooks/useLocalStorageState';
 import RGrid, { RGridProps } from './RGrid';
 import {
@@ -114,6 +117,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onCancelClick?(): void,
     }) => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const [mode, setMode] = useState(GRID_MODES.off);
     const resetMode = () => {
@@ -197,6 +201,11 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
         setColumnState(ag.columnApi.getColumnState());
     }, [isColumnStateInitialized]);
+
+    const onRowDoubleClicked = (e: RowDoubleClickedEvent) => {
+        const url = getCrudPathname(resource).edit(e.data[resource.idProp])
+        history.push(url);
+    }
 
     const onSelectionChanged = () => {
         const rows = innerGridRef.current!.api.getSelectedRows();
@@ -307,6 +316,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             quickFilterText={searchText}
             ref={innerGridRef}
             onSortChanged={onSortChanged}
+            onRowDoubleClicked={onRowDoubleClicked}
         />
         <div style={{paddingTop: '4px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
