@@ -82,15 +82,17 @@ export const CrudEditItemPage = <
             }}
             onBack={onBack}
 
-            title={<Breadcrumb items={[{
-                href: getCrudPathname(resource).view(),
-
-                title: resource.langRU.plural
-            },
-                {
-                    title,
-                }]}></Breadcrumb>
-            }>
+            title={(
+                <Breadcrumb items={[
+                    {
+                        href: getCrudPathname(resource).view(),
+                        title: resource.langRU.plural
+                    },
+                    {
+                        title,
+                    }
+                ]} />
+            )}>
 
             <RForm<Item>
                 layout={'horizontal'}

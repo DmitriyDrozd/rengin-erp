@@ -1,4 +1,7 @@
+import { ISSUES } from 'iso/src/store/bootstrap';
 import { RESOURCES_MAP } from 'iso/src/store/bootstrap/resourcesList';
+import React from 'react';
+import RenField from '../../form/RenField';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
     ProForm,
@@ -54,6 +57,7 @@ export default () => {
                         </ProForm.Item>
                         <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'endDate', item)} label={'Действует до'}
                                            width={'sm'} rules={[]}/>
+                        <ProFormText {...fieldMetaToProProps(CONTRACTS, 'managerUserId')} />
                     </>
                 );
             }

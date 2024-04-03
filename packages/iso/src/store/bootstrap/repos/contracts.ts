@@ -9,7 +9,7 @@ const rawResource = createResource('contract', {
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо',linkedResourceName: 'LEGALS',required: true,immutable:true}),
         signDate: valueTypes.date({headerName: 'Дата подписания'}),
         endDate: valueTypes.date({headerName: 'Дата окончания'}),
-        contractStatus: valueTypes.enum({headerName:'Статус договора', enum:contractStatusesList}),
+        contractStatus: valueTypes.enum({headerName:'Статус договора', enum: contractStatusesList}),
         rate: valueTypes.number({headerName: 'Ставка'}),
         managerUserId: valueTypes.itemOf({headerName: 'Менеджер',
             linkedResourceName:'USERS',

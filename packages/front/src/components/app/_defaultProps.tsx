@@ -63,9 +63,19 @@ export default (role: RoleType) => {
                     icon: <MailOutlined />,
                 },
                 {
-                    path: "/app/in/contracts",
+                    path: "/app/in/contractsDict",
                     name: "Договоры",
                     icon: <CalendarOutlined />,
+                    routes: [
+                        {
+                            path: "/app/in/contracts",
+                            name: "Договоры",
+                        },
+                        {
+                            path: "/app/in/subs",
+                            name: "Подключения",
+                        },
+                    ],
                 },
                 ...routesRest
             ],

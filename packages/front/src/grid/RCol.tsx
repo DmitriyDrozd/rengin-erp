@@ -111,7 +111,9 @@ export const useAllColumns = <
     }
 
 
-    const columnsList = res.fieldsList.filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false).map((f) => {
+    const columnsList = res.fieldsList
+        .filter((f,i)=> i!==0 && f.type!=='array' && f.colDef !== false)
+        .map((f) => {
        const col = storedColumn(f.name)
         const colComposed = f.colDef? {...col, ...f.colDef} : col
 

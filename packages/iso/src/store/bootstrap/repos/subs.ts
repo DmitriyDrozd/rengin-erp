@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import {
@@ -18,6 +19,7 @@ export const SUBS = createResource('sub',{
         }),
     },
     {
+        getItemName: (item) => `Подключение от ${dayjs(item.subscribeDate).format('YYYY/MM/DD')}`,
         langRU: {
             singular:'Подключение',
             plural:'Подключения',

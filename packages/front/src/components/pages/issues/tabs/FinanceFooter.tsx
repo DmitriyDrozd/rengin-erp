@@ -10,7 +10,9 @@ export default ({issue}: {issue: IssueVO}) => {
         children: issue.estimationPrice
     },{
         label:'Прибыль',
-        children: issue.estimationPrice - issue.expensePrice
+        children: ( issue.estimationPrice && issue.expensePrice)
+            ? issue.estimationPrice - issue.expensePrice
+            : '-'
 
     }, {
         label:ISSUES.properties.expensePrice.headerName,
