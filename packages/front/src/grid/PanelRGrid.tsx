@@ -208,7 +208,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     }, [isColumnStateInitialized]);
 
     const onRowDoubleClicked = (e: RowDoubleClickedEvent) => {
-        const cellIds = [e.eventPath[0]?.getAttribute('col-id'), e.eventPath[1]?.getAttribute('col-id')];
+        const cellIds = e.eventPath.map(node => node.getAttribute('col-id')).filter(i => !!i);
 
         if (cellIds.some(cellId => EDITABLE_CELLS_ID.includes(cellId))) {
             return;
