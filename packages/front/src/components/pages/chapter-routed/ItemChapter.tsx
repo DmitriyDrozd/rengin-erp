@@ -14,14 +14,16 @@ export const fieldMetaToProProps =<
     RID extends string,
     Fields extends AnyFieldsMeta,
     K extends keyof Resource<RID, Fields>['exampleItem']
->  (resource: Resource<RID, Fields>, key: K, item?: Partial<ItemWithId<RID,Fields>>) =>{
+>  (resource: Resource<RID, Fields>, key: K, item?: Partial<ItemWithId<RID,Fields>>) => {
     const meta = resource.properties[key]
     const state = useFrontStateSelector()
     const getLinkedResourceEnum = () => {
         if (isItemOfMeta(meta)) {
             const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
-            const list = linkedResource.selectList(state)
-            return linkedResource.asValueEnum(list)
+            const list = linkedResource.selectList(state);
+            const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(list, item) : list;
+
+            return linkedResource.asValueEnum(result)
         }
         return undefined
     }
@@ -29,7 +31,9 @@ export const fieldMetaToProProps =<
         if (isItemOfMeta(meta)) {
             const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
             const list = linkedResource.selectList(state)
-            return linkedResource.asOptions(list)
+            const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(list, item) : list;
+
+            return linkedResource.asOptions(result)
         }
         return undefined
     }
@@ -39,7 +43,7 @@ export const fieldMetaToProProps =<
         required: resource.properties[key].required,
         placeholder: resource.properties[key].headerName,
         valueEnum: getLinkedResourceEnum(),
-        options:getLinkedResourceOptions()
+        options: getLinkedResourceOptions()
     })
 
     console.log(resource.factoryPrefix, key ,proProp)

@@ -89,7 +89,8 @@ export const useEditor =  <
 
         },
         getRenFieldProps:<K extends keyof Fields>(prop: K) => {
-            return {mode: mode as 'create' |'edit',
+            return {
+                mode: mode as 'create' |'edit',
                 editor,
                 rules: editor.rules[prop],
                 value: item[prop],

@@ -1,3 +1,4 @@
+import { ProFormText } from '@ant-design/pro-components';
 import {
     Form,
     Typography
@@ -10,6 +11,7 @@ import CONTRACTS, { ContractVO } from 'iso/src/store/bootstrap/repos/contracts';
 
 import 'dayjs/locale/ru';
 import useRole from '../../../../hooks/useRole';
+import { fieldMetaToProProps } from '../../chapter-routed/ItemChapter';
 import FinanceFooter from './FinanceFooter';
 import RenField from '../../../form/RenField';
 import { useContextEditor } from '../../chapter-modal/useEditor';

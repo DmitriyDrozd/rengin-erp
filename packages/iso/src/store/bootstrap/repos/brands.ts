@@ -1,5 +1,9 @@
 import {valueTypes} from '../core/valueTypes'
 import {createResource} from '../core/createResource'
+import {
+    roleEnum,
+    UserVO
+} from './users';
 
 
 const BRANDS_RAW = createResource('brand',{
@@ -10,7 +14,11 @@ const BRANDS_RAW = createResource('brand',{
         phone: valueTypes.string({headerName: 'Телефон'}),
         address: valueTypes.string({headerName: 'Адрес'}),
         web: valueTypes.string({headerName: 'Вебсайт'}),
-        managerUserId: valueTypes.itemOf({headerName: 'Отв. менеджер', linkedResourceName:'USERS'}),
+        managerUserId: valueTypes.itemOf({
+            headerName: 'Отв. менеджер',
+            linkedResourceName:'USERS',
+            filterLinkedResourceItems: (list: UserVO[]) => list.filter(item => item.role === roleEnum['менеджер']),
+        }),
         clientsBrandNumber: valueTypes.string({headerName:'Номер', required: true, unique: true}),
         removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
     },

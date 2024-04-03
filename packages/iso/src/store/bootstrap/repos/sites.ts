@@ -1,6 +1,14 @@
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
+import {
+    employeeRoleEnum,
+    EmployeeVO
+} from './employees';
 import {LegalVO} from './legals'
+import {
+    roleEnum,
+    UserVO
+} from './users';
 
 
 export const siteResourceRaw = createResource('site',{
@@ -18,8 +26,9 @@ export const siteResourceRaw = createResource('site',{
             headerName: 'Юр. Лицо',
             linkedResourceName: 'LEGALS',
             required: true,
-            filterLinkedResourceItems: (list: LegalVO[], source: any) =>
-                list.filter(item => item.brandId === source.brandId)
+            filterLinkedResourceItems: (list: LegalVO[], source: any) => {
+                return list.filter(item => item.brandId === source?.brandId)
+            }
         }),
         city: valueTypes.string({
             headerName: 'Город',
@@ -29,18 +38,24 @@ export const siteResourceRaw = createResource('site',{
             headerName: 'Адрес',
             required: true
         }),
-
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         KPP: valueTypes.string({headerName: 'КПП'}),
-        managerUserId: valueTypes.itemOf({headerName: 'Менеджер',
+        managerUserId: valueTypes.itemOf({
+            headerName: 'Менеджер',
             linkedResourceName:'USERS',
-            defaultAsPropRef:'legalId'
+            defaultAsPropRef:'legalId',
+            filterLinkedResourceItems: (list: UserVO[]) => list.filter(item => item.role === roleEnum['менеджер']),
         }),
-
-        techUserId: valueTypes.itemOf({headerName: 'Техник',linkedResourceName:'EMPLOYEES'}),
-        clientsEngineerUserId: valueTypes.itemOf({headerName:'Отв. инженер',
+        techUserId: valueTypes.itemOf({
+            headerName: 'Техник',
             linkedResourceName:'EMPLOYEES',
-            defaultAsPropRef:'legalId'
+            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => item.role === employeeRoleEnum['техник']),
+        }),
+        clientsEngineerUserId: valueTypes.itemOf({
+            headerName:'Отв. инженер',
+            linkedResourceName:'EMPLOYEES',
+            defaultAsPropRef:'legalId',
+            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => item.role === employeeRoleEnum['ответственный инженер']),
         }),
     },
     {

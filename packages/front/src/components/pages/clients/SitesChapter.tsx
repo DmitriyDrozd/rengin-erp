@@ -42,7 +42,7 @@ export default () => {
                     <>
                         { isEdit && <ProFormText  {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')} rules={[{required: true}]}/> }
                         <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'brandId')} rules={[{required: true}]}/>
-                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId')} valueEnum={legalValueEnum}
+                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId', item)} valueEnum={legalValueEnum}
                                         rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'city')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'address')} rules={[{required: true}]}/>
