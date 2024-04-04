@@ -31,14 +31,15 @@ export const importBackup = ({ file, folderName }: { file?: any, folderName?: st
     let dockerContainerSrc;
 
     if (folderName) {
-        dockerContainerSrc = `${backupDir}/${folderName}/archive.gz`;
+        dockerContainerSrc = `dump/${folderName}/archive.gz`;
     } else if (file) {
-        dockerContainerSrc = `${backupDir}/upload/archive.gz`;
         fs.mkdirSync(`${backupDir}/upload/`);
-        fs.writeFileSync(dockerContainerSrc, file);
+        fs.writeFileSync(`${backupDir}/upload/archive.gz`, file);
 
-        const copyCommand = `docker cp ${folderName}/archive.gz mongodb:/dump/${folderName}`;
+        const copyCommand = `docker cp ${backupDir}/upload/archive.gz mongodb:/dump/upload`;
         execSync(copyCommand);
+
+        dockerContainerSrc = `dump/upload/archive.gz`;
     }
 
     const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore ${config.MONGO_URI} --archive='${dockerContainerSrc}'"`;
