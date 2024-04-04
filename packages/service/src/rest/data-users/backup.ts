@@ -6,13 +6,14 @@ const publicDir = path.join(__filename, '..','..','..','..','..','static')
 const backupDir = path.join(publicDir, 'backup');
 
 const getArchiveDate = () => {
-    const [day, month, year] = new Date().toLocaleDateString().split('.');
+    const [month, day, year] = new Date().toLocaleDateString('en-US').split('/');
     const shortYear = year.slice(-2);
 
     return [month, day, shortYear].join('-');
 }
 
 export const exportBackup = () => {
+    getArchiveDate();
     const createBackupCommand = 'cd /home/rengin-erp/ && yarn run mongo:dump:prod';
     execSync(createBackupCommand);
 
