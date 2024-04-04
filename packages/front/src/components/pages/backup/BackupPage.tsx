@@ -83,8 +83,7 @@ export const BackupPage = () => {
                     description={(
                         <div style={{ marginBottom: 12 }}>
                             <p>
-                                Загрузите файл резервной копии (.gz) для восстановления базы данных,
-                                или выберите из списка:
+                                Выберите резервную копию по дате создания из списка:
                             </p>
                             <Select
                                 style={{ width: 150 }}
@@ -99,48 +98,43 @@ export const BackupPage = () => {
                         </div>
                     )}
                 />
-                <Upload
-                    accept=".gz"
-                    showUploadList={true}
-                    beforeUpload={file => {
-                        const reader = new FileReader();
+                {/*<Upload*/}
+                {/*    name={'archive.gz'}*/}
+                {/*    accept=".gz"*/}
+                {/*    showUploadList={true}*/}
+                {/*    beforeUpload={file => {*/}
+                {/*        const reader = new FileReader();*/}
 
-                        reader.onload = async function(e) {
-                            let data = e.target.result;
+                {/*        reader.onload = async function(e) {*/}
+                {/*            let data = e.target.result;*/}
 
-                            const res =  confirm({
-                                title:"Восстановить базу данных?",
-                                content:<div></div>,
-                                okText:'Восстановить',
-                                cancelText:'Отмена',
-                                onOk: async () => {
-                                    const api = await getRestApi();
-                                    await api.restoreBackup({ file: data });
+                {/*            confirm({*/}
+                {/*                title:"Восстановить базу данных?",*/}
+                {/*                content:<div></div>,*/}
+                {/*                okText:'Восстановить',*/}
+                {/*                cancelText:'Отмена',*/}
+                {/*                onOk: async () => {*/}
+                {/*                    const api = await getRestApi();*/}
+                {/*                    await api.restoreBackup({ file: data });*/}
 
-                                    info({
-                                        title: "База данных восстановлена",
-                                        content: ''
-                                    })
+                {/*                    info({*/}
+                {/*                        title: "База данных восстановлена",*/}
+                {/*                        content: ''*/}
+                {/*                    });*/}
+                {/*                }*/}
+                {/*            });*/}
+                {/*        };*/}
 
-                                    // notification.open({
-                                    //     message: 'База данных восстановлена',
-                                    //     description: 'состояние' + selectedBackup,
-                                    //     type: 'success'
-                                    // });
-                                }
-                            });
-                        };
+                {/*        reader.readAsArrayBuffer(file);*/}
 
-                        reader.readAsArrayBuffer(file);
-
-                        // Prevent upload
-                        return false;
-                    }}
-                >
-                    <Button icon={<UploadOutlined />}>
-                        Загрузить .gz файл
-                    </Button>
-                </Upload>
+                {/*        // Prevent upload*/}
+                {/*        return false;*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Button icon={<UploadOutlined />}>*/}
+                {/*        Загрузить .gz файл*/}
+                {/*    </Button>*/}
+                {/*</Upload>*/}
             </Card>
         </AppLayout>
     );

@@ -33,13 +33,15 @@ export const importBackup = ({ file, folderName }: { file?: any, folderName?: st
     if (folderName) {
         dockerContainerSrc = `dump/${folderName}/archive.gz`;
     } else if (file) {
-        fs.mkdirSync(`${backupDir}/upload/`);
-        fs.writeFileSync(`${backupDir}/upload/archive.gz`, file);
-
-        const copyCommand = `docker cp ${backupDir}/upload/archive.gz mongodb:/dump/upload`;
-        execSync(copyCommand);
-
-        dockerContainerSrc = `dump/upload/archive.gz`;
+        //
+        // //fixme: configure writeFileSync to make gzip from buffer
+        // fs.mkdirSync(`${backupDir}/upload`);
+        // fs.writeFileSync(`${backupDir}/upload`, file);
+        //
+        // const copyCommand = `docker cp ${backupDir}/upload/archive.gz mongodb:/dump/upload`;
+        // execSync(copyCommand);
+        //
+        // dockerContainerSrc = `dump/upload/archive.gz`;
     }
 
     const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore ${config.MONGO_URI} --gzip --archive='${dockerContainerSrc}'"`;
