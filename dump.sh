@@ -7,7 +7,7 @@ mkdir -p $PROJECT_DEST
 FILE=$DEST/archive.gz
 echo $FILE
 
-COMMAND="mongodump -h localhost:27017 -d rengin -u rengin -p BuildMeUp --authenticationDatabase admin --gzip --archive=/dump/$DIR/archive.gz"
+COMMAND="mongodump mongodb://rengin:BuildMeUp@rengindesk.ru:27017/rengin?authSource=admin --gzip --archive=/dump/$DIR/archive.gz"
 
 docker exec mongodb sh -c $COMMAND
 docker cp mongodb:/dump/$DIR/archive.gz $DEST/
