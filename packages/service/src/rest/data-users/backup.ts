@@ -17,7 +17,7 @@ export const exportBackup = () => {
     const createBackupCommand = 'cd /home/rengin-erp/ && yarn run mongo:dump:prod';
     execSync(createBackupCommand);
 
-    return `backup/${getArchiveDate()}/archive.gz`;
+    return `/backup/${getArchiveDate()}/archive.gz`;
 }
 
 export const getBackupFolderNames = (): string[] => {
