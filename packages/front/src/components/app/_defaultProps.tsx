@@ -51,11 +51,11 @@ export default (role: RoleType) => {
                 name: "Пользователи",
                 icon: <Icons.UserOutlined/>
             },
-            // {
-            //     path: "/app/in/backup",
-            //     name: "Резервная копия  ",
-            //     icon: <Icons.HistoryOutlined/>
-            // },
+            {
+                path: "/app/in/backup",
+                name: "Резервная копия  ",
+                icon: <Icons.HistoryOutlined/>
+            },
         ] : [];
 
     return {
