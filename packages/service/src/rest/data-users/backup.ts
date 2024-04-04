@@ -42,7 +42,7 @@ export const importBackup = ({ file, folderName }: { file?: any, folderName?: st
         dockerContainerSrc = `dump/upload/archive.gz`;
     }
 
-    const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore ${config.MONGO_URI} --archive='${dockerContainerSrc}'"`;
+    const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore ${config.MONGO_URI} --gzip --archive='${dockerContainerSrc}'"`;
     execSync(restoreBackupCommand);
 
     return 0;
