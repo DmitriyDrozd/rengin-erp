@@ -7,9 +7,11 @@ const backupDir = path.join(publicDir, 'backup');
 
 const getArchiveDate = () => {
     const [month, day, year] = new Date().toLocaleDateString('en-US').split('/');
+    const resMonth = month.length === 1 ? `0${month}` : month;
+    const resDay = day.length === 1 ? `0${day}` : day;
     const shortYear = year.slice(-2);
 
-    return [month, day, shortYear].join('-');
+    return [resMonth, resDay, shortYear].join('-');
 }
 
 export const exportBackup = () => {
