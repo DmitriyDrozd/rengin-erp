@@ -5,14 +5,14 @@ import {RoleType} from "iso/src/store/bootstrap/repos/users"
 
 export default (role: RoleType) => {
     const isAdmin = role === 'руководитель';
-    const routesInit =isAdmin ?
+    const adminRoutesInit = isAdmin ?
         [{
             path: "/app/in/dashboard",
             name: "Дашборд",
             icon: <BarChartOutlined />,
         }] : [];
 
-    const routesRest = isAdmin ?
+    const adminRoutesRest = isAdmin ?
         [
             // {
             //     path: "/app/in/subs",
@@ -51,33 +51,28 @@ export default (role: RoleType) => {
                 name: "Пользователи",
                 icon: <Icons.UserOutlined/>
             },
+            {
+                path: "/app/in/backup",
+                name: "Резервная копия  ",
+                icon: <Icons.HistoryOutlined/>
+            },
         ] : [];
 
     return {
         route: {
             routes: [
-                ...routesInit,
+                ...adminRoutesInit,
                 {
                     path: "/app/in/issues",
                     name: "Заявки",
                     icon: <MailOutlined />,
                 },
                 {
-                    path: "/app/in/contractsDict",
+                    path: "/app/in/contracts",
                     name: "Договоры",
                     icon: <CalendarOutlined />,
-                    routes: [
-                        {
-                            path: "/app/in/contracts",
-                            name: "Договоры",
-                        },
-                        {
-                            path: "/app/in/subs",
-                            name: "Подключения",
-                        },
-                    ],
                 },
-                ...routesRest
+                ...adminRoutesRest
             ],
         },
         appList: [],

@@ -56,6 +56,7 @@ export default defineConfig({
 
             '/uploads/': RENGIN_SERVICE_API,
             '/archives/': RENGIN_SERVICE_API,
+            '/backup/': RENGIN_SERVICE_API,
             '/reports/': RENGIN_SERVICE_API
         },
     } }as UserConfigExport

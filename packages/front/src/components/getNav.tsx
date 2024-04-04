@@ -9,6 +9,7 @@ import {
     RouteComponentProps
 } from 'react-router';
 import moize from 'moize';
+import { BackupPage } from './pages/backup/BackupPage';
 import { ImportEmployeesPage } from './pages/import/ImportEmployeesPage';
 
 import LoginPage from './pages/LoginPage';
@@ -51,6 +52,7 @@ export const getNav = moize(() => {
         start: buildNav('/app/in/start', StartPage),
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),
         usersList: buildNav('/app/in/users', UsersChapter),
+        backup: buildNav('/app/in/backup', BackupPage),
 
         employeesList: buildNav('/app/in/employees', EmployeesChapter),
         employeesCreate: buildNav('/app/in/employees/create', EmployeesChapter),

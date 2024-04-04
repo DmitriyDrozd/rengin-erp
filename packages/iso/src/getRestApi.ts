@@ -57,6 +57,21 @@ export default async () => {
             }
             const response = await axiosInstance.post('/api/push-commands', body)
             return response.data
+        },
+        getBackups: async (): Promise<string[]> => {
+            const response = await axiosInstance.get('/api/backup-folders');
+
+            return response.data;
+        },
+        createBackup: async (): Promise<{ url: string }> => {
+            const response = await axiosInstance.post('/api/backup-create');
+
+            return response.data;
+        },
+        restoreBackup: async (data: { file?: any, folderName?: string }): Promise<any> => {
+            const response = await axiosInstance.post('/api/backup-restore', data);
+
+            return response.data;
         }
     }
 

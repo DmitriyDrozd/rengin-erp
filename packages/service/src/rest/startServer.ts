@@ -9,6 +9,7 @@ import {PinoLoggerOptions} from 'fastify/types/logger'
 
 import {DateTime,} from 'luxon'
 import upload from "./upload";
+import backup from "./backup";
 import gapisToken from "./gapis-token/gapis-token";
 
 const events = {}
@@ -85,6 +86,9 @@ export default async (io: SagaOptions) => {
     fastify.get('/archives/*', async(req, reply)=> {
         return reply.sendFile(req.raw.url!)
     })
+    fastify.get('/backup/*', async(req, reply)=> {
+        return reply.sendFile(req.raw.url!)
+    })
 
 
     fastify.register(fp((fastify, opts, done) => {
@@ -101,6 +105,7 @@ export default async (io: SagaOptions) => {
     fastify.register(fp(ssePlugin.default))
     fastify.register(fp(usersDataPlugin))
     fastify.register(upload)
+    fastify.register(backup)
     fastify.register(fp(gapisToken))
 
     return fastify
