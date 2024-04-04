@@ -49,13 +49,12 @@ const App = ({store}: {store: FrontStore}) => {
                         }}
                         renderEmpty={()=><Empty description={false} />}
                     >
-
                     {
-                     rendered &&   <UIRoot history={history}/>
+                     rendered &&   (
+                         <UIRoot history={history}/>
+                        )
                     }
-
-                        </ConfigProvider>
-
+                    </ConfigProvider>
                 </div>
             </ConnectedRouter>
             </Router>

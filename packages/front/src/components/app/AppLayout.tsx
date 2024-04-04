@@ -17,7 +17,7 @@ import {
     Space,
     Typography
 } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import defaultProps from './_defaultProps';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -83,12 +83,12 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
     const history = useHistory();
     const pathname = history.location.pathname;
 
-    return (
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
+    return (
         <ProLayout
             breakpoint={false}
             loading={ui.busy.length !== 0}
-            collapsed={false}
             bgLayoutImgList={[
                 {
                     src:
@@ -128,7 +128,6 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                     <TopProfileDropDown {...props}><Space>{dom}<a
                         href={'#'}><DownOutlined/></a></Space></TopProfileDropDown>
             }}
-
             menuFooterRender={(props) => {
                 if (props?.collapsed) return undefined;
                 return (
@@ -142,21 +141,19 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                     </div>
                 );
             }}
-            collapsedButtonRender={() => null}
-
-            onMenuHeaderClick={e => {
-                console.log(e);
-                debugger
-            }}
-
             menuItemRender={(item, dom) => {
-                //console.log(item)
-                return <Link to={item.path}>
-                    {dom}
-                </Link>;
+                return (
+                    <Link to={item.path}>
+                        {dom}
+                    </Link>
+                );
             }}
             {...settings}
             {...proLayout}
+            collapsed={isCollapsed}
+            onCollapse={() => {
+                setIsCollapsed(!isCollapsed);
+            }}
         >
             {hidePageContainer ?
                 children
