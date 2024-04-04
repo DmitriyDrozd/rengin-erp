@@ -37,7 +37,7 @@ export const importBackup = ({ file, folderName }: { file?: any, folderName?: st
         fs.writeFileSync(src, file);
     }
 
-    const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore mongodb://rengin:BuildMeUp@rengindesk.ru:27017/rengin?authSource=admin --archive="${src}"`;
+    const restoreBackupCommand: string = `docker exec mongodb sh -c "mongorestore mongodb://rengin:BuildMeUp@rengindesk.ru:27017/rengin?authSource=admin --archive='${src}'`;
     execSync(restoreBackupCommand);
 
     return 0;
