@@ -53,7 +53,7 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean): Men
         // },
         isAddItemsAvailable &&
         {
-            label: 'Добавить к заявкам',
+            label: 'Добавить к',
             icon: <AntdIcons.FileZipOutlined/>,
             key: GRID_MODES.addIssues,
         },
