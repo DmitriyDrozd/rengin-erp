@@ -9,6 +9,7 @@ import {
     statusesColorsMap,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
+import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React, { useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -127,6 +128,7 @@ export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll);
     const {currentUser} = useCurrentUser();
+    const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(ISSUES);
@@ -230,7 +232,7 @@ export default () => {
         >
             <div>
                 {
-                    currentItemId ? <IssueModal_NEW id={currentItemId}/> : null
+                    currentItemId ? <IssueModal_NEW id={currentItemId} newClientsNumber={newClientsNumber}/> : null
                 }
                 <ExportArchiveSelector
                     isOpen={isExportSelectorOpen}

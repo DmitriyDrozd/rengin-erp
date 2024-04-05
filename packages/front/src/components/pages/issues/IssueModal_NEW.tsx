@@ -13,9 +13,8 @@ import UploadSection from '../../elements/UploadSection';
 import { issuesEditor } from '../../../editors/issueEditor';
 
 
-export default ({id}: { id: string }) => {
+export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }) => {
     const useEditorData = useEditor(issuesEditor, id);
-    const {removed, ...propsToRender} = ISSUES.properties;
     const getFilesProps = (listName: 'workFiles' | 'checkFiles' | 'actFiles', label: string, maxCount = 1) => {
         return {
             items: useEditorData.item[listName],
@@ -41,7 +40,7 @@ export default ({id}: { id: string }) => {
                     }}
                 >
                     <ProCard.TabPane key="tab1" tab="Заявка">
-                        <EditIssueItemForm/>
+                        <EditIssueItemForm newClientsNumber={newClientsNumber}/>
                     </ProCard.TabPane>
                     <ProCard.TabPane key="tab2" tab={'Смета'}>
                         <EstimationsTable/>

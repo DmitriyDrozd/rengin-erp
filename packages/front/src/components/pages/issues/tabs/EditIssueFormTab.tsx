@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { ISSUES } from 'iso/src/store/bootstrap';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import CONTRACTS, { ContractVO } from 'iso/src/store/bootstrap/repos/contracts';
 
@@ -18,12 +18,17 @@ import { useContextEditor } from '../../chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../../../form/ModalForm';
 
 const {Text} = Typography;
-export default () => {
+export default ({ newClientsNumber }: { newClientsNumber: string }) => {
     const role = useRole();
     const editor = useContextEditor();
     const contracts: ContractVO[] = useSelector(CONTRACTS.selectList);
     const contract = contracts.find(c => c.contractId === editor.item.contractId);
-    const isCreateMode = editor.mode === 'create';
+
+    useEffect(() => {
+        if (!editor.item[ISSUES.clientsNumberProp]) {
+            editor.updateItemProperty(ISSUES.clientsNumberProp)(newClientsNumber);
+        }
+    }, []);
 
     return (
         <Form
@@ -31,9 +36,7 @@ export default () => {
             {...layoutPropsModalForm}
             layout={'horizontal'}
         >
-            {!isCreateMode && (
-                <RenField meta={ISSUES.properties.clientsIssueNumber}/>
-            )}
+            <RenField meta={ISSUES.properties.clientsIssueNumber}/>
             <RenField meta={ISSUES.properties.brandId}/>
             <RenField meta={ISSUES.properties.legalId}/>
             <RenField
