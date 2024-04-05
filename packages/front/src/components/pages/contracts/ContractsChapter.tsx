@@ -73,15 +73,19 @@ const renderItemInfo = ({item, id}: { item: ContractVO, id: string }) => {
     const sitesList = ledger.sites.list.filter(site => !connectedSites.includes(site.siteId));
 
     const onAddToItems = (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
-        const newSubs: SubVO[] = selectedIds.map(siteId => ({
-            subId: generateGuid(),
-            contractId: id,
-            subscribeDate: item.signDate,
-            unsubscribeDate: item.endDate,
-            siteId,
-            rate: item.rate,
-            managerUserId: item.managerUserId,
-        }));
+        const newSubs: SubVO[] = selectedIds.map(siteId => {
+            const siteManagerId = ledger.sites.byId[siteId]?.managerUserId;
+
+            return {
+                subId: generateGuid(),
+                contractId: id,
+                subscribeDate: item.signDate,
+                unsubscribeDate: item.endDate,
+                siteId,
+                rate: item.rate,
+                managerUserId: item.managerUserId || siteManagerId,
+            }
+        });
 
         const getAction = () => SUBS.actions.addedBatch(newSubs);
         dispatch(getAction());
