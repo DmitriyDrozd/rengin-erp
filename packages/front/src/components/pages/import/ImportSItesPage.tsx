@@ -88,7 +88,9 @@ function* importObjectsSaga(data: Datum[]) {
                 city,
                 address,
                 siteId: generateGuid(),
-                clientsSiteNumber: String(clientsSiteNumber) || generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber', newSites.length),
+                clientsSiteNumber: clientsSiteNumber
+                    ? String(clientsSiteNumber)
+                    : generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber', newSites.length),
             };
             console.log(`Site not found, create one`, site.address);
             newSites.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(site));

@@ -86,7 +86,7 @@ function* importIssuesSaga(data: Datum[]) {
         const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
         // Проверка на существование такой заявки
         const foundIssue = ledger.issues.list.find((issue) => {
-            return issueNumber === issue.clientsIssueNumber;
+            return String(issueNumber) === issue.clientsIssueNumber;
         });
 
         // Если заявка новая
@@ -94,7 +94,7 @@ function* importIssuesSaga(data: Datum[]) {
             const newIssue = {
                 status: statusesList[0],
                 [ISSUES.idProp]: generateGuid(),
-                clientsIssueNumber: issueNumber,
+                clientsIssueNumber: String(issueNumber),
                 description,
                 contacts,
                 registerDate: formatExcelDate(registerDate),
@@ -122,8 +122,8 @@ function* importIssuesSaga(data: Datum[]) {
     for (let i = 0; i < data.length; i++) {
         const d = data[i];
         yield getOrCreateIssue({
-            clientsIssueNumber: String(d.clientsIssueNumber),
-            clientsSiteNumber: String(d.clientsSiteNumber),
+            clientsIssueNumber: d.clientsIssueNumber,
+            clientsSiteNumber: d.clientsSiteNumber,
             description: d.description,
             registerDate: d.registerDate,
             plannedDate: d.plannedDate,
