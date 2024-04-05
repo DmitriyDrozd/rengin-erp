@@ -1,13 +1,18 @@
+import React from 'react';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
     ProForm,
     ProFormDatePicker,
+    ProFormMoney,
     ProFormSelect,
     ProFormText
 } from '@ant-design/pro-components';
 import { useAllColumns } from '../../../grid/RCol';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
-import { Row } from 'antd';
+import {
+    Row,
+    Space
+} from 'antd';
 import useLedger from '../../../hooks/useLedger';
 import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts';
 import { useSelector } from 'react-redux';
@@ -35,18 +40,23 @@ export default () => {
                 return (
                     <>
                         <div>{legal ? legal.legalName : 'Неизвестен'}</div>
-                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} rules={[{required: true}]}/>
+                        <ProFormSelect {...fieldMetaToProProps(SUBS, 'contractId', item)} rules={[{required: true}]} width={'sm'}/>
                         <ProForm.Item label={'Период подключения'} required={true}>
                             <Row>
-                                <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null}
-                                                   width={'sm'} rules={[{required: true}]}/>
-                                <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}
-                                                   width={'sm'}/>
+                                <Space>
+                                    <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null}
+                                                       width={'sm'} rules={[{required: true}]}/>
+                                    <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}
+                                                       width={'sm'}/>
+                                </Space>
                             </Row>
                         </ProForm.Item>
                         <ProFormSelect {...fieldMetaToProProps(SUBS, 'siteId', item)} valueEnum={sitesEnum}
                                        label={'Объект'}
-                                       width={'sm'} rules={[]}/>
+                                       width={'xl'} rules={[]}/>
+                        <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS, 'rate', item)}
+                                      label={'Ставка за объект'} width={'sm'} rules={[]}/>
+                        <ProFormText {...fieldMetaToProProps(SUBS, 'managerUserId')} width={'md'} />
                     </>
                 );
             }}

@@ -31,7 +31,7 @@ const renderForm = ({item, id, verb, resource}) => {
     return (
         <>
             <ProFormText {...fieldMetaToProProps(CONTRACTS, 'contractNumber', item)}
-                         rules={[{required: true}]}/>
+                         rules={[{required: true}]}  width="sm"/>
             <ProForm.Item label={'Заказчик'} required={true}>
                 <Row>
                     <ProFormSelect {...fieldMetaToProProps(CONTRACTS, 'brandId', item)} label={null}
@@ -48,14 +48,14 @@ const renderForm = ({item, id, verb, resource}) => {
                         <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'signDate', item)}
                                            label={null}
                                            width={'sm'} rules={[]}/>
-                        <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS, 'rate', item)}
-                                      label={'Ставка за объект'} width={'sm'} rules={[]}/>
+                        <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'endDate', item)} label={'Действует до'}
+                                           width={'sm'} rules={[]}/>
                     </Space>
                 </Row>
             </ProForm.Item>
-            <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'endDate', item)} label={'Действует до'}
-                               width={'sm'} rules={[]}/>
-            <ProFormText {...fieldMetaToProProps(CONTRACTS, 'managerUserId')} />
+            <ProFormMoney locale={'ru-RU'} {...fieldMetaToProProps(CONTRACTS, 'rate', item)}
+                          label={'Ставка за объект'} width={'sm'} rules={[]}/>
+            <ProFormText {...fieldMetaToProProps(CONTRACTS, 'managerUserId')} width="md" />
         </>
     );
 };
