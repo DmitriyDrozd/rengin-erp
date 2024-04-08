@@ -28,7 +28,7 @@ import {
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import { getNav } from '../../getNav';
 import { ExportArchiveSelector } from './export-archive/ExportArchiveSelector';
-import IssueModal_NEW from './IssueModal_NEW';
+import IssueModal from './IssueModal';
 import dayjs from 'dayjs';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import StatusFilterSelector from './StatusFilterSelector';
@@ -232,7 +232,7 @@ export default () => {
         >
             <div>
                 {
-                    currentItemId ? <IssueModal_NEW id={currentItemId} newClientsNumber={newClientsNumber}/> : null
+                    currentItemId ? <IssueModal id={currentItemId} newClientsNumber={newClientsNumber}/> : null
                 }
                 <ExportArchiveSelector
                     isOpen={isExportSelectorOpen}

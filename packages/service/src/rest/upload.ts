@@ -62,7 +62,7 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
             // also, consider that if the file stream is not consumed, the promise will never fulfill
 
             return reply.send({
-                url: '/uploads/issues/' + issueId + '/' + data.filename
+                url: '/uploads/issues/' + brand.brandName + '_' + issue.clientsIssueNumber + '/' + data.filename
             })
         }
         return  reply.send("NoData")

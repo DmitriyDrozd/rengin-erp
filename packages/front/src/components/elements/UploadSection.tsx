@@ -1,6 +1,9 @@
 import {Card, Modal, Upload, UploadFile} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import React, {useState} from 'react';
+import React, {
+    useEffect,
+    useState
+} from 'react';
 import type {RcFile, UploadProps} from 'antd/es/upload';
 import {remove} from "ramda";
 import useRole from "../../hooks/useRole";
@@ -11,6 +14,8 @@ export type UploadListProps = {
     maxCount: number
     issueId: string
     label:string
+    brandName: string
+    brandPath: string
 }
 
 
@@ -22,23 +27,62 @@ const getBase64 = (file: RcFile): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListProps) => {
+const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,brandPath}:UploadListProps) => {
     const role = useRole()
     const max = maxCount || 1
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
 
+    // Хак для обновления пути к файлам с неправильным сохраненным путем (до исправления 08.04.2024)
+    useEffect(() => {
+        if (!brandName || !brandPath) {
+            return;
+        }
+
+        let changed = 0;
+
+        const newItems = items.map(item => {
+            const newItem = { ...item };
+            const [none, pUploads, pIssues, pBrand, fileName] = item.response?.url?.split('/') || [];
+
+            if (pBrand !== brandName && fileName) {
+                changed++;
+                newItem.response.url = `/${pUploads}/${pIssues}/${brandPath}/${fileName}`;
+
+                if (item.url) {
+                    newItem.url = newItem.response.url;
+                }
+            }
+
+            return newItem;
+        });
+
+        if (changed > 0) {
+            onItemsChange(newItems);
+        }
+    }, []);
+
     const handleCancel = () => setPreviewOpen(false);
 
     const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as RcFile);
+        const fileUrl = file.url ||  file.response?.url;
+
+        if (!fileUrl && !file.preview) {
+            let preview;
+
+            try {
+                preview = await getBase64(file.originFileObj as RcFile);
+            } catch (e) {
+                preview = file.thumbUrl;
+            }
+
+            file.preview = preview;
         }
 
-        setPreviewImage(file.url || (file.preview as string));
+        setPreviewImage(fileUrl || (file.preview as string));
         setPreviewOpen(true);
-        setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+        setPreviewTitle(file.name || fileUrl!.substring(fileUrl!.lastIndexOf('/') + 1));
     };
 
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
@@ -54,6 +98,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label}:UploadListPr
             <div style={{ marginTop: 8 }}>Upload</div>
         </div>
     );
+
     return (
         <Card title={label}>
             <Upload

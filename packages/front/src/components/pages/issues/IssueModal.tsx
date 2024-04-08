@@ -1,5 +1,9 @@
 import { ISSUES } from 'iso/src/store/bootstrap/';
-import React from 'react';
+import React, {
+    useEffect,
+    useState
+} from 'react';
+import useLedger from '../../../hooks/useLedger';
 import {
     EditorContext,
     useEditor
@@ -15,6 +19,8 @@ import { issuesEditor } from '../../../editors/issueEditor';
 
 export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }) => {
     const useEditorData = useEditor(issuesEditor, id);
+    const ledger = useLedger();
+    const isEditMode = useEditorData.mode === 'edit';
     const getFilesProps = (listName: 'workFiles' | 'checkFiles' | 'actFiles', label: string, maxCount = 1) => {
         return {
             items: useEditorData.item[listName],
@@ -30,6 +36,23 @@ export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }
 
     const title = useEditorData.mode === 'create'
         ? 'Новая заявка' : ISSUES.getIssueTitle(useEditorData.item);
+
+    const [uploadProps, setUploadProps] = useState<{
+        brandName?: string,
+        brandPath?: string
+    }>({});
+
+    useEffect(() => {
+        if (isEditMode && !uploadProps.brandName && !uploadProps.brandPath) {
+            const brandName = ledger.brands.list.find(b => b.brandId === useEditorData.item.brandId)?.brandName;
+            const issueNumber = useEditorData.item[ISSUES.clientsNumberProp];
+
+            setUploadProps({
+                brandName,
+                brandPath: `${brandName}_${issueNumber}`,
+            });
+        }
+    }, [id]);
 
     return (
         <EditorContext.Provider value={useEditorData}>
@@ -49,9 +72,18 @@ export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }
                         <ExpensesTable/>
                     </ProCard.TabPane>
                     <ProCard.TabPane key="tab4" tab={'Файлы'}>
-                        <UploadSection {...getFilesProps('checkFiles', 'Чеки', 10)}/>
-                        <UploadSection {...getFilesProps('actFiles', 'Акты', 5)}/>
-                        <UploadSection {...getFilesProps('workFiles', 'Работы', 70)}/>
+                        <UploadSection
+                            {...getFilesProps('checkFiles', 'Чеки', 10)}
+                            {...uploadProps}
+                        />
+                        <UploadSection
+                            {...getFilesProps('actFiles', 'Акты', 5)}
+                            {...uploadProps}
+                        />
+                        <UploadSection
+                            {...getFilesProps('workFiles', 'Работы', 70)}
+                            {...uploadProps}
+                        />
                     </ProCard.TabPane>
 
                 </ProCard>
