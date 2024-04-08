@@ -1,6 +1,7 @@
 import { AgGridReact } from 'ag-grid-react';
 import getRestApi from 'iso/src/getRestApi';
 import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/employees';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
@@ -202,9 +203,22 @@ export default () => {
 
     const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues;
 
-    const dataForUser = currentUser.role === 'менеджер'
-        ? outdatedIssues.filter(i => i.managerUserId === currentUser.userId)
-        : outdatedIssues;
+    let dataForUser;
+
+    switch (currentUser.role) {
+        case roleEnum['менеджер']: {
+            dataForUser = outdatedIssues.filter(i => i.managerUserId === currentUser.userId);
+            break;
+        }
+        case roleEnum['сметчик']: {
+            dataForUser = outdatedIssues.filter(i => i.estimatorUserId === currentUser.userId);
+            break;
+        }
+        default: {
+            dataForUser = outdatedIssues;
+            break;
+        }
+    }
 
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
     const rowData = dataForUser.filter(s => statuses.includes(s.status));
