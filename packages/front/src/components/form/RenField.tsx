@@ -27,6 +27,7 @@ import React, {
 } from 'react';
 import { getRes } from 'iso/src/store/bootstrap/resourcesList';
 import { useISOState } from 'iso/src/ISOState';
+import './RenField.css';
 
 const {Text, Link} = Typography;
 type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>

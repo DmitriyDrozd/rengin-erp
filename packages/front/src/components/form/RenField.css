@@ -1,0 +1,6 @@
+:where(.css-dev-only-do-not-override-f30qoa).ant-picker .ant-picker-input >input-disabled, :where(.css-dev-only-do-not-override-f30qoa).ant-picker .ant-picker-input >input[disabled],
+.ant-select-disabled:where(.css-dev-only-do-not-override-f30qoa).ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.ant-input[disabled],
+input[disabled] {
+    color: rgba(0, 0, 0, 0.5);
+}
