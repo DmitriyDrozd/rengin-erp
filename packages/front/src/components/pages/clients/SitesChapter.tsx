@@ -27,6 +27,7 @@ export default () => {
         {...colMap.KPP, width: 80},
         {...colMap.clientsEngineerUserId, width: 100},
         {...colMap.managerUserId, width: 100},
+        {...colMap.estimatorUserId, width: 100},
         {...colMap.techUserId, width: 100},
         {...colMap.contactInfo, width: 120},
     ] as ColDef<SiteVO>[];
@@ -49,6 +50,7 @@ export default () => {
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'KPP')}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'clientsEngineerUserId')}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'managerUserId')}/>
+                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'estimatorUserId')}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'techUserId')}/>
                         <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')}/>
                     </>

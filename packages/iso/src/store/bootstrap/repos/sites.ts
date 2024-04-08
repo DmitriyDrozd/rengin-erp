@@ -46,6 +46,12 @@ export const siteResourceRaw = createResource('site',{
             defaultAsPropRef:'legalId',
             filterLinkedResourceItems: (list: UserVO[]) => list.filter(item => item.role === roleEnum['менеджер']),
         }),
+        estimatorUserId: valueTypes.itemOf({
+            headerName: 'Сметчик',
+            linkedResourceName:'USERS',
+            defaultAsPropRef:'legalId',
+            filterLinkedResourceItems: (list: UserVO[]) => list.filter(item => item.role === roleEnum['сметчик']),
+        }),
         techUserId: valueTypes.itemOf({
             headerName: 'Техник',
             linkedResourceName:'EMPLOYEES',
@@ -71,7 +77,7 @@ export const siteResourceRaw = createResource('site',{
 const siteResource = {
     ...siteResourceRaw,
     clientsNumberProp: 'clientsSiteNumber',
-    rolesProps: ['managerUserId', 'techUserId', 'clientsEngineerUserId'],
+    rolesProps: ['managerUserId', 'techUserId', 'clientsEngineerUserId', 'estimatorUserId'],
 };
 
 export type SiteVO = (typeof siteResource)['exampleItem']
