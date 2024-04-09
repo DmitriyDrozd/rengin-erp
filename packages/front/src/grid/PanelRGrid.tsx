@@ -328,6 +328,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             ref={innerGridRef}
             onSortChanged={onSortChanged}
             onRowDoubleClicked={onRowDoubleClicked}
+            /** Displayed rows have changed. Triggered after sort, filter or tree expand / collapse events. */
+            // onModelUpdated 
         />
         <div style={{paddingTop: '4px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>

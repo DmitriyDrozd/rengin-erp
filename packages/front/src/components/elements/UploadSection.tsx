@@ -36,7 +36,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
 
     // Хак для обновления пути к файлам с неправильным сохраненным путем (до исправления 08.04.2024)
     useEffect(() => {
-        if (!brandName || !brandPath) {
+        if (!items || !brandName || !brandPath) {
             return;
         }
 
