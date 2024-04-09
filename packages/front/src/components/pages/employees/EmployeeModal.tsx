@@ -79,6 +79,21 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
         });
     };
 
+    const onRemoveFromItems = (list: any[], name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
+        const updated = list
+            .filter(s => selectedIds.includes(s[idProp]))
+            .map(s => ({
+                ...s,
+                [role]: undefined,
+            }));
+
+        updateCollection(updated);
+        notification.open({
+            message: `${useEditorData.item.role} удалён из ${updated.length} ${name}`,
+            type: 'success'
+        });
+    };
+
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
@@ -91,6 +106,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                                     onCancelClick={disableAddingMode('sites')}
                                     onShowAllItems={onShowAllItems('sites')}
                                     onAddToItems={onAddToItems(ledger.sites.list, 'объектам', SITES.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.sites.list, 'объектов', SITES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={SITES}
@@ -106,6 +122,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                                     onCancelClick={disableAddingMode('issues')}
                                     onShowAllItems={onShowAllItems('issues')}
                                     onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
+                                    onRemoveFromItems={onAddToItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={ISSUES}

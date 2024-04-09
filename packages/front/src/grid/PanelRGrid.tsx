@@ -36,7 +36,7 @@ import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
 
 
-const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean): MenuProps['items'] =>
+const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRemoveItemsAvailable: boolean): MenuProps['items'] =>
     [
         // {
         //     label: 'Сохранить',
@@ -54,8 +54,14 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean): Men
         isAddItemsAvailable &&
         {
             label: 'Добавить к',
-            icon: <AntdIcons.FileZipOutlined/>,
-            key: GRID_MODES.addIssues,
+            icon: <AntdIcons.PlusCircleOutlined />,
+            key: GRID_MODES.settleItems,
+        },
+        isRemoveItemsAvailable &&
+        {
+            label: 'Удалить из',
+            icon: <AntdIcons.PlusCircleOutlined />,
+            key: GRID_MODES.unsettleItems,
         },
         isExportAvailable &&
         {
@@ -79,14 +85,16 @@ const GRID_MODES = {
     off: 'off',
     delete: 'delete',
     export: 'export',
-    addIssues: 'addIssues',
+    settleItems: 'settleItems',
+    unsettleItems: 'unsettleItems',
 };
 
 const GRID_MODES_LIST = [
     GRID_MODES.off,
     GRID_MODES.delete,
     GRID_MODES.export,
-    GRID_MODES.addIssues,
+    GRID_MODES.settleItems,
+    GRID_MODES.unsettleItems,
 ];
 
 const EDITABLE_CELLS_ID = [
@@ -107,6 +115,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         createItemProps,
         onExportArchive,
         onAddToItems,
+        onRemoveFromItems,
         onShowAllItems,
         onCancelClick,
         ...props
@@ -118,6 +127,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         gridRef?: React.RefObject<typeof RGrid>,
         onExportArchive?(selectedIds: string[]): void,
         onAddToItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
+        onRemoveFromItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
         onShowAllItems?(): void,
         onCancelClick?(): void,
     }) => {
@@ -155,7 +165,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             setSelectedIds([]);
         }
 
-        if (key === GRID_MODES.addIssues) {
+        if (key === GRID_MODES.settleItems) {
             onShowAllItems();
         }
     };
@@ -177,6 +187,14 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         const getAction = (items) => resource.actions.updatedBatch(items);
 
         onAddToItems(selectedIds, (items) => dispatch(getAction(items)));
+        setSelectedIds([]);
+        resetMode();
+    }
+
+    const onRemoveFromItemsHandler = () => {
+        const getAction = (items) => resource.actions.updatedBatch(items);
+
+        onRemoveFromItems(selectedIds, (items) => dispatch(getAction(items)));
         setSelectedIds([]);
         resetMode();
     }
@@ -246,23 +264,42 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         )
     }
 
+    const ModeToolBar = ({icon, onClick, label}) => (
+        <>
+            <Button
+                icon={icon}
+                disabled={selectedIds.length === 0}
+                onClick={onClick}
+            >
+                {label}
+            </Button>
+            <CancelButton onCancel={resetMode}/>
+        </>
+    );
+
+
     const renderAddToModeToolBar = () => {
         return (
-            <>
-                <Button
-                    icon={<AntdIcons.PlusCircleFilled />}
-                    disabled={selectedIds.length === 0}
-                    onClick={onAddToItemsHandler}
-                >
-                    Добавить к записям
-                </Button>
-                <CancelButton onCancel={resetMode}/>
-            </>
+            <ModeToolBar
+                icon={<AntdIcons.PlusCircleFilled />}
+                onClick={onAddToItemsHandler}
+                label='Добавить к записям'
+            />
+        )
+    }
+
+    const renderRemoveFromModeToolBar = () => {
+        return (
+            <ModeToolBar
+                icon={<AntdIcons.MinusCircleFilled />}
+                onClick={onRemoveFromItemsHandler}
+                label='Удалить из записей'
+            />
         )
     }
 
     const role = useRole();
-    const items = getItems(!!onExportArchive, !!onAddToItems);
+    const items = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
 
     const renderStandardToolBar = () => {
         return role === 'сметчик'
@@ -312,7 +349,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                     />
                     { mode === GRID_MODES.delete && renderDeleteModeToolBar() }
                     { mode === GRID_MODES.export && renderExportModeToolBar() }
-                    { mode === GRID_MODES.addIssues && renderAddToModeToolBar() }
+                    { mode === GRID_MODES.settleItems && renderAddToModeToolBar() }
+                    { mode === GRID_MODES.unsettleItems && renderRemoveFromModeToolBar() }
                     { mode === GRID_MODES.off && renderStandardToolBar()}
                 </Space>
             </div>

@@ -39,10 +39,12 @@ export default ({id}: { id: string }) => {
         issues: false,
         sites: false,
     });
-    const switchMode = (mode: string, value: boolean) => setAddingModes({
-        ...addingModes,
-        [mode]: value,
-    });
+    const switchMode = (mode: string, value: boolean) => {
+        setAddingModes({
+            ...addingModes,
+            [mode]: value,
+        });
+    }
 
     const onShowAllItems = (mode: string) => () => switchMode(mode, true);
     const disableAddingMode = (mode: string) => () => switchMode(mode, false);
@@ -78,6 +80,21 @@ export default ({id}: { id: string }) => {
         });
     };
 
+    const onRemoveFromItems = (list: any[], name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
+        const updated = list
+            .filter(s => selectedIds.includes(s[idProp]))
+            .map(s => ({
+                ...s,
+                [role]: undefined,
+            }));
+
+        updateCollection(updated);
+        notification.open({
+            message: `${useEditorData.item.role} удалён из ${updated.length} ${name}`,
+            type: 'success'
+        });
+    };
+
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
@@ -90,6 +107,7 @@ export default ({id}: { id: string }) => {
                                     onCancelClick={disableAddingMode('sites')}
                                     onShowAllItems={onShowAllItems('sites')}
                                     onAddToItems={onAddToItems(ledger.sites.list, 'объектам', SITES.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.sites.list, 'объектов', SITES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={SITES}
@@ -105,6 +123,7 @@ export default ({id}: { id: string }) => {
                                     onCancelClick={disableAddingMode('issues')}
                                     onShowAllItems={onShowAllItems('issues')}
                                     onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={ISSUES}
@@ -120,6 +139,7 @@ export default ({id}: { id: string }) => {
                                     onCancelClick={disableAddingMode('brands')}
                                     onShowAllItems={onShowAllItems('brands')}
                                     onAddToItems={onAddToItems(ledger.brands.list, 'заказчикам', BRANDS.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.brands.list, 'заказчиков', BRANDS.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={BRANDS}

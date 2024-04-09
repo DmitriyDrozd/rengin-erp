@@ -99,6 +99,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         </div>
     );
 
+    // todo: previewFile={(file) => ''} to remove thumbs.
     return (
         <Card title={label}>
             <Upload
