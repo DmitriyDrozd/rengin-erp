@@ -1,4 +1,5 @@
 import { ISSUES } from 'iso/src/store/bootstrap';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useCallback,
     useMemo,
@@ -43,7 +44,10 @@ const countEstimations = (expenses: IssueVO['estimations']) =>
 export default () => {
 
     const {currentUser} = useCurrentUser();
-    const canEdit = currentUser.role === 'руководитель' || currentUser.role === 'сметчик';
+    const canEdit = currentUser.role === roleEnum['руководитель']
+        || currentUser.role === roleEnum['сметчик']
+        || currentUser.role === roleEnum['менеджер'];
+
     const editorProps = useContextEditor(ISSUES);
     const {item, params, getRenFieldProps, updateItemProperty, hasChanges, errors, isValid,} = editorProps;
 

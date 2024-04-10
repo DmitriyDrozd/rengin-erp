@@ -5,6 +5,7 @@ import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
+    estimationStatusesList,
     ISSUES,
     IssueVO,
     statusesColorsMap,
@@ -129,6 +130,8 @@ export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll);
     const {currentUser} = useCurrentUser();
+    const isUserEstimator = currentUser.role === roleEnum['сметчик'];
+    const statusPropToFilter = isUserEstimator ? 'estimationsStatus' : 'status';
     const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
     const dispatch = useDispatch();
@@ -198,7 +201,7 @@ export default () => {
         {...colMap.expensePrice, editable: false, width: 100},
     ] as ColDef<IssueVO>[];
 
-    const [statuses, setStatuses] = useLocalStorageState('statusFilter', statusesList);
+    const [statuses, setStatuses] = useLocalStorageState('statusFilter', isUserEstimator ? estimationStatusesList : statusesList);
     const [outdated, setOutdated] = useLocalStorageState('outdatedFilter', false);
 
     const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues;
@@ -221,7 +224,7 @@ export default () => {
     }
 
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
-    const rowData = dataForUser.filter(s => statuses.includes(s.status));
+    const rowData = dataForUser.filter(s => !s[statusPropToFilter] || statuses.includes(s[statusPropToFilter]));
 
     const [isExportSelectorOpen, setIsExportSelectorOpen] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -234,6 +237,22 @@ export default () => {
         setSelectedIds([]);
         setIsExportSelectorOpen(false);
     };
+
+    const renderToolbar = isUserEstimator ? (
+            <Space>
+                <StatusFilterSelector
+                    list={estimationStatusesList}
+                    colorMap={estimationsStatusesColorsMap}
+                    statuses={statuses}
+                    setStatuses={setStatuses}/>
+            </Space>
+        ) : (
+        <Space>
+            <Checkbox checked={outdated}
+                      onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+            <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+        </Space>
+    )
 
     return (
         <AppLayout
@@ -256,13 +275,7 @@ export default () => {
                 />
                 <PanelRGrid
                     fullHeight
-                    toolbar={(
-                        <Space>
-                            <Checkbox checked={outdated}
-                                      onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
-                            <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
-                        </Space>
-                    )}
+                    toolbar={renderToolbar}
                     rowData={rowData}
                     resource={ISSUES}
                     columnDefs={columns}
