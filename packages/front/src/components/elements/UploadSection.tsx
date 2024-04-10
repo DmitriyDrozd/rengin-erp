@@ -110,7 +110,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     );
 
     return (
-        <Card title={label}>
+        <Card title={label} key={label}>
             <Upload
                 action={"/api/upload/"+issueId}
                 listType="picture-card"
