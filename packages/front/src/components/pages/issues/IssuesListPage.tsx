@@ -235,6 +235,26 @@ export default () => {
         setIsExportSelectorOpen(false);
     };
 
+    const removeThumbs = () => {
+        const getItemWithoutThumbs = (item: any) => item.status === 'done' ? {
+            ...item,
+            thumbUrl: item.response?.url || item.url,
+        } : item;
+
+        const woThumbs = allIssues.map(issue => {
+            const { workFiles, actFiles, checkFiles } = issue;
+
+            return {
+                ...issue,
+                workFiles: workFiles.map(getItemWithoutThumbs),
+                actFiles: actFiles.map(getItemWithoutThumbs),
+                checkFiles: checkFiles.map(getItemWithoutThumbs),
+            }
+        });
+
+        dispatch(ISSUES.actions.updatedBatch(woThumbs));
+    }
+
     return (
         <AppLayout
             hidePageContainer={true}
@@ -269,7 +289,7 @@ export default () => {
                     title={'Все заявки'}
                     name={'IssuesList'}
                     onExportArchive={exportArchiveHandler}
-                    BottomBar={BottomBar}
+                    BottomBar={currentUser.role === 'руководитель' ? () => <div><Button onClick={removeThumbs}>Убрать тамбы</Button><BottomBar /></div> : BottomBar}
                 />
             </div>
         </AppLayout>
