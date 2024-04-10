@@ -47,7 +47,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
 
         let changed = 0;
 
-        const newItems = items.map(item => {
+        const processedItems = items.map(item => {
             const newItem = { ...item };
             const [none, pUploads, pIssues, pBrand, fileName] = item.response?.url?.split('/') || [];
 
@@ -64,10 +64,11 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         });
 
         if (changed > 0) {
-            onItemsChange(newItems.map(getItemWithoutThumbs));
+            onItemsChange(processedItems.map(getItemWithoutThumbs));
         } else if (items.some(item => item.thumbUrl?.length > 500)) {
             onItemsChange(items.map(getItemWithoutThumbs));
         }
+        console.log(label);
     }, []);
 
     const handleCancel = () => setPreviewOpen(false);
