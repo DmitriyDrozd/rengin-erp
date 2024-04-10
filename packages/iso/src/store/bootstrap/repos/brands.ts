@@ -36,6 +36,10 @@ export const BRANDS = {
     ...BRANDS_RAW,
     clientsNumberProp: 'clientsBrandNumber',
     rolesProps: ['managerUserId'],
+    getItemName: (brand) => {
+        debugger;
+        return brand.brandName
+    },
 };
 
 export default BRANDS

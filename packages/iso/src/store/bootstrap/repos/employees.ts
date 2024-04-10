@@ -3,6 +3,7 @@ import { valueTypes } from '../core/valueTypes';
 import {
     EstimationStatus,
 } from './issues';
+import { roleEnum } from './users';
 
 export const employeeRoleEnum = {
     'техник': 'техник',
@@ -22,7 +23,14 @@ export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Отклонена': 'red',
 };
 
-export const getItemNameWithContacts = (item) => `${item.lastname ? `${item.lastname} ` : ''}${item.name}${item.brand ? ` - ${item.brand}` : ''}${item.phone ? ` - ${item.phone}` : ''}`;
+export const getItemNameWithContacts = (item) => {
+    const lastName = item.lastname ? `${item.lastname} ` : '';
+    const name = item.name;
+    const brand = employeeRoleTypes.includes(item.role) && item.brand ? ` - ${item.brand}` : '';
+    const phone = item.phone ? ` - ${item.phone}` : '';
+
+    return `${lastName}${name}${brand}${phone}`
+};
 
 const employeesRaw = createResource('employee', {
     role: valueTypes.enum({required: true, enum: employeeRoleTypes, headerName: 'Роль'}),
