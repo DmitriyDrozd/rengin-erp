@@ -27,6 +27,11 @@ const getBase64 = (file: RcFile): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
+const getItemWithoutThumbs = (item: any) => item.status === 'done' ? {
+    ...item,
+    thumbUrl: item.response?.url || item.url,
+} : item;
+
 const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,brandPath}:UploadListProps) => {
     const role = useRole()
     const max = maxCount || 1
@@ -59,7 +64,9 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         });
 
         if (changed > 0) {
-            onItemsChange(newItems);
+            onItemsChange(newItems.map(getItemWithoutThumbs));
+        } else if (items.some(item => item.thumbUrl?.length > 500)) {
+            onItemsChange(items.map(getItemWithoutThumbs));
         }
     }, []);
 
@@ -85,8 +92,11 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         setPreviewTitle(file.name || fileUrl!.substring(fileUrl!.lastIndexOf('/') + 1));
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-        onItemsChange(newFileList)
+    // todo: найти способ отключить тамбы через апи компоненты Upload
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+        const itemsWithoutThumbs = newFileList.map(getItemWithoutThumbs);
+        onItemsChange(itemsWithoutThumbs);
+    }
     const handleRemove: UploadProps['onRemove'] = file => {
         console.log('handleRemove', file)
         const isFileWithName = (name: string) => (file: UploadFile) => file.name === name
@@ -99,7 +109,6 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         </div>
     );
 
-    // todo: previewFile={(file) => ''} to remove thumbs.
     return (
         <Card title={label}>
             <Upload
