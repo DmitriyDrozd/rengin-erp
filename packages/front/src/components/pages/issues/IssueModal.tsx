@@ -17,7 +17,7 @@ import UploadSection from '../../elements/UploadSection';
 import { issuesEditor } from '../../../editors/issueEditor';
 
 
-export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }) => {
+export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNumber: string, disabledEdit?: boolean }) => {
     const useEditorData = useEditor(issuesEditor, id);
     const ledger = useLedger();
     const isEditMode = useEditorData.mode === 'edit';
@@ -56,7 +56,7 @@ export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }
 
     return (
         <EditorContext.Provider value={useEditorData}>
-            <BaseEditModal title={title}>
+            <BaseEditModal title={title} disabledEdit={disabledEdit}>
                 <ProCard
                     tabs={{
                         type: 'card',
@@ -65,17 +65,23 @@ export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }
                     <ProCard.TabPane key="tab1" tab="Заявка">
                         <EditIssueItemForm newClientsNumber={newClientsNumber}/>
                     </ProCard.TabPane>
-                    <ProCard.TabPane key="tab2" tab={'Смета'}>
-                        <EstimationsTable/>
-                    </ProCard.TabPane>
-                    <ProCard.TabPane key="tab3" tab={'Расходы'}>
-                        <ExpensesTable/>
-                    </ProCard.TabPane>
+                    {!disabledEdit && (
+                        <>
+                            <ProCard.TabPane key="tab2" tab={'Смета'}>
+                                <EstimationsTable/>
+                            </ProCard.TabPane>
+                            <ProCard.TabPane key="tab3" tab={'Расходы'}>
+                                <ExpensesTable/>
+                            </ProCard.TabPane>
+                        </>
+                    )}
                     <ProCard.TabPane key="tab4" tab={'Файлы'}>
-                        <UploadSection
-                            {...getFilesProps('checkFiles', 'Чеки', 10)}
-                            {...uploadProps}
-                        />
+                        {!disabledEdit && (
+                            <UploadSection
+                                {...getFilesProps('checkFiles', 'Чеки', 10)}
+                                {...uploadProps}
+                            />
+                        )}
                         <UploadSection
                             {...getFilesProps('actFiles', 'Акты', 5)}
                             {...uploadProps}
@@ -85,9 +91,7 @@ export default ({id, newClientsNumber}: { id: string, newClientsNumber: string }
                             {...uploadProps}
                         />
                     </ProCard.TabPane>
-
                 </ProCard>
-
             </BaseEditModal>
         </EditorContext.Provider>
     );

@@ -1,5 +1,11 @@
-import {Card, Modal, Upload, UploadFile} from "antd";
+import {
+    Card,
+    Modal,
+    Upload,
+    UploadFile
+} from 'antd';
 import {PlusOutlined} from "@ant-design/icons";
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useEffect,
     useState
@@ -103,10 +109,14 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         const isFileWithName = (name: string) => (file: UploadFile) => file.name === name
         onItemsChange(remove(items.findIndex(isFileWithName(file.name)), 1, items))
     }
+
+    const isDisabledUpload = role === roleEnum['сметчик'] || role === roleEnum['инженер'];
+    const isMaxCount = items?.length >= maxCount;
+
     const uploadButton = (
         <div>
             <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
+            <div style={{ marginTop: 8 }}>Добавить</div>
         </div>
     );
 
@@ -121,9 +131,9 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
                 onChange={handleChange}
                 multiple={true}
                 maxCount={max}
-                disabled={role === 'сметчик'}
+                disabled={isDisabledUpload}
             >
-                {items?.length >= maxCount ? null : uploadButton}
+                {(isMaxCount || isDisabledUpload) ? null : uploadButton}
             </Upload>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                 <img alt="example" style={{ width: '100%' }} src={previewImage} />

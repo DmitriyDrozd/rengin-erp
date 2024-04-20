@@ -1,3 +1,4 @@
+import LocaleProvider from 'antd/es/locale';
 import React, {useState} from 'react'
 import {Provider} from 'react-redux'
 import {ConnectedRouter, history} from '@sha/router'
@@ -6,7 +7,7 @@ import {useMount} from 'react-use'
 import {Router} from 'react-router-dom'
 import {ConfigProvider, Empty} from 'antd'
 import 'dayjs/locale/ru'
-import ruRU from 'antd/locale/en_US'
+import ruRU from 'antd/locale/ru_RU'
 import {BlinkDbProvider} from '@blinkdb/react'
 import {createDB} from 'blinkdb'
 import {blinkModel} from './blink-db-model'
@@ -20,47 +21,48 @@ const App = ({store}: {store: FrontStore}) => {
     })
     return (
         <BlinkDbProvider db={createDB()} model={blinkModel}>
-        <Provider store={store}>
-            <Router history={history}>
-            <ConnectedRouter history={history} >
-                <div
-                    id="test-pro-layout"
-                    style={{
-                        height: "100vh"
-                    }}
-                >
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Form: {
-                                    marginLG:4,
-                                    lineHeight:2
-                                },
-                            },
-                            token: {
-                                borderRadius:0,
-                            }
-                        }}
-                        componentSize={'middle'}
-                        locale={ruRU}
-                        autoInsertSpaceInButton={true}
-                        getTargetContainer={() => {
-                            return document.getElementById('test-pro-layout') || document.body;
-                        }}
-                        renderEmpty={()=><Empty description={false} />}
-                    >
-                    {
-                     rendered &&   (
-                         <UIRoot history={history}/>
-                        )
-                    }
-                    </ConfigProvider>
-                </div>
-            </ConnectedRouter>
-            </Router>
-        </Provider>
+            <LocaleProvider locale={ruRU}>
+                <Provider store={store}>
+                    <Router history={history}>
+                        <ConnectedRouter history={history} >
+                            <div
+                                id="test-pro-layout"
+                                style={{
+                                    height: "100vh"
+                                }}
+                            >
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Form: {
+                                                marginLG:4,
+                                                lineHeight:2
+                                            },
+                                        },
+                                        token: {
+                                            borderRadius:0,
+                                        }
+                                    }}
+                                    componentSize={'middle'}
+                                    locale={ruRU}
+                                    autoInsertSpaceInButton={true}
+                                    getTargetContainer={() => {
+                                        return document.getElementById('test-pro-layout') || document.body;
+                                    }}
+                                    renderEmpty={()=><Empty description={false} />}
+                                >
+                                    {
+                                        rendered &&   (
+                                            <UIRoot history={history}/>
+                                        )
+                                    }
+                                </ConfigProvider>
+                            </div>
+                        </ConnectedRouter>
+                    </Router>
+                </Provider>
+            </LocaleProvider>
         </BlinkDbProvider>
-
     )
 
 }

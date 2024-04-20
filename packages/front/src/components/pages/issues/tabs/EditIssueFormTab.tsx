@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { ISSUES } from 'iso/src/store/bootstrap';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import CONTRACTS, { ContractVO } from 'iso/src/store/bootstrap/repos/contracts';
@@ -29,6 +30,31 @@ export default ({ newClientsNumber }: { newClientsNumber: string }) => {
             editor.updateItemProperty(ISSUES.clientsNumberProp)(newClientsNumber);
         }
     }, []);
+
+    if (role === roleEnum['инженер']) {
+        return (
+            <Form
+                style={{maxWidth: 800}}
+                {...layoutPropsModalForm}
+                layout={'horizontal'}
+            >
+                <RenField meta={ISSUES.properties.clientsIssueNumber} disabled/>
+                <RenField
+                    meta={ISSUES.properties.description}
+                    multiline
+                    disabled
+                    width={'sm'}
+                />
+                <RenField
+                    meta={ISSUES.properties.contactInfo}
+                    multiline
+                    disabled
+                    width={'sm'}
+                />
+                <RenField meta={ISSUES.properties.status} disabled/>
+            </Form>
+        )
+    }
 
     return (
         <Form

@@ -9,12 +9,13 @@ export const roleEnum = {
     'руководитель':'руководитель',
     'менеджер':'менеджер',
     'сметчик':'сметчик',
-    'клиент':'клиент',
+    'инженер':'ответственный инженер',
 }
 export const roleTypes = [
     roleEnum.руководитель,
     roleEnum.менеджер,
     roleEnum.сметчик,
+    roleEnum.инженер
 ] as const
 
 export type RoleType = typeof roleTypes[number]

@@ -37,7 +37,6 @@ export const BRANDS = {
     clientsNumberProp: 'clientsBrandNumber',
     rolesProps: ['managerUserId'],
     getItemName: (brand) => {
-        debugger;
         return brand.brandName
     },
 };

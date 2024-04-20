@@ -126,47 +126,60 @@ const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], ty
     document.body.removeChild(element);
 };
 
+const outdatedFilter = i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate);
+
 export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const allIssues: IssueVO[] = useSelector(ISSUES.selectAll);
     const {currentUser} = useCurrentUser();
     const isUserEstimator = currentUser.role === roleEnum['сметчик'];
+    const isUserEngineer = currentUser.role === roleEnum['инженер'];
     const statusPropToFilter = isUserEstimator ? 'estimationsStatus' : 'status';
     const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(ISSUES);
 
-    const columns: ColDef<IssueVO>[] = [
+    const statusColumn = {
+        field: 'status',
+        filter: 'agSetColumnFilter',
+        filterParams: {
+            applyMiniFilterWhileTyping: true,
+        },
+        headerName: 'Статус',
+        width: 125,
+        editable: currentUser.role !== 'сметчик',
+        onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['status']>) => {
+            const issue: Partial<IssueVO> = {issueId: event.data.issueId, status: event.newValue};
+            if (event.newValue === 'Выполнена')
+                issue.completedDate = dayjs().startOf('d').toISOString();
+
+            dispatch(ISSUES.actions.patched(issue));
+        },
+        cellEditor: IssueStatusCellEditor,
+        cellEditorParams: {
+            values: (params) => [params.data.status, 'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
+            valueListGap: 0,
+        },
+        cellRenderer: (props: {
+            rowIndex: number
+        }) =>
+            getStatusTag(props.data)
+    };
+
+    const engineerColumns = [
+        {...colMap.clickToEditCol, headerName: 'id'},
+        {...colMap.clientsNumberCol},
+        {...colMap.description, width: 700},
+        {...colMap.contactInfo, width: 400},
+        {...statusColumn},
+    ];
+
+    const defaultColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.registerDate, width: 150},
-        {
-            field: 'status',
-            filter: 'agSetColumnFilter',
-            filterParams: {
-                applyMiniFilterWhileTyping: true,
-            },
-            headerName: 'Статус',
-            width: 125,
-            editable: currentUser.role !== 'сметчик',
-            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['status']>) => {
-                const issue: Partial<IssueVO> = {issueId: event.data.issueId, status: event.newValue};
-                if (event.newValue === 'Выполнена')
-                    issue.completedDate = dayjs().startOf('d').toISOString();
-
-                dispatch(ISSUES.actions.patched(issue));
-            },
-            cellEditor: IssueStatusCellEditor,
-            cellEditorParams: {
-                values: (params) => [params.data.status, 'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
-                valueListGap: 0,
-            },
-            cellRenderer: (props: {
-                rowIndex: number
-            }) =>
-                getStatusTag(props.data)
-        },
+        {...statusColumn},
         {...colMap.brandId, width: 150},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
@@ -199,12 +212,14 @@ export default () => {
         },
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
-    ] as ColDef<IssueVO>[];
+    ];
+
+    const columns: ColDef<IssueVO>[] = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
 
     const [statuses, setStatuses] = useLocalStorageState('statusFilter', isUserEstimator ? estimationStatusesList : statusesList);
     const [outdated, setOutdated] = useLocalStorageState('outdatedFilter', false);
 
-    const outdatedIssues = outdated ? allIssues.filter(i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate)) : allIssues;
+    const outdatedIssues = outdated ? allIssues.filter(outdatedFilter) : allIssues;
 
     let dataForUser;
 
@@ -215,6 +230,10 @@ export default () => {
         }
         case roleEnum['сметчик']: {
             dataForUser = outdatedIssues.filter(i => i.estimatorUserId === currentUser.userId);
+            break;
+        }
+        case roleEnum['инженер']: {
+            dataForUser = outdatedIssues.filter(i => i.brandId === currentUser.brandId);
             break;
         }
         default: {
@@ -247,11 +266,11 @@ export default () => {
                     setStatuses={setStatuses}/>
             </Space>
         ) : (
-        <Space>
-            <Checkbox checked={outdated}
-                      onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
-            <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
-        </Space>
+            <Space>
+                <Checkbox checked={outdated}
+                          onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
+                <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+            </Space>
     )
 
     return (
@@ -265,7 +284,13 @@ export default () => {
         >
             <div>
                 {
-                    currentItemId ? <IssueModal id={currentItemId} newClientsNumber={newClientsNumber}/> : null
+                    currentItemId ? (
+                        <IssueModal
+                            disabledEdit={isUserEngineer}
+                            id={currentItemId}
+                            newClientsNumber={newClientsNumber}
+                        />
+                    ) : null
                 }
                 <ExportArchiveSelector
                     isOpen={isExportSelectorOpen}
@@ -282,7 +307,7 @@ export default () => {
                     title={'Все заявки'}
                     name={'IssuesList'}
                     onExportArchive={exportArchiveHandler}
-                    BottomBar={BottomBar}
+                    BottomBar={!isUserEngineer && BottomBar}
                 />
             </div>
         </AppLayout>

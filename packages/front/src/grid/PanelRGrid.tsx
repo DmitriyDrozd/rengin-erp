@@ -1,5 +1,6 @@
 import { RowDoubleClickedEvent } from 'ag-grid-community/dist/lib/events';
 import { AgGridReact } from 'ag-grid-react';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { useHistory } from 'react-router-dom';
 import { AnyFieldsMeta } from 'iso/src/store/bootstrap/core/createResource';
 import getCrudPathname from '../hooks/getCrudPathname';
@@ -60,7 +61,7 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRe
         isRemoveItemsAvailable &&
         {
             label: 'Удалить из',
-            icon: <AntdIcons.PlusCircleOutlined />,
+            icon: <AntdIcons.MinusCircleOutlined />,
             key: GRID_MODES.unsettleItems,
         },
         isExportAvailable &&
@@ -302,19 +303,29 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const items = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
 
     const renderStandardToolBar = () => {
-        return role === 'сметчик'
-            ? <Typography.Text>Вы можете редактировать сметы</Typography.Text>
-            : <>
-                <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
-                <Dropdown menu={{
-                    items,
-                    onClick: e => {
-                        onMenuClick(e.key);
-                    }
-                }}>
-                    <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
-                </Dropdown>
-            </>;
+        switch (role) {
+            case roleEnum['сметчик']: {
+                return (<Typography.Text>Вы можете редактировать сметы</Typography.Text>);
+            }
+            case roleEnum['инженер']: {
+                return (<Typography.Text>Вы можете просматривать акты</Typography.Text>);
+            }
+            default: {
+                return (
+                    <>
+                        <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                        <Dropdown menu={{
+                            items,
+                            onClick: e => {
+                                onMenuClick(e.key);
+                            }
+                        }}>
+                            <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
+                        </Dropdown>
+                    </>
+                )
+            }
+        }
     };
 
     const onBtExport = useCallback(() => {

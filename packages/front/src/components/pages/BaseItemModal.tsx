@@ -24,7 +24,13 @@ const formItemLayout = {
     },
 };
 
-export default ({children, title}: { children: React.ReactNode, title?: string }) => {
+interface IssueModalProps {
+    children: React.ReactNode,
+    title?: string,
+    disabledEdit?: boolean
+}
+
+export default ({children, title, disabledEdit}: IssueModalProps) => {
     const editor = useContextEditor();
     const history = useHistory();
     const modalTitle = title || editor.resource.getItemName(editor.item);
@@ -51,6 +57,12 @@ export default ({children, title}: { children: React.ReactNode, title?: string }
             history.goBack();
     };
 
+    const actions = disabledEdit ? [] : [
+        <DeleteButton onDeleted={onDelete}/>,
+        <CancelButton onCancel={onBack} disabled={!editor.hasChanges}/>,
+        <Button type={'primary'} disabled={!editor.hasChanges} icon={<AntdIcons.SaveOutlined/>}
+                onClick={onSave}>Сохранить</Button>
+    ];
 
     return (
         <Modal
@@ -58,12 +70,7 @@ export default ({children, title}: { children: React.ReactNode, title?: string }
             width={'80%'}
             style={{top: '20px'}}
             title={modalTitle}
-            footer={[
-                <DeleteButton onDeleted={onDelete}/>,
-                <CancelButton onCancel={onBack} disabled={!editor.hasChanges}/>,
-                <Button type={'primary'} disabled={!editor.hasChanges} icon={<AntdIcons.SaveOutlined/>}
-                        onClick={onSave}>Сохранить</Button>
-            ]}
+            footer={actions}
             onCancel={onCancel}
         >
             <Form

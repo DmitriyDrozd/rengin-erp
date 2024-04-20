@@ -1,52 +1,55 @@
 import * as Icons from '@ant-design/icons';
 import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
 import React from 'react'
-import {RoleType} from "iso/src/store/bootstrap/repos/users"
+import {
+    roleEnum,
+    RoleType
+} from 'iso/src/store/bootstrap/repos/users';
 
 type TRoute = {
     path: string,
     name: string,
     icon?: JSX.Element,
     admin?: boolean,
+    estimator?: boolean,
     routes?: TRoute[],
 };
 
-const filterAdminRole = (isAdmin: boolean) => (item: TRoute) => item.admin ? isAdmin : true;
+const filterAdminRole = ({ isAdmin, isEstimator }: { isAdmin: boolean, isEstimator: boolean }) => (item: TRoute) => {
+    return item.admin ? isAdmin : item.estimator ? isEstimator : true
+};
+
 const mapFiltered = (item: TRoute) => {
-    const { admin, ...rest } = item;
+    const { admin, estimator, ...rest } = item;
 
     return rest;
 };
 
 export default (role: RoleType) => {
-    const isAdmin = role === 'руководитель';
-    const adminFilter = filterAdminRole(isAdmin);
+    const isAdmin = role === roleEnum['руководитель'];
+    const isEstimator = role === roleEnum['сметчик']
+    const adminFilter = filterAdminRole({ isAdmin, isEstimator });
 
     const routesDictionaries: TRoute[] = [
         {
             path: "/app/in/brands",
             name: "Заказчики",
-            admin: true,
         },
         {
             path: "/app/in/legals",
             name: "Юр Лица",
-            admin: true,
         },
         {
             path: "/app/in/sites",
             name: "Объекты",
-            admin: true,
         },
         {
             path: "/app/in/employees",
             name: "Сотрудники",
-            admin: true,
         },
         {
             path: "/app/in/import-sites",
             name: "Импорт",
-            admin: true,
         }
     ].filter(adminFilter).map(mapFiltered);
 
@@ -66,8 +69,10 @@ export default (role: RoleType) => {
             path: "/app/in/contracts",
             name: "Договоры",
             icon: <CalendarOutlined />,
+            estimator: true,
         },
         {
+            admin: true,
             path: "/app/in/dicts",
             name: "Справочники",
             icon: <AppstoreOutlined />,
