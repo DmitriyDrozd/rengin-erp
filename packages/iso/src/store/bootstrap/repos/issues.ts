@@ -114,7 +114,7 @@ const issuesRaw = createResource('issue', {
             }
         }),
         estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: estimationStatusesList}),
-        contactInfo: valueTypes.text({headerName: 'Контакты'}),
+        contactInfo: valueTypes.text({headerName: 'Комментарии'}),
         managerUserId: valueTypes.itemOf({
             headerName: 'Менеджер',
             linkedResourceName: 'USERS',

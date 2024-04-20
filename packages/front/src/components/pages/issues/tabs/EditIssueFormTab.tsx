@@ -45,6 +45,7 @@ export default ({ newClientsNumber }: { newClientsNumber: string }) => {
                     disabled
                     width={'sm'}
                 />
+                <RenField meta={ISSUES.properties.contactInfo} disabled/>
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         )

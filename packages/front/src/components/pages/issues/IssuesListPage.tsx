@@ -171,6 +171,7 @@ export default () => {
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 700},
+        {...colMap.contactInfo, width: 400},
         {...statusColumn},
     ];
 
