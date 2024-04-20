@@ -110,10 +110,11 @@ export const buildEditor = <RID extends string,
                 const meta = property;
                 if (isItemOfMeta(meta)) {
                     const connectedRes = RESOURCES_MAP[meta.linkedResourceName];
+                    const resList = connectedRes.selectAll(state);
+                    const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(resList, item) : resList
+
                     return {
-                        options: connectedRes.asOptions(
-                            connectedRes.selectAll(state) as any[]
-                        )
+                        options: connectedRes.asOptions(result)
                     };
                 }
                 if (isEnumMeta(meta)) {

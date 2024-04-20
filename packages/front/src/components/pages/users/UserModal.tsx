@@ -30,9 +30,13 @@ const rolesSites = SITES.rolesProps;
 export default ({id}: { id: string }) => {
     const ledger = useLedger();
     const useEditorData = useEditor(usersEditor, id);
-    const {removed, userId, clientsUserNumber, ...propsToRender} = USERS.properties;
+    const {removed, userId, clientsEngineerUserId, clientsUserNumber, ...propsToRender} = USERS.properties;
     const isEditMode = useEditorData.mode === 'edit';
-    const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsUserNumber].filter(i => !!i);
+    const list = [
+        ...Array.from(Object.values(propsToRender)),
+        isEditMode && clientsUserNumber,
+        useEditorData.item?.role === roleEnum['инженер'] && clientsEngineerUserId,
+    ].filter(i => !!i);
 
     const [addingModes, setAddingModes] = useState({
         brands: false,

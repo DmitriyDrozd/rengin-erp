@@ -41,8 +41,8 @@ const employeesRaw = createResource('employee', {
     lastname: valueTypes.string({colDef: {width: 250}, headerName: 'Фамилия'},),
     name: valueTypes.string({required: true, colDef: {width: 250}, headerName: 'Имя'},),
     title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
-    email: valueTypes.string({toLowerCase: true, colDef: {width: 250}}),
-    phone: valueTypes.string({toLowerCase: true, colDef: {width: 250}}),
+    email: valueTypes.string({headerName: 'E-mail', toLowerCase: true, colDef: {width: 250}}),
+    phone: valueTypes.string({headerName: 'Номер телефона', toLowerCase: true, colDef: {width: 250}}),
     clientsEmployeeNumber: valueTypes.string({headerName: 'Номер', required: true, unique: true}),
     removed: valueTypes.boolean({select: false, colDef: false, internal: true}),
 }, {

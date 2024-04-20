@@ -37,7 +37,7 @@ export const BRANDS = {
     clientsNumberProp: 'clientsBrandNumber',
     rolesProps: ['managerUserId'],
     getItemName: (brand) => {
-        return brand.brandName
+        return brand?.brandName || 'Не указана'
     },
 };
 

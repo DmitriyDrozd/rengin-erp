@@ -171,7 +171,6 @@ export default () => {
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 700},
-        {...colMap.contactInfo, width: 400},
         {...statusColumn},
     ];
 
@@ -233,7 +232,7 @@ export default () => {
             break;
         }
         case roleEnum['инженер']: {
-            dataForUser = outdatedIssues.filter(i => i.brandId === currentUser.brandId);
+            dataForUser = outdatedIssues.filter(i => i.clientsEngineerUserId === currentUser.clientsEngineerUserId);
             break;
         }
         default: {
