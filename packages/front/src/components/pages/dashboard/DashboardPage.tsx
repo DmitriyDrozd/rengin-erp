@@ -96,19 +96,19 @@ export default () => {
 
                 <Card.Grid hoverable={false} style={gridStyle} title={'Новые'}>
                     <b>Новые заявки</b>
-                    <IssueChart issues={openedIssues} color={'green'}/>
+                    <IssueChart issues={openedIssues} color={'#01677F'}/>
                 </Card.Grid>
                 <Card.Grid hoverable={false} title={'Закрытые'} style={gridStyle}>
                     <b>Закрыто за период</b>
-                    <IssueChart issues={closedIssues} color={'orange'}/>
+                    <IssueChart issues={closedIssues} color={'#18525F'}/>
                 </Card.Grid>
                 <Card.Grid hoverable={false} style={gridStyle} title={'Просрочено в закрытых'}>
                     <b>Просрочено в закрытых за период</b>
-                    <IssueChart issues={outdatedClosedIssues} color={'blue'}/>
+                    <IssueChart issues={outdatedClosedIssues} color={'#004353'}/>
                 </Card.Grid>
                 <Card.Grid hoverable={false} style={gridStyle} title={'Просрочено в работе'}>
                     <b>Просрочено в работе в течении пероида</b>
-                    <IssueChart issues={outdatedOpenIssues} color={'red'}/>
+                    <IssueChart issues={outdatedOpenIssues} color={'#31A4BF'}/>
                 </Card.Grid>
             </Card>
         </AppLayout>
