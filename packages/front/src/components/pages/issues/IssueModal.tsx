@@ -63,7 +63,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                     }}
                 >
                     <ProCard.TabPane key="tab1" tab="Заявка">
-                        <EditIssueItemForm newClientsNumber={newClientsNumber}/>
+                        <EditIssueItemForm newClientsNumber={newClientsNumber} isEditMode={isEditMode}/>
                     </ProCard.TabPane>
                     {!disabledEdit && (
                         <>

@@ -156,11 +156,12 @@ export default ({meta, disabled, customOptions, defaultValue}: {
             return (
                 <DatePicker
                     format="DD-MM-YYYY"
+                    allowClear
                     locale={locale}
                     defaultValue={defaultValue}
-                    value={value === undefined ? undefined : dayjs(value)}
+                    value={value === undefined || value === null ? undefined : dayjs(value)}
                     onChange={e => {
-                        updateItemProperty(e ? e.toDate().toISOString() : e);
+                        updateItemProperty(e ? e.toDate().toISOString() : null);
                     }}
                     {...sharedProps}
                 />
