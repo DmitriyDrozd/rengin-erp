@@ -35,22 +35,22 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
         requested: factory<IDType>('requested', {persistent: false}),
         removed: factory<IDType>('removed', {persistent: defaultPersistent}),
         patched: Object.assign((patch: PatchBase & Partial<T>, original: Partial<T> = {}) => {
-                const diff = {
-                    [idProp]: patch[idProp]
-                }
+            const diff = {
+                [idProp]: patch[idProp]
+            }
 
-                let diffFlag = false
-                for (const [key, value] of Object.entries(patch)) {
-                    if (!R.equals(patch[key], original[key])) {
-                        diff[key] = patch[key]
-                        diffFlag = true
-                    }
+            let diffFlag = false
+            for (const [key, value] of Object.entries(patch)) {
+                if (!R.equals(patch[key], original[key])) {
+                    diff[key] = patch[key]
+                    diffFlag = true
                 }
+            }
 
-                return diffFlag
-                    // @ts-ignore
-                    ? patchCreator({...diff, [idProp]: patch[idProp] || original[idProp]})
-                    : undefined
+            return diffFlag
+                // @ts-ignore
+                ? patchCreator({...diff, [idProp]: patch[idProp] || original[idProp]})
+                : undefined
             },
             {
                 ...patchCreator

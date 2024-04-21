@@ -5,7 +5,7 @@ import {
     estimatorUserId,
     managerUserId,
     techUserId
-} from './siteEditor';
+} from './userFields';
 import {optionsFromValuesList} from "../components/form/RenFormSelect";
 import {Days} from "iso";
 import LEGALS from "iso/src/store/bootstrap/repos/legals";
@@ -88,12 +88,14 @@ export const issuesEditor =  buildEditor(ISSUES,{
         getUpdate: ({item , value,state}) =>{
            const siteId =value
             if(siteId !== undefined && siteId !== item.siteId) {
-                    const {sites,subs, contracts} = state.app.bootstrap
-                    const site = sites.find(s => s.siteId === siteId)
+                const {sites,subs, contracts} = state.app.bootstrap
+                const site = sites.find(s => s.siteId === siteId)
 
-                    const sub = subs.find(s => s.siteId === siteId)
-                    const contract = sub ? contracts.find(c => c.contractId === sub.contractId) : undefined
+                const sub = subs.find(s => s.siteId === siteId)
+                const contract = sub ? contracts.find(c => c.contractId === sub.contractId) : undefined
+
                 let newItem = {...item, siteId: siteId}
+
                 if(!item.brandId)
                     newItem.brandId = site.brandId
                 if(!item.legalId)
@@ -108,6 +110,8 @@ export const issuesEditor =  buildEditor(ISSUES,{
                     newItem.managerUserId = site.managerUserId
                 }if(item.techUserId === undefined && site && site.techUserId) {
                     newItem.techUserId = site.techUserId
+                }if(item.estimatorUserId === undefined && site && site.estimatorUserId) {
+                    newItem.estimatorUserId = site.estimatorUserId
                 }
 
                 return newItem
@@ -122,7 +126,6 @@ export const issuesEditor =  buildEditor(ISSUES,{
             if(item.legalId) {
                 options = options.filter(o => o.legalId === item.legalId)
             }
-            console.log('options', options)
 
             return {
                 options : SITES.asOptions(options),

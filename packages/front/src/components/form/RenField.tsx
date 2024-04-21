@@ -11,6 +11,8 @@ import {
     Typography
 } from 'antd';
 import { ExtractProps } from '@sha/react-fp';
+import getCrudPathname from '../../hooks/getCrudPathname';
+import CreateButton from '../elements/CreateButton';
 import { useContextEditorProperty } from '../pages/chapter-modal/useEditor';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
@@ -25,7 +27,10 @@ import React, {
     useRef,
     useState
 } from 'react';
-import { getRes } from 'iso/src/store/bootstrap/resourcesList';
+import {
+    getRes,
+    RESOURCES_MAP
+} from 'iso/src/store/bootstrap/resourcesList';
 import { useISOState } from 'iso/src/ISOState';
 import './RenField.css';
 
@@ -86,15 +91,21 @@ export default ({meta, disabled, customOptions, defaultValue}: {
             );
         }
         if (isItemOfMeta(property)) {
+            const { linkedResourceName } = property;
+            const resource = RESOURCES_MAP[linkedResourceName];
+
             return (
                 <Select
                     value={value}
                     optionFilterProp={'label'}
-                    showSearch={true}
+                    allowClear
+                    showSearch
                     placeholder={property.headerName}
                     disabled={disabled}
+                    onClear={() => {
+                        updateItemProperty(null);
+                    }}
                     onChange={e => {
-                        console.log('Select onChange', e);
                         updateItemProperty(e);
                     }}
                     style={{minWidth: '200px'}}
@@ -104,9 +115,7 @@ export default ({meta, disabled, customOptions, defaultValue}: {
                             {menu}
                             <Divider style={{margin: '8px 0'}}/>
                             <Space style={{padding: '0 8px 4px'}}>
-                                <Button type="text" icon={<PlusOutlined/>}>
-                                    Добавить
-                                </Button>
+                                <CreateButton type="text" label="Добавить" resource={resource} />
                             </Space>
                         </>
                     )}
@@ -139,7 +148,6 @@ export default ({meta, disabled, customOptions, defaultValue}: {
                 <Checkbox
                     checked={value}
                     onChange={e => {
-                        console.log('DatePicker onChange', e);
                         updateItemProperty(e.target.checked);
                     }}
                     {...sharedProps}/>)

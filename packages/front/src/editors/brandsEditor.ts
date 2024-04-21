@@ -1,15 +1,8 @@
-import {buildEditor, PropRule} from "iso/src/store/bootstrap/buildEditor";
-import {USERS} from "iso/src/store/bootstrap/repos/users";
-import ISSUES from "iso/src/store/bootstrap/repos/issues";
+import {buildEditor} from "iso/src/store/bootstrap/buildEditor";
 import BRANDS from "iso/src/store/bootstrap/repos/brands";
-import {clone} from "ramda";
-import SITES from "iso/src/store/bootstrap/repos/sites";
-import {managerUserId} from "./siteEditor";
+import {managerUserId} from "./userFields";
 
 
-
-
-
-export const brandEditor =buildEditor(BRANDS, {
+export const brandEditor = buildEditor(BRANDS, {
     managerUserId,
 })
