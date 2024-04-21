@@ -16,7 +16,7 @@ type TRoute = {
 };
 
 const filterAdminRole = ({ isAdmin, isEstimator }: { isAdmin: boolean, isEstimator: boolean }) => (item: TRoute) => {
-    return item.admin ? isAdmin : item.estimator ? isEstimator : true
+    return item.admin ? isAdmin : item.estimator ? (isEstimator || isAdmin) : true
 };
 
 const mapFiltered = (item: TRoute) => {

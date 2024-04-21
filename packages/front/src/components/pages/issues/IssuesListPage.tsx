@@ -2,6 +2,7 @@ import { AgGridReact } from 'ag-grid-react';
 import getRestApi from 'iso/src/getRestApi';
 import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/employees';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
+import { Days } from 'iso/src/utils';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
@@ -178,13 +179,13 @@ export default () => {
     const defaultColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
-        {...colMap.registerDate, width: 150},
+        {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data.registerDate)},
         {...statusColumn},
         {...colMap.brandId, width: 150},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
-        {...colMap.plannedDate, headerName: 'План'},
-        {...colMap.completedDate, headerName: 'Завершена', width: 115},
+        {...colMap.plannedDate, headerName: 'План', cellRenderer: (props) => Days.toDayString(props.data.plannedDate)},
+        {...colMap.completedDate, headerName: 'Завершена', cellRenderer: (props) => Days.toDayString(props.data.completedDate), width: 115},
         {...colMap.managerUserId, headerName: 'Менеджер', width: 130},
         {...colMap.techUserId, headerName: 'Техник', width: 130},
         {...colMap.clientsEngineerUserId, headerName: 'Отв. Инженер', width: 130},

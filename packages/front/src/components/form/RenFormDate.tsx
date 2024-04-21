@@ -12,11 +12,14 @@ type RenFormDateProps = ExtractProps<typeof DatePicker> & {
 export default ({value,onValueChange, label, disabled, ...props}: RenFormDateProps) => {
     return (
         <ProForm.Item shouldUpdate label={label} {...props}>
-          <DatePicker disabled={disabled}
-                      locale={locale} value={value === undefined? undefined: dayjs(value)}
-                      onChange={ e => {
-                          onValueChange(e ? e.toDate().toISOString() : e)
-                      }}
+          <DatePicker
+              format="DD-MM-YYYY"
+              disabled={disabled}
+              locale={locale}
+              value={value === undefined? undefined: dayjs(value)}
+              onChange={ e => {
+                  onValueChange(e ? e.toDate().toISOString() : e)
+              }}
           />
         </ProForm.Item>
   );

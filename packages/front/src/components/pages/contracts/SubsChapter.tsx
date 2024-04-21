@@ -44,10 +44,19 @@ export default () => {
                         <ProForm.Item label={'Период подключения'} required={true}>
                             <Row>
                                 <Space>
-                                    <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'subscribeDate', item)} label={null}
-                                                       width={'sm'} rules={[{required: true}]}/>
-                                    <ProFormDatePicker {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)} label={null}
-                                                       width={'sm'}/>
+                                    <ProFormDatePicker
+                                        {...fieldMetaToProProps(SUBS, 'subscribeDate', item)}
+                                        label={null}
+                                        width={'sm'}
+                                        rules={[{required: true}]}
+                                        format="DD-MM-YYYY"
+                                    />
+                                    <ProFormDatePicker
+                                        {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)}
+                                        label={null}
+                                        width={'sm'}
+                                        format="DD-MM-YYYY"
+                                    />
                                 </Space>
                             </Row>
                         </ProForm.Item>

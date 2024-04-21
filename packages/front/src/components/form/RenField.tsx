@@ -155,6 +155,7 @@ export default ({meta, disabled, customOptions, defaultValue}: {
         else if (editorProperty.property.type === 'date')
             return (
                 <DatePicker
+                    format="DD-MM-YYYY"
                     locale={locale}
                     defaultValue={defaultValue}
                     value={value === undefined ? undefined : dayjs(value)}

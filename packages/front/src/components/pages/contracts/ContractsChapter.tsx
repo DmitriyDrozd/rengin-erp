@@ -45,11 +45,20 @@ const renderForm = ({item, id, verb, resource}) => {
             <ProForm.Item label={'Дата подписания'}>
                 <Row>
                     <Space>
-                        <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'signDate', item)}
-                                           label={null}
-                                           width={'sm'} rules={[]}/>
-                        <ProFormDatePicker {...fieldMetaToProProps(CONTRACTS, 'endDate', item)} label={'Действует до'}
-                                           width={'sm'} rules={[]}/>
+                        <ProFormDatePicker
+                            {...fieldMetaToProProps(CONTRACTS, 'signDate', item)}
+                            label={null}
+                            width={'sm'}
+                            rules={[]}
+                            format="DD-MM-YYYY"
+                        />
+                        <ProFormDatePicker
+                            {...fieldMetaToProProps(CONTRACTS, 'endDate', item)}
+                            label={'Действует до'}
+                            width={'sm'}
+                            rules={[]}
+                            format="DD-MM-YYYY"
+                        />
                     </Space>
                 </Row>
             </ProForm.Item>

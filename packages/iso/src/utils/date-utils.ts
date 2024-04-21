@@ -7,7 +7,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 type ConfigType = string | Date | Dayjs | null | undefined
 
 function dayjsToString() {
-    return this.format('YYYY/MM/DD');
+    return this.format('DD-MM-YYYY');
 }
 
 declare module 'dayjs' {
