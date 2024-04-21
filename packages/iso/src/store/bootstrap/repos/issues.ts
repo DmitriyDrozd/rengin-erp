@@ -77,8 +77,8 @@ const issuesRaw = createResource('issue', {
             internal: true
         }),
         registerDate: valueTypes.date({headerName: 'Зарегистрировано'}),
-        workStartedDate: valueTypes.date({headerName: 'Начало работ'}),
-        plannedDate: valueTypes.date({headerName: 'Запланировано'}),
+        plannedDate: valueTypes.date({headerName: 'Крайний срок'}),
+        workStartedDate: valueTypes.date({headerName: 'Дата выезда'}),
         completedDate: valueTypes.date({headerName: 'Дата завершения'}),
         description: valueTypes.text({headerName: 'Описание'}),
         removed: valueTypes.boolean({select: false, internal: true}),

@@ -1,3 +1,4 @@
+import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import React from 'react';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
@@ -49,13 +50,13 @@ export default () => {
                                         label={null}
                                         width={'sm'}
                                         rules={[{required: true}]}
-                                        format="DD-MM-YYYY"
+                                        format={GENERAL_DATE_FORMAT}
                                     />
                                     <ProFormDatePicker
                                         {...fieldMetaToProProps(SUBS, 'unsubscribeDate', item)}
                                         label={null}
                                         width={'sm'}
-                                        format="DD-MM-YYYY"
+                                        format={GENERAL_DATE_FORMAT}
                                     />
                                 </Space>
                             </Row>

@@ -11,6 +11,7 @@ import {
     Typography
 } from 'antd';
 import { ExtractProps } from '@sha/react-fp';
+import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import getCrudPathname from '../../hooks/getCrudPathname';
 import CreateButton from '../elements/CreateButton';
 import { useContextEditorProperty } from '../pages/chapter-modal/useEditor';
@@ -155,7 +156,7 @@ export default ({meta, disabled, customOptions, defaultValue}: {
         else if (editorProperty.property.type === 'date')
             return (
                 <DatePicker
-                    format="DD-MM-YYYY"
+                    format={GENERAL_DATE_FORMAT}
                     allowClear
                     locale={locale}
                     defaultValue={defaultValue}

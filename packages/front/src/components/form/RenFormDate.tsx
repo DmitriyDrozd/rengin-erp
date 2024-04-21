@@ -3,6 +3,7 @@ import {DatePicker} from "antd";
 import {ExtractProps} from "@sha/react-fp";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import dayjs from "dayjs";
+import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 
 type RenFormDateProps = ExtractProps<typeof DatePicker> & {
     onValueChange:(value: string) => any
@@ -13,7 +14,7 @@ export default ({value,onValueChange, label, disabled, ...props}: RenFormDatePro
     return (
         <ProForm.Item shouldUpdate label={label} {...props}>
           <DatePicker
-              format="DD-MM-YYYY"
+              format={GENERAL_DATE_FORMAT}
               disabled={disabled}
               locale={locale}
               value={value === undefined? undefined: dayjs(value)}

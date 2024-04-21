@@ -1,6 +1,7 @@
 import { generateGuid } from '@sha/random';
 import { SITES } from 'iso/src/store/bootstrap';
 import { RESOURCES_MAP } from 'iso/src/store/bootstrap/resourcesList';
+import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import React, { useState } from 'react';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
@@ -50,14 +51,14 @@ const renderForm = ({item, id, verb, resource}) => {
                             label={null}
                             width={'sm'}
                             rules={[]}
-                            format="DD-MM-YYYY"
+                            format={GENERAL_DATE_FORMAT}
                         />
                         <ProFormDatePicker
                             {...fieldMetaToProProps(CONTRACTS, 'endDate', item)}
                             label={'Действует до'}
                             width={'sm'}
                             rules={[]}
-                            format="DD-MM-YYYY"
+                            format={GENERAL_DATE_FORMAT}
                         />
                     </Space>
                 </Row>
