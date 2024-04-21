@@ -51,7 +51,11 @@ export const estimationsStatusesRulesForManager: Record<EstimationStatus, Estima
     'Отклонена': ['Новая', 'На согласовании']
 };
 
-export const paymentTypesList = ['Наличные', 'Безналичные'] as const;
+export const paymentTypes = {
+    cash: 'Наличные',
+    cashless: 'Безналичные',
+}
+export const paymentTypesList = [paymentTypes.cash, paymentTypes.cashless] as const;
 
 const issuesRaw = createResource('issue', {
         clientsIssueNumber: valueTypes.string({headerName: 'Номер заявки', required: true, unique: true}),
