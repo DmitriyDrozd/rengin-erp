@@ -17,37 +17,42 @@ export const fieldMetaToProProps =<
 >  (resource: Resource<RID, Fields>, key: K, item?: Partial<ItemWithId<RID,Fields>>) => {
     const meta = resource.properties[key]
     const state = useFrontStateSelector()
+
+    const getLinkedResourceWithOptions = () => {
+        const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
+        const list = linkedResource.selectList(state)
+        const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(list, item) : list;
+
+        return { linkedResource, result };
+    }
+
     const getLinkedResourceEnum = () => {
         if (isItemOfMeta(meta)) {
-            const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
-            const list = linkedResource.selectList(state);
-            const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(list, item) : list;
+            const { linkedResource, result } = getLinkedResourceWithOptions();
 
-            return linkedResource.asValueEnum(result)
+            return linkedResource.asValueEnum(result);
         }
+
         return undefined
     }
     const getLinkedResourceOptions = () => {
         if (isItemOfMeta(meta)) {
-            const linkedResource: Resource<any, any> = getRes(meta.linkedResourceName)
-            const list = linkedResource.selectList(state)
-            const result = meta.filterLinkedResourceItems ? meta.filterLinkedResourceItems(list, item) : list;
+            const { linkedResource, result } = getLinkedResourceWithOptions();
 
             return linkedResource.asOptions(result)
         }
+
         return undefined
     }
-    const proProp = ({
+
+    return {
         name: key,
         label: meta.headerName,
         required: resource.properties[key].required,
         placeholder: resource.properties[key].headerName,
         valueEnum: getLinkedResourceEnum(),
         options: getLinkedResourceOptions()
-    })
-
-    console.log(resource.factoryPrefix, key ,proProp)
-    return proProp
+    }
 }
 
 

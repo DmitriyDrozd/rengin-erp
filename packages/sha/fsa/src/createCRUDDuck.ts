@@ -40,9 +40,9 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
             }
 
             let diffFlag = false
-            for (const [key, value] of Object.entries(patch)) {
+            for (const [key] of Object.entries({ ...patch, ...original })) {
                 if (!R.equals(patch[key], original[key])) {
-                    diff[key] = patch[key]
+                    diff[key] = patch[key] === undefined ? null : patch[key]
                     diffFlag = true
                 }
             }

@@ -1,7 +1,6 @@
 import { ColDef } from 'ag-grid-community';
 import React from 'react';
 import { useAllColumns } from '../../../grid/RCol';
-import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
     ProFormSelect,
@@ -37,22 +36,37 @@ export default () => {
             resource={RESOURCE}
             renderForm={({item, id, verb, resource}) => {
                 const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId));
-                const isEdit = verb === 'EDIT';
 
                 return (
                     <>
-                        { isEdit && <ProFormText  {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')} rules={[{required: true}]}/> }
+                        <ProFormText  {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')} rules={[{required: true}]}/>
                         <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'brandId')} rules={[{required: true}]}/>
                         <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId', item)} valueEnum={legalValueEnum}
                                         rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'city')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'address')} rules={[{required: true}]}/>
                         <ProFormText {...fieldMetaToProProps(RESOURCE, 'KPP')}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'clientsEngineerUserId')}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'managerUserId')}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'estimatorUserId')}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'techUserId')}/>
-                        <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')}/>
+                        <ProFormSelect
+                            showSearch
+                            allowClear
+                            {...fieldMetaToProProps(RESOURCE, 'clientsEngineerUserId')}
+                        />
+                        <ProFormSelect
+                            showSearch
+                            allowClear
+                            {...fieldMetaToProProps(RESOURCE, 'managerUserId')}
+                        />
+                        <ProFormSelect
+                            showSearch
+                            allowClear
+                            {...fieldMetaToProProps(RESOURCE, 'estimatorUserId')}
+                        />
+                        <ProFormSelect
+                            showSearch
+                            allowClear
+                            {...fieldMetaToProProps(RESOURCE, 'techUserId')}
+                        />
+                        <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')} />
                     </>
                 );
             }

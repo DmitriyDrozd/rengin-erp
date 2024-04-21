@@ -41,7 +41,7 @@ export function* byQueryGetters () {
             const action = BRANDS.actions.added({
                 clientsBrandNumber: actualBrandNumber,
                 brandId: generateGuid(),
-                brandName: 'Автоматически созданный заказчик' + actualBrandNumber,
+                brandName: 'Автоматически созданный заказчик ' + actualBrandNumber,
                 brandType: 'Заказчик',
                 person: '',
                 email: '',
@@ -77,7 +77,7 @@ export function* byQueryGetters () {
                 brandId,
                 clientsLegalNumber,
                 legalId: actualLegalId,
-                legalName: 'Автоматически созданное юр. лицо' + clientsLegalNumber,
+                legalName: 'Автоматически созданное юр. лицо ' + clientsLegalNumber,
                 region: ''
             });
 
@@ -111,7 +111,7 @@ export function* byQueryGetters () {
                 siteId: generateGuid(),
                 brandId: newBrand.brandId,
                 legalId: newLegal.legalId,
-                address: 'Автоматически созданный объект' + actualClientsSiteNumber,
+                address: 'Автоматически созданный объект ' + actualClientsSiteNumber,
                 city: '-',
                 contactInfo: '',
                 KPP: '',

@@ -47,6 +47,13 @@ export default function* duckRepoSaga<R extends Repo>(repo: R, io: SagaOptions) 
                         await repo.pgDao.create(action.payload)
                     })
                 }
+                if (repo.actions.patched.isType(action)) {
+                    yield* call(async () => {
+                        await repo.mongoDao.updateById(action.payload)
+                        if(config.WRITE_PG===true)
+                        await repo.pgDao.patch(action.payload)
+                    })
+                }
                 if (repo.actions.removed.isType(action)) {
                     yield* call(async () => {
                         await repo.mongoDao.removeById(action.payload, true)

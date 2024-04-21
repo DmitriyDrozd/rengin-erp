@@ -49,12 +49,14 @@ export const CrudEditItemPage = <
     const history = useHistory();
     const [state, setState] = useState(initialValues);
     const onSubmit = async (values: Item) => {
-
-        const patch = {...initialValues, ...values, [idProp]: id};
+        const patch = {...values, [idProp]: id};
         const action = resource.actions.patched(patch, initialValues);
-        history.goBack();
-        if (action)
+
+        if (action) {
             dispatch(action);
+        }
+
+        history.goBack();
     };
     const title = resource.getItemName(state);
     const onSave = () => {
@@ -103,7 +105,6 @@ export const CrudEditItemPage = <
                 readonly={false}
                 initialValues={initialValues}
                 onValuesChange={(_, values) => {
-                    console.log(values);
                     setState(values);
                 }}
                 onFinish={async (values) => {

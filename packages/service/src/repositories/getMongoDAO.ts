@@ -36,7 +36,7 @@ const getMongoDAO = async <T, ID extends string, S extends Schema>
 
     const updateById = async (item: T): Promise<T> => {
         const label = "CRUD "+ duck.factoryPrefix + ' update '+ item[idProp]
-      const size = Math.floor(JSON.stringify(item).length / 1000)+ ' KB'
+        const size = Math.floor(JSON.stringify(item).length / 1000)+ ' KB'
         var hrstart = process.hrtime()
         const result = await Model.findOneAndUpdate(
             {[idProp]: item[idProp]},
