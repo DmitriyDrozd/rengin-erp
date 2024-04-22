@@ -56,7 +56,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
 
     return (
         <EditorContext.Provider value={useEditorData}>
-            <BaseEditModal title={title} disabledEdit={disabledEdit}>
+            <BaseEditModal title={title} restrictedAccess={disabledEdit}>
                 <ProCard
                     tabs={{
                         type: 'card',

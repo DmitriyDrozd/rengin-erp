@@ -308,7 +308,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 return (<Typography.Text>Вы можете редактировать сметы</Typography.Text>);
             }
             case roleEnum['инженер']: {
-                return (<Typography.Text>Вы можете просматривать акты</Typography.Text>);
+                return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
             }
             default: {
                 return (

@@ -6,48 +6,15 @@ import {
     EMPLOYEES
 } from 'iso/src/store/bootstrap/repos/employees';
 import ISSUES from 'iso/src/store/bootstrap/repos/issues';
-import { clone } from 'ramda';
 
 const brandMapper = (brands) => (item) => ({
     ...item,
     brand: brands.find(b => b.brandId === item.brandId)?.address
 });
 
-export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISSUES.properties.clientsEngineerUserId}, 'clientsEngineerUserId', any> = {
-    getErrors: ({value, item, state}) => {
-        const currentUser = USERS.selectById(value)(state)
-        if(currentUser) {
-            const usersBrand = BRANDS.selectById(currentUser.brandId)(state)
-            const currentBrand = BRANDS.selectById(item.brandId)(state)
-            if (currentBrand && usersBrand && currentUser.brandId !== usersBrand.brandId)
-                return 'Назначен ответственный инженер от заказчика '+usersBrand.brandName
-        }
-    },
-    getParams: ({item, state}) => {
-        const brands = BRANDS.selectAll(state);
-        let engineers = EMPLOYEES
-            .selectEq({role: employeeRoleEnum['ответственный инженер']})(state)
-            .map(brandMapper(brands));
-
-        if (item.brandId) {
-            engineers = engineers.filter(e => e.brandId === item.brandId)
-        }
-
-        return {
-            options: EMPLOYEES.asOptions(engineers),
-            addNewItemDefaults: {}
-        }
-    },
-    getUpdate: ({item, value, state}) => {
-        const currentUser = USERS.selectById(value)(state)
-        const newItem = clone(item)
-        if(!item.brandId && currentUser && currentUser.brandId)
-            newItem.brandId = currentUser.brandId
-        newItem.clientsEngineerUserId = value
-        return newItem
-    }
-}
-
+/**
+ * USERS
+ */
 export const managerUserId:PropRule<{ managerUserId: typeof ISSUES.properties.managerUserId }, any> = {
     getParams: ({item, state}) => {
         const brands = BRANDS.selectAll(state);
@@ -58,6 +25,19 @@ export const managerUserId:PropRule<{ managerUserId: typeof ISSUES.properties.ma
     },
 }
 
+export const estimatorUserId: PropRule<{ estimatorUserId: typeof ISSUES.properties.estimatorUserId }, any> = {
+    getParams: ({item, state}) => {
+        const brands = BRANDS.selectAll(state);
+        const techs = USERS.selectAll(state).filter(m => m.role==='сметчик').map(brandMapper(brands))
+        return {
+            options: USERS.asOptions(techs),
+        }
+    },
+}
+
+/**
+ * EMPLOYEES
+ */
 export const techUserId: PropRule<{ techUserId: typeof ISSUES.properties.techUserId }, any> = {
     getParams: ({item, state}) => {
         const brands = BRANDS.selectAll(state);
@@ -69,12 +49,15 @@ export const techUserId: PropRule<{ techUserId: typeof ISSUES.properties.techUse
     },
 }
 
-export const estimatorUserId: PropRule<{ estimatorUserId: typeof ISSUES.properties.estimatorUserId }, any> = {
+export const clientsEngineerUserId: PropRule<{ clientsEngineerUserId: typeof ISSUES.properties.clientsEngineerUserId}, 'clientsEngineerUserId', any> = {
     getParams: ({item, state}) => {
         const brands = BRANDS.selectAll(state);
-        const techs = USERS.selectAll(state).filter(m => m.role==='сметчик').map(brandMapper(brands))
+        const engineers = EMPLOYEES.selectAll(state)
+            .filter(m => m.role===employeeRoleEnum['ответственный инженер'])
+            .map(brandMapper(brands));
+
         return {
-            options: USERS.asOptions(techs),
+            options: EMPLOYEES.asOptions(engineers),
         }
     },
 }

@@ -6,50 +6,63 @@ import {
     RoleType
 } from 'iso/src/store/bootstrap/repos/users';
 
+const RolesMap = {
+    admin: roleEnum['руководитель'],
+    estimator: roleEnum['сметчик'],
+    engineer: roleEnum['инженер'],
+    manager: roleEnum['менеджер']
+} as const;
+
 type TRoute = {
     path: string,
     name: string,
     icon?: JSX.Element,
-    admin?: boolean,
-    estimator?: boolean,
+    roles?: Array<typeof RolesMap>,
     routes?: TRoute[],
 };
 
-const filterAdminRole = ({ isAdmin, isEstimator }: { isAdmin: boolean, isEstimator: boolean }) => (item: TRoute) => {
-    return item.admin ? isAdmin : item.estimator ? (isEstimator || isAdmin) : true
+const filterAdminRole = (role: RoleType) => (item: TRoute) => {
+    if (role === roleEnum['руководитель'] || !item.roles || item.roles.length === 0) {
+        return true;
+    }
+
+    return item.roles?.includes(role);
 };
 
 const mapFiltered = (item: TRoute) => {
-    const { admin, estimator, ...rest } = item;
+    const { roles, ...rest } = item;
 
     return rest;
 };
 
 export default (role: RoleType) => {
-    const isAdmin = role === roleEnum['руководитель'];
-    const isEstimator = role === roleEnum['сметчик']
-    const adminFilter = filterAdminRole({ isAdmin, isEstimator });
+    const adminFilter = filterAdminRole(role);
 
     const routesDictionaries: TRoute[] = [
         {
             path: "/app/in/brands",
             name: "Заказчики",
+            roles: [RolesMap.admin],
         },
         {
             path: "/app/in/legals",
             name: "Юр Лица",
+            roles: [RolesMap.admin],
         },
         {
             path: "/app/in/sites",
             name: "Объекты",
+            roles: [RolesMap.admin, RolesMap.manager],
         },
         {
             path: "/app/in/employees",
             name: "Сотрудники",
+            roles: [RolesMap.admin],
         },
         {
             path: "/app/in/import-sites",
             name: "Импорт",
+            roles: [RolesMap.admin],
         }
     ].filter(adminFilter).map(mapFiltered);
 
@@ -58,37 +71,38 @@ export default (role: RoleType) => {
             path: "/app/in/dashboard",
             name: "Дашборд",
             icon: <BarChartOutlined />,
-            admin: true,
+            roles: [RolesMap.admin],
         },
         {
             path: "/app/in/issues",
             name: "Заявки",
             icon: <MailOutlined />,
+            roles: [],
         },
         {
             path: "/app/in/contracts",
             name: "Договоры",
             icon: <CalendarOutlined />,
-            estimator: true,
+            roles: [RolesMap.estimator],
         },
         {
-            admin: true,
             path: "/app/in/dicts",
             name: "Справочники",
             icon: <AppstoreOutlined />,
             routes: routesDictionaries,
+            roles: [RolesMap.admin, RolesMap.manager],
         },
         {
             path: "/app/in/users",
             name: "Пользователи",
             icon: <Icons.UserOutlined/>,
-            admin: true,
+            roles: [RolesMap.admin],
         },
         {
             path: "/app/in/backup",
             name: "Резервная копия  ",
             icon: <Icons.HistoryOutlined/>,
-            admin: true,
+            roles: [RolesMap.admin],
         }
     ].filter(adminFilter).map(mapFiltered);
 

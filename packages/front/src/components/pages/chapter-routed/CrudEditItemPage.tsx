@@ -28,15 +28,24 @@ export type CrudFormRenderProps<
 > = ItemChapterProps<RID, Fields> & {
     item: Partial<Resource<RID, Fields>['exampleItem']>
     id: string
-    verb: 'EDIT' | 'CREATE' | 'VIEW'
+    verb: 'EDIT' | 'CREATE' | 'VIEW',
+    isViewMode?: boolean,
 }
-
 
 export const CrudEditItemPage = <
     RID extends string,
     Fields extends AnyFieldsMeta,
 >(props: CrudFormRenderProps<RID, Fields>) => {
-    const {resource, renderForm, item, renderItemInfo, verb, renderList, id} = props;
+    const {
+        resource,
+        renderForm,
+        item,
+        renderItemInfo,
+        verb,
+        renderList,
+        id,
+        isViewMode,
+    } = props;
 
     type Item = typeof resource.exampleItem
     const formRef = useRef<
@@ -48,6 +57,9 @@ export const CrudEditItemPage = <
     const dispatch = useDispatch();
     const history = useHistory();
     const [state, setState] = useState(initialValues);
+
+    const title = resource.getItemName(state);
+
     const onSubmit = async (values: Item) => {
         const patch = {...values, [idProp]: id};
         const action = resource.actions.patched(patch, initialValues);
@@ -58,28 +70,34 @@ export const CrudEditItemPage = <
 
         history.goBack();
     };
-    const title = resource.getItemName(state);
+
     const onSave = () => {
         formRef.current?.submit();
     };
+
     const onDelete = () => {
         dispatch(resource.actions.removed(id));
         onBack();
     };
+
     const layoutProps = {
         labelCol: {span: 6},
         wrapperCol: {span: 18},
     };
+
     const onBack = () =>
         history.goBack();
+
+    const actions = isViewMode ? [] : [
+        <CancelButton onCancel={onBack}/>,
+        <DeleteButton resource={resource} id={id} onDeleted={onDelete}/>,
+        <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
+    ];
+
     return (
         <AppLayout
             proLayout={{
-                extra: [
-                    <CancelButton onCancel={onBack}/>,
-                    <DeleteButton resource={resource} id={id} onDeleted={onDelete}/>,
-                    <Button type={'primary'} icon={<AntdIcons.SaveOutlined/>} onClick={onSave}>Сохранить</Button>
-                ],
+                extra: actions,
                 title,
             }}
             onBack={onBack}

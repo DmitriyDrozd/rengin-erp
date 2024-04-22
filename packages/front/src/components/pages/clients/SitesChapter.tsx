@@ -1,6 +1,8 @@
 import { ColDef } from 'ag-grid-community';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React from 'react';
 import { useAllColumns } from '../../../grid/RCol';
+import useCurrentUser from '../../../hooks/useCurrentUser';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
     ProFormSelect,
@@ -15,6 +17,9 @@ import PanelRGrid from '../../../grid/PanelRGrid';
 const RESOURCE = SITES;
 
 export default () => {
+    const { currentUser } = useCurrentUser();
+    const isViewMode = currentUser.role === roleEnum['менеджер'];
+
     const [cols, colMap] = useAllColumns(RESOURCE);
     const columns: ColDef<SiteVO>[] = [
         {...colMap.clickToEditCol},
@@ -33,40 +38,71 @@ export default () => {
 
     return (
         <ItemChapter
+            isViewMode={isViewMode}
             resource={RESOURCE}
             renderForm={({item, id, verb, resource}) => {
                 const legalValueEnum = useSelector(LEGALS.selectValueEnumByBrandId(item.brandId));
 
                 return (
                     <>
-                        <ProFormText  {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')} rules={[{required: true}]}/>
-                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'brandId')} rules={[{required: true}]}/>
-                        <ProFormSelect  {...fieldMetaToProProps(RESOURCE, 'legalId', item)} valueEnum={legalValueEnum}
-                                        rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'city')} rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'address')} rules={[{required: true}]}/>
-                        <ProFormText {...fieldMetaToProProps(RESOURCE, 'KPP')}/>
+                        <ProFormText
+                            {...fieldMetaToProProps(RESOURCE, 'clientsSiteNumber')}
+                            rules={[{required: true}]}
+                            disabled={isViewMode}
+                        />
+                        <ProFormSelect
+                            {...fieldMetaToProProps(RESOURCE, 'brandId')}
+                            rules={[{required: true}]}
+                            disabled={isViewMode}
+                        />
+                        <ProFormSelect
+                            {...fieldMetaToProProps(RESOURCE, 'legalId', item)}
+                            valueEnum={legalValueEnum}
+                            rules={[{required: true}]}
+                            disabled={isViewMode}
+                        />
+                        <ProFormText
+                            {...fieldMetaToProProps(RESOURCE, 'city')}
+                            rules={[{required: true}]}
+                            disabled={isViewMode}
+                        />
+                        <ProFormText
+                            {...fieldMetaToProProps(RESOURCE, 'address')}
+                            rules={[{required: true}]}
+                            disabled={isViewMode}
+                        />
+                        <ProFormText
+                            {...fieldMetaToProProps(RESOURCE, 'KPP')}
+                            disabled={isViewMode}
+                        />
                         <ProFormSelect
                             showSearch
                             allowClear
+                            disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'clientsEngineerUserId')}
                         />
                         <ProFormSelect
                             showSearch
                             allowClear
+                            disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'managerUserId')}
                         />
                         <ProFormSelect
                             showSearch
                             allowClear
+                            disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'estimatorUserId')}
                         />
                         <ProFormSelect
                             showSearch
                             allowClear
+                            disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'techUserId')}
                         />
-                        <ProFormTextArea {...fieldMetaToProProps(RESOURCE, 'contactInfo')} />
+                        <ProFormTextArea
+                            disabled={isViewMode}
+                            {...fieldMetaToProProps(RESOURCE, 'contactInfo')}
+                        />
                     </>
                 );
             }

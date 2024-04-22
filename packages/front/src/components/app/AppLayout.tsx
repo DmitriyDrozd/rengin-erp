@@ -18,7 +18,7 @@ import {
     Typography
 } from 'antd';
 import React, { useState } from 'react';
-import defaultProps from './_defaultProps';
+import routes from './Routes';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import USERS from 'iso/src/store/bootstrap/repos/users';
@@ -112,7 +112,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                     width: '331px'
                 }
             ]}
-            {...defaultProps(currentUser.role)}
+            {...routes(currentUser.role)}
             location={{
                 pathname
             }}

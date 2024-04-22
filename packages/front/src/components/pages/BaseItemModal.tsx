@@ -27,10 +27,10 @@ const formItemLayout = {
 interface IssueModalProps {
     children: React.ReactNode,
     title?: string,
-    disabledEdit?: boolean
+    restrictedAccess?: boolean
 }
 
-export default ({children, title, disabledEdit}: IssueModalProps) => {
+export default ({children, title, restrictedAccess}: IssueModalProps) => {
     const editor = useContextEditor();
     const history = useHistory();
     const modalTitle = title || editor.resource.getItemName(editor.item);
@@ -57,12 +57,14 @@ export default ({children, title, disabledEdit}: IssueModalProps) => {
         history.goBack();
     };
 
-    const actions = disabledEdit ? [] : [
+    const buttons = [
         <DeleteButton onDeleted={onDelete}/>,
         <CancelButton onCancel={onBack} disabled={!editor.hasChanges}/>,
         <Button type={'primary'} disabled={!editor.hasChanges} icon={<AntdIcons.SaveOutlined/>}
                 onClick={onSave}>Сохранить</Button>
     ];
+
+    const actions = restrictedAccess ? [buttons[1], buttons[2]] : [...buttons];
 
     return (
         <Modal
