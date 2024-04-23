@@ -1,10 +1,17 @@
 import {
+    Button,
     Card,
     Modal,
+    Space,
     Upload,
     UploadFile
 } from 'antd';
-import {PlusOutlined} from "@ant-design/icons";
+import {
+    LeftCircleOutlined,
+    MailOutlined,
+    PlusOutlined,
+    RightCircleOutlined
+} from '@ant-design/icons';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useEffect,
@@ -44,6 +51,10 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
+    const [isFullScreenPreview, setIsFullScreenPreview] = useState(false);
+    const toggleFullScreen = () => {
+        setIsFullScreenPreview(!isFullScreenPreview);
+    }
 
     // Хак для обновления пути к файлам с неправильным сохраненным путем (до исправления 08.04.2024)
     useEffect(() => {
@@ -74,7 +85,6 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         } else if (items.some(item => item.thumbUrl?.length > 500)) {
             onItemsChange(items.map(getItemWithoutThumbs));
         }
-        console.log(label);
     }, []);
 
     const handleCancel = () => setPreviewOpen(false);
@@ -105,9 +115,18 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         onItemsChange(itemsWithoutThumbs);
     }
     const handleRemove: UploadProps['onRemove'] = file => {
-        console.log('handleRemove', file)
         const isFileWithName = (name: string) => (file: UploadFile) => file.name === name
         onItemsChange(remove(items.findIndex(isFileWithName(file.name)), 1, items))
+    }
+
+    const previewItemIndex = items.findIndex(item => item.response?.url === previewImage);
+
+    const showPrevious = async () => {
+        await handlePreview(items[previewItemIndex - 1]);
+    }
+
+    const showNext = async () => {
+        await handlePreview(items[previewItemIndex + 1]);
     }
 
     const isDisabledUpload = role === roleEnum['сметчик'] || role === roleEnum['инженер'];
@@ -120,6 +139,34 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         </div>
     );
 
+    const modalProps = {
+        styles: {
+            body: {
+                display: 'flex',
+                justifyContent: 'center',
+            }
+        }
+    };
+
+    const fullScreenProps = isFullScreenPreview ? {
+        width: '100%',
+        ...modalProps
+    } : modalProps;
+
+
+    const navPlaceholder =  <div style={{ width: 58 }} />;
+    const backButton = previewItemIndex > 0 ? (
+        <Button size={'large'} style={{ border: 'none' }} onClick={showPrevious}>
+            <LeftCircleOutlined style={{ fontSize: 28 }}/>
+        </Button>
+    ) : navPlaceholder
+
+    const nextButton = previewItemIndex + 1 < items.length ? (
+        <Button size={'large'} style={{ border: 'none' }}>
+            <RightCircleOutlined style={{ fontSize: 28 }} onClick={showNext} />
+        </Button>
+    ) : navPlaceholder
+
     return (
         <Card title={label} key={label}>
             <Upload
@@ -129,14 +176,18 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
                 onPreview={handlePreview}
                 onRemove={handleRemove}
                 onChange={handleChange}
-                multiple={true}
+                multiple
                 maxCount={max}
                 disabled={isDisabledUpload}
             >
                 {(isMaxCount || isDisabledUpload) ? null : uploadButton}
             </Upload>
-            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                <img alt="example" style={{ width: '100%' }} src={previewImage} />
+            <Modal centered open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel} {...fullScreenProps}>
+                <Space>
+                    {backButton}
+                    <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: 'pointer' }} src={previewImage} />
+                    {nextButton}
+                </Space>
             </Modal>
         </Card>
     );
