@@ -51,6 +51,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
+    const [previewIndex, setPreviewIndex] = useState(-1);
     const [isFullScreenPreview, setIsFullScreenPreview] = useState(false);
     const toggleFullScreen = () => {
         setIsFullScreenPreview(!isFullScreenPreview);
@@ -104,9 +105,12 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
             file.preview = preview;
         }
 
+        const fileIndex = items?.findIndex(item => item === file);
+
         setPreviewImage(fileUrl || (file.preview as string));
         setPreviewOpen(true);
         setPreviewTitle(file.name || fileUrl!.substring(fileUrl!.lastIndexOf('/') + 1));
+        setPreviewIndex(fileIndex);
     };
 
     // todo: найти способ отключить тамбы через апи компоненты Upload
@@ -119,14 +123,12 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         onItemsChange(remove(items?.findIndex(isFileWithName(file.name)), 1, items))
     }
 
-    const previewItemIndex = items?.findIndex(item => item.response?.url === previewImage) || -1;
-
     const showPrevious = async () => {
-        await handlePreview(items[previewItemIndex - 1]);
+        await handlePreview(items[previewIndex - 1]);
     }
 
     const showNext = async () => {
-        await handlePreview(items[previewItemIndex + 1]);
+        await handlePreview(items[previewIndex + 1]);
     }
 
     const isDisabledUpload = role === roleEnum['сметчик'] || role === roleEnum['инженер'];
@@ -155,13 +157,13 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
 
 
     const navPlaceholder =  <div style={{ width: 58 }} />;
-    const backButton = previewItemIndex > 0 ? (
+    const backButton = previewIndex > 0 ? (
         <Button size={'large'} style={{ border: 'none' }} onClick={showPrevious}>
             <LeftCircleOutlined style={{ fontSize: 28 }}/>
         </Button>
     ) : navPlaceholder
 
-    const nextButton = previewItemIndex + 1 < items?.length ? (
+    const nextButton = previewIndex + 1 < items?.length ? (
         <Button size={'large'} style={{ border: 'none' }}>
             <RightCircleOutlined style={{ fontSize: 28 }} onClick={showNext} />
         </Button>
