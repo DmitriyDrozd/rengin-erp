@@ -22,7 +22,7 @@ import {remove} from "ramda";
 import useRole from "../../hooks/useRole";
 
 export type UploadListProps = {
-    items: UploadFile[]
+    items?: UploadFile[]
     onItemsChange: (list: UploadFile[]) => any
     maxCount: number
     issueId: string
@@ -116,10 +116,10 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     }
     const handleRemove: UploadProps['onRemove'] = file => {
         const isFileWithName = (name: string) => (file: UploadFile) => file.name === name
-        onItemsChange(remove(items.findIndex(isFileWithName(file.name)), 1, items))
+        onItemsChange(remove(items?.findIndex(isFileWithName(file.name)), 1, items))
     }
 
-    const previewItemIndex = items.findIndex(item => item.response?.url === previewImage);
+    const previewItemIndex = items?.findIndex(item => item.response?.url === previewImage) || -1;
 
     const showPrevious = async () => {
         await handlePreview(items[previewItemIndex - 1]);
