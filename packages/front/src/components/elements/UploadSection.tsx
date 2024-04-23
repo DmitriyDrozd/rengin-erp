@@ -161,7 +161,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
         </Button>
     ) : navPlaceholder
 
-    const nextButton = previewItemIndex + 1 < items.length ? (
+    const nextButton = previewItemIndex + 1 < items?.length ? (
         <Button size={'large'} style={{ border: 'none' }}>
             <RightCircleOutlined style={{ fontSize: 28 }} onClick={showNext} />
         </Button>
