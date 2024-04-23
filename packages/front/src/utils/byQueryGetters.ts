@@ -117,7 +117,8 @@ export function* byQueryGetters () {
                 KPP: '',
                 managerUserId: '',
                 techUserId: '',
-                clientsEngineerUserId: ''
+                clientsEngineerUserId: '',
+                estimatorUserId: '',
             });
 
             yield* put(action);
