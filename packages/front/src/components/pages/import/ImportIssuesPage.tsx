@@ -37,6 +37,8 @@ const formatExcelDate = (excelDate: number): string => {
     return excelDate ? new Date(Date.UTC(0, 0, excelDate - 1)).toDateString() : '';
 };
 
+const rejectFn = R.reject(R.anyPass([R.isEmpty, R.isNil]));
+
 export const importIssuesXlsxCols = [
     'clientsIssueNumber',
     'clientsSiteNumber',
@@ -73,15 +75,15 @@ function* importIssuesSaga(data: Datum[]) {
         const byQueryGetter = yield* byQueryGetters();
 
         // @ts-ignore
-        const site = yield byQueryGetter.siteByClientsNumber(clientsSiteNumber);
+        const site = yield* byQueryGetter.siteByClientsNumber(clientsSiteNumber);
         // @ts-ignore
-        const manager = yield byQueryGetter.userByClientsNumber(managerId);
+        const manager = yield* byQueryGetter.userByClientsNumber(managerId);
         // @ts-ignore
-        const estimator = yield byQueryGetter.userByClientsNumber(estimatorId);
+        const estimator = yield* byQueryGetter.userByClientsNumber(estimatorId);
         // @ts-ignore
-        const engineer = yield byQueryGetter.employeeByClientsNumber(engineerId);
+        const engineer = yield* byQueryGetter.employeeByClientsNumber(engineerId);
         // @ts-ignore
-        const technician = yield byQueryGetter.employeeByClientsNumber(technicianId);
+        const technician = yield* byQueryGetter.employeeByClientsNumber(technicianId);
 
         const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
         // Проверка на существование такой заявки
@@ -113,7 +115,7 @@ function* importIssuesSaga(data: Datum[]) {
 
 
             console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
-            newIssues.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(newIssue));
+            newIssues.push(rejectFn(newIssue));
         }
 
         return foundIssue;
@@ -121,7 +123,8 @@ function* importIssuesSaga(data: Datum[]) {
 
     for (let i = 0; i < data.length; i++) {
         const d = data[i];
-        yield getOrCreateIssue({
+        const timeA = performance.now();
+        yield* getOrCreateIssue({
             clientsIssueNumber: d.clientsIssueNumber,
             clientsSiteNumber: d.clientsSiteNumber,
             description: d.description,
@@ -134,6 +137,7 @@ function* importIssuesSaga(data: Datum[]) {
             estimatorId: d.estimatorId,
             contacts: d.contacts,
         });
+        console.log('i: ', i, ', time: ', performance.now() - timeA);
     }
 
     if (newIssues.length) {
@@ -141,6 +145,9 @@ function* importIssuesSaga(data: Datum[]) {
         yield* put(ISSUES.actions.addedBatch(newIssues));
     }
 }
+
+// ms
+const averageCreateTime = 5;
 
 export const ImportIssuesPage = () => {
     const store = useStore();
@@ -150,7 +157,7 @@ export const ImportIssuesPage = () => {
 
         setTimeout(() => {
             callback?.();
-        }, 1000);
+        }, data.length * averageCreateTime * 2);
     };
 
     return (
