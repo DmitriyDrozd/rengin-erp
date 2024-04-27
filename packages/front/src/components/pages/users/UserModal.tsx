@@ -1,6 +1,7 @@
 import { ProCard } from '@ant-design/pro-components';
 import { notification } from 'antd';
 import {
+    EXPENSES,
     ISSUES,
     USERS
 } from 'iso/src/store/bootstrap';
@@ -26,6 +27,7 @@ const roleMap = {
 const rolesIssues = ISSUES.rolesProps;
 const rolesBrands = BRANDS.rolesProps;
 const rolesSites = SITES.rolesProps;
+const rolesExpenses = EXPENSES.rolesProps;
 
 export default ({id}: { id: string }) => {
     const ledger = useLedger();
@@ -42,6 +44,7 @@ export default ({id}: { id: string }) => {
         brands: false,
         issues: false,
         sites: false,
+        expenses: false,
     });
     const switchMode = (mode: string, value: boolean) => {
         setAddingModes({
@@ -61,6 +64,7 @@ export default ({id}: { id: string }) => {
     const showSites = isEditMode && rolesSites.includes(role);
     const showIssues = isEditMode && rolesIssues.includes(role);
     const showBrands = isEditMode && rolesBrands.includes(role);
+    const showExpenses = isEditMode && rolesExpenses.includes(role);
 
     // @ts-ignore
     const brands = showBrands ? ledger.brands.list.filter(s => addingModes.brands ? s[role] !== id : s[role] === id) : [];
@@ -68,6 +72,8 @@ export default ({id}: { id: string }) => {
     const sites = showSites ? ledger.sites.list.filter(s => addingModes.sites ? s[role] !== id : s[role] === id) : [];
     // @ts-ignore
     const issues = showIssues ? ledger.issues.list.filter(s => addingModes.issues ? s[role] !== id : s[role] === id) : [];
+    // @ts-ignore
+    const expenses = showExpenses ? ledger.expenses.list.filter(s => addingModes.expenses ? s[role] !== id : s[role] === id) : [];
 
     const onAddToItems = (list: any[], name: string, idProp: string) => (selectedIds: string[], updateCollection: (updated: any[]) => void) => {
         const updated = list
@@ -148,6 +154,22 @@ export default ({id}: { id: string }) => {
                                     title={name}
                                     resource={BRANDS}
                                     rowData={brands}
+                                />
+                            </ProCard.TabPane>
+                        )
+                    }
+                    {
+                        showExpenses && (
+                            <ProCard.TabPane key="tab4" tab="Итоговые сметы">
+                                <PanelRGrid
+                                    onCancelClick={disableAddingMode('expenses')}
+                                    onShowAllItems={onShowAllItems('expenses')}
+                                    onAddToItems={onAddToItems(ledger.expenses.list, 'итоговым сметам', EXPENSES.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.expenses.list, 'итоговых смет', EXPENSES.idProp)}
+                                    createItemProps={{[role]: id}}
+                                    title={name}
+                                    resource={EXPENSES}
+                                    rowData={expenses}
                                 />
                             </ProCard.TabPane>
                         )

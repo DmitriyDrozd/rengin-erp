@@ -6,6 +6,9 @@ import {
     employeeRoleEnum,
     EmployeeVO
 } from './employees';
+import {
+    estimationStatusesList
+} from './expenses';
 import SITES, { SiteVO } from './sites';
 import {
     roleEnum,
@@ -14,10 +17,8 @@ import {
 
 
 export const statusesList = ['Новая', 'В работе', 'Выполнена', 'Отменена', 'Приостановлена'] as const;
-export const estimationStatusesList = ['Новая', 'На согласовании', 'Согласована', 'Выставлена в оплату', 'Отклонена'] as const;
 
 export type Status = typeof statusesList[number]
-export type EstimationStatus = typeof estimationStatusesList[number]
 
 export const statusesRulesForManager: Record<Status, Status[]> = {
     'Новая': ['В работе'],
@@ -33,22 +34,6 @@ export const statusesColorsMap: Record<Status, string> = {
     'Выполнена': 'green',
     'Отменена': 'lightgrey',
     'Приостановлена': 'grey'
-};
-
-export const estimationStatuses: Record<EstimationStatus, string> = {
-    'Новая': 'Новая',
-    'На согласовании': 'На согласовании',
-    'Согласована': 'Согласована',
-    'Выставлена в оплату': 'Выставлена в оплату',
-    'Отклонена': 'Отклонена'
-};
-
-export const estimationsStatusesRulesForManager: Record<EstimationStatus, EstimationStatus[]> = {
-    'Новая': ['На согласовании'],
-    'На согласовании': ['Согласована', 'Отклонена'],
-    'Согласована': ['Выставлена в оплату'],
-    'Выставлена в оплату': ['Отклонена'],
-    'Отклонена': ['Новая', 'На согласовании']
 };
 
 export const paymentTypes = {

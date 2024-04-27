@@ -42,5 +42,6 @@ export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNu
             />
             <RenField meta={EXPENSES.properties.estimatorUserId} />
             <RenField meta={EXPENSES.properties.estimationsStatus} />
+            <RenField meta={EXPENSES.properties.expensePrice} />
         </Form>);
 }

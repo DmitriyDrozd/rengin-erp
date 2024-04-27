@@ -1,12 +1,11 @@
 import { AgGridReact } from 'ag-grid-react';
 import getRestApi from 'iso/src/getRestApi';
-import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/employees';
+import { estimationStatusesList, estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { Days } from 'iso/src/utils';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
-    estimationStatusesList,
     ISSUES,
     IssueVO,
     statusesColorsMap,

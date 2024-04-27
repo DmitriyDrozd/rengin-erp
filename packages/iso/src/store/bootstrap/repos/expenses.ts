@@ -9,8 +9,8 @@ import {
     UserVO
 } from './users';
 
-
-export const expensesStatusesList = [
+export const estimationStatusesList = [
+    'Новая',
     'На согласовании',
     'Согласована',
     'Выставлена в оплату',
@@ -18,20 +18,27 @@ export const expensesStatusesList = [
     'Не оплачена'
 ] as const;
 
-export type ExpenseStatus = typeof expensesStatusesList[number]
+export type EstimationStatus = typeof estimationStatusesList[number]
 
-export const expensesStatuses: Record<ExpenseStatus, string> = {
-    [expensesStatusesList['На согласовании']]: 'На согласовании',
-    [expensesStatusesList['Согласована']]: 'Согласована',
-    [expensesStatusesList['Выставлена в оплату']]: 'Выставлена в оплату',
-    [expensesStatusesList['Оплачена']]: 'Оплачена',
-    [expensesStatusesList['Не оплачена']]: 'Не оплачена'
-};
-
-export const expensesStatusesRulesForManager: Record<ExpenseStatus, ExpenseStatus[]> = {
+export const estimationsStatusesRulesForManager: {
+    'Новая': string[];
+    'Выставлена в оплату': (string)[];
+    'Согласована': string[];
+    'На согласовании': string[]
+} = {
+    'Новая': ['На согласовании'],
     'На согласовании': ['Согласована'],
     'Согласована': ['Выставлена в оплату'],
     'Выставлена в оплату': ['Оплачена', 'Не оплачена'],
+};
+
+export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
+    'Новая': 'green',
+    'На согласовании': 'yellow',
+    'Согласована': 'blue',
+    'Выставлена в оплату': 'orange',
+    'Оплачена': 'darkgreen',
+    'Не оплачена': 'red',
 };
 
 const expensesRaw = createResource('expense', {
@@ -46,7 +53,7 @@ const expensesRaw = createResource('expense', {
                 url: valueTypes.string()
             }
         }),
-        estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: expensesStatusesList}),
+        estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: estimationStatusesList}),
 
         managerUserId: valueTypes.itemOf({
             headerName: 'Менеджер',
@@ -66,9 +73,9 @@ const expensesRaw = createResource('expense', {
     {
         nameProp: 'clientsExpenseNumber',
         langRU: {
-            singular: 'Смета',
-            plural: 'Сметы',
-            some: 'Смет'
+            singular: 'Итоговая смета',
+            plural: 'Итоговые сметы',
+            some: 'Итоговых смет'
         }
     }
 );

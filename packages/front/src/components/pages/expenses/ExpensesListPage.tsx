@@ -1,11 +1,13 @@
 import { EXPENSES } from 'iso/src/store/bootstrap';
-import { estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/employees';
-import { ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
+import {
+    estimationStatusesList,
+    estimationsStatusesColorsMap,
+    ExpenseVO
+} from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
-    estimationStatusesList,
     IssueVO,
 } from 'iso/src/store/bootstrap/repos/issues';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
@@ -25,7 +27,7 @@ import {
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import { ExpenseModal } from './ExpenseModal';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
-import IssueEstimationsStatusCellEditor from '../issues/IssueEstimationsStatusCellEditor';
+import { ExpenseEstimationsStatusCellEditor } from './ExpenseEstimationsStatusCellEditor';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -36,7 +38,6 @@ export const ExpensesListPage = () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
 
     const {currentUser} = useCurrentUser();
-    const isUserEstimator = currentUser.role === roleEnum['сметчик'];
 
     const allExpenses: ExpenseVO[] = useSelector(EXPENSES.selectAll);
     const statusPropToFilter = 'estimationsStatus';
@@ -45,7 +46,6 @@ export const ExpensesListPage = () => {
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(EXPENSES);
 
-    // todo: expensesStatuses
     const columns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
@@ -68,7 +68,7 @@ export const ExpensesListPage = () => {
                 const issue: Partial<IssueVO> = {issueId: event.data.issueId, estimationsStatus: event.newValue};
                 dispatch(EXPENSES.actions.patched(issue));
             },
-            cellEditor: IssueEstimationsStatusCellEditor,
+            cellEditor: ExpenseEstimationsStatusCellEditor,
             cellEditorParams: {
                 values: (params) => [params.data.estimationsStatus, 'sd'],
                 valueListGap: 0,

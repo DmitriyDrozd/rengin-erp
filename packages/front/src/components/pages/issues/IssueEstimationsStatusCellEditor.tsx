@@ -1,3 +1,7 @@
+import {
+    estimationsStatusesRulesForManager,
+    EstimationStatus
+} from 'iso/src/store/bootstrap/repos/expenses';
 import * as React from "react";
 import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ISSUES} from "iso/src/store/bootstrap";
@@ -6,8 +10,6 @@ import {Select} from "antd";
 import {BaseSelectRef} from "rc-select";
 import {optionsFromValuesList} from "../../form/RenFormSelect";
 import {
-    estimationsStatusesRulesForManager,
-    EstimationStatus,
     IssueVO,
 } from 'iso/src/store/bootstrap/repos/issues';
 import useRole from "../../../hooks/useRole";

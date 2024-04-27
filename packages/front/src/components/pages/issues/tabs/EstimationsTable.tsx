@@ -1,4 +1,5 @@
 import { ISSUES } from 'iso/src/store/bootstrap';
+import { estimationStatusesList } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useCallback,
@@ -14,13 +15,11 @@ import {
     RowEditingStoppedEvent
 } from 'ag-grid-community';
 import {
-    estimationStatusesList,
     ExpenseItem,
     IssueVO
 } from 'iso/src/store/bootstrap/repos/issues';
 import {
     Button,
-    Checkbox,
     Select,
     Space,
     Typography
@@ -32,8 +31,6 @@ import {
 import AG_GRID_LOCALE_RU from '../../../../grid/locale.ru';
 import ImportTableButton from '../ImportTableButton';
 import { DownloadOutlined } from '@ant-design/icons';
-import { fieldMetaToProProps } from '../../chapter-routed/ItemChapter';
-import RenFormCheckbox from '../../../form/RenFormCheckbox';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { ProForm } from '@ant-design/pro-components';
@@ -149,7 +146,6 @@ export default () => {
                     defaultColDef={defaultColDef}
                     onCellEditingStarted={onCellEditingStarted}
                     onCellEditingStopped={onCellEditingStopped}
-
                 />
             </div>
             <div style={{paddingTop: '8px', display: 'flex', justifyContent: 'space-between'}}>

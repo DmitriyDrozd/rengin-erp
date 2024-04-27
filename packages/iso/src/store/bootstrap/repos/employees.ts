@@ -1,9 +1,6 @@
 import { createResource } from '../core/createResource';
 import { valueTypes } from '../core/valueTypes';
-import {
-    EstimationStatus,
-} from './issues';
-import { roleEnum } from './users';
+import { EstimationStatus } from './expenses';
 
 export const employeeRoleEnum = {
     'техник': 'техник',
@@ -14,14 +11,6 @@ export const employeeRoleTypes = [
     employeeRoleEnum.техник,
     employeeRoleEnum['ответственный инженер'],
 ] as const;
-
-export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
-    'Новая': 'green',
-    'На согласовании': 'yellow',
-    'Согласована': 'blue',
-    'Выставлена в оплату': 'orange',
-    'Отклонена': 'red',
-};
 
 export const getItemNameWithContacts = (item) => {
     const lastName = item.lastname ? `${item.lastname} ` : '';
