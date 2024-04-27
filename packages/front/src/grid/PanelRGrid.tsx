@@ -345,8 +345,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             style={{
                 height: '48px',
                 boxShadow: '0 1px 4px rgba(0,21,41,.12)',
-                padding: '0 10px 0 10px',
-                width: '100%',
+                padding: '0 20px',
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -388,7 +387,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             /** Displayed rows have changed. Triggered after sort, filter or tree expand / collapse events. */
             // onModelUpdated 
         />
-        <div style={{paddingTop: '4px', display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{padding: '4px 20px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
                 <Typography.Text>Всего записей: {list.length}</Typography.Text>
             </Space>

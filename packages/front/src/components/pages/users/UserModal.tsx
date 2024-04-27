@@ -109,7 +109,7 @@ export default ({id}: { id: string }) => {
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
                 <GenericRenFields list={list}/>
-                <ProCard tabs={{type: 'card'}}>
+                <ProCard tabs={{type: 'card', cardProps: { bodyStyle: { padding: 0 }} }}>
                     {
                         showSites && (
                             <ProCard.TabPane key="tab1" tab="Объекты">

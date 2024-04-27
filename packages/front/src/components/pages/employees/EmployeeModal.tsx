@@ -98,7 +98,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
                 <GenericRenFields list={list} customOptions={customOptions}/>
-                <ProCard tabs={{type: 'card'}}>
+                <ProCard tabs={{type: 'card', cardProps: { bodyStyle: { padding: 0 }} }}>
                     {
                         showSites && (
                             <ProCard.TabPane key="tab1" tab="Объекты">

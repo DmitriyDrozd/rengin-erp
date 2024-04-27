@@ -81,15 +81,13 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     return (
         <Modal
             open
-            width={'80%'}
-            style={{top: '20px'}}
+            style={{top: '20px', minWidth: '50vw'}}
             title={modalTitle}
             footer={actions}
             onCancel={onCancel}
         >
             <Form
                 {...formItemLayout}
-                style={{maxWidth: 800}}
                 {...layoutPropsModalForm}
                 layout={'horizontal'}
             >
