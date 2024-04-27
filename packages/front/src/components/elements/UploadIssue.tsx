@@ -45,7 +45,7 @@ const getItemWithoutThumbs = (item: any) => item.status === 'done' ? {
     thumbUrl: item.response?.url || item.url,
 } : item;
 
-const UploadIssue = ({onItemsChange,items,maxCount,issueId,label,brandName,brandPath}:UploadListProps) => {
+const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName, brandPath}: UploadListProps) => {
     const role = useRole()
     const max = maxCount || 1
     const [previewOpen, setPreviewOpen] = useState(false);

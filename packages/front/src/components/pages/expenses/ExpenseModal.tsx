@@ -23,7 +23,6 @@ interface ExpenseModalProps {
 
 export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disabledEdit}) => {
     const useEditorData = useEditor(expensesEditor, id);
-    const ledger = useLedger();
     const isEditMode = useEditorData.mode === 'edit';
     const expenseId = useEditorData.item[EXPENSES.idProp];
 
@@ -43,22 +42,6 @@ export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disab
     const title = useEditorData.mode === 'create'
         ? 'Новая итоговая смета' : EXPENSES.getIssueTitle(useEditorData.item);
 
-    const [uploadProps, setUploadProps] = useState<{
-        brandName?: string,
-        brandPath?: string,
-    }>({});
-
-    useEffect(() => {
-        if (isEditMode && !uploadProps.brandName && !uploadProps.brandPath) {
-            const brandName = ledger.brands.list.find(b => b.brandId === useEditorData.item.brandId)?.brandName;
-
-            setUploadProps({
-                brandName,
-                brandPath: `${brandName}_${expenseId}`,
-            });
-        }
-    }, [id]);
-
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal title={title} restrictedAccess={disabledEdit}>
@@ -73,7 +56,7 @@ export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disab
                     <ProCard.TabPane key="tab2" tab={'Файлы'} disabled={!isEditMode}>
                         <UploadEstimation
                             {...getFilesProps('expenseFiles', 'Сметы', 10)}
-                            {...uploadProps}
+                            actionPath='/api/upload/estimation/'
                             sourceId={expenseId}
                         />
                     </ProCard.TabPane>

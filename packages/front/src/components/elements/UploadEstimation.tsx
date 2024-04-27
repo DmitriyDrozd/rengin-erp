@@ -26,14 +26,14 @@ export type UploadListProps = {
     onItemsChange: (list: UploadFile[]) => any
     maxCount: number
     sourceId: string
-    label: string
-    brandName: string
-    brandPath: string
+    label: string,
+    actionPath: string,
 }
 
-const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, brandName, brandPath}: UploadListProps) => {
+const UploadEstimation = ({actionPath, onItemsChange, items = [], maxCount, sourceId, label}: UploadListProps) => {
     const [itemsList, setItemsList] = useState(items);
     const max = maxCount || 1;
+    const action = actionPath + sourceId;
 
     useEffect(() => {
         const isAllLoaded = itemsList.every(f => f.status === 'done' || f.status === undefined);
@@ -101,7 +101,7 @@ const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, bran
         <Card title={label} key={label}>
             <Upload
                 multiple
-                action={'/api/upload/estimation/' + sourceId}
+                action={action}
                 listType="picture"
                 fileList={itemsList}
                 onChange={handleChange}

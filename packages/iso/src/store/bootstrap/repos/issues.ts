@@ -90,17 +90,26 @@ const issuesRaw = createResource('issue', {
         estimationPrice: valueTypes.number({headerName: 'Смета сумма'}),
         workFiles: valueTypes.array({
             properties: {
-                url: valueTypes.string()
+                url: valueTypes.string({required: true}),
+                name: valueTypes.string({required: true}),
             }
         }),
         actFiles: valueTypes.array({
             properties: {
-                url: valueTypes.string({required: true})
+                url: valueTypes.string({required: true}),
+                name: valueTypes.string({required: true}),
             }
         }),
         checkFiles: valueTypes.array({
             properties: {
-                url: valueTypes.string()
+                url: valueTypes.string({required: true}),
+                name: valueTypes.string({required: true}),
+            }
+        }),
+        expenseFiles: valueTypes.array({
+            properties: {
+                url: valueTypes.string({required: true}),
+                name: valueTypes.string({required: true}),
             }
         }),
         estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: estimationStatusesList}),

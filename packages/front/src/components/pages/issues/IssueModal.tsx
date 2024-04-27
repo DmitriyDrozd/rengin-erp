@@ -1,9 +1,11 @@
+import { EXPENSES } from 'iso/src/store/bootstrap';
 import { ISSUES } from 'iso/src/store/bootstrap/';
 import React, {
     useEffect,
     useState
 } from 'react';
 import useLedger from '../../../hooks/useLedger';
+import UploadEstimation from '../../elements/UploadEstimation';
 import {
     EditorContext,
     useEditor
@@ -19,9 +21,11 @@ import { issuesEditor } from '../../../editors/issueEditor';
 
 export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNumber: string, disabledEdit?: boolean }) => {
     const useEditorData = useEditor(issuesEditor, id);
+    const issueId = useEditorData.item.issueId;
+
     const ledger = useLedger();
     const isEditMode = useEditorData.mode === 'edit';
-    const getFilesProps = (listName: 'workFiles' | 'checkFiles' | 'actFiles', label: string, maxCount = 1) => {
+    const getFilesProps = (listName: 'workFiles' | 'checkFiles' | 'actFiles' | 'expenseFiles', label: string, maxCount = 1) => {
         return {
             items: useEditorData.item[listName],
             onItemsChange: (list: any[]) => {
@@ -89,6 +93,11 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                         <UploadIssue
                             {...getFilesProps('workFiles', 'Работы', 70)}
                             {...uploadProps}
+                        />
+                        <UploadEstimation
+                            {...getFilesProps('expenseFiles', 'Сметы', 10)}
+                            actionPath='/api/upload/issue/'
+                            sourceId={issueId}
                         />
                     </ProCard.TabPane>
                 </ProCard>
