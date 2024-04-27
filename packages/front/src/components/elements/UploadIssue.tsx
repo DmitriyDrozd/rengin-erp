@@ -8,8 +8,8 @@ import {
 } from 'antd';
 import {
     LeftCircleOutlined,
-    MailOutlined,
     PlusOutlined,
+    ReconciliationOutlined,
     RightCircleOutlined
 } from '@ant-design/icons';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
@@ -45,6 +45,10 @@ const getItemWithoutThumbs = (item: any) => item.status === 'done' ? {
     thumbUrl: item.response?.url || item.url,
 } : item;
 
+const downloadFile = (file) => {
+    window.open(file.url, '_blank');
+}
+
 const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName, brandPath}: UploadListProps) => {
     const role = useRole()
     const max = maxCount || 1
@@ -56,6 +60,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
     const toggleFullScreen = () => {
         setIsFullScreenPreview(!isFullScreenPreview);
     }
+    const previewItem = items ? items[previewIndex] : null;
 
     // Хак для обновления пути к файлам с неправильным сохраненным путем (до исправления 08.04.2024)
     useEffect(() => {
@@ -169,6 +174,25 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
         </Button>
     ) : navPlaceholder
 
+    const isPreviewPdf = previewItem && previewImage?.toLowerCase().includes('.pdf');
+    const preview = isPreviewPdf ? (
+            <Button
+                key={previewItem.name}
+                style={{
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                }}
+                onClick={() => downloadFile(previewItem)}
+            >
+                <ReconciliationOutlined style={{fontSize: 36, paddingRight: 8}}/>
+                скачать PDF файл
+            </Button>
+        ) :
+        <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: 'pointer' }} src={previewImage} />
+
+
     return (
         <Card title={label} key={label}>
             <Upload
@@ -187,7 +211,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
             <Modal centered open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel} {...fullScreenProps}>
                 <Space>
                     {backButton}
-                    <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: 'pointer' }} src={previewImage} />
+                    {preview}
                     {nextButton}
                 </Space>
             </Modal>
