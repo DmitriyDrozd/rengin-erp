@@ -70,15 +70,13 @@ export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disab
                     <ProCard.TabPane key="tab1" tab="Итоговая смета">
                         <EditExpenseItemForm newClientsNumber={newClientsNumber} isEditMode={isEditMode}/>
                     </ProCard.TabPane>
-                    {isEditMode && (
-                        <ProCard.TabPane key="tab2" tab={'Файлы'}>
-                            <UploadEstimation
-                                {...getFilesProps('expenseFiles', 'Сметы', 10)}
-                                {...uploadProps}
-                                sourceId={expenseId}
-                            />
-                        </ProCard.TabPane>
-                    )}
+                    <ProCard.TabPane key="tab2" tab={'Файлы'} disabled={!isEditMode}>
+                        <UploadEstimation
+                            {...getFilesProps('expenseFiles', 'Сметы', 10)}
+                            {...uploadProps}
+                            sourceId={expenseId}
+                        />
+                    </ProCard.TabPane>
                 </ProCard>
             </BaseEditModal>
         </EditorContext.Provider>
