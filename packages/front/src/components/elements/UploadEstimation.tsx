@@ -31,8 +31,6 @@ export type UploadListProps = {
     brandPath: string
 }
 
-const XLSX_FILE_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
 const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, brandName, brandPath}: UploadListProps) => {
     const [itemsList, setItemsList] = useState(items);
     const max = maxCount || 1;
@@ -85,7 +83,6 @@ const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, bran
                     key={file.name}
                     style={{
                         border: 'none',
-                        position: 'relative',
                         display: 'flex',
                         alignItems: 'center',
                         width: '100%',
@@ -100,16 +97,6 @@ const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, bran
         );
     };
 
-    const beforeUpload = (file) => {
-        const isXLSX = file.type === XLSX_FILE_TYPE;
-
-        if (!isXLSX) {
-            message.error(`${file.name} - не Excel-файл`);
-        }
-
-        return isXLSX || Upload.LIST_IGNORE;
-    };
-
     return (
         <Card title={label} key={label}>
             <Upload
@@ -120,7 +107,6 @@ const UploadEstimation = ({onItemsChange, items, maxCount, sourceId, label, bran
                 onChange={handleChange}
                 maxCount={max}
                 itemRender={itemRender}
-                beforeUpload={beforeUpload}
             >
                 {isMaxCount ? null : uploadButton}
             </Upload>
