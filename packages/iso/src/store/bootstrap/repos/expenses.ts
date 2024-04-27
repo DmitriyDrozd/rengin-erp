@@ -39,7 +39,6 @@ const expensesRaw = createResource('expense', {
 
         brandId: valueTypes.itemOf({headerName: 'Заказчик', linkedResourceName: 'BRANDS', required: true, immutable: true}),
         legalId: valueTypes.itemOf({headerName: 'Юр. Лицо', linkedResourceName: 'LEGALS', required: true, immutable: true}),
-        siteId: valueTypes.itemOf({headerName: 'Объект', linkedResourceName: 'SITES', required: true, immutable: true}),
 
         expensePrice: valueTypes.number({headerName: 'Смета сумма'}),
         expenseFiles: valueTypes.array({

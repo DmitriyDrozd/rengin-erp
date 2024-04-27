@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import moize from 'moize';
 import { BackupPage } from './pages/backup/BackupPage';
+import { ExpensesListPage } from './pages/expenses/ExpensesListPage';
 import { ImportEmployeesPage } from './pages/import/ImportEmployeesPage';
 
 import LoginPage from './pages/LoginPage';
@@ -82,41 +83,17 @@ export const getNav = moize(() => {
 
         issues: buildNav('/app/in/issues', IssuesListPage),
         issuesEdit: buildNav('/app/in/issues/:issueId', IssuesListPage),
-        // issueCreate: buildNav('/app/in/issues/create', AddIssuePage),
+
+        expenses: buildNav('/app/in/expenses', ExpensesListPage),
+        expensesEdit: buildNav('/app/in/expenses/:expenseId', ExpensesListPage),
 
         dashboard: buildNav('/app/in/dashboard', DashboardPage)
-        //addressesList: buildNav('/app/in/addresses', AddressesListPage),
-        // addressPage: buildNav('/app/in/addresses/:addressId', props => <AddressItemPage id={props.addressId}/>),
-        // contractsList: buildNav('/app/in/contracts', ContractsListPage),
-        // contractsPage: buildNav('/app/in/contracts/:contractId', props => <ContractItemPage id={props.contractId}/>),
-
     };
 });
 
 
 export type Nav = typeof getNav
-export type KeyOfNav = keyof Nav
-/**
-export const rootRoutes = collectBy(prop('Component'),Object.values(getNav()))
-    .map((navs: BuildNav[]) => {
-        const Comp =navs[0].Component
-        const path = navs.map(n => n.pattern)
 
-        return (
-            <Route
-                exact={false}
-                key={navs[0].pattern}
-                path={path[0]}
-                render={routeProps => {
-                    // @ts-ignore
-                    return (
-                        <Comp {...routeProps} {...routeProps.match.params} />
-                )
-                }}
-            />
-        )
-    })
-*/
 export const rootRoutes = () =>
     Object.values(getNav())
         .map(({Component, pattern}) => (
@@ -124,11 +101,6 @@ export const rootRoutes = () =>
                 exact={true}
                 key={pattern}
                 path={pattern}
-                render={routeProps => {
-                    // @ts-ignore
-                    return (
-                        <Component {...routeProps} {...routeProps.match.params} />
-                    );
-                }}
+                render={routeProps => <Component {...routeProps} {...routeProps.match.params} />}
             />
         ));

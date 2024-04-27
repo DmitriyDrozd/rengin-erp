@@ -1,5 +1,11 @@
 import * as Icons from '@ant-design/icons';
-import {AppstoreOutlined, BarChartOutlined, CalendarOutlined, MailOutlined} from '@ant-design/icons';
+import {
+    AppstoreOutlined,
+    BarChartOutlined,
+    CalendarOutlined,
+    MailOutlined,
+    ReconciliationOutlined
+} from '@ant-design/icons';
 import React from 'react'
 import {
     roleEnum,
@@ -78,6 +84,12 @@ export default (role: RoleType) => {
             name: "Заявки",
             icon: <MailOutlined />,
             roles: [],
+        },
+        {
+            path: "/app/in/expenses",
+            name: "Итоговые сметы",
+            icon: <ReconciliationOutlined />,
+            roles: [RolesMap.admin, RolesMap.manager, RolesMap.estimator],
         },
         {
             path: "/app/in/contracts",

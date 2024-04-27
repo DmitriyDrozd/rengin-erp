@@ -105,6 +105,7 @@ const EDITABLE_CELLS_ID = [
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
+        isNotRoleSensitive,
         name,
         title,
         gridRef,
@@ -121,6 +122,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onCancelClick,
         ...props
     }: RGridProps<RID, Fields> & {
+        isNotRoleSensitive?: boolean,
         name?: string,
         title: string;
         toolbar?: React.ReactNode,
@@ -303,6 +305,24 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const items = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
 
     const renderStandardToolBar = () => {
+        const fullToolBar = (
+            <>
+                <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                <Dropdown menu={{
+                    items,
+                    onClick: e => {
+                        onMenuClick(e.key);
+                    }
+                }}>
+                    <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
+                </Dropdown>
+            </>
+        );
+
+        if (isNotRoleSensitive) {
+            return fullToolBar;
+        }
+
         switch (role) {
             case roleEnum['сметчик']: {
                 return (<Typography.Text>Вы можете редактировать сметы</Typography.Text>);
@@ -311,19 +331,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
             }
             default: {
-                return (
-                    <>
-                        <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
-                        <Dropdown menu={{
-                            items,
-                            onClick: e => {
-                                onMenuClick(e.key);
-                            }
-                        }}>
-                            <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
-                        </Dropdown>
-                    </>
-                )
+                return fullToolBar
             }
         }
     };

@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import getRestApi from 'iso/src/getRestApi';
+import { asDay } from 'iso/src/utils/date-utils';
 import React, {
     useCallback,
     useEffect,
@@ -24,7 +25,9 @@ const {confirm, info} = Modal
 export const BackupPage = () => {
     const [backups, setBackups] = useState([]);
     const [selectedBackup, setSelectedBackup] = useState('');
-    const options = backups.map(b => ({ value: b, label: b }));
+    const options = backups
+        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+        .map(b => ({ value: b, label: b }));
 
     const loadBackups = async () => {
         const api = await getRestApi();
