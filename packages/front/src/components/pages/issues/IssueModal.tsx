@@ -13,7 +13,7 @@ import { ProCard } from '@ant-design/pro-components';
 import EditIssueItemForm from './tabs/EditIssueFormTab';
 import EstimationsTable from './tabs/EstimationsTable';
 import ExpensesTable from './tabs/ExpensesTable';
-import UploadSection from '../../elements/UploadSection';
+import UploadIssue from '../../elements/UploadIssue';
 import { issuesEditor } from '../../../editors/issueEditor';
 
 
@@ -77,16 +77,16 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                     )}
                     <ProCard.TabPane key="tab4" tab={'Файлы'}>
                         {!disabledEdit && (
-                            <UploadSection
+                            <UploadIssue
                                 {...getFilesProps('checkFiles', 'Чеки', 10)}
                                 {...uploadProps}
                             />
                         )}
-                        <UploadSection
+                        <UploadIssue
                             {...getFilesProps('actFiles', 'Акты', 5)}
                             {...uploadProps}
                         />
-                        <UploadSection
+                        <UploadIssue
                             {...getFilesProps('workFiles', 'Работы', 70)}
                             {...uploadProps}
                         />

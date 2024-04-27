@@ -45,7 +45,7 @@ const getItemWithoutThumbs = (item: any) => item.status === 'done' ? {
     thumbUrl: item.response?.url || item.url,
 } : item;
 
-const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,brandPath}:UploadListProps) => {
+const UploadIssue = ({onItemsChange,items,maxCount,issueId,label,brandName,brandPath}:UploadListProps) => {
     const role = useRole()
     const max = maxCount || 1
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -172,7 +172,7 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     return (
         <Card title={label} key={label}>
             <Upload
-                action={"/api/upload/"+issueId}
+                action={"/api/upload/issue/"+issueId}
                 listType="picture-card"
                 fileList={items}
                 onPreview={handlePreview}
@@ -195,4 +195,4 @@ const UploadSection = ({onItemsChange,items,maxCount,issueId,label,brandName,bra
     );
 };
 
-export default UploadSection;
+export default UploadIssue;

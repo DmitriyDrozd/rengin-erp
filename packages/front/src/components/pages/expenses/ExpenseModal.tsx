@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { expensesEditor } from '../../../editors/expenseEditor';
 import useLedger from '../../../hooks/useLedger';
-import UploadExcel from '../../elements/UploadExcel';
+import UploadEstimation from '../../elements/UploadEstimation';
 import {
     EditorContext,
     useEditor
@@ -29,7 +29,7 @@ export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disab
 
     const getFilesProps = (listName: 'expenseFiles', label: string, maxCount = 1) => {
         return {
-            items: useEditorData.item[listName],
+            items: useEditorData.item[listName].map(i => ({ url: i.url, name: i.name })),
             onItemsChange: (list: any[]) => {
                 useEditorData.getRenFieldProps(listName)
                     .updateItemProperty(list);
@@ -72,7 +72,7 @@ export const ExpenseModal: FC<ExpenseModalProps> = ({id, newClientsNumber, disab
                     </ProCard.TabPane>
                     {isEditMode && (
                         <ProCard.TabPane key="tab2" tab={'Файлы'}>
-                            <UploadExcel
+                            <UploadEstimation
                                 {...getFilesProps('expenseFiles', 'Сметы', 10)}
                                 {...uploadProps}
                                 sourceId={expenseId}

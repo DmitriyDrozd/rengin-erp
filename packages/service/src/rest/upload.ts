@@ -1,6 +1,9 @@
 import {FastifyInstance} from 'fastify'
 import path from 'path';
-import {ISSUES} from "iso/src/store/bootstrap";
+import {
+    EXPENSES,
+    ISSUES
+} from 'iso/src/store/bootstrap';
 import BRANDS from "iso/src/store/bootstrap/repos/brands";
 import '@fastify/multipart'
 import * as XLSX from "xlsx";
@@ -25,7 +28,7 @@ const pump = util.promisify(pipeline)
 
 export default (fastify: FastifyInstance, opts: any, done: Function) => {
     // const io = fastify.io
-    fastify.post('/api/upload/:issueId', async function (req, reply) {
+    fastify.post('/api/upload/issue/:issueId', async function (req, reply) {
 
         // process a single file
         // also, consider that if you allow to upload multiple files
@@ -64,6 +67,37 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
             return reply.send({
                 url: '/uploads/issues/' + brand.brandName + '_' + issue.clientsIssueNumber + '/' + data.filename
             })
+        }
+        return  reply.send("NoData")
+    })
+
+    fastify.post('/api/upload/estimation/:estimationId', async function (req, reply) {
+        const data = await req.file();
+
+        if(data) {
+            data.file // stream
+            data.fields // other parsed parts
+            data.fieldname
+            data.filename
+            data.encoding
+            data.mimetype
+            // @ts-ignore
+            const sourceId = req.params.estimationId
+            const estimation = EXPENSES.selectById(sourceId)(req.state);
+            const brand = BRANDS.selectById(estimation.brandId!)(req.state);
+
+            const dir = path.join('..', 'static', 'uploads', 'estimations', brand.brandName + '_' + sourceId);
+
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, {recursive: true});
+            }
+
+            const p = path.join(dir, data.filename);
+            await pump(data.file, fs.createWriteStream(p));
+
+            return reply.send({
+                url: '/uploads/estimations/' + brand.brandName + '_' + sourceId + '/' + data.filename
+            });
         }
         return  reply.send("NoData")
     })

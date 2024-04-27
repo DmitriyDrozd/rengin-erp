@@ -1,3 +1,4 @@
+import { EXPENSES } from 'iso/src/store/bootstrap';
 import {CONTRACTS} from 'iso/src/store/bootstrap/repos/contracts'
 import {ISSUES} from 'iso/src/store/bootstrap/repos/issues'
 import {BRANDS} from 'iso/src/store/bootstrap/repos/brands'
@@ -29,6 +30,7 @@ export function* bootstrapRepositories(io: SagaOptions) {
             SubsRepo: await getRepo(SUBS, io),
             IssuesRepo: await getRepo(ISSUES, io),
             EmployeesRepo: await getRepo(EMPLOYEES, io),
+            ExpensesRepo: await getRepo(EXPENSES, io),
 
             // IssuesRepo: await makeRepo({mongo}, issuesCrud, IssuesSchema),
             // AddressesRepo: await makeRepo({mongo}, addressesCrud, AddressesSchema),

@@ -82,7 +82,7 @@ const expensesRaw = createResource('expense', {
 
 const getExpenseTitle = (expense: ExpenseVO) => {
     const brand: BrandVO = BRANDS.selectById(expense.brandId)(BRANDS.getStore().getState()) as any as BrandVO;
-    return `Смета ${expense.clientsExpenseNumber} для заказчика ${brand ? brand.brandName : 'НЕ УКАЗАН'}}`;
+    return `Смета ${expense.clientsExpenseNumber} для заказчика ${brand ? brand.brandName : 'НЕ УКАЗАН'}`;
 };
 
 export const issueResource = {
