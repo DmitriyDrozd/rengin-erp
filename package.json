@@ -23,7 +23,7 @@
         "db:dev": "ssh -L 27017:localhost:27017 root@shammasov.com",
         "service:start": "yarn workspace service service:start",
         "service:demo": "cross-env STONES_SPREADSHEET_ID=17bILUbTDEkavwoq7uLdBBbPspwPZq70U6595BNyvlwo yarn workspace service service:prod",
-        "service:watch": "yarn && nodemon -e ts -w ./packages/service/src -x yarn service:start",
+        "service:watch": "yarn && nodemon -e ts -w ./packages/service/src -x yarn service:prod",
         "service:prod": "cross-env STONES_SPREADSHEET_ID=1d4DqlIgWEZCaQ5P2C8M8ambosgtNLHw4ml_OOziKarg yarn workspace service service:prod",
         "rimraf": "./node_modules/rimraf/bin.js",
         "mongo:dump:prod": "./dump.sh",
