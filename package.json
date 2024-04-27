@@ -18,7 +18,7 @@
         "front:build:prod": "yarn workspace front front:build:prod ",
         "front:local": "cd ./packages/front && yarn front:local",
         "front:start": "cross-env STONES_DEV_PORT=9180 STONES_SERVICE_PORT=9102 yarn workspace front front:start",
-        "front:dev:watch": "nodemon -e tsx -w ./packages/front/src -x yarn front:dev",
+        "front:dev:watch": "nodemon -e tsx -w ./packages/front/src -x yarn front:start",
         "front:build": "cross-env STONES_LOG_ROCKET=ws/webstone STONES_DEV_PORT=9181 STONES_SERVICE_PORT=9180 STONES_LOG_ROCKET=ws/webstone yarn workspace front front:build",
         "db:dev": "ssh -L 27017:localhost:27017 root@shammasov.com",
         "service:start": "yarn workspace service service:start",
