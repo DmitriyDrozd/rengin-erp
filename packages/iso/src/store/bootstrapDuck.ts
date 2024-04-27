@@ -1,5 +1,6 @@
 import * as fsa from '@sha/fsa'
 import {combineReducers} from 'redux'
+import { EXPENSES } from './bootstrap';
 import configDuck from './bootstrap/configDuck'
 import settingsDuck from './bootstrap/settingsDuck'
 import {ISOState} from '../ISOState'
@@ -34,6 +35,7 @@ export const bootstrapCrudsMap = {
     legals: LEGALS,
     subs: SUBS,
     employees: EMPLOYEES,
+    expenses: EXPENSES,
 }
 
 export const bootstrapDucksMap = {
@@ -60,17 +62,7 @@ const getReducersMapByDucks = <M extends {[key in string]: BootableDuck<any> }>(
 
 
 
-const reducer =combineReducers(getReducersMapByDucks(bootstrapDucksMap))/* combineReducers({
-    config: configDuck.reducer,
-    users: usersCrud.reducer,
-    addresses: addressesCrud.reducer,
-    contracts: contractsCrud.reducer,
-    issues: issuesCrud.reducer,
-    employees: employeesCrud.reducer,
-    settings: settingsDuck.reducer,
-
-})*/
-
+const reducer =combineReducers(getReducersMapByDucks(bootstrapDucksMap))
 
 export type Bootstrap = ReturnType<typeof reducer>
 
@@ -98,6 +90,8 @@ export const selectLedger = (state: ISOState) => {
     const legals = getResLedger(LEGALS)(state)
     const subs = getResLedger(SUBS)(state)
     const employees = getResLedger(EMPLOYEES)(state)
+    const expenses = getResLedger(EXPENSES)(state)
+
     const all: {[K in Lowercase<keyof typeof RESOURCES_MAP>] :{
         list: typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][],
         byId: Record<string, typeof RESOURCES_MAP[Uppercase<K>]['exampleItem']>,
@@ -105,7 +99,6 @@ export const selectLedger = (state: ISOState) => {
         byRes: <M extends Extract<keyof typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'], `${string}Id`>>(key:M)=>
             typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][]
     } } = {
-
         brands,
         legals,
         subs,
@@ -113,8 +106,10 @@ export const selectLedger = (state: ISOState) => {
         users,
         sites,
         contracts,
-        issues
+        issues,
+        expenses,
     }
+
     return {
         ...all,
         getLinkedResByName: (res: string, name: string) =>

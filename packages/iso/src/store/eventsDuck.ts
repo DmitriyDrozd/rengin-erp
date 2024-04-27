@@ -1,25 +1,25 @@
 import * as FSA from '@sha/fsa'
 import type {EventVO} from 'service/src/repositories/eventStore'
 import {ISOState} from '../ISOState'
-import {ResourcesMap} from './bootstrap/resourcesList'
+// import {ResourcesMap} from './bootstrap/resourcesList'
 
 const factory = FSA.actionCreatorFactory('events')
-
-type AnyRID = ResourcesMap[keyof ResourcesMap]['idProp']
-
-export type IndexedEventVO= {
-    id: string
-    brandId: string
-    contractId: string
-    issueId: string
-    legalId: string
-    siteId: string
-    subId: string
-    guid: string
-    type: string
-    userId: string
-    payload: string
-}
+//
+// type AnyRID = ResourcesMap[keyof ResourcesMap]['idProp']
+//
+// export type IndexedEventVO= {
+//     id: string
+//     brandId: string
+//     contractId: string
+//     issueId: string
+//     legalId: string
+//     siteId: string
+//     subId: string
+//     guid: string
+//     type: string
+//     userId: string
+//     payload: string
+// }
 
 const actions = {
     reset: factory<EventVO[]>('reset'),
