@@ -75,22 +75,24 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                             </ProCard.TabPane>
                         </>
                     )}
-                    <ProCard.TabPane key="tab4" tab={'Файлы'}>
-                        {!disabledEdit && (
+                    {isEditMode && (
+                        <ProCard.TabPane key="tab4" tab={'Файлы'}>
+                            {!disabledEdit && (
+                                <UploadIssue
+                                    {...getFilesProps('checkFiles', 'Чеки', 10)}
+                                    {...uploadProps}
+                                />
+                            )}
                             <UploadIssue
-                                {...getFilesProps('checkFiles', 'Чеки', 10)}
+                                {...getFilesProps('actFiles', 'Акты', 5)}
                                 {...uploadProps}
                             />
-                        )}
-                        <UploadIssue
-                            {...getFilesProps('actFiles', 'Акты', 5)}
-                            {...uploadProps}
-                        />
-                        <UploadIssue
-                            {...getFilesProps('workFiles', 'Работы', 70)}
-                            {...uploadProps}
-                        />
-                    </ProCard.TabPane>
+                            <UploadIssue
+                                {...getFilesProps('workFiles', 'Работы', 70)}
+                                {...uploadProps}
+                            />
+                        </ProCard.TabPane>
+                    )}
                 </ProCard>
             </BaseEditModal>
         </EditorContext.Provider>

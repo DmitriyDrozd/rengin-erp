@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router';
+import getCrudPathname from '../../hooks/getCrudPathname';
 import { AntdIcons } from '../elements/AntdIcons';
 import {
     Button,
@@ -35,9 +36,20 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     const history = useHistory();
     const modalTitle = title || editor.resource.getItemName(editor.item);
 
-    const onSave = () => {
+    const onSave = async () => {
         editor.save();
-        onBack();
+
+        if (editor.mode === 'create') {
+            await sleep(100);
+
+            const { resource, item } = editor;
+            const itemId = item[resource.idProp];
+            const itemPath = getCrudPathname(resource).edit(itemId);
+
+            history.replace(itemPath)
+        } else {
+            onBack();
+        }
     };
 
     const onDelete = async () => {
