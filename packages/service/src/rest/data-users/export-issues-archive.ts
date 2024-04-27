@@ -10,11 +10,12 @@ import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {ISOState} from "iso/src/ISOState";
 import { env } from 'process';
 
-export type TIssueFileType = 'actFiles' | 'workFiles' | 'checkFiles';
+export type TIssueFileType = 'actFiles' | 'workFiles' | 'checkFiles' | 'expenseFiles';
 const typeToFolderName = {
     'actFiles': 'акты',
     'workFiles': 'работы',
     'checkFiles': 'чеки',
+    'expenseFiles': 'сметы',
 }
 
 const issueHasImages = (types: TIssueFileType[]) => (issue: IssueVO) =>

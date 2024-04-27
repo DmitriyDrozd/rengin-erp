@@ -14,18 +14,20 @@ interface ExportArchiveSelectorProps {
 const fileTypes = {
     act: 'actFiles',
     work: 'workFiles',
-    check: 'checkFiles'
+    check: 'checkFiles',
+    estimations: 'expenseFiles',
 };
 
 const options = [
     { label: 'Акты', value: fileTypes.act },
     { label: 'Работы', value: fileTypes.work },
     { label: 'Чеки', value: fileTypes.check },
+    { label: 'Сметы', value: fileTypes.estimations },
 ];
 
 export const ExportArchiveSelector: React.FC<ExportArchiveSelectorProps> = ({ isOpen, selectedIds, onClose, onExport }) => {
     const [types, setTypes] = useState([
-        fileTypes.act, fileTypes.work, fileTypes.check
+        fileTypes.act, fileTypes.work, fileTypes.check, fileTypes.estimations
     ]);
 
     const handleOk = () => {
