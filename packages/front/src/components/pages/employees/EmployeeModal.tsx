@@ -4,19 +4,12 @@ import {
     EMPLOYEES,
     ISSUES
 } from 'iso/src/store/bootstrap';
-import BRANDS from 'iso/src/store/bootstrap/repos/brands';
-import CONTRACTS from 'iso/src/store/bootstrap/repos/contracts';
-import {
-    employeeRoleEnum,
-    employeeRoleTypes
-} from 'iso/src/store/bootstrap/repos/employees';
-import LEGALS from 'iso/src/store/bootstrap/repos/legals';
+import { employeeRoleEnum } from 'iso/src/store/bootstrap/repos/employees';
 import SITES from 'iso/src/store/bootstrap/repos/sites';
 import React, { useState } from 'react';
 import { employeesditor } from '../../../editors/employeesEditor';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import useLedger from '../../../hooks/useLedger';
-import { AntdIcons } from '../../elements/AntdIcons';
 import {
     EditorContext,
     useEditor
@@ -97,7 +90,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
     return (
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
-                <GenericRenFields list={list} customOptions={customOptions}/>
+                <GenericRenFields list={list}/>
                 <ProCard tabs={{type: 'card', cardProps: { bodyStyle: { padding: 0 }} }}>
                     {
                         showSites && (

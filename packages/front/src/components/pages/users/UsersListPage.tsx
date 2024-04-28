@@ -19,6 +19,7 @@ export default () => {
         {...colMap.clientsNumberCol},
         {...colMap.role, width: 200},
         {...colMap.brandId, width: 150},
+        {...colMap.department, width: 150},
         {...colMap.lastname, width: 150},
         {...colMap.name, width: 150},
         {...colMap.title, width: 200},

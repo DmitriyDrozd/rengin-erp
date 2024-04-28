@@ -2,6 +2,7 @@ import chroma from 'chroma-js'
 import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import stringToHashInt from '../../../utils/string-to-hash-int'
+import { departmentList } from '../enumsList';
 import {
     employeeRoleEnum,
     EmployeeVO,
@@ -22,7 +23,7 @@ export const roleTypes = [
     roleEnum.инженер
 ] as const
 
-export type RoleType = typeof roleTypes[number]
+export type RoleType = typeof roleTypes[number];
 
 const usersRaw = createResource('user',{
     role: valueTypes.enum({required: true, enum: roleTypes, headerName: 'Роль'}),
@@ -43,6 +44,7 @@ const usersRaw = createResource('user',{
         linkedResourceName:'EMPLOYEES',
         filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => item.role === employeeRoleEnum['ответственный инженер']),
     }),
+    department: valueTypes.enum({ headerName: 'Отдел', enum: departmentList }),
     removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
 },{
    getItemName: getItemNameWithContacts,

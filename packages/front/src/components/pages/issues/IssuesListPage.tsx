@@ -1,7 +1,7 @@
 import { AgGridReact } from 'ag-grid-react';
 import getRestApi from 'iso/src/getRestApi';
 import { estimationStatusesList, estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/expenses';
-import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
+import { roleEnum, USERS } from 'iso/src/store/bootstrap/repos/users';
 import { Days } from 'iso/src/utils';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
@@ -234,6 +234,25 @@ export default () => {
         }
         case roleEnum['инженер']: {
             dataForUser = outdatedIssues.filter(i => i.clientsEngineerUserId === currentUser.clientsEngineerUserId);
+            break;
+        }
+        case roleEnum['руководитель']: {
+            const userDepartment = currentUser.department;
+            const departmentManagersIds: string[] = useSelector(USERS.selectAll)
+                    .filter(u => {
+                        const isInDepartment = u.department === userDepartment;
+                        const isInRole = u.role === roleEnum['менеджер'] || u.role === roleEnum['сметчик'];
+
+                        return isInDepartment && isInRole;
+                    })
+                    .map(i => i.userId);
+
+            dataForUser = outdatedIssues.filter((i: IssueVO) => {
+                const isManagerInDepartment = departmentManagersIds.includes(i.managerUserId);
+                const isEstimatorInDepartment = departmentManagersIds.includes(i.estimatorUserId);
+
+                return isManagerInDepartment || isEstimatorInDepartment;
+            });
             break;
         }
         default: {
