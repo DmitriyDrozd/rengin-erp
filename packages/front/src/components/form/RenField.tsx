@@ -126,6 +126,7 @@ export default ({meta, disabled, customOptions, defaultValue}: {
         if (property.type === 'enum') {
             return (
                 <Select
+                    allowClear
                     value={value}
                     optionFilterProp={'label'}
                     showSearch={true}

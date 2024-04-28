@@ -247,12 +247,14 @@ export default () => {
                     })
                     .map(i => i.userId);
 
-            dataForUser = outdatedIssues.filter((i: IssueVO) => {
-                const isManagerInDepartment = departmentManagersIds.includes(i.managerUserId);
-                const isEstimatorInDepartment = departmentManagersIds.includes(i.estimatorUserId);
+            dataForUser = userDepartment
+                ? outdatedIssues.filter((i: IssueVO) => {
+                        const isManagerInDepartment = departmentManagersIds.includes(i.managerUserId);
+                        const isEstimatorInDepartment = departmentManagersIds.includes(i.estimatorUserId);
 
-                return isManagerInDepartment || isEstimatorInDepartment;
-            });
+                        return isManagerInDepartment || isEstimatorInDepartment;
+                    })
+                : outdatedIssues;
             break;
         }
         default: {
