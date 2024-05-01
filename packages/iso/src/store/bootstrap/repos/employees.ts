@@ -14,10 +14,10 @@ export const employeeRoleTypes = [
 export const getItemNameWithContacts = (item) => {
     const lastName = item.lastname ? `${item.lastname} ` : '';
     const name = item.name;
-    const brand = employeeRoleTypes.includes(item.role) && item.brand ? ` - ${item.brand}` : '';
+    // const brand = employeeRoleTypes.includes(item.role) && item.brand ? ` - ${item.brand}` : '';
     const phone = item.phone ? ` - ${item.phone}` : '';
 
-    return `${lastName}${name}${brand}${phone}`
+    return `${lastName}${name}${phone}`
 };
 
 const employeesRaw = createResource('employee', {
@@ -57,7 +57,7 @@ export const getAbbrName = (user) => {
 };
 
 export const ROLES = ['engineer', 'worker'] as const;
-export type Role = typeof ROLES[number]
+export type Role = typeof ROLES[number];
 
 export const employeesResource = {
     ...employeesRaw,
