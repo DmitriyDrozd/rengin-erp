@@ -195,7 +195,7 @@ export default () => {
             filterParams: {
                 applyMiniFilterWhileTyping: true,
             },
-            headerName: 'Статус',
+            headerName: 'Статус сметы',
             width: 150,
             editable: true,
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
@@ -229,7 +229,7 @@ export default () => {
             break;
         }
         case roleEnum['сметчик']: {
-            dataForUser = outdatedIssues.filter(i => i.estimatorUserId === currentUser.userId);
+            dataForUser = outdatedIssues.filter(i => i.estimatorUserId === currentUser.userId && i.estimationsStatus !== undefined);
             break;
         }
         case roleEnum['инженер']: {
