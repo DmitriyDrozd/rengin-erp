@@ -23,7 +23,7 @@ export default () => {
     const store = useFrontStore()
     const [visible, setVisible] = useState(false)
 
-    const [email, setEmail] = useState(window.location.hostname === 'localhost' ? 'miramaxis@gmail.com' : undefined)
+    const [email, setEmail] = useState(window.location.hostname === 'localhost' ? 'drozd.dzmitryi@gmail.com' : undefined)
     const [password, setPassword] = useState(window.location.hostname === 'localhost' ? '123456' : undefined)
     const [remember, setRemember] = useState(false)
 
@@ -89,7 +89,7 @@ export default () => {
                             loading={loading || ui.busy.length !== 0}
                             icon={<AntdIcons.LoginOutlined/>}
                         >
-                            Логин
+                            Войти
                         </Button>
                     ]}>
                 <Form  className="login-form" style={{minWidth: '400px'}}
@@ -102,7 +102,7 @@ export default () => {
                                 value={email}
                                 onChange={ e=> setEmail(e.target.value)}
                                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                placeholder="Username"
+                                placeholder="имя (e-mail) пользователя"
                             />
                     </Form.Item>
                     <Form.Item label={<AntdIcons.SecurityScanOutlined/>}>
@@ -112,7 +112,7 @@ export default () => {
                                 onChange={ e=> setPassword(e.target.value)}
                                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 type="password"
-                                placeholder="Password"
+                                placeholder="пароль"
                             />
 
                     </Form.Item>
