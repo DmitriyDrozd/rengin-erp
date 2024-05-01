@@ -229,7 +229,23 @@ export default () => {
             break;
         }
         case roleEnum['сметчик']: {
-            dataForUser = outdatedIssues.filter(i => i.estimatorUserId === currentUser.userId && i.estimationsStatus !== undefined);
+            // todo: отдельная роль
+            const isDepartmentHead = currentUser.title?.toLowerCase().includes('руководитель');
+            const userDepartment = currentUser.department;
+            const departmentUserIds: string[] = useSelector(USERS.selectAll)
+                .filter(u => {
+                    const isInDepartment = u.department === userDepartment;
+                    const isInRole = u.role === roleEnum['сметчик'];
+
+                    return isInDepartment && isInRole;
+                })
+                .map(i => i.userId);
+
+            const userIdComparator = (id: string): boolean => isDepartmentHead
+                ? departmentUserIds.includes(id)
+                : id === currentUser.userId;
+
+            dataForUser = outdatedIssues.filter(i => userIdComparator(i.estimatorUserId) && i.estimationsStatus !== undefined);
             break;
         }
         case roleEnum['инженер']: {
