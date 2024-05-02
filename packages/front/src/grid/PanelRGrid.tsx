@@ -37,7 +37,7 @@ import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
 
 
-const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRemoveItemsAvailable: boolean): MenuProps['items'] =>
+const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRemoveItemsAvailable: boolean, isDeleteAvailable = true): MenuProps['items'] =>
     [
         // {
         //     label: 'Сохранить',
@@ -70,9 +70,11 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRe
             icon: <AntdIcons.FileZipOutlined/>,
             key: GRID_MODES.export,
         },
+        isDeleteAvailable &&
         {
             type: 'divider'
         },
+        isDeleteAvailable &&
         {
             label: 'Удалить записи',
             icon: <AntdIcons.DeleteFilled/>,
@@ -302,20 +304,25 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     }
 
     const role = useRole();
-    const items = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
 
     const renderStandardToolBar = () => {
+        const menuItems = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
+        const estimatorMenuItems = getItems(!!onExportArchive, false, false, false);
+        const getDropdownMenu = (ddMenuItems) => (
+            <Dropdown menu={{
+                items: ddMenuItems,
+                onClick: e => {
+                    onMenuClick(e.key);
+                }
+            }}>
+                <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
+            </Dropdown>
+        )
+
         const fullToolBar = (
             <>
                 <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
-                <Dropdown menu={{
-                    items,
-                    onClick: e => {
-                        onMenuClick(e.key);
-                    }
-                }}>
-                    <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
-                </Dropdown>
+                {getDropdownMenu(menuItems)}
             </>
         );
 
@@ -325,7 +332,13 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
         switch (role) {
             case roleEnum['сметчик']: {
-                return (<Typography.Text>Вы можете редактировать сметы</Typography.Text>);
+
+                return (
+                    <>
+                        <Typography.Text>Вы можете редактировать сметы</Typography.Text>
+                        {getDropdownMenu(estimatorMenuItems)}
+                    </>
+                );
             }
             case roleEnum['инженер']: {
                 return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
