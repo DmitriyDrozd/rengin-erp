@@ -99,6 +99,7 @@ export const TasksListPage = () => {
         setSelectedTasks(tasks);
     }
 
+    const estimatedTime = selectedTasks.reduce((acc, curr) => isNaN(+curr.estimatedTime) ? acc : acc + +curr.estimatedTime, 0);
     const spentTime = selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0);
 
     return (
@@ -111,9 +112,12 @@ export const TasksListPage = () => {
             }}
         >
             <div>
-                <Modal title="сумма затраченного времени" open={selectedTasks.length > 0} onOk={() => setSelectedTasks([])}>
+                <Modal title="Сумма времени" open={selectedTasks.length > 0} onOk={() => setSelectedTasks([])}>
                     <p>
                         <Typography.Text>Выбрано {selectedTasks.length} задач</Typography.Text>
+                    </p>
+                    <p>
+                        <Typography.Text>Планируемая сумма времени: {estimatedTime} часов</Typography.Text>
                     </p>
                     <p>
                         <Typography.Text>Сумма затраченного времени: {spentTime} часов</Typography.Text>
