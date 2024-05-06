@@ -30,9 +30,9 @@ export default () => {
                             title="Объекты"
                             value={boot.sites.length}
                             precision={0}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            valueStyle={{ color: '#3f8600' }}
+                            prefix={<ArrowUpOutlined />}
+                            suffix=""
                         />
                     </Card>
                 </Col>
@@ -56,9 +56,9 @@ export default () => {
                             title="Заявки"
                             value={boot.issues.length}
                             precision={0}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            valueStyle={{ color: '#3f8600' }}
+                            prefix={<ArrowUpOutlined />}
+                            suffix=""
                         />
                     </Card>
                 </Col>
