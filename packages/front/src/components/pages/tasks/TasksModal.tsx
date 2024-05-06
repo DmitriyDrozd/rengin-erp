@@ -45,7 +45,7 @@ export const TasksModal: FC<TasksModalProps> = ({id, newClientsNumber, disabledE
                     layout={'horizontal'}
                 >
                     <RenField meta={TASKS.properties.clientsTaskNumber}/>
-                    <RenField meta={TASKS.properties.description} multiline/>
+                    <RenField meta={TASKS.properties.description}/>
                     <RenField meta={TASKS.properties.estimatedTime} />
                     <RenField meta={TASKS.properties.spentTime} />
                     <RenField meta={TASKS.properties.taskStatus}/>

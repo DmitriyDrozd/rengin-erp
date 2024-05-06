@@ -117,7 +117,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                 pathname
             }}
             logo={<HeadLogo/>}
-            title={''}
+            title={window.location.hostname === 'localhost' ? 'LOCALHOST' : ''}
             avatarProps={{
                 icon: <AntdIcons.ArrowDownOutlined/>,
                 src: userAvatarURL,

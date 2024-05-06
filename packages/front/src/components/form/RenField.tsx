@@ -163,6 +163,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable}: {
         else if (editorProperty.property.type === 'text')
             return (
                 <TextArea
+                    rows={4}
                     value={value}
                     onBlur={e => {
                         updateItemProperty(e.target.value);
