@@ -62,6 +62,8 @@ export default ({ newClientsNumber, isEditMode }: { newClientsNumber: string, is
         )
     }
 
+    const isManagementRole = [roleEnum['руководитель'], roleEnum['менеджер']].includes(role);
+
     return (
         <Form
             style={{maxWidth: 800}}
@@ -73,10 +75,10 @@ export default ({ newClientsNumber, isEditMode }: { newClientsNumber: string, is
             <RenField meta={ISSUES.properties.legalId} immutable={!!initValues.legalId} disabled={!!initValues.legalId}/>
             <RenField
                 style={{minWidth: '350px', maxWidth: '350px'}}
-                disabled={role !== 'руководитель'}
+                disabled={!isManagementRole}
                 placeholder={'Адрес не указан'}
                 meta={ISSUES.properties.siteId}
-                immutable={!!initValues.siteId}
+                immutable={isManagementRole ? false : !!initValues.siteId}
             />
             <Form.Item name="contractId" label="Договор">
                 {
