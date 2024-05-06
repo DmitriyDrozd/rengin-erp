@@ -146,7 +146,7 @@ export function* byQueryGetters () {
     }
 
     function* employeeByClientsNumber (clientsNumber: string | number) {
-        const foundEmployee = ledger.employees.list.find(user => String(user.clientsEmployeeNumber) === String(clientsNumber));
+        const foundEmployee = ledger.employees.list.find(employee => String(employee.clientsEmployeeNumber) === String(clientsNumber));
 
         if (!clientsNumber || !foundEmployee) {
             console.log(`Employee ${clientsNumber} not found`);

@@ -77,7 +77,7 @@ const getMongoDAO = async <T, ID extends string, S extends Schema>
         return newItem
     }
     const createMany = async (items: T[]): Promise<T[]> => {
-        const newItems = await Model.create(items)
+        const newItems = await Model.insertMany(items)
         //console.log(duck.factoryPrefix + ' created', newItem)
         return newItems
     }

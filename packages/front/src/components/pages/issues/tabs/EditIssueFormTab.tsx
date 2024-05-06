@@ -27,6 +27,7 @@ export default ({ newClientsNumber, isEditMode }: { newClientsNumber: string, is
     const contract = contracts.find(c => c.contractId === editor.item.contractId);
 
     const [initRegisterDate, setInitRegisterDate] = useState(editor.item.registerDate);
+    const [initValues] = useState({ ...editor.item });
 
     useEffect(() => {
         if (!editor.item[ISSUES.clientsNumberProp]) {
@@ -68,13 +69,14 @@ export default ({ newClientsNumber, isEditMode }: { newClientsNumber: string, is
             layout={'horizontal'}
         >
             <RenField meta={ISSUES.properties.clientsIssueNumber}/>
-            <RenField meta={ISSUES.properties.brandId}/>
-            <RenField meta={ISSUES.properties.legalId}/>
+            <RenField meta={ISSUES.properties.brandId} immutable={!!initValues.brandId} disabled={!!initValues.brandId}/>
+            <RenField meta={ISSUES.properties.legalId} immutable={!!initValues.legalId} disabled={!!initValues.legalId}/>
             <RenField
                 style={{minWidth: '350px', maxWidth: '350px'}}
                 disabled={role !== 'руководитель'}
                 placeholder={'Адрес не указан'}
                 meta={ISSUES.properties.siteId}
+                immutable={!!initValues.siteId}
             />
             <Form.Item name="contractId" label="Договор">
                 {

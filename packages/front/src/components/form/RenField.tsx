@@ -1,6 +1,4 @@
-import { ProFormDatePicker } from '@ant-design/pro-components';
 import {
-    Button,
     Checkbox,
     DatePicker,
     Divider,
@@ -10,14 +8,11 @@ import {
     Space,
     Typography
 } from 'antd';
-import { ExtractProps } from '@sha/react-fp';
 import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
-import getCrudPathname from '../../hooks/getCrudPathname';
 import CreateButton from '../elements/CreateButton';
 import { useContextEditorProperty } from '../pages/chapter-modal/useEditor';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
-import { PlusOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import {
     AnyMeta,
@@ -36,13 +31,11 @@ import { useISOState } from 'iso/src/ISOState';
 import './RenField.css';
 
 const {Text, Link} = Typography;
-type RenFormDateProps = ExtractProps<typeof ProFormDatePicker>
-//2023-09-21T04:32:05.151Z
-const DATE_FORMAT = 'YYYY-MM-DDTHH:MM:SS.sssZ';
 
-export default ({meta, disabled, customOptions, defaultValue}: {
+export default ({meta, disabled, customOptions, defaultValue, immutable}: {
     meta: AnyMeta,
     disabled?: boolean,
+    immutable?: boolean,
     customOptions?: {
         value: string,
         label: string
@@ -60,7 +53,6 @@ export default ({meta, disabled, customOptions, defaultValue}: {
         error,
         mode,
         params,
-        editor
     } = editorProperty;
 
     const sharedProps = {
@@ -78,7 +70,7 @@ export default ({meta, disabled, customOptions, defaultValue}: {
 
     const renderInputControl = () => {
 
-        if (property.immutable && mode === 'edit') {
+        if ((property.immutable || immutable) && mode === 'edit') {
             let text = value;
             if (isItemOfMeta(property)) {
                 const reses = getRes(property.linkedResourceName);

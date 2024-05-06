@@ -45,19 +45,17 @@ export const paymentTypesList = [paymentTypes.cash, paymentTypes.cashless] as co
 const issuesRaw = createResource('issue', {
         clientsIssueNumber: valueTypes.string({headerName: 'Номер заявки', required: true, unique: true}),
         status: valueTypes.enum({headerName: 'Статус', enum: statusesList}),
-        brandId: valueTypes.itemOf({headerName: 'Заказчик', linkedResourceName: 'BRANDS', required: true, immutable: true}),
-        legalId: valueTypes.itemOf({headerName: 'Юр. Лицо', linkedResourceName: 'LEGALS', required: true, immutable: true}),
+        brandId: valueTypes.itemOf({headerName: 'Заказчик', linkedResourceName: 'BRANDS', required: true}),
+        legalId: valueTypes.itemOf({headerName: 'Юр. Лицо', linkedResourceName: 'LEGALS', required: true}),
         contractId: valueTypes.itemOf({
             headerName: 'Договор',
             linkedResourceName: 'CONTRACTS',
-            required: true,
-            immutable: true
         }),
-        siteId: valueTypes.itemOf({headerName: 'Объект', linkedResourceName: 'SITES', required: true, immutable: true}),
+        siteId: valueTypes.itemOf({headerName: 'Объект', linkedResourceName: 'SITES', required: true}),
         subId: valueTypes.itemOf({
             headerName: 'Подписка',
             linkedResourceName: 'SUBS',
-            required: true,
+            required: false,
             immutable: true,
             internal: true
         }),
