@@ -49,8 +49,8 @@ export const TasksListPage = () => {
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 400},
-        {...colMap.estimatedTime, width: 200, cellRenderer: (props) => +props.data.estimatedTime},
-        {...colMap.spentTime, width: 200, cellRenderer: (props) => +props.data.spentTime},
+        {...colMap.estimatedTime, width: 200, cellRenderer: (props) => isNaN(+props.data.estimatedTime) ? 0 : +props.data.estimatedTime},
+        {...colMap.spentTime, width: 200, cellRenderer: (props) => isNaN(+props.data.spentTime) ? 0 : +props.data.spentTime},
         {
             ...colMap.taskStatus,
             width: 150,
