@@ -79,7 +79,7 @@ export const ExpensesListPage = () => {
         {...colMap.expensePrice, width: 130},
     ] as ColDef<ExpenseVO>[];
 
-    const [statuses, setStatuses] = useLocalStorageState('statusFilter', estimationStatusesList);
+    const [statuses, setStatuses] = useLocalStorageState('expensesStatusFilter', estimationStatusesList);
 
     let dataForUser;
 

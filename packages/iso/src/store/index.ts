@@ -9,7 +9,8 @@ import {
     SITES,
     USERS,
     EMPLOYEES,
-    EXPENSES
+    EXPENSES,
+    TASKS,
 } from './bootstrap/index';
 
 export const ducks  = {
@@ -21,6 +22,7 @@ export const ducks  = {
     SITES,
     EMPLOYEES,
     EXPENSES,
+    TASKS,
 }
 export {metaDuck}
 

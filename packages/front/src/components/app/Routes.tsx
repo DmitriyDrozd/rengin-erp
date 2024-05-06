@@ -111,6 +111,12 @@ export default (role: RoleType) => {
             roles: [RolesMap.admin],
         },
         {
+            path: "/app/in/tasks",
+            name: "Задачи",
+            icon: <Icons.ToolOutlined />,
+            roles: [RolesMap.admin],
+        },
+        {
             path: "/app/in/backup",
             name: "Резервная копия  ",
             icon: <Icons.HistoryOutlined/>,

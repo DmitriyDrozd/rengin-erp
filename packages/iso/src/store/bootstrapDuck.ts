@@ -1,6 +1,9 @@
 import * as fsa from '@sha/fsa'
 import {combineReducers} from 'redux'
-import { EXPENSES } from './bootstrap';
+import {
+    EXPENSES,
+    TASKS
+} from './bootstrap';
 import configDuck from './bootstrap/configDuck'
 import settingsDuck from './bootstrap/settingsDuck'
 import {ISOState} from '../ISOState'
@@ -36,6 +39,7 @@ export const bootstrapCrudsMap = {
     subs: SUBS,
     employees: EMPLOYEES,
     expenses: EXPENSES,
+    tasks: TASKS,
 }
 
 export const bootstrapDucksMap = {
@@ -91,6 +95,7 @@ export const selectLedger = (state: ISOState) => {
     const subs = getResLedger(SUBS)(state)
     const employees = getResLedger(EMPLOYEES)(state)
     const expenses = getResLedger(EXPENSES)(state)
+    const tasks = getResLedger(TASKS)(state)
 
     const all: {[K in Lowercase<keyof typeof RESOURCES_MAP>] :{
         list: typeof RESOURCES_MAP[Uppercase<K>]['exampleItem'][],
@@ -108,6 +113,7 @@ export const selectLedger = (state: ISOState) => {
         contracts,
         issues,
         expenses,
+        tasks,
     }
 
     return {

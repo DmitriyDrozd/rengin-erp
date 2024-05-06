@@ -216,8 +216,8 @@ export default () => {
 
     const columns: ColDef<IssueVO>[] = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
 
-    const [statuses, setStatuses] = useLocalStorageState('statusFilter', isUserEstimator ? estimationStatusesList : statusesList);
-    const [outdated, setOutdated] = useLocalStorageState('outdatedFilter', false);
+    const [statuses, setStatuses] = useLocalStorageState('issuesStatusFilter', isUserEstimator ? estimationStatusesList : statusesList);
+    const [outdated, setOutdated] = useLocalStorageState('issuesOutdatedFilter', false);
 
     const outdatedIssues = outdated ? allIssues.filter(outdatedFilter) : allIssues;
 

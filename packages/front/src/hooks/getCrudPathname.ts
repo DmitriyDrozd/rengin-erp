@@ -6,6 +6,7 @@ const CRUD_NAV_ITEMS = [
     'brand',
     'employee',
     'expense',
+    'task',
 ];
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(resource:Resource<RID,Fields> ) => ({

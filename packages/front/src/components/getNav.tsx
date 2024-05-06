@@ -25,6 +25,7 @@ import ImportSitesPage from './pages/import/ImportSItesPage';
 import { ImportIssuesPage } from './pages/import/ImportIssuesPage';
 import IssuesListPage from './pages/issues/IssuesListPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
+import { TasksListPage } from './pages/tasks/TasksListPage';
 import UsersChapter from './pages/users/UsersListPage';
 import EmployeesChapter from './pages/employees/EmployeesListPage';
 
@@ -76,6 +77,9 @@ export const getNav = moize(() => {
         subsList: buildNav('/app/in/subs', SubsChapter),
         subsCreate: buildNav('/app/in/subs/create', SubsChapter),
         subsEdit: buildNav('/app/in/subs/:subId', SubsChapter),
+
+        tasksList: buildNav('/app/in/tasks', TasksListPage),
+        tasksEdit: buildNav('/app/in/tasks/:taskId', TasksListPage),
 
         importSites: buildNav('/app/in/import-sites', ImportSitesPage),
         importIssues: buildNav('/app/in/import-issues', ImportIssuesPage),

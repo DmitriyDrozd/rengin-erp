@@ -1,4 +1,5 @@
 import EXPENSES from './repos/expenses';
+import TASKS from './repos/tasks';
 import {USERS} from './repos/users'
 import {SITES} from './repos/sites'
 import contractsCrud, {CONTRACTS} from './repos/contracts'
@@ -17,9 +18,10 @@ type B = typeof BRANDS
 type L = typeof LEGALS
 type E = typeof EMPLOYEES
 type Ex = typeof EXPENSES
+type Ts = typeof TASKS
 USERS.rid ='user'
 USERS.idProp = 'userId'
-type Any = C|S|U|I|Su|B|L|E|Ex
+type Any = C|S|U|I|Su|B|L|E|Ex|Ts
 const a : Any = {} as Any
 
 //.idProp()//.properties.userId
@@ -31,4 +33,5 @@ export {
     USERS,
     EMPLOYEES,
     EXPENSES,
+    TASKS,
 }
