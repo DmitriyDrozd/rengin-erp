@@ -99,7 +99,7 @@ export const TasksListPage = () => {
         setSelectedTasks(tasks);
     }
 
-    const spentTime = selectedTasks.reduce((acc, curr) => acc + +curr.spentTime, 0);
+    const spentTime = selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0);
 
     return (
         <AppLayout
