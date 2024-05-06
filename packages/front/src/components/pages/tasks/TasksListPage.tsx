@@ -6,9 +6,11 @@ import {
     taskStatusesList,
     TaskVO
 } from 'iso/src/store/bootstrap/repos/tasks';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
+import useRole from '../../../hooks/useRole';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React, { useState } from 'react';
@@ -39,6 +41,8 @@ const getPaymentStatusTag = (data: TaskVO) => {
 export const TasksListPage = () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
 
+    const role = useRole();
+    const isAdminRole = role === roleEnum['руководитель'];
     const allTasks: TaskVO[] = useSelector(TASKS.selectAll);
     const statusPropToFilter = 'taskStatus';
     const newClientsNumber = generateNewListItemNumber(allTasks, TASKS.clientsNumberProp);
@@ -57,12 +61,13 @@ export const TasksListPage = () => {
             cellRenderer: (props) =>
                 getTaskStatusTag(props.data)
         },
+        isAdminRole ?
         {
             ...colMap.paymentStatus,
             width: 150,
             cellRenderer: (props) =>
                 getPaymentStatusTag(props.data)
-        },
+        } : {},
     ] as ColDef<TaskVO>[];
 
     const [statuses, setStatuses] = useLocalStorageState('tasksStatusFilter', taskStatusesList);
@@ -81,26 +86,31 @@ export const TasksListPage = () => {
                     statuses={statuses}
                     setStatuses={setStatuses}/>
             </Space>
-            <Space>
-                Статус оплаты:
-                <StatusFilterSelector
-                    list={paymentStatusesList}
-                    colorMap={paymentStatusesColorsMap}
-                    statuses={paymentStatuses}
-                    setStatuses={setPaymentStatuses}/>
-            </Space>
+            {
+                isAdminRole && (
+                    <Space>
+                        Статус оплаты:
+                        <StatusFilterSelector
+                            list={paymentStatusesList}
+                            colorMap={paymentStatusesColorsMap}
+                            statuses={paymentStatuses}
+                            setStatuses={setPaymentStatuses}/>
+                    </Space>
+                )
+            }
         </>
     );
 
     const [selectedTasks, setSelectedTasks] = useState([]);
+    const resetSelectedTasks = () => setSelectedTasks([]);
 
     const sumSpentTime = (selectedIds: string[]) => {
         const tasks = selectedIds.map(id => allTasks.find(at => at.taskId === id));
         setSelectedTasks(tasks);
     }
 
-    const estimatedTime = selectedTasks.reduce((acc, curr) => isNaN(+curr.estimatedTime) ? acc : acc + +curr.estimatedTime, 0);
-    const spentTime = selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0);
+    const estimatedTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.estimatedTime) ? acc : acc + +curr.estimatedTime, 0) * 100) / 100;
+    const spentTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0) * 100) / 100;
 
     return (
         <AppLayout
@@ -112,7 +122,7 @@ export const TasksListPage = () => {
             }}
         >
             <div>
-                <Modal title="Сумма времени" open={selectedTasks.length > 0} onOk={() => setSelectedTasks([])}>
+                <Modal title="Сумма времени" open={selectedTasks.length > 0} onOk={resetSelectedTasks} onCancel={resetSelectedTasks}>
                     <p>
                         <Typography.Text>Выбрано {selectedTasks.length} задач</Typography.Text>
                     </p>

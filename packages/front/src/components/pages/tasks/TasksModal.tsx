@@ -1,14 +1,12 @@
 import { Form } from 'antd';
-import { EXPENSES } from 'iso/src/store/bootstrap';
-import TASKS, {
-    paymentStatusesList,
-    taskStatusesList
-} from 'iso/src/store/bootstrap/repos/tasks';
+import TASKS from 'iso/src/store/bootstrap/repos/tasks';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     FC,
     useEffect,
 } from 'react';
 import { tasksEditor } from '../../../editors/taskEditor';
+import useRole from '../../../hooks/useRole';
 import { layoutPropsModalForm } from '../../form/ModalForm';
 import RenField from '../../form/RenField';
 import {
@@ -26,6 +24,8 @@ interface TasksModalProps {
 
 export const TasksModal: FC<TasksModalProps> = ({id, newClientsNumber, disabledEdit}) => {
     const useEditorData = useEditor(tasksEditor, id);
+    const role = useRole();
+    const isAdminRole = role === roleEnum['руководитель'];
 
     useEffect(() => {
         if (!useEditorData.item[TASKS.clientsNumberProp]) {
@@ -46,10 +46,12 @@ export const TasksModal: FC<TasksModalProps> = ({id, newClientsNumber, disabledE
                 >
                     <RenField meta={TASKS.properties.clientsTaskNumber}/>
                     <RenField meta={TASKS.properties.description}/>
-                    <RenField meta={TASKS.properties.estimatedTime} />
-                    <RenField meta={TASKS.properties.spentTime} />
-                    <RenField meta={TASKS.properties.taskStatus}/>
-                    <RenField meta={TASKS.properties.paymentStatus}/>
+                    <RenField meta={TASKS.properties.estimatedTime} disabled={!isAdminRole}/>
+                    <RenField meta={TASKS.properties.spentTime} disabled={!isAdminRole}/>
+                    <RenField meta={TASKS.properties.taskStatus} disabled={!isAdminRole}/>
+                    {isAdminRole && (
+                        <RenField meta={TASKS.properties.paymentStatus}/>
+                    )}
                 </Form>
             </BaseEditModal>
         </EditorContext.Provider>

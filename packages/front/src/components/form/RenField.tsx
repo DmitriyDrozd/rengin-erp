@@ -163,12 +163,14 @@ export default ({meta, disabled, customOptions, defaultValue, immutable}: {
         else if (editorProperty.property.type === 'text')
             return (
                 <TextArea
+                    ref={inputRef}
                     rows={4}
                     value={value}
                     onBlur={e => {
                         updateItemProperty(e.target.value);
                     }}
                     onChange={e => {
+                        setItemToFocus(inputRef);
                         updateItemProperty(e.target.value);
                     }}
                     {...sharedProps}
