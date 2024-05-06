@@ -11,17 +11,20 @@ import PanelRGrid from '../../../grid/PanelRGrid';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
-import React from 'react';
+import React, { useState } from 'react';
 import { ColDef } from 'ag-grid-community';
 import {
+    Modal,
     Space,
     Tag
 } from 'antd';
 import {
     useSelector
 } from 'react-redux';
+import { AntdIcons } from '../../elements/AntdIcons';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import { TasksModal } from './TasksModal';
+import Typography from 'antd/lib/typography';
 
 const getTaskStatusTag = (data: TaskVO) => {
     const {taskStatus} = data;
@@ -46,8 +49,8 @@ export const TasksListPage = () => {
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 400},
-        {...colMap.estimatedTime, width: 200},
-        {...colMap.spentTime, width: 200},
+        {...colMap.estimatedTime, width: 200, cellRenderer: (props) => +props.data.estimatedTime},
+        {...colMap.spentTime, width: 200, cellRenderer: (props) => +props.data.spentTime},
         {
             ...colMap.taskStatus,
             width: 150,
@@ -89,6 +92,15 @@ export const TasksListPage = () => {
         </>
     );
 
+    const [selectedTasks, setSelectedTasks] = useState([]);
+
+    const sumSpentTime = (selectedIds: string[]) => {
+        const tasks = selectedIds.map(id => allTasks.find(at => at.taskId === id));
+        setSelectedTasks(tasks);
+    }
+
+    const spentTime = selectedTasks.reduce((acc, curr) => acc + +curr.spentTime, 0);
+
     return (
         <AppLayout
             hidePageContainer
@@ -99,6 +111,14 @@ export const TasksListPage = () => {
             }}
         >
             <div>
+                <Modal title="сумма затраченного времени" open={selectedTasks.length > 0} onOk={() => setSelectedTasks([])}>
+                    <p>
+                        <Typography.Text>Выбрано {selectedTasks.length} задач</Typography.Text>
+                    </p>
+                    <p>
+                        <Typography.Text>Сумма затраченного времени: {spentTime} часов</Typography.Text>
+                    </p>
+                </Modal>
                 {
                     currentItemId ? (
                         <TasksModal
@@ -110,6 +130,11 @@ export const TasksListPage = () => {
                 <PanelRGrid
                     isNotRoleSensitive
                     fullHeight
+                    selectRowsProps={{
+                        icon: <AntdIcons.CalculatorOutlined />,
+                        onClick: sumSpentTime,
+                        label: 'Посчитать сумму часов'
+                    }}
                     toolbar={renderToolbar}
                     rowData={rowData}
                     resource={TASKS}

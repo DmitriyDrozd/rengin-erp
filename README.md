@@ -34,12 +34,12 @@ docker-compose-up
 ```
 * Start backend and remove association with console window
 ```
-nohup yarn service:start &
+nohup yarn service:watch &
 disown [processId]
 ```
 
 * Start frontend and remove association with console window
 ```
-nohup yarn front:start &
+nohup yarn front:dev:watch &
 disown [processId]
 ```

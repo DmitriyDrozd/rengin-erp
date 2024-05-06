@@ -26,6 +26,7 @@ import {
 import CrudCreateButton from '../components/elements/CreateButton';
 import React, {
     ChangeEventHandler,
+    ReactElement,
     useCallback,
     useEffect,
     useRef,
@@ -37,7 +38,13 @@ import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
 
 
-const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRemoveItemsAvailable: boolean, isDeleteAvailable = true): MenuProps['items'] =>
+const getItems = (
+    isExportAvailable: boolean,
+    isAddItemsAvailable: boolean,
+    isRemoveItemsAvailable: boolean,
+    isDeleteAvailable = true,
+    isSelectRowsAvailable = false
+): MenuProps['items'] =>
     [
         // {
         //     label: 'Сохранить',
@@ -55,13 +62,13 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRe
         isAddItemsAvailable &&
         {
             label: 'Добавить к',
-            icon: <AntdIcons.PlusCircleOutlined />,
+            icon: <AntdIcons.PlusCircleOutlined/>,
             key: GRID_MODES.settleItems,
         },
         isRemoveItemsAvailable &&
         {
             label: 'Удалить из',
-            icon: <AntdIcons.MinusCircleOutlined />,
+            icon: <AntdIcons.MinusCircleOutlined/>,
             key: GRID_MODES.unsettleItems,
         },
         isExportAvailable &&
@@ -69,6 +76,11 @@ const getItems = (isExportAvailable: boolean, isAddItemsAvailable: boolean, isRe
             label: 'Экспортировать записи',
             icon: <AntdIcons.FileZipOutlined/>,
             key: GRID_MODES.export,
+        },
+        isSelectRowsAvailable && {
+            label: 'Выбрать несколько',
+            icon: <AntdIcons.CheckSquareOutlined />,
+            key: GRID_MODES.selectRows,
         },
         isDeleteAvailable &&
         {
@@ -90,6 +102,7 @@ const GRID_MODES = {
     export: 'export',
     settleItems: 'settleItems',
     unsettleItems: 'unsettleItems',
+    selectRows: 'selectRows',
 };
 
 const GRID_MODES_LIST = [
@@ -98,6 +111,7 @@ const GRID_MODES_LIST = [
     GRID_MODES.export,
     GRID_MODES.settleItems,
     GRID_MODES.unsettleItems,
+    GRID_MODES.selectRows,
 ];
 
 const EDITABLE_CELLS_ID = [
@@ -122,6 +136,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onRemoveFromItems,
         onShowAllItems,
         onCancelClick,
+        selectRowsProps,
         ...props
     }: RGridProps<RID, Fields> & {
         isNotRoleSensitive?: boolean,
@@ -135,6 +150,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onRemoveFromItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
         onShowAllItems?(): void,
         onCancelClick?(): void,
+        selectRowsProps?: { icon: ReactElement, onClick(selectedIds: string[]): void, label: string },
     }) => {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -143,7 +159,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const resetMode = () => {
         setMode(GRID_MODES.off);
         onCancelClick?.();
-    }
+    };
 
     const isMultipleSelection = mode !== GRID_MODES.off;
 
@@ -194,7 +210,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onAddToItems(selectedIds, (items) => dispatch(getAction(items)));
         setSelectedIds([]);
         resetMode();
-    }
+    };
 
     const onRemoveFromItemsHandler = () => {
         const getAction = (items) => resource.actions.updatedBatch(items);
@@ -202,7 +218,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onRemoveFromItems(selectedIds, (items) => dispatch(getAction(items)));
         setSelectedIds([]);
         resetMode();
-    }
+    };
 
     const innerGridRef = gridRef || useRef<AgGridReact>(null);
 
@@ -214,11 +230,11 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
     useEffect(() => {
         if (innerGridRef.current && innerGridRef.current.columnApi && !isColumnStateInitialized) {
-            innerGridRef.current.columnApi.applyColumnState({ state: columnState, applyOrder: true });
+            innerGridRef.current.columnApi.applyColumnState({state: columnState, applyOrder: true});
 
             setTimeout(() => {
                 setIsColumnStateInitialized(true);
-            }, 200)
+            }, 200);
         }
     }, [innerGridRef.current, isColumnStateInitialized]);
 
@@ -237,9 +253,9 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             return;
         }
 
-        const url = getCrudPathname(resource).edit(e.data[resource.idProp])
+        const url = getCrudPathname(resource).edit(e.data[resource.idProp]);
         history.push(url);
-    }
+    };
 
     const onSelectionChanged = () => {
         const rows = innerGridRef.current!.api.getSelectedRows();
@@ -266,8 +282,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 </Button>
                 <CancelButton onCancel={resetMode}/>
             </>
-        )
-    }
+        );
+    };
 
     const ModeToolBar = ({icon, onClick, label}) => (
         <>
@@ -286,28 +302,48 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const renderAddToModeToolBar = () => {
         return (
             <ModeToolBar
-                icon={<AntdIcons.PlusCircleFilled />}
+                icon={<AntdIcons.PlusCircleFilled/>}
                 onClick={onAddToItemsHandler}
-                label='Добавить к записям'
+                label="Добавить к записям"
             />
-        )
-    }
+        );
+    };
 
     const renderRemoveFromModeToolBar = () => {
         return (
             <ModeToolBar
-                icon={<AntdIcons.MinusCircleFilled />}
+                icon={<AntdIcons.MinusCircleFilled/>}
                 onClick={onRemoveFromItemsHandler}
-                label='Удалить из записей'
+                label="Удалить из записей"
             />
-        )
-    }
+        );
+    };
+
+    const renderSelectRowsModeToolBar = () => {
+        if (!selectRowsProps) {
+            return null;
+        }
+
+        const onClickHandler = () => {
+            selectRowsProps.onClick(selectedIds);
+            setSelectedIds([]);
+            resetMode();
+        }
+
+        return (
+            <ModeToolBar
+                icon={selectRowsProps.icon}
+                onClick={onClickHandler}
+                label={selectRowsProps.label}
+            />
+        );
+    };
 
     const role = useRole();
 
     const renderStandardToolBar = () => {
-        const menuItems = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems);
-        const estimatorMenuItems = getItems(!!onExportArchive, false, false, false);
+        const menuItems = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems, !isNotRoleSensitive, !!selectRowsProps);
+        const estimatorMenuItems = getItems(!!onExportArchive, false, false, false, false);
         const getDropdownMenu = (ddMenuItems) => (
             <Dropdown menu={{
                 items: ddMenuItems,
@@ -317,7 +353,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             }}>
                 <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
             </Dropdown>
-        )
+        );
 
         const fullToolBar = (
             <>
@@ -344,7 +380,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
             }
             default: {
-                return fullToolBar
+                return fullToolBar;
             }
         }
     };
@@ -378,11 +414,12 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                         value={searchText}
                         onChange={onSearchTextChanged}
                     />
-                    { mode === GRID_MODES.delete && renderDeleteModeToolBar() }
-                    { mode === GRID_MODES.export && renderExportModeToolBar() }
-                    { mode === GRID_MODES.settleItems && renderAddToModeToolBar() }
-                    { mode === GRID_MODES.unsettleItems && renderRemoveFromModeToolBar() }
-                    { mode === GRID_MODES.off && renderStandardToolBar()}
+                    {mode === GRID_MODES.delete && renderDeleteModeToolBar()}
+                    {mode === GRID_MODES.export && renderExportModeToolBar()}
+                    {mode === GRID_MODES.settleItems && renderAddToModeToolBar()}
+                    {mode === GRID_MODES.unsettleItems && renderRemoveFromModeToolBar()}
+                    {mode === GRID_MODES.selectRows && renderSelectRowsModeToolBar()}
+                    {mode === GRID_MODES.off && renderStandardToolBar()}
                 </Space>
             </div>
         </div>
@@ -403,9 +440,14 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         <div style={{padding: '4px 20px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
                 <Typography.Text>Всего записей: {list.length}</Typography.Text>
+                {
+                    selectedIds.length > 0 && (
+                        <Typography.Text>Выбрано записей: {selectedIds.length}</Typography.Text>
+                    )
+                }
             </Space>
             <Space>
-                {BottomBar && <BottomBar />}
+                {BottomBar && <BottomBar/>}
                 <Button icon={<DownloadOutlined/>} onClick={onBtExport}>Скачать .xlsx</Button>
             </Space>
         </div>
