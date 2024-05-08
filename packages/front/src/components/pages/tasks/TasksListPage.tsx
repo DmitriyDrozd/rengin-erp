@@ -109,8 +109,8 @@ export const TasksListPage = () => {
         setSelectedTasks(tasks);
     }
 
-    const estimatedTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.estimatedTime) ? acc : acc + +curr.estimatedTime, 0) * 100) / 100;
-    const spentTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0) * 100) / 100;
+    const estimatedTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.estimatedTime) ? acc : acc + +curr.estimatedTime, 0) * 10) / 10;
+    const spentTime = Math.floor(selectedTasks.reduce((acc, curr) => isNaN(+curr.spentTime) ? acc : acc + +curr.spentTime, 0) * 10) / 10;
 
     return (
         <AppLayout
