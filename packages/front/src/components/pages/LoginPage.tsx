@@ -101,7 +101,7 @@ export default () => {
                             style={{ borderRadius: 12, overflow: 'hidden' }}
                             actions={[
                                 <Checkbox checked={remember} onChange={e => setRemember(e.target.checked)}>Запомнить</Checkbox>,
-                                <Link to={getNav().forgot({})}>
+                                <Link to={getNav().forgot}>
                                     Забыли пароль ?
                                 </Link>,
                                 <Button
