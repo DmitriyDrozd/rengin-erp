@@ -63,10 +63,10 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     };
 
     const onCancel = () => {
-        // if (editor.mode == 'edit')
-        //     onSave();
-        // else
-        history.goBack();
+        if (editor.mode == 'edit')
+            onSave();
+        else
+            history.goBack();
     };
 
     const buttons = [
