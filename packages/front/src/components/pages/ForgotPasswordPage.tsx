@@ -32,7 +32,7 @@ const App = () => {
             </Header>
             <Content>
                 <Row type="flex" justify="center" align="middle" style={{minHeight: 'calc(100vh - 84px)'}}>
-                    <Card title={'Восстановление пароля'}>
+                    <Card title={'Восстановление пароля'} style={{ borderRadius: 12 }}>
                         <Result
                             status="info"
                             title="Для восстановления доступа обратитесь к администратору"
