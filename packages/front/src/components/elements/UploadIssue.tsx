@@ -190,7 +190,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
                 скачать PDF файл
             </Button>
         ) :
-        <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: 'pointer' }} src={previewImage} />
+        <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: isFullScreenPreview ? 'zoom-out' : 'zoom-in' }} src={previewImage} />
 
 
     return (

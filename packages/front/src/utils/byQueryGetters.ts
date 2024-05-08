@@ -98,7 +98,7 @@ export function* byQueryGetters () {
     function* siteByClientsNumber (clientsSiteNumber: string) {
         let actualClientsSiteNumber = String(clientsSiteNumber);
 
-        const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value === actualClientsSiteNumber);
+        const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value.toLowerCase() === actualClientsSiteNumber.toLowerCase());
 
         if (!ledger.sites.list.find(siteByNumberFind)) {
             actualClientsSiteNumber = generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber');
