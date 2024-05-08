@@ -37,7 +37,7 @@ export function* byQueryGetters () {
 
         if (!ledger.brands.list.find(brand => brand.clientsBrandNumber === actualBrandNumber) && createIfNotFound) {
             actualBrandNumber = generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber');
-            // fixme: вместо generateGuid brandId и подобные должен генерировать индекс MongoDB
+
             const action = BRANDS.actions.added({
                 clientsBrandNumber: actualBrandNumber,
                 brandId: generateGuid(),
@@ -64,34 +64,36 @@ export function* byQueryGetters () {
         return ledger.brands.list.find(brand => brand.clientsBrandNumber === actualBrandNumber) as BrandVO;
     }
 
-    function* legalById ({legalId, brandId}: {
-        legalId: string,
-        brandId: string
-    }) {
-        let actualLegalId = legalId;
+    // deprecated
 
-        if (!ledger.legals.byId[actualLegalId]) {
-            actualLegalId = generateGuid();
-            const clientsLegalNumber = generateNewListItemNumber(ledger.legals.list, 'clientsLegalNumber');
-            const action = LEGALS.actions.added({
-                brandId,
-                clientsLegalNumber,
-                legalId: actualLegalId,
-                legalName: 'Автоматически созданное юр. лицо ' + clientsLegalNumber,
-                region: ''
-            });
-
-            yield* put(action);
-            yield* call(sleep, 10);
-            yield* call(updateLedger);
-
-            console.log(`Legal ${legalId} not found, create one`, action);
-        } else {
-            console.log(`Legal ${legalId} found`);
-        }
-
-        return ledger.legals.byId[actualLegalId];
-    }
+    // function* legalById ({legalId, brandId}: {
+    //     legalId: string,
+    //     brandId: string
+    // }) {
+    //     let actualLegalId = legalId;
+    //
+    //     if (!ledger.legals.byId[actualLegalId]) {
+    //         actualLegalId = generateGuid();
+    //         const clientsLegalNumber = generateNewListItemNumber(ledger.legals.list, 'clientsLegalNumber');
+    //         const action = LEGALS.actions.added({
+    //             brandId,
+    //             clientsLegalNumber,
+    //             legalId: actualLegalId,
+    //             legalName: 'Автоматически созданное юр. лицо ' + clientsLegalNumber,
+    //             region: ''
+    //         });
+    //
+    //         yield* put(action);
+    //         yield* call(sleep, 10);
+    //         yield* call(updateLedger);
+    //
+    //         console.log(`Legal ${legalId} not found, create one`, action);
+    //     } else {
+    //         console.log(`Legal ${legalId} found`);
+    //     }
+    //
+    //     return ledger.legals.byId[actualLegalId];
+    // }
 
 
     // @ts-ignore
@@ -100,37 +102,39 @@ export function* byQueryGetters () {
 
         const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value.toLowerCase() === actualClientsSiteNumber.toLowerCase());
 
-        if (!ledger.sites.list.find(siteByNumberFind)) {
-            actualClientsSiteNumber = generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber');
-
-            const newBrand = yield* call(brandByClientsNumber, '');
-            const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
-
-            const action = SITES.actions.added({
-                clientsSiteNumber: actualClientsSiteNumber,
-                siteId: generateGuid(),
-                brandId: newBrand.brandId,
-                legalId: newLegal.legalId,
-                address: 'Автоматически созданный объект ' + actualClientsSiteNumber,
-                city: '-',
-                contactInfo: '',
-                KPP: '',
-                managerUserId: '',
-                techUserId: '',
-                clientsEngineerUserId: '',
-                estimatorUserId: '',
-            });
-
-            yield* put(action);
-            yield* call(sleep, 10);
-            yield* call(updateLedger);
-
-            console.log(`Site ${clientsSiteNumber} not found, create one`, action);
-        } else {
-            console.log(`Site ${clientsSiteNumber} found`);
-        }
-
         return ledger.sites.list.find(siteByNumberFind);
+
+        // deprecated
+
+        // if (!ledger.sites.list.find(siteByNumberFind)) {
+        //     actualClientsSiteNumber = generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber');
+        //
+        //     const newBrand = yield* call(brandByClientsNumber, '');
+        //     const newLegal = yield* call(legalById, {legalId: '', brandId: newBrand.brandId});
+        //
+        //     const action = SITES.actions.added({
+        //         clientsSiteNumber: actualClientsSiteNumber,
+        //         siteId: generateGuid(),
+        //         brandId: newBrand.brandId,
+        //         legalId: newLegal.legalId,
+        //         address: 'Автоматически созданный объект ' + actualClientsSiteNumber,
+        //         city: '-',
+        //         contactInfo: '',
+        //         KPP: '',
+        //         managerUserId: '',
+        //         techUserId: '',
+        //         clientsEngineerUserId: '',
+        //         estimatorUserId: '',
+        //     });
+        //
+        //     yield* put(action);
+        //     yield* call(sleep, 10);
+        //     yield* call(updateLedger);
+        //
+        //     console.log(`Site ${clientsSiteNumber} not found, create one`, action);
+        // } else {
+        //     console.log(`Site ${clientsSiteNumber} found`);
+        // }
     }
 
     function* userByClientsNumber (clientsNumber: string) {
@@ -159,7 +163,7 @@ export function* byQueryGetters () {
 
     return {
         brandByClientsNumber,
-        legalById,
+        // legalById,
         siteByClientsNumber,
         userByClientsNumber,
         employeeByClientsNumber,

@@ -17,7 +17,7 @@ import {
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
 import ImportCard from '../../elements/ImportCard';
-import * as R from "ramda";
+import * as R from 'ramda';
 
 interface IIssue {
     clientsIssueNumber: string,
@@ -54,109 +54,133 @@ export const importIssuesXlsxCols = [
 ] as const;
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
-function* importIssuesSaga(data: Datum[]) {
-    let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
+const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { newIssues: any[], invalidIssues: any[], duplicatedIssues: any[] }) => {
+    function* importIssuesSaga(data: Datum[]) {
+        let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
-    const newIssues: Partial<IssueVO>[] = [];
+        function* getOrCreateIssue({
+                                       clientsIssueNumber,
+                                       clientsSiteNumber,
+                                       description,
+                                       registerDate,
+                                       plannedDate,
+                                       completedDate,
+                                       managerId,
+                                       engineerId,
+                                       technicianId,
+                                       estimatorId,
+                                       contacts
+                                   }: IIssue) {
+            const byQueryGetter = yield* byQueryGetters();
 
-    function* getOrCreateIssue({
-                                   clientsIssueNumber,
-                                   clientsSiteNumber,
-                                   description,
-                                   registerDate,
-                                   plannedDate,
-                                   completedDate,
-                                   managerId,
-                                   engineerId,
-                                   technicianId,
-                                   estimatorId,
-                                   contacts
-                               }: IIssue) {
-        const byQueryGetter = yield* byQueryGetters();
+            // @ts-ignore
+            const site = yield* byQueryGetter.siteByClientsNumber(clientsSiteNumber);
 
-        // @ts-ignore
-        const site = yield* byQueryGetter.siteByClientsNumber(clientsSiteNumber);
-        // @ts-ignore
-        const manager = yield* byQueryGetter.userByClientsNumber(managerId);
-        // @ts-ignore
-        const estimator = yield* byQueryGetter.userByClientsNumber(estimatorId);
-        // @ts-ignore
-        const engineer = yield* byQueryGetter.employeeByClientsNumber(engineerId);
-        // @ts-ignore
-        const technician = yield* byQueryGetter.employeeByClientsNumber(technicianId);
+            if (!site) {
+                invalidIssues.push({clientsIssueNumber, clientsSiteNumber});
+                return null;
+            }
 
-        const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
-        // Проверка на существование такой заявки
-        const foundIssue = ledger.issues.list.find((issue) => {
-            return String(issueNumber) === issue.clientsIssueNumber;
-        });
+            // @ts-ignore
+            const manager = yield* byQueryGetter.userByClientsNumber(managerId);
+            // @ts-ignore
+            const estimator = yield* byQueryGetter.userByClientsNumber(estimatorId);
+            // @ts-ignore
+            const engineer = yield* byQueryGetter.employeeByClientsNumber(engineerId);
+            // @ts-ignore
+            const technician = yield* byQueryGetter.employeeByClientsNumber(technicianId);
 
-        // Если заявка новая
-        if (!foundIssue) {
-            const newIssue = {
-                status: statusesList[0],
-                [ISSUES.idProp]: generateGuid(),
-                clientsIssueNumber: String(issueNumber),
-                description,
-                contacts,
-                registerDate: formatExcelDate(registerDate),
-                plannedDate: formatExcelDate(plannedDate),
-                completedDate: formatExcelDate(completedDate),
-                brandId: site.brandId,
-                legalId: site.legalId,
-                siteId: site.siteId,
-                managerUserId: manager?.userId || site?.managerUserId,
-                clientsEngineerUserId: engineer?.employeeId || site?.clientsEngineerUserId,
-                techUserId: technician?.employeeId || site?.techUserId,
-                estimatorUserId: estimator?.userId || site?.estimatorUserId,
-                subId: '',
-                contractId: '',
-            };
+            const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
+            // Проверка на существование такой заявки
+            const foundIssue = ledger.issues.list.find((issue) => {
+                return String(issueNumber) === issue.clientsIssueNumber;
+            });
+
+            // Если заявка новая
+            if (!foundIssue) {
+                const newIssue = {
+                    status: statusesList[0],
+                    [ISSUES.idProp]: generateGuid(),
+                    clientsIssueNumber: String(issueNumber),
+                    description,
+                    contacts,
+                    registerDate: formatExcelDate(registerDate),
+                    plannedDate: formatExcelDate(plannedDate),
+                    completedDate: formatExcelDate(completedDate),
+                    brandId: site.brandId,
+                    legalId: site.legalId,
+                    siteId: site.siteId,
+                    managerUserId: manager?.userId || site?.managerUserId,
+                    clientsEngineerUserId: engineer?.employeeId || site?.clientsEngineerUserId,
+                    techUserId: technician?.employeeId || site?.techUserId,
+                    estimatorUserId: estimator?.userId || site?.estimatorUserId,
+                    subId: '',
+                    contractId: '',
+                };
 
 
-            console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
-            newIssues.push(rejectFn(newIssue));
+                console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
+                newIssues.push(rejectFn(newIssue));
+            } else {
+                duplicatedIssues.push({clientsIssueNumber: issueNumber});
+            }
+
+            return foundIssue;
         }
 
-        return foundIssue;
+        for (let i = 0; i < data.length; i++) {
+            const d = data[i];
+            yield* getOrCreateIssue({
+                clientsIssueNumber: d.clientsIssueNumber,
+                clientsSiteNumber: d.clientsSiteNumber,
+                description: d.description,
+                registerDate: d.registerDate,
+                plannedDate: d.plannedDate,
+                completedDate: d.completedDate,
+                managerId: d.managerId,
+                engineerId: d.engineerId,
+                technicianId: d.technicianId,
+                estimatorId: d.estimatorId,
+                contacts: d.contacts,
+            });
+        }
+
+        if (newIssues.length) {
+            // @ts-ignore
+            yield* put(ISSUES.actions.addedBatch(newIssues));
+        }
     }
 
-    for (let i = 0; i < data.length; i++) {
-        const d = data[i];
-        const timeA = performance.now();
-        yield* getOrCreateIssue({
-            clientsIssueNumber: d.clientsIssueNumber,
-            clientsSiteNumber: d.clientsSiteNumber,
-            description: d.description,
-            registerDate: d.registerDate,
-            plannedDate: d.plannedDate,
-            completedDate: d.completedDate,
-            managerId: d.managerId,
-            engineerId: d.engineerId,
-            technicianId: d.technicianId,
-            estimatorId: d.estimatorId,
-            contacts: d.contacts,
-        });
-        console.log('i: ', i, ', time: ', performance.now() - timeA);
-    }
-
-    if (newIssues.length) {
-        // @ts-ignore
-        yield* put(ISSUES.actions.addedBatch(newIssues));
-    }
-}
+    return importIssuesSaga;
+};
 
 // ms
 const averageCreateTime = 5;
 
 export const ImportIssuesPage = () => {
     const store = useStore();
-    const importFile = async (data: Datum[], callback?: () => void) => {
+    const importFile = async (
+        data: Datum[],
+        callback?: ({
+                        newIssues,
+                        invalidIssues,
+                        duplicatedIssues
+                    }: { newIssues: any[], invalidIssues: any[], duplicatedIssues: any[] }) => void) => {
+        const newIssues: Partial<IssueVO>[] = [];
+        const invalidIssues: { clientsIssueNumber: string, clientsSiteNumber: string }[] = [];
+        const duplicatedIssues: { clientsIssueNumber: string }[] = [];
+
+        const importIssuesSaga = getImportIssuesSaga({ newIssues, invalidIssues, duplicatedIssues });
+
         // @ts-ignore
         await store.runSaga(importIssuesSaga, data);
 
         setTimeout(() => {
-            callback?.();
+            callback?.({
+                newIssues,
+                invalidIssues,
+                duplicatedIssues,
+            });
         }, data.length * averageCreateTime * 2);
     };
 
