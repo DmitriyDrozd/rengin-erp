@@ -9,5 +9,5 @@ POSTGRES_URI:
 WRITE_PG:
   $env:
     default: false
-    production: true
+    production: false
 PORT: 9380
