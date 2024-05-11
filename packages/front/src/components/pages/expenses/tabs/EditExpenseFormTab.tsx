@@ -65,7 +65,7 @@ export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNu
             <RenField meta={EXPENSES.properties.expensePrice} />
             <RenField meta={EXPENSES.properties.expensePriceFinal} />
             <Form.Item label={'Разница, сумма'}>{priceDiff}</Form.Item>
-            <Form.Item label={'Разница, %'}>{priceDiffPercent}%</Form.Item>
+            <Form.Item label={'Разница, %'}>{priceDiffPercent}</Form.Item>
             <Form.Item label={'Файл сметы'}>{expenseFileName}</Form.Item>
         </Form>
     );

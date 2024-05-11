@@ -1,12 +1,15 @@
-export const getDiffAndDiffPercent = (a?: number, b?: number) => {
-    if (a === undefined || b === undefined || a === 0) {
-        return [-1, -1];
+export const getDiffAndDiffPercent = (a?: string, b?: string) => {
+    if (a === "" || b === "") {
+        return ["", ""];
     }
 
-    const diff = b - a;
-    const diffPercent = (b / a) * 100 - 100;
+    const sumA = +a;
+    const sumB = +b;
 
-    return [diff.toFixed(2), diffPercent.toFixed(2)];
+    const diff = sumB - sumA;
+    const diffPercent = (sumB / sumA) * 100 - 100;
+
+    return [diff.toFixed(2), diffPercent.toFixed(2) + '%'];
 };
 
 export const memoizedGetDiffAndDiffPercent = () => {

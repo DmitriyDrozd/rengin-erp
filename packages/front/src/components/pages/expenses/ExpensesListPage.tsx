@@ -95,7 +95,7 @@ export const ExpensesListPage = () => {
             filter: 'agNumberColumnFilter',
             headerName: 'Разница, %',
             width: 150,
-            valueFormatter: ({data}) => getDiffAndDiffPercent(data.expensePrice, data.expensePriceFinal)[1] + '%',
+            valueFormatter: ({data}) => getDiffAndDiffPercent(data.expensePrice, data.expensePriceFinal)[1],
         },
         {
             field: 'expenseFileName',
