@@ -212,6 +212,7 @@ export default () => {
         },
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
+        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
     ];
 
     const columns: ColDef<IssueVO>[] = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];

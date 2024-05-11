@@ -3,7 +3,11 @@ import {
     Typography
 } from 'antd';
 import dayjs from 'dayjs';
-import { ISSUES } from 'iso/src/store/bootstrap';
+import { Days } from 'iso';
+import {
+    EXPENSES,
+    ISSUES
+} from 'iso/src/store/bootstrap';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useEffect,
@@ -113,6 +117,10 @@ export default ({ newClientsNumber, isEditMode }: { newClientsNumber: string, is
             <RenField meta={ISSUES.properties.status}/>
             <RenField meta={ISSUES.properties.estimationsStatus}
                       width={'sm'}/>
+            <RenField meta={ISSUES.properties.dateFR} customProperties={{
+                format: Days.FORMAT_MONTH_YEAR,
+                picker: 'month',
+            }}/>
 
             <FinanceFooter issue={editor.item}/>
         </Form>);

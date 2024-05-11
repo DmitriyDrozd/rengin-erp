@@ -1,3 +1,5 @@
+import { isArray } from '@sha/utils';
+import React from 'react';
 import { EXPENSES } from 'iso/src/store/bootstrap';
 import {
     estimationStatusesList,
@@ -5,6 +7,10 @@ import {
     ExpenseVO
 } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
+import { Days } from 'iso/src/utils';
+import {
+    memoizedGetDiffAndDiffPercent
+} from 'iso/src/utils/moneyUtils';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import {
@@ -13,7 +19,6 @@ import {
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
-import React from 'react';
 import { ColDef } from 'ag-grid-community';
 import {
     Space,
@@ -30,9 +35,9 @@ import StatusFilterSelector from '../issues/StatusFilterSelector';
 import { ExpenseEstimationsStatusCellEditor } from './ExpenseEstimationsStatusCellEditor';
 
 const getEstimationStatusTag = (data: IssueVO) => {
-    const { estimationsStatus } = data;
+    const {estimationsStatus} = data;
     return <Tag color={estimationsStatusesColorsMap[estimationsStatus]}>{estimationsStatus}</Tag>;
-}
+};
 
 export const ExpensesListPage = () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
@@ -45,16 +50,16 @@ export const ExpensesListPage = () => {
 
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(EXPENSES);
+    const getDiffAndDiffPercent = memoizedGetDiffAndDiffPercent();
 
     const columns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.legalId, width: 150},
         {...colMap.brandId, width: 150},
-
+        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
         {...colMap.managerUserId, width: 130},
         {...colMap.estimatorUserId, width: 130},
-
         {
             field: 'estimationsStatus',
             filter: 'agSetColumnFilter',
@@ -76,7 +81,28 @@ export const ExpensesListPage = () => {
             cellRenderer: (props) =>
                 getEstimationStatusTag(props.data)
         },
-        {...colMap.expensePrice, width: 130},
+        {...colMap.expensePrice, width: 200},
+        {...colMap.expensePriceFinal, width: 150},
+        {
+            field: 'priceDiff',
+            filter: 'agNumberColumnFilter',
+            headerName: 'Разница, сумма',
+            width: 150,
+            valueFormatter: ({data}) => getDiffAndDiffPercent(data.expensePrice, data.expensePriceFinal)[0],
+        },
+        {
+            field: 'priceDiffPercent',
+            filter: 'agNumberColumnFilter',
+            headerName: 'Разница, %',
+            width: 150,
+            valueFormatter: ({data}) => getDiffAndDiffPercent(data.expensePrice, data.expensePriceFinal)[1] + '%',
+        },
+        {
+            field: 'expenseFileName',
+            headerName: 'Файл сметы',
+            width: 350,
+            valueFormatter: ({data}) => isArray(data.expenseFiles) ? data.expenseFiles[0]?.name : undefined
+        }
     ] as ColDef<ExpenseVO>[];
 
     const [statuses, setStatuses] = useLocalStorageState('expensesStatusFilter', estimationStatusesList);
@@ -108,7 +134,7 @@ export const ExpensesListPage = () => {
                 statuses={statuses}
                 setStatuses={setStatuses}/>
         </Space>
-    )
+    );
 
     return (
         <AppLayout
@@ -141,4 +167,4 @@ export const ExpensesListPage = () => {
             </div>
         </AppLayout>
     );
-}
+};

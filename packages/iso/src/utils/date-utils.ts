@@ -7,6 +7,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 type ConfigType = string | Date | Dayjs | null | undefined
 
 export const GENERAL_DATE_FORMAT = 'DD-MM-YYYY HH:MM:ss';
+export const FORMAT_MONTH_YEAR = 'MMMM YYYY';
 
 function dayjsToString() {
     return this.format(GENERAL_DATE_FORMAT);
@@ -43,6 +44,9 @@ dayjs.extend(isToday);
 
 export const asDay = (value: string | Date | Day) =>
     value ? dayjs(value).startOf('d') : undefined;
+
+export const asMonthYear = (value: string | Date) =>
+    value ? dayjs(value).format('MMMM YYYY') : undefined;
 
 const calcToday = () =>
     dayjs().startOf('d');

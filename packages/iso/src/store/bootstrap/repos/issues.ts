@@ -86,6 +86,7 @@ const issuesRaw = createResource('issue', {
             }
         }),
         estimationPrice: valueTypes.number({headerName: 'Смета сумма'}),
+        dateFR: valueTypes.date({headerName: 'Месяц и год ФР'}),
         workFiles: valueTypes.array({
             properties: {
                 url: valueTypes.string({required: true}),

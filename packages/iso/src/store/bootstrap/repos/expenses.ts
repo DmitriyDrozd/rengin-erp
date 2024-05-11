@@ -44,10 +44,14 @@ export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
 const expensesRaw = createResource('expense', {
         clientsExpenseNumber: valueTypes.string({headerName: 'Номер сметы', required: true, unique: true}),
 
-        brandId: valueTypes.itemOf({headerName: 'Заказчик', linkedResourceName: 'BRANDS', required: true, immutable: true}),
-        legalId: valueTypes.itemOf({headerName: 'Юр. Лицо', linkedResourceName: 'LEGALS', required: true, immutable: true}),
+        brandId: valueTypes.itemOf({headerName: 'Заказчик', linkedResourceName: 'BRANDS', required: true}),
+        legalId: valueTypes.itemOf({headerName: 'Юр. Лицо', linkedResourceName: 'LEGALS', required: true}),
 
-        expensePrice: valueTypes.number({headerName: 'Смета сумма'}),
+        dateFR: valueTypes.date({ headerName: 'Месяц и год ФР' }),
+
+        expensePrice: valueTypes.number({headerName: 'Сумма предварительная'}),
+        expensePriceFinal: valueTypes.number({ headerName: 'Сумма итоговая' }),
+
         expenseFiles: valueTypes.array({
             properties: {
                 url: valueTypes.string()

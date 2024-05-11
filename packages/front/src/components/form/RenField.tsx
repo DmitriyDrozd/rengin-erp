@@ -32,7 +32,7 @@ import './RenField.css';
 
 const {Text, Link} = Typography;
 
-export default ({meta, disabled, customOptions, defaultValue, immutable}: {
+export default ({meta, disabled, customOptions, defaultValue, immutable, customProperties}: {
     meta: AnyMeta,
     disabled?: boolean,
     immutable?: boolean,
@@ -41,6 +41,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable}: {
         label: string
     }[],
     defaultValue?: any,
+    customProperties?: any,
 }) => {
     const [itemToFocus, setItemToFocus] = useState(null);
     const editorProperty = useContextEditorProperty(meta.name);
@@ -158,6 +159,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable}: {
                         updateItemProperty(e ? e.toDate().toISOString() : null);
                     }}
                     {...sharedProps}
+                    {...customProperties}
                 />
             );
         else if (editorProperty.property.type === 'text')
@@ -200,6 +202,6 @@ export default ({meta, disabled, customOptions, defaultValue, immutable}: {
     }
     return (
         <Form.Item label={property.headerName}
-                   required={property.required}>{renderInputControl()}<span></span></Form.Item>)
+                   required={property.required}>{renderInputControl()}</Form.Item>)
         ;
 };
