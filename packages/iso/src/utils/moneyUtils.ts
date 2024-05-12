@@ -1,5 +1,5 @@
 export const getDiffAndDiffPercent = (a?: string, b?: string) => {
-    if (a === "" || b === "" || a === undefined || b === undefined) {
+    if (a === "" || b === "" || a === undefined || b === undefined || a === null || b === null) {
         return ["", ""];
     }
 
