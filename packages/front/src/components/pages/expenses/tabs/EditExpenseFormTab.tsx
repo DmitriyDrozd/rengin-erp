@@ -56,10 +56,7 @@ export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNu
                 format: Days.FORMAT_MONTH_YEAR,
                 picker: 'month',
             }}/>
-            <RenField
-                meta={EXPENSES.properties.managerUserId}
-                disabled={role === 'сметчик'}
-            />
+            <RenField meta={EXPENSES.properties.managerUserId}/>
             <RenField meta={EXPENSES.properties.estimatorUserId} />
             <RenField meta={EXPENSES.properties.estimationsStatus} />
             <RenField meta={EXPENSES.properties.expensePrice} />
