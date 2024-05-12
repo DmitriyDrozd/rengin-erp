@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import CreateButton from '../elements/CreateButton';
+import { NumericInput } from '../elements/NumericInput';
 import { useContextEditorProperty } from '../pages/chapter-modal/useEditor';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
@@ -178,20 +179,31 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
                     {...sharedProps}
                 />
             );
-        else return (
-            <Input
-                ref={inputRef}
-                value={editorProperty.value}
-                onBlur={e => {
-                    updateItemProperty(e.target.value);
-                }}
-                onChange={e => {
-                    setItemToFocus(inputRef);
-                    updateItemProperty(e.target.value);
-                }}
-                {...sharedProps}
-            />
-        );
+        else if (editorProperty.property.type === 'number') {
+            return (
+                <NumericInput
+                    ref={inputRef}
+                    value={editorProperty.value}
+                    onChange={updateItemProperty}
+                    {...sharedProps}
+                />
+            )
+        } else {
+            return (
+                <Input
+                    ref={inputRef}
+                    value={editorProperty.value}
+                    onBlur={e => {
+                        updateItemProperty(e.target.value);
+                    }}
+                    onChange={e => {
+                        setItemToFocus(inputRef);
+                        updateItemProperty(e.target.value);
+                    }}
+                    {...sharedProps}
+                />
+            );
+        }
     };
 
     if (error) {

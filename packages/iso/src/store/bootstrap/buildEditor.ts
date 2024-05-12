@@ -134,6 +134,11 @@ export const buildEditor = <RID extends string,
                     if (match)
                         return 'Значение должно быть уникальным';
                 }
+                if (property.type === 'number' && !!value) {
+                    if (isNaN(Number.parseFloat(value))) {
+                        return 'Неверный формат числа';
+                    }
+                }
                 return undefined;
             }
         };

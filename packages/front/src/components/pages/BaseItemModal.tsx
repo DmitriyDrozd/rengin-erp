@@ -72,7 +72,7 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     const buttons = [
         <DeleteButton onDeleted={onDelete}/>,
         <CancelButton onCancel={onBack} disabled={!editor.hasChanges}/>,
-        <Button type={'primary'} disabled={!editor.hasChanges} icon={<AntdIcons.SaveOutlined/>}
+        <Button type={'primary'} disabled={!editor.hasChanges || !editor.isValid} icon={<AntdIcons.SaveOutlined/>}
                 onClick={onSave}>Сохранить</Button>
     ];
 

@@ -12,7 +12,6 @@ import {
     useDispatch,
     useSelector
 } from 'react-redux';
-import { isEmpty } from 'ramda';
 import { useISOState } from 'iso/src/ISOState';
 import {
     GetParamsByMeta,
@@ -70,13 +69,15 @@ export const useEditor = <
             }));
         };
     const errors = editor.getAllErrors(item)(state);
+    const isValid = !Object.values(errors).some(e => e !== undefined);
+
     const params = editor.getAllParams(item)(state);
     const result = {
         editor,
         rules: editor.rules,
         resource: res,
         hasChanges: JSON.stringify(initItem) !== JSON.stringify(item),
-        isValid: isEmpty(errors),
+        isValid,
         item,
         params,
         errors,
