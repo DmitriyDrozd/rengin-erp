@@ -98,15 +98,24 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
 
             // Если заявка новая
             if (!foundIssue) {
+                const formattedRegisterDate = formatExcelDate(registerDate);
+                const formattedPlannedDate = formatExcelDate(plannedDate);
+                const formattedCompletedDate = formatExcelDate(completedDate);
+
+                if ([formattedRegisterDate, formattedPlannedDate, formattedCompletedDate].includes('Invalid Date')) {
+                    invalidIssues.push({clientsIssueNumber, clientsSiteNumber});
+                    return null;
+                }
+
                 const newIssue = {
                     status: statusesList[0],
                     [ISSUES.idProp]: generateGuid(),
                     clientsIssueNumber: String(issueNumber),
                     description,
                     contacts,
-                    registerDate: formatExcelDate(registerDate),
-                    plannedDate: formatExcelDate(plannedDate),
-                    completedDate: formatExcelDate(completedDate),
+                    registerDate: formattedRegisterDate,
+                    plannedDate: formattedPlannedDate,
+                    completedDate: formattedCompletedDate,
                     brandId: site.brandId,
                     legalId: site.legalId,
                     siteId: site.siteId,
