@@ -59,7 +59,7 @@ export default ({id}: { id: string }) => {
         </ProCard>
     );
 
-    const list = [...Array.from(Object.values(propsToRender)), isEditMode ? clientsBrandNumber : undefined].filter(i => !!i);
+    const list = [clientsBrandNumber, ...Array.from(Object.values(propsToRender))].filter(i => !!i);
 
     return (
         <EditorContext.Provider value={useEditorData}>

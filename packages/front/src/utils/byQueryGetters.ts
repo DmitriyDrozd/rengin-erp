@@ -100,7 +100,11 @@ export function* byQueryGetters () {
     function* siteByClientsNumber (clientsSiteNumber: string) {
         let actualClientsSiteNumber = String(clientsSiteNumber);
 
-        const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => value.toLowerCase() === actualClientsSiteNumber.toLowerCase());
+        const siteByNumberFind = (({ clientsSiteNumber: value }: { clientsSiteNumber: string }) => {
+            const a = value.toLowerCase() === actualClientsSiteNumber.toLowerCase();
+            debugger;
+            return a;
+        });
 
         return ledger.sites.list.find(siteByNumberFind);
 

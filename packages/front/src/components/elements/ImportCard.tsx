@@ -85,12 +85,13 @@ export default <D, >(props: ImportCardProps<D>) => {
 
                                             {invalidIssues.length > 0 && (
                                                 <Card title={<><StopOutlined style={{ color: '#cf1322'}} /> Заявки с неверными данными</>}>
-                                                    {invalidIssues.map(({clientsIssueNumber, clientsSiteNumber}, index) => (
-                                                        <Typography.Text key={clientsIssueNumber}>
-                                                            Номер {clientsIssueNumber || 'не указан'}, код
-                                                            объекта: {clientsSiteNumber || 'не указан'}
+                                                    {invalidIssues.map(({clientsIssueNumber, clientsSiteNumber, error}, index) => (
+                                                        <p key={clientsIssueNumber}>
+                                                            Номер {clientsIssueNumber || 'не указан'},
+                                                            код объекта: {clientsSiteNumber || 'не указан'}.
+                                                            Ошибка: {error}
                                                             {index < invalidIssues.length - 1 ? '; ' : ''}
-                                                        </Typography.Text>
+                                                        </p>
                                                     ))}
                                                 </Card>
                                             )}

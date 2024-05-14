@@ -1,8 +1,10 @@
+import dayjs from 'dayjs';
 import {
     ISSUES,
     IssueVO,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
+import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import {
     byQueryGetters,
     generateNewListItemNumber,
@@ -34,7 +36,17 @@ interface IIssue {
 }
 
 const formatExcelDate = (excelDate: number): string => {
-    return excelDate ? new Date(Date.UTC(0, 0, excelDate - 1)).toDateString() : '';
+    if (!excelDate) {
+        return '';
+    }
+
+    const tryOne = dayjs(excelDate, 'DD.MM.YYYY HH:MM:SS');
+
+    if (tryOne.isValid()) {
+        return tryOne.format(GENERAL_DATE_FORMAT);
+    }
+
+    return new Date(Date.UTC(0, 0, excelDate - 1)).toDateString();
 };
 
 const rejectFn = R.reject(R.anyPass([R.isEmpty, R.isNil]));
@@ -77,7 +89,8 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
             const site = yield* byQueryGetter.siteByClientsNumber(clientsSiteNumber);
 
             if (!site) {
-                invalidIssues.push({clientsIssueNumber, clientsSiteNumber});
+                const error = 'не найден обьект';
+                invalidIssues.push({clientsIssueNumber, clientsSiteNumber, error});
                 return null;
             }
 
@@ -103,7 +116,8 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
                 const formattedCompletedDate = formatExcelDate(completedDate);
 
                 if ([formattedRegisterDate, formattedPlannedDate, formattedCompletedDate].includes('Invalid Date')) {
-                    invalidIssues.push({clientsIssueNumber, clientsSiteNumber});
+                    const error = 'неверный формат даты';
+                    invalidIssues.push({clientsIssueNumber, clientsSiteNumber, error});
                     return null;
                 }
 
