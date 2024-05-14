@@ -8,7 +8,10 @@ import {
     Select
 } from 'antd';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
-import { CSSProperties, useState } from 'react';
+import {
+    CSSProperties,
+    useState
+} from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { Days } from 'iso';
@@ -16,13 +19,13 @@ import {
     asDayOrToday,
     Period
 } from 'iso/src/utils/date-utils';
+import { IssuesByManager } from './IssuesByManager';
 
 dayjs.extend(isBetween);
 
-const { RangePicker } = DatePicker;
+const {RangePicker} = DatePicker;
 const gridStyle: CSSProperties = {
     width: '50%',
-    height: '300px',
     textAlign: 'center',
 };
 
@@ -38,12 +41,12 @@ const offsetDates: { [offset: string]: Dayjs } = {
 };
 
 const periodOptions = [
-    { value: 'one,today', label: 'Месяц' },
-    { value: 'two,today', label: '2 Месяца' },
-    { value: 'three,today', label: '3 Месяца' },
-    { value: 'six,today', label: 'Полгода' },
-    { value: 'year,today', label: 'Год' },
-    { value: 'all,today', label: 'Все время' },
+    {value: 'one,today', label: 'Месяц'},
+    {value: 'two,today', label: '2 Месяца'},
+    {value: 'three,today', label: '3 Месяца'},
+    {value: 'six,today', label: 'Полгода'},
+    {value: 'year,today', label: 'Год'},
+    {value: 'all,today', label: 'Все время'},
 ];
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
@@ -65,7 +68,7 @@ export default () => {
 
     const onOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
-    }
+    };
 
     return (
         <AppLayout
@@ -78,14 +81,14 @@ export default () => {
         >
             <Card title="Графики">
                 <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
-                    <span style={{ paddingRight: '24px' }}>Период:</span>
+                    <span style={{paddingRight: '24px'}}>Период:</span>
                     <RangePicker
                         allowClear={false}
                         placeholder={['Дата начала', 'Дата конца']}
                         value={period || defaultPeriod}
                         onChange={setPeriod}
                     />
-                    <span style={{ padding: '0 24px' }}>За период:</span>
+                    <span style={{padding: '0 24px'}}>За период:</span>
                     <Select
                         defaultValue={'one,today'}
                         onSelect={onOptionChange}
@@ -94,22 +97,16 @@ export default () => {
                     />
                 </Card.Grid>
 
-                <Card.Grid hoverable={false} style={gridStyle} title={'Новые'}>
-                    <b>Новые заявки</b>
-                    <IssueChart issues={openedIssues} color={'#01677F'}/>
+                <Card.Grid hoverable={false} style={gridStyle}>
+                    <b>Заявки по менеджерам</b>
+                    <IssuesByManager
+                        closedIssues={closedIssues}
+                        openedIssues={openedIssues}
+                        outdatedClosedIssues={outdatedClosedIssues}
+                        outdatedOpenIssues={outdatedOpenIssues}
+                    />
                 </Card.Grid>
-                <Card.Grid hoverable={false} title={'Закрытые'} style={gridStyle}>
-                    <b>Закрыто за период</b>
-                    <IssueChart issues={closedIssues} color={'#18525F'}/>
-                </Card.Grid>
-                <Card.Grid hoverable={false} style={gridStyle} title={'Просрочено в закрытых'}>
-                    <b>Просрочено в закрытых за период</b>
-                    <IssueChart issues={outdatedClosedIssues} color={'#004353'}/>
-                </Card.Grid>
-                <Card.Grid hoverable={false} style={gridStyle} title={'Просрочено в работе'}>
-                    <b>Просрочено в работе в течении пероида</b>
-                    <IssueChart issues={outdatedOpenIssues} color={'#31A4BF'}/>
-                </Card.Grid>
+
             </Card>
         </AppLayout>
     );
