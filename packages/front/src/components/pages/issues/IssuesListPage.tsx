@@ -126,7 +126,7 @@ const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], ty
     document.body.removeChild(element);
 };
 
-const outdatedFilter = i => isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate);
+const outdatedFilter = i => i && isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate);
 
 export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
@@ -178,13 +178,13 @@ export default () => {
     const defaultColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
-        {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data.registerDate)},
+        {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data?.registerDate)},
         {...statusColumn},
         {...colMap.brandId, width: 150},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
-        {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data.plannedDate)},
-        {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data.completedDate), width: 115},
+        {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
+        {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
         {...colMap.managerUserId, width: 130},
         {...colMap.techUserId, width: 130},
         {...colMap.clientsEngineerUserId, width: 130},

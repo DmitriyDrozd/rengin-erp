@@ -46,6 +46,12 @@ const formatExcelDate = (excelDate: number): string => {
         return tryOne.format(GENERAL_DATE_FORMAT);
     }
 
+    const tryTwo = dayjs(excelDate);
+
+    if (tryTwo.isValid()) {
+        return tryTwo.format(GENERAL_DATE_FORMAT);
+    }
+
     return new Date(Date.UTC(0, 0, excelDate - 1)).toDateString();
 };
 
