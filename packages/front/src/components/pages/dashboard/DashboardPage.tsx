@@ -1,14 +1,13 @@
 import AppLayout from '../../app/AppLayout';
 import { ISSUES } from 'iso/src/store/bootstrap';
 import { useSelector } from 'react-redux';
-import IssueChart from './IssueChart';
 import {
     Card,
     DatePicker,
     Select
 } from 'antd';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
-import {
+import React, {
     CSSProperties,
     useState
 } from 'react';
@@ -21,6 +20,7 @@ import {
 } from 'iso/src/utils/date-utils';
 import { IssuesByBrand } from './IssuesByBrand';
 import { IssuesByManager } from './IssuesByManager';
+import { SitesByBrand } from './SitesByBrand';
 
 dayjs.extend(isBetween);
 
@@ -80,9 +80,6 @@ export default () => {
                 }
             }}
         >
-            <Card title="Общие графики">
-
-            </Card>
             <Card title="Графики за период">
                 <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
                     <span style={{paddingRight: '24px'}}>Период:</span>
@@ -120,7 +117,12 @@ export default () => {
                         outdatedOpenIssues={outdatedOpenIssues}
                     />
                 </Card.Grid>
-
+            </Card>
+            <Card title="Общие графики">
+                <Card.Grid hoverable={true} style={gridStyle}>
+                    <b>Объекты по заказчикам</b>
+                    <SitesByBrand />
+                </Card.Grid>
             </Card>
         </AppLayout>
     );

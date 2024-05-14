@@ -30,6 +30,7 @@
         "mongo:restore": "docker exec -i mongo /usr/bin/mongorestore  --archive < ./mongo/dumps/last/archive.gz"
     },
     "dependencies": {
+        "@ant-design/graphs": "^1.4.1",
         "@ant-design/happy-work-theme": "^1.0.0",
         "@ant-design/plots": "^1.2.5",
         "@ant-design/pro-components": "^2.6.43",

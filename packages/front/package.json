@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.6.1",
   "type": "module",
   "dependencies": {
+    "@ant-design/graphs": "^1.4.1",
     "@ant-design/icons": "^5.1.4",
     "@types/react": "^18.2.14",
     "@vitejs/plugin-react": "^4.0.1",
