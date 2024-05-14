@@ -40,9 +40,11 @@ export const useEditor = <
     const res = editor.resource;
     const clientsNumberProp = res.clientsNumberProp;
 
-    const [newItem] = useState({[res.idProp]: generateGuid(), ...getArrayPropsForNewItem(res.properties)});
     const state = useISOState();
     const items: Item[] = useSelector(res.selectList) as any;
+    const newItemClientsNumber = generateNewListItemNumber(items, res.clientsNumberProp);
+    const [newItem] = useState({[res.idProp]: generateGuid(), [res.clientsNumberProp]: newItemClientsNumber, ...getArrayPropsForNewItem(res.properties)});
+
     const mode = idOrInitItem === 'create' ? 'create' : 'edit';
     const id = idOrInitItem === 'create'
         ? newItem[res.idProp]

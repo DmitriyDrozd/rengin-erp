@@ -30,8 +30,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
     const useEditorData = useEditor(employeesditor, id);
     const isEditMode = useEditorData.mode === 'edit';
     const {removed, employeeId, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
-    const list = [...Array.from(Object.values(propsToRender)), isEditMode && clientsEmployeeNumber].filter(i => !!i);
-    const customOptions = roles.map(r => ({value: r, label: r}));
+    const list = [clientsEmployeeNumber, ...Array.from(Object.values(propsToRender))].filter(i => !!i);
 
     const [addingModes, setAddingModes] = useState({
         issues: false,

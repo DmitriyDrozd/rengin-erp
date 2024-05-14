@@ -28,6 +28,7 @@ const rawResource = createResource('contract', {
 
 export const CONTRACTS = {
     ...rawResource,
+    clientsNumberProp: 'clientsContractNumber',
 }
 
 

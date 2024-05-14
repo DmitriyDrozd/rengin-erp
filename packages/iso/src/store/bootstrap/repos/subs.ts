@@ -6,7 +6,7 @@ import {
     UserVO
 } from './users';
 
-export const SUBS = createResource('sub',{
+export const SUBS_RAW = createResource('sub',{
         contractId: valueTypes.itemOf({headerName: 'Договор',linkedResourceName: 'CONTRACTS',required: true, immutable: true}),
         subscribeDate: valueTypes.date({headerName: 'Дата подключения'}),
         unsubscribeDate: valueTypes.date({headerName: 'Дата отключения'}),
@@ -27,6 +27,11 @@ export const SUBS = createResource('sub',{
         }
     }
 )
+
+export const SUBS = {
+    ...SUBS_RAW,
+    clientsNumberProp: 'clientsSubNumber',
+}
 
 export default SUBS
 
