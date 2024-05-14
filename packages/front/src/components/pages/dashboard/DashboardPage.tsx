@@ -19,6 +19,7 @@ import {
     asDayOrToday,
     Period
 } from 'iso/src/utils/date-utils';
+import { IssuesByBrand } from './IssuesByBrand';
 import { IssuesByManager } from './IssuesByManager';
 
 dayjs.extend(isBetween);
@@ -79,7 +80,10 @@ export default () => {
                 }
             }}
         >
-            <Card title="Графики">
+            <Card title="Общие графики">
+
+            </Card>
+            <Card title="Графики за период">
                 <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
                     <span style={{paddingRight: '24px'}}>Период:</span>
                     <RangePicker
@@ -100,6 +104,16 @@ export default () => {
                 <Card.Grid hoverable={false} style={gridStyle}>
                     <b>Заявки по менеджерам</b>
                     <IssuesByManager
+                        closedIssues={closedIssues}
+                        openedIssues={openedIssues}
+                        outdatedClosedIssues={outdatedClosedIssues}
+                        outdatedOpenIssues={outdatedOpenIssues}
+                    />
+                </Card.Grid>
+
+                <Card.Grid hoverable={false} style={gridStyle}>
+                    <b>Заявки по заказчикам</b>
+                    <IssuesByBrand
                         closedIssues={closedIssues}
                         openedIssues={openedIssues}
                         outdatedClosedIssues={outdatedClosedIssues}
