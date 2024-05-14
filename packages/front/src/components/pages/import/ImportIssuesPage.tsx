@@ -35,21 +35,30 @@ interface IIssue {
     contacts?: string,
 }
 
+const TIME_ZONE_NOVOSIBIRSK = '+0700';
+
 const formatExcelDate = (excelDate: number): string => {
     if (!excelDate) {
         return '';
     }
 
-    const tryOne = dayjs(excelDate, 'DD.MM.YYYY HH:MM:SS');
+    const result = new Date(Date.UTC(0, 0, excelDate - 1)).toISOString();
+
+    if (result !== 'Invalid Date') {
+        return result;
+    }
+
+    const timezoneDate = `${excelDate} ${TIME_ZONE_NOVOSIBIRSK}`;
+    const tryOne = dayjs(timezoneDate, 'DD.MM.YYYY HH:mm:ss ZZ');
 
     if (tryOne.isValid()) {
-        return tryOne.format(GENERAL_DATE_FORMAT);
+        return tryOne.toDate().toISOString();
     }
 
     const tryTwo = dayjs(excelDate);
 
     if (tryTwo.isValid()) {
-        return tryTwo.format(GENERAL_DATE_FORMAT);
+        return tryTwo.toDate().toISOString();
     }
 
     return new Date(Date.UTC(0, 0, excelDate - 1)).toDateString();
