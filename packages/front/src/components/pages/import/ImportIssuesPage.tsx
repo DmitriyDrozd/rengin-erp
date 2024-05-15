@@ -37,15 +37,17 @@ interface IIssue {
 
 const TIME_ZONE_NOVOSIBIRSK = '+0700';
 
-const formatExcelDate = (excelDate: number): string => {
+const formatExcelDate = (excelDate: number | string): string => {
     if (!excelDate) {
         return '';
     }
 
-    const result = new Date(Date.UTC(0, 0, excelDate - 1)).toISOString();
+    if (typeof excelDate === 'number') {
+        const result = new Date(Date.UTC(0, 0, excelDate - 1))?.toISOString();
 
-    if (result !== 'Invalid Date') {
-        return result;
+        if (result !== 'Invalid Date') {
+            return result;
+        }
     }
 
     const timezoneDate = `${excelDate} ${TIME_ZONE_NOVOSIBIRSK}`;
@@ -61,7 +63,7 @@ const formatExcelDate = (excelDate: number): string => {
         return tryTwo.toDate().toISOString();
     }
 
-    return new Date(Date.UTC(0, 0, excelDate - 1)).toDateString();
+    return new Date(Date.UTC(0, 0, excelDate - 1))?.toDateString();
 };
 
 const rejectFn = R.reject(R.anyPass([R.isEmpty, R.isNil]));
