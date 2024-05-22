@@ -12,6 +12,7 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
+import { isUserCustomer } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
 import React, { useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -134,6 +135,7 @@ export default () => {
     const {currentUser} = useCurrentUser();
     const isUserEstimator = currentUser.role === roleEnum['сметчик'];
     const isUserEngineer = currentUser.role === roleEnum['инженер'];
+    const isCustomer = isUserCustomer(currentUser);
     const statusPropToFilter = isUserEstimator ? 'estimationsStatus' : 'status';
     const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
@@ -167,11 +169,13 @@ export default () => {
             getStatusTag(props.data)
     };
 
+    const contactInfoColumn = isCustomer ? { columnToRemove: true } : {...colMap.contactInfo, width: 400};
+
     const engineerColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 700},
-        {...colMap.contactInfo, width: 400},
+        {...contactInfoColumn},
         {...statusColumn},
     ];
 
@@ -183,6 +187,7 @@ export default () => {
         {...colMap.brandId, width: 150},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
+        {...contactInfoColumn},
         {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
         {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
         {...colMap.managerUserId, width: 130},
@@ -215,7 +220,8 @@ export default () => {
         {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
     ];
 
-    const columns: ColDef<IssueVO>[] = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
+    const rawColumns = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
+    const columns: ColDef<IssueVO>[] = rawColumns.filter(c => !c.columnToRemove);
 
     const [statuses, setStatuses] = useLocalStorageState('issuesStatusFilter', isUserEstimator ? estimationStatusesList : statusesList);
     const [outdated, setOutdated] = useLocalStorageState('issuesOutdatedFilter', false);
@@ -230,7 +236,7 @@ export default () => {
             break;
         }
         case roleEnum['сметчик']: {
-            // todo: отдельная роль
+            // todo: отдельная роль руководителя отдела
             const isDepartmentHead = currentUser.title?.toLowerCase().includes('руководитель');
             const userDepartment = currentUser.department;
             const departmentUserIds: string[] = useSelector(USERS.selectAll)
