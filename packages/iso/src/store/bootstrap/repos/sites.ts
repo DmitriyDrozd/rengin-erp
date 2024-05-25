@@ -38,6 +38,9 @@ export const siteResourceRaw = createResource('site',{
             headerName: 'Адрес',
             required: true
         }),
+        geoPosition: valueTypes.string({
+            headerName: 'Координаты',
+        }),
         contactInfo: valueTypes.text({headerName:'Контакты'}),
         KPP: valueTypes.string({headerName: 'КПП'}),
         managerUserId: valueTypes.itemOf({

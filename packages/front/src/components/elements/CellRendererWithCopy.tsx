@@ -3,7 +3,7 @@ import copy from 'copy-to-clipboard';
 import React from 'react';
 
 export const CellRendererWithCopy = (props: {
-    rowIndex: number;
+    rowIndex?: number;
     value: string;
 }) => {
     return (
