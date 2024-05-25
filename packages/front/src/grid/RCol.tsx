@@ -47,6 +47,10 @@ export const useAllColumns = <
         fieldName: res.clientsNumberProp,
         resizable: false,
         resource: res,
+        valueGetter: (params => {
+            const value = params.data[res.clientsNumberProp];
+            return isNaN(+value) ? value : +value;
+        }) as ValueGetterFunc<any, string>,
         cellRenderer: CellRendererWithCopy,
     }
 
