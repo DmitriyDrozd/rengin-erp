@@ -1,10 +1,6 @@
 import { generateGuid } from '@sha/random';
 import { sleep } from '@sha/utils';
-import {
-    SITES,
-} from 'iso/src/store/bootstrap';
 import BRANDS, { BrandVO } from 'iso/src/store/bootstrap/repos/brands';
-import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import {
     call,
@@ -12,7 +8,39 @@ import {
     select,
 } from 'typed-redux-saga';
 
-export const generateNewListItemNumber = (list: any[], accessor: string, shift: number = 0): string => {
+export const getItemNumberGenerator = () => {
+    let lastGenerated: string;
+
+    return (list, accessor) => {
+        lastGenerated = generateNewListItemNumber(list, accessor, lastGenerated);
+
+        return lastGenerated;
+    };
+};
+
+export const generateNewListItemNumber = (list: any[], accessor: string, lastGenerated: string = '1'): string => {
+    const itemNumberArray = list.map(item => item[accessor]).sort();
+
+    let result: string;
+
+    for (let i = +lastGenerated + 1; i <= itemNumberArray.length; i++) {
+        const lookingFor = String(i);
+
+        if (!itemNumberArray.includes(String(i))) {
+            result = lookingFor;
+
+            i = list.length + 1;
+        }
+    }
+
+    if (result !== '0' && result !== undefined && !list.find(item => item[accessor] === result)) {
+        return String(result);
+    }
+
+    /**
+     * Если не подошло
+     */
+
     const lastItemNumber = list.reduce((acc, item) => {
         const currentNumber = +item[accessor];
 
@@ -23,7 +51,7 @@ export const generateNewListItemNumber = (list: any[], accessor: string, shift: 
         return currentNumber > acc ? currentNumber : acc;
     }, 0);
 
-    return String(lastItemNumber + 1 + shift);
+    return String(lastItemNumber + 1);
 };
 
 export function* byQueryGetters () {

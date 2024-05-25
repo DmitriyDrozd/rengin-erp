@@ -5,7 +5,7 @@ import {
 import * as R from 'ramda';
 import {
     byQueryGetters,
-    generateNewListItemNumber,
+    getItemNumberGenerator,
 } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React from 'react';
@@ -40,9 +40,10 @@ export const importIssuesXlsxCols = [
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
 function* importEmployeesSaga(data: Datum[]) {
-    let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
-
+    const generateClientsNumber = getItemNumberGenerator();
     const newEmployees: Partial<EmployeeVO>[] = [];
+
+    let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
     function* getOrCreateEmployee({
                                       role,
@@ -63,7 +64,7 @@ function* importEmployeesSaga(data: Datum[]) {
         });
 
         if (!foundEmployee) {
-            const clientsEmployeeNumber = generateNewListItemNumber(ledger.employees.list, 'clientsEmployeeNumber', newEmployees.length);
+            const clientsEmployeeNumber = generateClientsNumber(ledger.employees.list, 'clientsEmployeeNumber');
             const newEmployee = {
                 role,
                 lastname,

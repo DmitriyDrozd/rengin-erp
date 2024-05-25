@@ -73,10 +73,6 @@ export const useEditor = <
     const errors = editor.getAllErrors(item)(state);
     const isValid = !Object.values(errors).some(e => e !== undefined);
 
-    if (!isValid) {
-        console.log('errors', errors);
-    }
-
     const params = editor.getAllParams(item)(state);
     const result = {
         editor,

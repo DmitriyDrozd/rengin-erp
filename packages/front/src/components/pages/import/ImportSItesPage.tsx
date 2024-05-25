@@ -1,5 +1,7 @@
 import * as R from 'ramda';
-import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
+import {
+    getItemNumberGenerator
+} from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React from 'react';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
@@ -20,6 +22,7 @@ export const importSitesXlsxCols = ['clientsSiteNumber', 'brandName', 'legalName
 type Datum = Record<typeof importSitesXlsxCols[number], string>
 
 function* importObjectsSaga(data: Datum[]) {
+    const generateClientsNumber = getItemNumberGenerator();
 
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
@@ -42,7 +45,7 @@ function* importObjectsSaga(data: Datum[]) {
                 brandId: generateGuid(),
                 brandName,
                 address: `${city}, ${address}`,
-                clientsBrandNumber: generateNewListItemNumber(ledger.brands.list, 'clientsBrandNumber', newSites.length),
+                clientsBrandNumber: generateClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
                 brandType: 'Заказчик',
                 person: '',
                 email: '',
@@ -68,7 +71,7 @@ function* importObjectsSaga(data: Datum[]) {
                 legalId: generateGuid(),
                 legalName,
                 region: city,
-                clientsLegalNumber: generateNewListItemNumber(ledger.legals.list, 'clientsLegalNumber', newSites.length),
+                clientsLegalNumber: generateClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
             });
             console.log(`Legal ${legalName} not found, create one`, action);
             yield* put(action);
@@ -90,7 +93,7 @@ function* importObjectsSaga(data: Datum[]) {
                 siteId: generateGuid(),
                 clientsSiteNumber: clientsSiteNumber
                     ? String(clientsSiteNumber)
-                    : generateNewListItemNumber(ledger.sites.list, 'clientsSiteNumber', newSites.length),
+                    : generateClientsNumber(ledger.sites.list, 'clientsSiteNumber'),
             };
             console.log(`Site not found, create one`, site.address);
             newSites.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(site));

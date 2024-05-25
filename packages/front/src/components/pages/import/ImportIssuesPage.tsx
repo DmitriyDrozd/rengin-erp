@@ -4,10 +4,9 @@ import {
     IssueVO,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
-import { GENERAL_DATE_FORMAT } from 'iso/src/utils/date-utils';
 import {
     byQueryGetters,
-    generateNewListItemNumber,
+    getItemNumberGenerator,
 } from '../../../utils/byQueryGetters';
 import AppLayout from '../../app/AppLayout';
 import React from 'react';
@@ -84,6 +83,8 @@ export const importIssuesXlsxCols = [
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
 const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { newIssues: any[], invalidIssues: any[], duplicatedIssues: any[] }) => {
+    const generateClientsNumber = getItemNumberGenerator();
+
     function* importIssuesSaga(data: Datum[]) {
         let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
@@ -120,7 +121,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
             // @ts-ignore
             const technician = yield* byQueryGetter.employeeByClientsNumber(technicianId);
 
-            const issueNumber = clientsIssueNumber || generateNewListItemNumber(ledger.issues.list, 'clientsIssueNumber', newIssues.length);
+            const issueNumber = clientsIssueNumber || generateClientsNumber(ledger.issues.list, 'clientsIssueNumber');
             // Проверка на существование такой заявки
             const foundIssue = ledger.issues.list.find((issue) => {
                 return String(issueNumber) === issue.clientsIssueNumber;
