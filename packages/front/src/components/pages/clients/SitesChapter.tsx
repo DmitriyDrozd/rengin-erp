@@ -11,6 +11,7 @@ import React, {
     useMemo,
     useState
 } from 'react';
+import { GOOGLE_MAPS_API_KEY } from '../../../env';
 import { useAllColumns } from '../../../grid/RCol';
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import useLedger from '../../../hooks/useLedger';
@@ -32,7 +33,6 @@ import Typography from 'antd/es/typography';
 
 const RESOURCE = SITES;
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDBhPGRN796X6utRiN6wfEIQXLTHr7FvNA';
 
 export default () => {
     const { currentUser } = useCurrentUser();

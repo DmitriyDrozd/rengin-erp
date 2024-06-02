@@ -30,10 +30,12 @@ import {
 } from 'react-redux';
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import { getNav } from '../../getNav';
+import { ClusteredMap } from '../../misc/ClusteredMap';
 import { ExportArchiveSelector } from './export-archive/ExportArchiveSelector';
 import IssueModal from './IssueModal';
 import dayjs from 'dayjs';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
+import { IssuesMap } from './IssuesMap';
 import StatusFilterSelector from './StatusFilterSelector';
 import { isIssueOutdated } from 'iso/src/utils/date-utils';
 import IssueStatusCellEditor from './IssueStatusCellEditor';
@@ -317,7 +319,9 @@ export default () => {
                           onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
                 <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
             </Space>
-    )
+    );
+
+    const [isMapOpen, setIsMapOpen] = useState(false);
 
     return (
         <AppLayout
@@ -329,6 +333,10 @@ export default () => {
             }}
         >
             <div>
+                <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? 'Закрыть' : 'Открыть'} карту заявок</Button>
+                {isMapOpen && (
+                    <IssuesMap issues={rowData} />
+                )}
                 {
                     currentItemId ? (
                         <IssueModal

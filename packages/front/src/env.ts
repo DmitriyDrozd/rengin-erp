@@ -1,0 +1,2 @@
+export const GOOGLE_MAPS_API_KEY = 'AIzaSyDBhPGRN796X6utRiN6wfEIQXLTHr7FvNA';
+export const ISSUES_LIST_MAP_ID = '2db56d6a199a0fb3';
