@@ -361,6 +361,7 @@ export default () => {
                 />
                 <PanelRGrid
                     fullHeight
+                    headerHeight={64}
                     toolbar={renderToolbar}
                     rowData={rowData}
                     resource={ISSUES}

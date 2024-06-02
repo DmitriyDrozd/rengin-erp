@@ -45,7 +45,7 @@ export type RGridProps<RID extends string, Fields extends AnyFieldsMeta> = AgGri
     createItemProps?: Partial<ItemWithId<RID, Fields>>
     search?: string
     fullHeight?: boolean
-
+    headerHeight?: number
 }
 
 const checkBoxColProps = {
@@ -53,7 +53,7 @@ const checkBoxColProps = {
     checkboxSelection: true,
 };
 
-export default React.forwardRef(<RID extends string, Fields extends AnyFieldsMeta>({columnDefs, fullHeight, ...props}: RGridProps<RID, Fields>, ref: React.ForwardedRef<any>) => {
+export default React.forwardRef(<RID extends string, Fields extends AnyFieldsMeta>({columnDefs, fullHeight, headerHeight = 0, ...props}: RGridProps<RID, Fields>, ref: React.ForwardedRef<any>) => {
     /* const onFilterTextBoxChanged = useCallback(() => {
          gridRef.current!.api.setQuickFilter(
              (document.getElementById('filter-text-box') as HTMLInputElement).value
@@ -65,10 +65,13 @@ export default React.forwardRef(<RID extends string, Fields extends AnyFieldsMet
         return AG_GRID_LOCALE_RU;
     }, []);
 
+    const decreaseHeight = (fullHeight ? 144 : 244) + headerHeight;
+    const height = fullHeight ? `calc(100vh - ${decreaseHeight}px)` : `calc(100vh - ${decreaseHeight}px)`;
+
     return <>
         <div
             className="ag-theme-alpine"
-            style={{height: fullHeight ? 'calc(100vh - 144px)' : 'calc(100vh - 244px)', width: '100%'}}
+            style={{height, width: '100%'}}
         >
             <AgGridReact<ItemWithId<RID, Fields>>
                 ref={ref}
