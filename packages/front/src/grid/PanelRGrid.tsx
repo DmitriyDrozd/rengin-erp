@@ -119,6 +119,11 @@ const EDITABLE_CELLS_ID = [
     'estimationsStatus',
 ];
 
+export const getDisplayedGridRows = (api) => {
+    const { rowsToDisplay } = api.getModel();
+    return rowsToDisplay.map(r => r.data);
+}
+
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
         isNotRoleSensitive,

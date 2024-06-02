@@ -4,7 +4,7 @@ import { estimationStatusesList, estimationsStatusesColorsMap } from 'iso/src/st
 import { roleEnum, USERS } from 'iso/src/store/bootstrap/repos/users';
 import { Days } from 'iso/src/utils';
 import { useAllColumns } from '../../../grid/RCol';
-import PanelRGrid from '../../../grid/PanelRGrid';
+import PanelRGrid, { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import {
     ISSUES,
     IssueVO,
@@ -135,6 +135,8 @@ const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], ty
 };
 
 const outdatedFilter = i => i && isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate);
+
+const MAP_DIVIDER_HEIGHT = 64;
 
 export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
@@ -327,6 +329,7 @@ export default () => {
     );
 
     const [isMapOpen, setIsMapOpen] = useState(false);
+    const [mapData, setMapData] = useState(rowData);
 
     return (
         <AppLayout
@@ -339,7 +342,7 @@ export default () => {
         >
             <div>
                 {isMapOpen && (
-                    <IssuesMap issues={rowData} />
+                    <IssuesMap issues={mapData} />
                 )}
                 <Divider plain>
                     <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? <UpOutlined /> : <GlobalOutlined /> }</Button>
@@ -361,7 +364,11 @@ export default () => {
                 />
                 <PanelRGrid
                     fullHeight
-                    headerHeight={64}
+                    onFilterChanged={({ api }) => {
+                        const displayedRows = getDisplayedGridRows(api);
+                        setMapData(displayedRows);
+                    }}
+                    headerHeight={MAP_DIVIDER_HEIGHT}
                     toolbar={renderToolbar}
                     rowData={rowData}
                     resource={ISSUES}
