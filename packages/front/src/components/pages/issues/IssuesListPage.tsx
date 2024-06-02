@@ -20,6 +20,7 @@ import {
     Badge,
     Button,
     Checkbox,
+    Divider,
     Space,
     Tag
 } from 'antd';
@@ -40,7 +41,11 @@ import StatusFilterSelector from './StatusFilterSelector';
 import { isIssueOutdated } from 'iso/src/utils/date-utils';
 import IssueStatusCellEditor from './IssueStatusCellEditor';
 import IssueEstimationsStatusCellEditor from './IssueEstimationsStatusCellEditor';
-import { ClockCircleOutlined } from '@ant-design/icons';
+import {
+    ClockCircleOutlined,
+    GlobalOutlined,
+    UpOutlined
+} from '@ant-design/icons';
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -333,10 +338,12 @@ export default () => {
             }}
         >
             <div>
-                <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? 'Закрыть' : 'Открыть'} карту заявок</Button>
                 {isMapOpen && (
                     <IssuesMap issues={rowData} />
                 )}
+                <Divider plain>
+                    <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? <UpOutlined /> : <GlobalOutlined /> }</Button>
+                </Divider>
                 {
                     currentItemId ? (
                         <IssueModal

@@ -1,32 +1,29 @@
-import { ErrorBoundary } from '@ant-design/pro-components';
 import {
     FC,
     useEffect,
     useRef,
+    useState,
 } from 'react';
 import {
     Map,
     useMap,
-    AdvancedMarker,
 } from '@vis.gl/react-google-maps';
 import {MarkerClusterer} from '@googlemaps/markerclusterer';
 import { ISSUES_LIST_MAP_ID } from '../../env';
 
 type Point = google.maps.LatLngLiteral & {key: string};
-type Props = {points: Point[]};
 
-const updateMarkers = (map, points, clusterer) => {
-    if (!google?.maps?.marker?.AdvancedMarkerElement || !google?.maps?.marker?.PinElement) {
-        return;
-    }
+const updateMarkers = async (map, points, clusterer) => {
+    const {InfoWindow} = await google.maps.importLibrary("maps");
+    const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
 
-    const infoWindow = new google.maps.InfoWindow({
+    const infoWindow = new InfoWindow({
         content: "",
         disableAutoPan: true,
     });
 
     const markers = points.map((point) => {
-        const marker = new google.maps.marker.AdvancedMarkerElement({
+        const marker = new AdvancedMarkerElement({
             position: { lat: point.lat, lng: point.lng },
         });
 
@@ -39,47 +36,38 @@ const updateMarkers = (map, points, clusterer) => {
         return marker;
     });
 
-    clusterer.current?.clearMarkers();
-    clusterer.current?.addMarkers(Object.values(markers));
-
-    return markers;
+    clusterer.current.clearMarkers()
+    clusterer.current.addMarkers(markers);
 }
-
-const Markers = ({points}: Props) => {
-    const map = useMap();
-    const clusterer = useRef<MarkerClusterer | null>(null);
-
-    useEffect(() => {
-        updateMarkers(map, points, clusterer);
-    }, [points, clusterer.current]);
-
-    useEffect(() => {
-        if (!map) return;
-        if (!clusterer.current) {
-            clusterer.current = new MarkerClusterer({map});
-        }
-    }, [map]);
-
-    return (
-        <ErrorBoundary>
-            {points.map(point => (
-                <AdvancedMarker
-                    clickable
-                    position={point}
-                    key={point.key}
-                >
-                </AdvancedMarker>
-            ))}
-        </ErrorBoundary>
-    );
-};
-
 
 interface IClusteredMapProps {
     points: Point[];
 }
 
 export const ClusteredMap: FC<IClusteredMapProps> = ({ points }) => {
+    const map = useMap();
+    const clusterer = useRef<MarkerClusterer | null>(null);
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        if (!clusterer.current || !isReady) {
+            return;
+        }
+
+        updateMarkers(map, points, clusterer);
+    }, [points, isReady]);
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        if (!clusterer.current) {
+            clusterer.current = new MarkerClusterer({map});
+            setIsReady(true);
+        }
+    }, [map]);
+
     return (
         <Map
             style={{width: '100vw', height: '70vh'}}
@@ -88,8 +76,6 @@ export const ClusteredMap: FC<IClusteredMapProps> = ({ points }) => {
             gestureHandling={'greedy'}
             disableDefaultUI={false}
             mapId={ISSUES_LIST_MAP_ID}
-        >
-            <Markers points={points} />
-        </Map>
+        />
     )
 }
