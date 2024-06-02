@@ -5,7 +5,6 @@ import React, {
     useCallback,
     useMemo,
     useRef,
-    useState
 } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 
@@ -66,11 +65,15 @@ export default () => {
              } as ISelectCellEditorParams,
 
          },*/
-        {field: 'title', headerName: 'Наименование'},
+        {
+            field: 'title', headerName: 'Наименование'
+        },
         {
             field: 'amount', headerName: 'Расходы', cellEditor: 'agNumberCellEditor',
         },
-        {field: 'comment', headerName: 'Комментарий'},
+        {
+            field: 'comment', headerName: 'Комментарий'
+        },
         {
             cellRenderer: canEdit
                 ? (props: { rowIndex: number }) =>
