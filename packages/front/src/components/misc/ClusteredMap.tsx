@@ -1,4 +1,5 @@
-import {
+import { Typography } from 'antd';
+import React, {
     FC,
     useEffect,
     useRef,
@@ -9,7 +10,9 @@ import {
     useMap,
 } from '@vis.gl/react-google-maps';
 import {MarkerClusterer} from '@googlemaps/markerclusterer';
+import { createRoot } from 'react-dom/client';
 import { ISSUES_LIST_MAP_ID } from '../../env';
+import { CellRendererWithCopy } from '../elements/CellRendererWithCopy';
 
 type Point = google.maps.LatLngLiteral & {key: string};
 
@@ -30,7 +33,26 @@ const updateMarkers = async (map, points, clusterer) => {
         // markers can only be keyboard focusable when they have click listeners
         // open info window when marker is clicked
         marker.addListener("click", () => {
-            infoWindow.setContent('Заявка №' + point.name);
+            const rootEl = document.createElement('div');
+
+            const content = (
+                <div>
+                    <div>
+                        <Typography.Title level={5} style={{ margin: 0 }}>{point.brandName}</Typography.Title>
+                    </div>
+                    <div>
+                        <span>Заявка № <CellRendererWithCopy value={point.name}/></span>
+                    </div>
+                    <div>
+                        <Typography.Paragraph copyable>{point.address}</Typography.Paragraph>
+                    </div>
+                </div>
+            );
+
+            const root = createRoot(rootEl);
+            root.render(content);
+
+            infoWindow.setContent(rootEl);
             infoWindow.open(map, marker);
         });
         return marker;

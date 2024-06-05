@@ -11,8 +11,11 @@ interface IIssuesMapProps {
     issues: IssueVO[],
 }
 
-const getPointData = sites => issue => {
-    const geo = sites.find(s => s.siteId === issue.siteId)?.geoPosition;
+const getPointData = (sites, brands) => issue => {
+    const brand = brands.find(b => b.brandId === issue.brandId);
+    const site = sites.find(s => s.siteId === issue.siteId);
+
+    const geo = site?.geoPosition;
     if (!geo) {
         return null;
     }
@@ -20,6 +23,8 @@ const getPointData = sites => issue => {
     const [lat, lng] = geo.split(',');
     return {
         name: String(issue.clientsIssueNumber),
+        brandName: brand? brand.brandName : '',
+        address: site ? `${site.city}, ${site.address}` : '',
         lat: +lat,
         lng: +lng,
         key: issue.issueId
@@ -29,11 +34,12 @@ const getPointData = sites => issue => {
 export const IssuesMap: FC<IIssuesMapProps> = ({ issues }) => {
     const ledger = useLedger();
     const sites = ledger.sites.list;
+    const brands = ledger.brands.list;
     const [points, setPoints] = useState([]);
 
     useEffect(() => {
         const points = issues
-            .map(getPointData(sites))
+            .map(getPointData(sites, brands))
             .filter(p => p !== null);
 
         setPoints(points);
