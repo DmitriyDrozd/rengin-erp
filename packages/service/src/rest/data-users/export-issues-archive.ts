@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import {ISOState} from "iso/src/ISOState";
 import { env } from 'process';
+import { getStaticPath } from '../utils/pathUtils';
 
 export type TIssueFileType = 'actFiles' | 'workFiles' | 'checkFiles' | 'expenseFiles';
 const typeToFolderName = {
@@ -21,14 +22,14 @@ const typeToFolderName = {
 const issueHasImages = (types: TIssueFileType[]) => (issue: IssueVO) =>
     types.some(type => issue[type]?.length);
 
-export const publicDir = path.join(__filename, '..','..','..','..','..','static')
-export const allIssuesFolder = path.join(publicDir,'uploads', 'issues')
+const staticPath = getStaticPath();
+export const allIssuesFolder = path.join(staticPath, 'uploads', 'issues')
 
 export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], types: TIssueFileType[]) => {
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const relativeZipPath = `/archives/${reportDateTime}.zip`;
-    const fullZipPath = publicDir + relativeZipPath;
-    const fullDirPath = `${publicDir}/archives/${reportDateTime}`;
+    const fullZipPath = staticPath + relativeZipPath;
+    const fullDirPath = `${staticPath}/archives/${reportDateTime}`;
 
     const issuesWithImages = issues.filter(issueHasImages(types));
 

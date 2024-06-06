@@ -1,21 +1,21 @@
-import * as path from 'path'
 import Fastify, {FastifyLoggerOptions, RawServerBase} from 'fastify'
 import {SagaOptions} from '../sagaOptions'
 import fastifyStatic from '@fastify/static'
 import fp from 'fastify-plugin'
 import usersDataPlugin from './data-users/data-users-routes-plugin'
 import configDuck from 'iso/src/store/bootstrap/configDuck';
-import {PinoLoggerOptions} from 'fastify/types/logger'
+import {PinoLoggerOptions} from 'fastify/types/logger';
 
 import {DateTime,} from 'luxon'
 import upload from "./upload";
 import backup from "./backup";
 import gapisToken from "./gapis-token/gapis-token";
+import { getStaticPath } from './utils/pathUtils';
 
 const events = {}
 const _importDynamic = new Function("modulePath", "return import(modulePath)")
 
-export type FastifyHTTPErrorsEnhanced = typeof import("fastify-http-errors-enhanced"); // This is the import type!
+export type FastifyHTTPErrorsEnhanced = typeof import("fastify-http-errors-enhanced");
 
 export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced> => {
     return await _importDynamic("fastify-http-errors-enhanced")
@@ -24,9 +24,9 @@ export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced
 
 let FastifyHTTPErrorsEnhanced: FastifyHTTPErrorsEnhanced = {} as any
 
+const staticPath = getStaticPath();
+
 export default async (io: SagaOptions) => {
-    const p = path
-    const root = path.join(__dirname, '..', '..', '..', 'static')
     const state = io.store.getState()
     const store = io.store
     const config = configDuck.selectConfig(state)
@@ -73,7 +73,7 @@ export default async (io: SagaOptions) => {
 
 
     fastify.register(fastifyStatic, {
-        root,
+        root: staticPath,
     })
 
     fastify.get('/app*', async (req, reply) => {

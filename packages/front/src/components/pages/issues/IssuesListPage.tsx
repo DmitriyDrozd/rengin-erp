@@ -31,7 +31,6 @@ import {
 } from 'react-redux';
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import { getNav } from '../../getNav';
-import { ClusteredMap } from '../../misc/ClusteredMap';
 import { ExportArchiveSelector } from './export-archive/ExportArchiveSelector';
 import IssueModal from './IssueModal';
 import dayjs from 'dayjs';

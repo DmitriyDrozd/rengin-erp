@@ -1,63 +1,70 @@
-import {FastifyInstance} from 'fastify'
+import { FastifyInstance } from 'fastify';
 import path from 'path';
 import {
     EXPENSES,
     ISSUES
 } from 'iso/src/store/bootstrap';
-import BRANDS from "iso/src/store/bootstrap/repos/brands";
-import '@fastify/multipart'
-import * as XLSX from "xlsx";
-import dayjs from "dayjs";
-import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
-import {AnyMeta} from "iso/src/store/bootstrap/core/valueTypes";
-import * as R from "ramda";
-import {ISOState} from "iso/src/ISOState";
+import BRANDS from 'iso/src/store/bootstrap/repos/brands';
+import '@fastify/multipart';
+import * as XLSX from 'xlsx';
+import dayjs from 'dayjs';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
+import { AnyMeta } from 'iso/src/store/bootstrap/core/valueTypes';
+import * as R from 'ramda';
+import { ISOState } from 'iso/src/ISOState';
 import {
     exportIssuesArchive,
     TIssueFileType
 } from './data-users/export-issues-archive';
-import {allIssuesFolder, exportIssuesZip} from "./data-users/export-issues-zip";
+import {
+    allIssuesFolder,
+    exportIssuesZip
+} from './data-users/export-issues-zip';
 // import moment from "moment/moment";
 import { ensureMoved } from './utils/fileUtils';
-const fs = require('node:fs')
+import { getStaticPath } from './utils/pathUtils';
 
-const util = require('node:util')
-const { pipeline } = require('node:stream')
-const pump = util.promisify(pipeline)
+const fs = require('node:fs');
+
+const util = require('node:util');
+const {pipeline} = require('node:stream');
+const pump = util.promisify(pipeline);
 
 
 export default (fastify: FastifyInstance, opts: any, done: Function) => {
+    const staticPath = getStaticPath();
     // const io = fastify.io
     fastify.post('/api/upload/issue/:issueId', async function (req, reply) {
 
         // process a single file
         // also, consider that if you allow to upload multiple files
         // you must consume all files otherwise the promise will never fulfill
-        const data = await req.file()
+        const data = await req.file();
 
-        if(data) {
-            data.file // stream
-            data.fields // other parsed parts
-            data.fieldname
-            data.filename
-            data.encoding
-            data.mimetype
+        if (data) {
+            data.file; // stream
+            data.fields; // other parsed parts
+            data.fieldname;
+            data.filename;
+            data.encoding;
+            data.mimetype;
             // @ts-ignore
-            const issueId = req.params.issueId
-            const issue = ISSUES.selectById(issueId)(req.state)
-            const brand = BRANDS.selectById(issue.brandId!)(req.state)
+            const issueId = req.params.issueId;
+            const issue = ISSUES.selectById(issueId)(req.state);
+            const brand = BRANDS.selectById(issue.brandId!)(req.state);
             // to accumulate the file in memory! Be careful!
             //
             // await data.toBuffer() // Buffer
             //
             // or
-            var dir = path.join('..', 'static', 'uploads', 'issues', brand.brandName + '_' + issue.clientsIssueNumber)
+            const dir = path.join(staticPath, 'uploads', 'issues', brand.brandName + '_' + issue.clientsIssueNumber);
 
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, {recursive: true});
             }
-            const p = path.join(dir, data.filename)
-            await pump(data.file, fs.createWriteStream(p))
+
+            const p = path.join(dir, data.filename);
+            await pump(data.file, fs.createWriteStream(p));
 
             // be careful of permission issues on disk and not overwrite
             // sensitive files that could cause security risks
@@ -66,27 +73,27 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
             return reply.send({
                 url: '/uploads/issues/' + brand.brandName + '_' + issue.clientsIssueNumber + '/' + data.filename
-            })
+            });
         }
-        return  reply.send("NoData")
-    })
+        return reply.send('NoData');
+    });
 
     fastify.post('/api/upload/estimation/:estimationId', async function (req, reply) {
         const data = await req.file();
 
-        if(data) {
-            data.file // stream
-            data.fields // other parsed parts
-            data.fieldname
-            data.filename
-            data.encoding
-            data.mimetype
+        if (data) {
+            data.file; // stream
+            data.fields; // other parsed parts
+            data.fieldname;
+            data.filename;
+            data.encoding;
+            data.mimetype;
             // @ts-ignore
-            const sourceId = req.params.estimationId
+            const sourceId = req.params.estimationId;
             const estimation = EXPENSES.selectById(sourceId)(req.state);
             const brand = BRANDS.selectById(estimation.brandId!)(req.state);
 
-            const dir = path.join('..', 'static', 'uploads', 'estimations', brand.brandName + '_' + sourceId);
+            const dir = path.join(staticPath, 'uploads', 'estimations', brand.brandName + '_' + sourceId);
 
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, {recursive: true});
@@ -99,68 +106,68 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
                 url: '/uploads/estimations/' + brand.brandName + '_' + sourceId + '/' + data.filename
             });
         }
-        return  reply.send("NoData")
-    })
+        return reply.send('NoData');
+    });
 
     fastify.post('/api/email-export',
         async function (request, reply) {
             // let {email, images} = request.query;
             const email = 'miramaxis@ya.ru';
-            const data = await request.file()
+            const data = await request.file();
 
-            if(data) {
-                data.file // stream
-                data.fields // other parsed parts
-                data.fieldname
-                data.filename
-                data.encoding
-                data.mimetype
-                const buffer = await data.toBuffer()
-                var workbook = XLSX.read(buffer,{type:'buffer'})
-                const worksheet = workbook!.Sheets[workbook.SheetNames[0]]
-                const publicDir = path.join(__filename,'..','..','..','..','static')
-                var dir = path.join(publicDir, 'reports',  dayjs().format('YYYY-MM-DD_HH-mm-ss'))
+            if (data) {
+                data.file; // stream
+                data.fields; // other parsed parts
+                data.fieldname;
+                data.filename;
+                data.encoding;
+                data.mimetype;
+                const buffer = await data.toBuffer();
+                var workbook = XLSX.read(buffer, {type: 'buffer'});
+                const worksheet = workbook!.Sheets[workbook.SheetNames[0]];
+
+                var dir = path.join(staticPath, 'reports', dayjs().format('YYYY-MM-DD_HH-mm-ss'));
 
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {recursive: true});
                 }
-                const p = path.join(dir, data.filename)
-                fs.writeFileSync(p,buffer,{ })
+                const p = path.join(dir, data.filename);
+                fs.writeFileSync(p, buffer, {});
                 //     await pump(data.file, fs.createWriteStream(p))
 
                 var json = XLSX.utils.sheet_to_json(worksheet);
                 var issues: IssueVO[] = json.map(obj => {
-                        const is: IssueVO = {} as any
+                        const is: IssueVO = {} as any;
 
-                        Object.values(ISSUES.properties).forEach( (p: AnyMeta) => {
-                            if (p.headerName in obj){
-                                is[p.name] = obj[p.headerName]
+                        Object.values(ISSUES.properties).forEach((p: AnyMeta) => {
+                            if (p.headerName in obj) {
+                                is[p.name] = obj[p.headerName];
                             }
-                        })
-                        return is
+                        });
+                        return is;
                     }
-                )
-                const ids = issues.map(R.prop('issueId'))
+                );
+                const ids = issues.map(R.prop('issueId'));
 
-                const state =request.io.store.getState() as ISOState
+                const state = request.io.store.getState() as ISOState;
                 const issuesFromState = ISSUES.selectAll(state)
-                    .filter(i => ids.includes(i.issueId))
-                for(let i of issuesFromState)
-                    await ensureMoved(allIssuesFolder+'\\'+i.issueId, allIssuesFolder+'\\'+BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber)
+                    .filter(i => ids.includes(i.issueId));
+                for (let i of issuesFromState)
+                    await ensureMoved(allIssuesFolder + '\\' + i.issueId, allIssuesFolder + '\\' + BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber);
                 // const dateSuffix = moment().format('YYYY-MM-DD HH:mm')
-                const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!,'RenginDesk Выгрузка заявок')
+                const relativeZipPath = await exportIssuesZip(p, state, issuesFromState, email!, 'RenginDesk Выгрузка заявок');
 
-                //const buff = await zip.toBufferPromise()
+                // const buff = await zip.toBufferPromise()
                 // const stream = fs.createReadStream(fullZipPath, 'utf8')
-              return  reply.send({url:relativeZipPath})//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
+                return reply.send({url: relativeZipPath});//.headers({'Content-Disposition': 'attachment; filename="REFERRALS.zip"', 'Content-Type':'application/zip', 'Content-Length':buff.length}).send(buff)//await zip.toBufferPromise())
                 //return reply.header('Content-Disposition', 'attachment; filename="REFERRALS.xlsx"')
-               //.send(stream)
-              //  return reply.sendFile(fullZipPath)//.send(bufferZip)
+                //.send(stream)
+                //  return reply.sendFile(fullZipPath)//.send(bufferZip)
 
             }
-            return  reply.send("NoData")
+            return reply.send('NoData');
         }
-    )
+    );
 
     fastify.post('/api/archive-export',
         async function (request, reply) {
@@ -176,17 +183,17 @@ export default (fastify: FastifyInstance, opts: any, done: Function) => {
 
                 for (const item of issuesFromState) {
                     await ensureMoved(
-                        allIssuesFolder+'\\'+item.issueId,
-                        allIssuesFolder+'\\'+BRANDS.selectById(item.brandId!)(state).brandName + '_' + item.clientsIssueNumber
+                        allIssuesFolder + '\\' + item.issueId,
+                        allIssuesFolder + '\\' + BRANDS.selectById(item.brandId!)(state).brandName + '_' + item.clientsIssueNumber
                     );
                 }
 
                 const relativeZipPath = await exportIssuesArchive(state, issuesFromState, selectedTypes);
-                return reply.send({ url: relativeZipPath });
+                return reply.send({url: relativeZipPath});
             }
 
-            return  reply.send("NoData")
+            return reply.send('NoData');
         }
-    )
-    done()
+    );
+    done();
 }

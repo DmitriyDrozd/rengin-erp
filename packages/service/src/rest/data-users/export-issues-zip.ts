@@ -1,76 +1,54 @@
-import '@fastify/multipart'
+import '@fastify/multipart';
 
-import nodemailer from 'nodemailer'
-import BRANDS from "iso/src/store/bootstrap/repos/brands";
-import Path from "path";
-import dayjs from "dayjs";
-import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
-import AdmZip from "adm-zip";
-import fse from 'fs-extra'
-import {ISOState} from "iso/src/ISOState";
+import BRANDS from 'iso/src/store/bootstrap/repos/brands';
+import Path from 'path';
+import dayjs from 'dayjs';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
+import { ISOState } from 'iso/src/ISOState';
 
-const { pipeline } = require('node:stream')
-import {execSync} from  'node:child_process'
-const util = require("node:util");
-const exec = util.promisify(require("node:child_process").exec);
-const pump = util.promisify(pipeline)
-const emailCfg = {
-    SMTP_HOST:"smtp.gmail.com",
-    SMTP_PORT:465,
-    SMTP_USERNAME:"miramaxis@gmail.com",
-    SMTP_PASSWORD:"gcfk lbez dilx dhci"
-}
-const mailer =  nodemailer.createTransport({
-    host: emailCfg.SMTP_HOST,
-    port: emailCfg.SMTP_PORT,
-    auth: {
-        user: emailCfg.SMTP_USERNAME,
-        pass: emailCfg.SMTP_PASSWORD,
-    },
-    })
+import { execSync } from 'node:child_process';
+import { getStaticPath } from '../utils/pathUtils';
 
-const issueFilesArrayProps = ['actFiles', 'workFiles', 'checkFiles'] as const
-export const publicDir = Path.join(__filename, '..','..','..','..','..','static')
-export const allIssuesFolder = Path.join(publicDir,'uploads', 'issues')
+const issueFilesArrayProps = ['actFiles', 'workFiles', 'checkFiles'] as const;
+
+const staticPath = getStaticPath();
+export const allIssuesFolder = Path.join(staticPath, 'uploads', 'issues');
+
 export const exportIssuesZip = async (xlsxPath: string, state: ISOState, issues: IssueVO[], to: string, subject: string) => {
-    const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss')
+    const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
 
-    const relativeZipPath = '/reports/'+reportDateTime+'.zip'
-    const fullZipPath = publicDir+relativeZipPath
-    const notFoundFiles: {issueFolder: string, filePath?: string}[] = []
+    const relativeZipPath = '/reports/' + reportDateTime + '.zip';
+    const fullZipPath = staticPath + relativeZipPath;
+
+    const notFoundFiles: { issueFolder: string, filePath?: string }[] = [];
     const issueHasImages = (issue: IssueVO) =>
-        issueFilesArrayProps.some( name => issue[name] && issue[name].length)
-    const issuesWithImages = issues.filter(issueHasImages)
-    //const zip = new AdmZip()
-    const issuesImageFolders = [] as string[]
-    for(let i of issuesWithImages) {
-        const issueFolder = BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber
+        issueFilesArrayProps.some(name => issue[name] && issue[name].length);
+    const issuesWithImages = issues.filter(issueHasImages);
+    const issuesImageFolders = [] as string[];
+
+    for (let i of issuesWithImages) {
+        const issueFolder = BRANDS.selectById(i.brandId!)(state).brandName + '_' + i.clientsIssueNumber;
+
         try {
-            const fullIssueFolder = Path.join(allIssuesFolder, issueFolder)
-           // console.log('fullIssueFolder',fullIssueFolder)
-            issuesImageFolders.push(fullIssueFolder)
-           /* await zip.addLocalFolderPromise(
-                 fullIssueFolder, {
-                    zipPath: issueFolder
-                })*/
-        }catch (e) {
-            console.error('NotFound',e)
-            notFoundFiles.push(({issueFolder: issueFolder}))
+            const fullIssueFolder = Path.join(allIssuesFolder, issueFolder);
+            issuesImageFolders.push(fullIssueFolder);
+        } catch (e) {
+            console.error('NotFound', e);
+            notFoundFiles.push(({issueFolder: issueFolder}));
         }
     }
-   // await zip.writeZipPromise(publicDir+'/reports/'+reportDateTime+'.zip', {overwrite: true})
-   // await zip.addLocalFile(xlsxPath,"Заявки.xlsx")
 
+    // await zip.writeZipPromise(staticPath+'/reports/'+reportDateTime+'.zip', {overwrite: true})
+    // await zip.addLocalFile(xlsxPath,"Заявки.xlsx")
 
     const buildArchive = async () => {
-        const command: string=" 7z a "+fullZipPath+ " "+xlsxPath+" "+issuesImageFolders.map(a => ` "${a}" `).join(" ")
-        console.log({command})
+        const command: string = ' 7z a ' + fullZipPath + ' ' + xlsxPath + ' ' + issuesImageFolders.map(a => ` "${a}" `).join(' ');
+        console.log({command});
         const buffer = await execSync(command);
-       console.log('COMPLETE!')
-    }
-    await buildArchive()
-    return relativeZipPath
+        console.log('COMPLETE!');
+    };
+    await buildArchive();
 
-
-}
+    return relativeZipPath;
+};
 

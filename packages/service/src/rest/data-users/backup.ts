@@ -1,10 +1,10 @@
-import { config } from '@app-config/main';
 import { execSync } from 'node:child_process';
 import * as fs from 'fs';
 import path from 'path';
+import { getStaticPath } from '../utils/pathUtils';
 
-const publicDir = path.join(__filename, '..','..','..','..','..','static')
-const backupDir = path.join(publicDir, 'backup');
+const staticPath = getStaticPath();
+const backupDir = path.join(staticPath, 'backup');
 
 const getArchiveDate = () => {
     const [month, day, year] = new Date().toLocaleDateString('en-US').split('/');
