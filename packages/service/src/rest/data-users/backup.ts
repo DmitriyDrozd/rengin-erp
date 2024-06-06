@@ -3,9 +3,6 @@ import * as fs from 'fs';
 import path from 'path';
 import { getStaticPath } from '../utils/pathUtils';
 
-const staticPath = getStaticPath();
-const backupDir = path.join(staticPath, 'backup');
-
 const getArchiveDate = () => {
     const [month, day, year] = new Date().toLocaleDateString('en-US').split('/');
     const resMonth = month.length === 1 ? `0${month}` : month;
@@ -24,6 +21,9 @@ export const exportBackup = () => {
 }
 
 export const getBackupFolderNames = (): string[] => {
+    const staticPath = getStaticPath();
+    const backupDir = path.join(staticPath, 'backup');
+
     return fs.readdirSync(backupDir);
 }
 

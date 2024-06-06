@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR=`date +%m-%d-%y`
 DEST=/dumps/rengin/$DIR
-PROJECT_DEST=/home/rengin-erp/packages/static/backup/$DIR
+PROJECT_DEST=/root/rengin-static/backup/$DIR
 mkdir -p $DEST
 mkdir -p $PROJECT_DEST
 FILE=$DEST/archive.gz

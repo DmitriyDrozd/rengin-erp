@@ -22,10 +22,10 @@ const typeToFolderName = {
 const issueHasImages = (types: TIssueFileType[]) => (issue: IssueVO) =>
     types.some(type => issue[type]?.length);
 
-const staticPath = getStaticPath();
-export const allIssuesFolder = path.join(staticPath, 'uploads', 'issues')
-
 export const exportIssuesArchive = async (state: ISOState, issues: IssueVO[], types: TIssueFileType[]) => {
+    const staticPath = getStaticPath();
+    const allIssuesFolder = path.join(staticPath, 'uploads', 'issues')
+
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const relativeZipPath = `/archives/${reportDateTime}.zip`;
     const fullZipPath = staticPath + relativeZipPath;

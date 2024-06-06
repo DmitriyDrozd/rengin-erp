@@ -11,10 +11,10 @@ import { getStaticPath } from '../utils/pathUtils';
 
 const issueFilesArrayProps = ['actFiles', 'workFiles', 'checkFiles'] as const;
 
-const staticPath = getStaticPath();
-export const allIssuesFolder = Path.join(staticPath, 'uploads', 'issues');
-
 export const exportIssuesZip = async (xlsxPath: string, state: ISOState, issues: IssueVO[], to: string, subject: string) => {
+    const staticPath = getStaticPath();
+    const allIssuesFolder = Path.join(staticPath, 'uploads', 'issues');
+
     const reportDateTime = dayjs().format('YYYY-MM-DD_HH-mm-ss');
 
     const relativeZipPath = '/reports/' + reportDateTime + '.zip';

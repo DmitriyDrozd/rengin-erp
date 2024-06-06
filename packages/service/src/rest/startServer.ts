@@ -24,12 +24,12 @@ export const  loadFastifyHttpError = async (): Promise<FastifyHTTPErrorsEnhanced
 
 let FastifyHTTPErrorsEnhanced: FastifyHTTPErrorsEnhanced = {} as any
 
-const staticPath = getStaticPath();
-
 export default async (io: SagaOptions) => {
     const state = io.store.getState()
     const store = io.store
     const config = configDuck.selectConfig(state)
+    const staticPath = getStaticPath();
+
     const logger: boolean | FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions = {
 
         genReqId: (req) =>
@@ -71,8 +71,7 @@ export default async (io: SagaOptions) => {
 
      //fastify.register(fastifyCompress,{zlibOptions:{level:3}})
 
-
-    console.log(staticPath);
+    console.log('\nStatic folder path: ', staticPath);
     fastify.register(fastifyStatic, {
         root: staticPath,
     })
