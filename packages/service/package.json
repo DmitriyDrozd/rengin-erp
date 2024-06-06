@@ -12,7 +12,7 @@
     "service:start": "ts-node  ./src/index.ts ",
     "service:demo": "ts-node -r dotenv/config  ./src/index.ts  dotenv_config_path=./.env.dev.ts",
     "service:dev": "ts-node ./src/index.ts  ",
-    "service:prod": "ts-node  -r dotenv/config ./src/index.ts  dotenv_config_path=./.env.prod.ts",
+    "service:prod": "ts-node  -r dotenv/config ./src/index.ts NODE_ENV=production dotenv_config_path=./.env.prod.ts",
     "debug": "node --inspect-brk=0.0.0.0:9229 -r ../../node_modules/ts-node/register/transpile-only ./src/index.ts",
     "build": "tsc -p ."
   },
