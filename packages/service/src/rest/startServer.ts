@@ -72,6 +72,7 @@ export default async (io: SagaOptions) => {
      //fastify.register(fastifyCompress,{zlibOptions:{level:3}})
 
 
+    console.log(staticPath);
     fastify.register(fastifyStatic, {
         root: staticPath,
     })
