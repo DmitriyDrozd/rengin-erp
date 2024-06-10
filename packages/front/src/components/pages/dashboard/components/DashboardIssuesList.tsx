@@ -1,10 +1,18 @@
+import { GridApi } from 'ag-grid-community';
+import { AgGridReact } from 'ag-grid-react';
 import { ISSUES } from 'iso/src/store/bootstrap';
 import { Days } from 'iso/src/utils';
-import React from 'react';
+import React, { FC } from 'react';
 import PanelRGrid from '../../../../grid/PanelRGrid';
 import { useAllColumns } from '../../../../grid/RCol';
 
-export const DashboardIssuesList = ({ rowData }) => {
+interface IDashboardIssuesList {
+    gridRef: React.RefObject<AgGridReact>,
+    rowData: any[],
+    onFilterChanged({ api }: { api: GridApi }): void;
+}
+
+export const DashboardIssuesList: FC<IDashboardIssuesList> = ({ gridRef, rowData, onFilterChanged }) => {
     const [cols, colMap] = useAllColumns(ISSUES);
 
     const defaultColumns = [
@@ -25,18 +33,20 @@ export const DashboardIssuesList = ({ rowData }) => {
         {...colMap.estimationsStatus},
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
-        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
+        {...colMap.dateFR, width: 150, cellRenderer: (props) => Days.asMonthYear(props.data?.dateFR)},
     ];
 
     return (
         <PanelRGrid
             isCreateButtonDisabled
             fullHeight
+            gridRef={gridRef}
             rowData={rowData}
             resource={ISSUES}
             columnDefs={defaultColumns}
             title={'Заявки дашборда'}
             name={'DashboardIssuesList'}
+            onFilterChanged={onFilterChanged}
         />
     );
 }

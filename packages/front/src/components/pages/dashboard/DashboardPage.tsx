@@ -1,3 +1,6 @@
+import { GridApi } from 'ag-grid-community';
+import { AgGridReact } from 'ag-grid-react';
+import { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import useLedger from '../../../hooks/useLedger';
 import AppLayout from '../../app/AppLayout';
 import { ISSUES } from 'iso/src/store/bootstrap';
@@ -6,14 +9,15 @@ import {
     Card,
     Collapse,
     DatePicker,
-    Divider,
     Select,
     Space,
     Typography
 } from 'antd';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import React, {
+    createRef,
     CSSProperties,
+    useEffect,
     useState
 } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
@@ -53,13 +57,9 @@ const periodOptions = [
     {value: 'year,today', label: 'Год'},
     {value: 'all,today', label: 'Все время'},
 ];
+
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
-const defaultDepartments = [
-    'строительный',
-    'сметный',
-    'сервисный',
-    'ИТ',
-];
+
 const departmentOptions = [
     {value: 'строительный', label: 'строительный'},
     {value: 'сметный', label: 'сметный'},
@@ -68,13 +68,13 @@ const departmentOptions = [
 ];
 
 export default () => {
-    const defaultPeriod = [dayjs(dayjs().subtract(1, 'month')), dayjs(Date.now())] as Period;
-    const [period, setPeriod] = useState<Period>(defaultPeriod);
-    const start = period[0];
-    const end = period[1];
     const issues: IssueVO[] = useSelector(ISSUES.selectAll);
     const ledger = useLedger();
 
+
+    /**
+     * Применение кастомных фильтров
+     */
     const [departmentFilter, setDepartmentFilter] = useState([]);
     const filterOptions = {
         department: departmentOptions,
@@ -87,48 +87,49 @@ export default () => {
         return isManagerInDep || isEstimatorInDep;
     }) : issues;
 
-    const periodIssues = departmentFilteredIssues.filter(Days.isIssueInPeriod(period));
-    const activeIssues = periodIssues.filter(Days.isIssueActive);
-    const outdatedIssues = periodIssues.filter(Days.isIssueOutdated);
 
-    const onOptionChange = (option: string) => {
+    /**
+     * Фильтрация по выбранному периоду
+     */
+    const defaultPeriod = [dayjs(dayjs().subtract(1, 'month')), dayjs(Date.now())] as Period;
+    const [period, setPeriod] = useState<Period>(defaultPeriod);
+    const start = period[0];
+    const end = period[1];
+    const periodIssues = departmentFilteredIssues.filter(Days.isIssueInPeriod(period));
+
+    const onPeriodOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
     };
 
-    const closedIssues = periodIssues.filter(i => i.status === 'Выполнена');
+
+    /**
+     * Отфильтрованные таблицей записи, предоставляемые в графики
+    */
+    const gridRef = createRef<AgGridReact>();
+    const [listData, setListData] = useState(periodIssues);
+
+    const onIssuesListChanged = ({ api }: { api: GridApi }) => {
+        const displayedRows = getDisplayedGridRows(api);
+        setListData(displayedRows);
+    };
+
+    useEffect(() => {
+        if (gridRef.current && gridRef.current.api) {
+            onIssuesListChanged({ api: gridRef.current.api });
+        }
+    }, [departmentFilter, period]);
+
+
+    /**
+     * Данные для графиков
+     */
+    const closedIssues = listData.filter(i => i.status === 'Выполнена');
+    const activeIssues = listData.filter(Days.isIssueActive);
+    const outdatedIssues = listData.filter(Days.isIssueOutdated);
+
     const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start || dayjs(new Date(0)), end));
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
-
-    const filters = (
-        <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
-            <span style={{paddingRight: '24px'}}>За даты:</span>
-            <RangePicker
-                allowClear={false}
-                placeholder={['Дата начала', 'Дата конца']}
-                value={period || defaultPeriod}
-                onChange={setPeriod}
-            />
-            <span style={{padding: '0 24px'}}>За период:</span>
-            <Select
-                defaultValue={'one,today'}
-                onSelect={onOptionChange}
-                style={{width: '150px'}}
-                options={periodOptions}
-            />
-            <span style={{padding: '0 24px'}}>Фильтры:</span>
-            <Space>
-                <Typography.Text>По отделу</Typography.Text>
-                <Select
-                    mode="multiple"
-                    allowClear
-                    style={{minWidth: '150px'}}
-                    onChange={setDepartmentFilter}
-                    options={filterOptions.department}
-                />
-            </Space>
-        </Card.Grid>
-    );
 
     return (
         <AppLayout
@@ -143,15 +144,45 @@ export default () => {
                 size="small"
                 defaultActiveKey={['filters', 'charts']}
                 items={[
-                    {key: 'filters', label: 'Фильтрация', children: filters},
+                    {
+                        key: 'filters', label: 'Фильтрация', children: (
+                            <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
+                                <span style={{paddingRight: '24px'}}>За даты:</span>
+                                <RangePicker
+                                    allowClear={false}
+                                    placeholder={['Дата начала', 'Дата конца']}
+                                    value={period || defaultPeriod}
+                                    onChange={setPeriod}
+                                />
+                                <span style={{padding: '0 24px'}}>За период:</span>
+                                <Select
+                                    defaultValue={'one,today'}
+                                    onSelect={onPeriodOptionChange}
+                                    style={{width: '150px'}}
+                                    options={periodOptions}
+                                />
+                                <span style={{padding: '0 24px'}}>Фильтры:</span>
+                                <Space>
+                                    <Typography.Text>По отделу</Typography.Text>
+                                    <Select
+                                        mode="multiple"
+                                        allowClear
+                                        style={{minWidth: '150px'}}
+                                        onChange={setDepartmentFilter}
+                                        options={filterOptions.department}
+                                    />
+                                </Space>
+                            </Card.Grid>
+                        )
+                    },
                     {
                         key: 'issues-table',
                         label: 'Таблица заявок',
-                        children: <DashboardIssuesList rowData={periodIssues}/>
+                        children: <DashboardIssuesList gridRef={gridRef} rowData={periodIssues} onFilterChanged={onIssuesListChanged}/>
                     },
                     {
                         key: 'charts', label: 'Графики', children: (
-                            <div style={{ display: 'flex' }}>
+                            <div style={{display: 'flex'}}>
                                 <Card.Grid hoverable={false} style={gridStyle}>
                                     <b>Заявки по менеджерам</b>
                                     <IssuesByManager

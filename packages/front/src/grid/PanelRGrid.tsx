@@ -1,3 +1,4 @@
+import { GridApi } from 'ag-grid-community';
 import { RowDoubleClickedEvent } from 'ag-grid-community/dist/lib/events';
 import { AgGridReact } from 'ag-grid-react';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
@@ -79,7 +80,7 @@ const getItems = (
         },
         isSelectRowsAvailable && {
             label: 'Выбрать несколько',
-            icon: <AntdIcons.CheckSquareOutlined />,
+            icon: <AntdIcons.CheckSquareOutlined/>,
             key: GRID_MODES.selectRows,
         },
         isDeleteAvailable &&
@@ -120,7 +121,7 @@ const EDITABLE_CELLS_ID = [
 ];
 
 export const getDisplayedGridRows = (api) => {
-    const { rowsToDisplay } = api.getModel();
+    const {rowsToDisplay} = api.getModel();
     return rowsToDisplay.map(r => r.data);
 }
 
@@ -137,6 +138,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         resource,
         rowData,
         createItemProps,
+        onFilterChanged,
         onExportArchive,
         onAddToItems,
         onRemoveFromItems,
@@ -151,7 +153,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         title: string;
         toolbar?: React.ReactNode,
         BottomBar?: BottomGridApiBar
-        gridRef?: React.RefObject<typeof RGrid>,
+        gridRef?: React.RefObject<AgGridReact>,
+        onFilterChanged?({api}: { api: GridApi }): void;
         onExportArchive?(selectedIds: string[]): void,
         onAddToItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
         onRemoveFromItems?(selectedIds: string[], updateCollection: (items: any[]) => void): void,
@@ -335,7 +338,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             selectRowsProps.onClick(selectedIds);
             setSelectedIds([]);
             resetMode();
-        }
+        };
 
         return (
             <ModeToolBar
@@ -398,6 +401,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         innerGridRef.current!.api.exportDataAsExcel();
     }, []);
 
+    const [displayedItemsCount, setDisplayedItemsCount] = useState(list.length);
+
     return <>
         <div
             style={{
@@ -442,13 +447,20 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             quickFilterText={searchText}
             ref={innerGridRef}
             onSortChanged={onSortChanged}
+            onFilterChanged={({ api }) => {
+                const { rowsToDisplay } = api.getModel();
+                setDisplayedItemsCount(rowsToDisplay.length);
+
+                onFilterChanged?.({ api });
+            }}
             onRowDoubleClicked={onRowDoubleClicked}
             /** Displayed rows have changed. Triggered after sort, filter or tree expand / collapse events. */
             // onModelUpdated 
         />
         <div style={{padding: '4px 20px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
-                <Typography.Text>Всего записей: {list.length}</Typography.Text>
+                <Typography.Text>Отображено
+                    записей: {displayedItemsCount < list.length ? `${displayedItemsCount} из ${list.length}` : list.length}</Typography.Text>
                 {
                     selectedIds.length > 0 && (
                         <Typography.Text>Выбрано записей: {selectedIds.length}</Typography.Text>
