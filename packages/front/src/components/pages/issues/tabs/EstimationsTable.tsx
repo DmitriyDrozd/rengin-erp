@@ -69,7 +69,7 @@ export default () => {
             field: 'title', headerName: 'Наименование'
         },
         {
-            field: 'amount', headerName: 'Расходы', cellEditor: 'agNumberCellEditor',
+            field: 'amount', headerName: 'Доход', cellEditor: 'agNumberCellEditor',
         },
         {
             field: 'comment', headerName: 'Комментарий'
