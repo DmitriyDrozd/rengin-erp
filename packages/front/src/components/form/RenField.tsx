@@ -151,6 +151,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
         else if (editorProperty.property.type === 'date')
             return (
                 <DatePicker
+                    showTime
                     format={GENERAL_DATE_FORMAT}
                     allowClear
                     locale={locale}
