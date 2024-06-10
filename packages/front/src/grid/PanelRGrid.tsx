@@ -408,19 +408,21 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             style={{
                 height: '48px',
                 boxShadow: '0 1px 4px rgba(0,21,41,.12)',
-                padding: '0 20px',
+                padding: '8px 20px',
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}
         >
-            <h3 style={{whiteSpace: 'nowrap'}}>{title}</h3>
+            <Typography.Title level={4} style={{whiteSpace: 'nowrap', margin: '0'}}>{title}</Typography.Title>
             {
                 toolbar
             }
             <div style={{display: 'flex'}}>
                 <Space>
+                    <Typography.Text>Отображено
+                        записей: {displayedItemsCount < list.length ? `${displayedItemsCount} из ${list.length}` : list.length}</Typography.Text>
                     <Input
                         style={{maxWidth: '250px', marginRight: '16px', lineHeight: 'unset'}}
                         addonBefore={<SearchOutlined/>} placeholder="Быстрый поиск"
@@ -459,8 +461,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         />
         <div style={{padding: '4px 20px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
-                <Typography.Text>Отображено
-                    записей: {displayedItemsCount < list.length ? `${displayedItemsCount} из ${list.length}` : list.length}</Typography.Text>
                 {
                     selectedIds.length > 0 && (
                         <Typography.Text>Выбрано записей: {selectedIds.length}</Typography.Text>
