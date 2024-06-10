@@ -92,7 +92,7 @@ export const ClusteredMap: FC<IClusteredMapProps> = ({ points }) => {
 
     return (
         <Map
-            style={{width: '100vw', height: '70vh'}}
+            style={{width: '100%', height: '70vh'}}
             defaultCenter={{lat: 57.94783560310071, lng: 75.93371350345065}}
             defaultZoom={4}
             gestureHandling={'greedy'}
