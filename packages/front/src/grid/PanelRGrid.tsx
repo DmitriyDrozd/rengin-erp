@@ -126,6 +126,7 @@ export const getDisplayedGridRows = (api) => {
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(
     {
+        isCreateButtonDisabled,
         isNotRoleSensitive,
         name,
         title,
@@ -144,6 +145,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         selectRowsProps,
         ...props
     }: RGridProps<RID, Fields> & {
+        isCreateButtonDisabled?: boolean,
         isNotRoleSensitive?: boolean,
         name?: string,
         title: string;
@@ -362,7 +364,9 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
         const fullToolBar = (
             <>
-                <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                {!isCreateButtonDisabled && (
+                    <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                )}
                 {getDropdownMenu(menuItems)}
             </>
         );
