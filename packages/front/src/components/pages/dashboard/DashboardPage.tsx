@@ -11,12 +11,12 @@ import {
     DatePicker,
     Select,
     Space,
-    Typography
+    Tabs,
+    TabsProps,
 } from 'antd';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import React, {
     createRef,
-    CSSProperties,
     useEffect,
     useState
 } from 'react';
@@ -26,34 +26,30 @@ import { Days } from 'iso';
 import {
     Period
 } from 'iso/src/utils/date-utils';
+import { DashboadIssuesCharts } from './components/DashboadIssuesCharts';
+import { DashboardExpensesCharts } from './components/DashboardExpensesCharts';
 import { DashboardIssuesList } from './components/DashboardIssuesList';
-import { IssuesByBrand } from './IssuesByBrand';
-import { IssuesByManager } from './IssuesByManager';
+import { DashboardPerformanceCharts } from './components/DashboardPerformanceCharts';
+import { DashboardProfitCharts } from './components/DashboardProfitCharts';
 
 dayjs.extend(isBetween);
 
 const {RangePicker} = DatePicker;
-const gridStyle: CSSProperties = {
-    width: '50%',
-    textAlign: 'center',
-};
 
 const today = dayjs(Date.now());
 const offsetDates: { [offset: string]: Dayjs } = {
     today,
-    one: today.subtract(1, 'month'),
-    two: today.subtract(2, 'month'),
-    three: today.subtract(3, 'month'),
-    six: today.subtract(6, 'month'),
+    day: today.subtract(1, 'day'),
+    week: today.subtract(1, 'week'),
+    month: today.subtract(1, 'month'),
     year: today.subtract(1, 'year'),
     all: null,
 };
 
 const periodOptions = [
-    {value: 'one,today', label: 'Месяц'},
-    {value: 'two,today', label: '2 Месяца'},
-    {value: 'three,today', label: '3 Месяца'},
-    {value: 'six,today', label: 'Полгода'},
+    {value: 'day,today', label: 'День' },
+    {value: 'week,today', label: 'Неделя' },
+    {value: 'month,today', label: 'Месяц'},
     {value: 'year,today', label: 'Год'},
     {value: 'all,today', label: 'Все время'},
 ];
@@ -131,6 +127,53 @@ export default () => {
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
 
+    const items: TabsProps['items'] = [
+        {
+            key: '1',
+            label: 'Заявки',
+            children: (
+                <div style={{ display: 'flex' }}>
+                    <DashboadIssuesCharts
+                        closedIssues={closedIssues}
+                        openedIssues={openedIssues}
+                        outdatedClosedIssues={outdatedClosedIssues}
+                        outdatedOpenIssues={outdatedOpenIssues}
+                    />
+                </div>
+            ),
+        },
+        {
+            disabled: true,
+            key: '2',
+            label: 'Успеваемость',
+            children: (
+                <div style={{ display: 'flex' }}>
+                    <DashboardPerformanceCharts />
+                </div>
+            ),
+        },
+        {
+            disabled: true,
+            key: '3',
+            label: 'Расходы',
+            children: (
+                <div style={{ display: 'flex' }}>
+                    <DashboardExpensesCharts />
+                </div>
+            ),
+        },
+        {
+            disabled: true,
+            key: '4',
+            label: 'Доходы',
+            children: (
+                <div style={{ display: 'flex' }}>
+                    <DashboardProfitCharts />
+                </div>
+            ),
+        },
+    ];
+
     return (
         <AppLayout
             hidePageContainer
@@ -146,31 +189,39 @@ export default () => {
                 items={[
                     {
                         key: 'filters', label: 'Фильтрация', children: (
-                            <Card.Grid hoverable={false} style={{width: '100%', height: '80px'}}>
-                                <span style={{paddingRight: '24px'}}>За даты:</span>
-                                <RangePicker
-                                    allowClear={false}
-                                    placeholder={['Дата начала', 'Дата конца']}
-                                    value={period || defaultPeriod}
-                                    onChange={setPeriod}
-                                />
-                                <span style={{padding: '0 24px'}}>За период:</span>
-                                <Select
-                                    defaultValue={'one,today'}
-                                    onSelect={onPeriodOptionChange}
-                                    style={{width: '150px'}}
-                                    options={periodOptions}
-                                />
-                                <span style={{padding: '0 24px'}}>Фильтры:</span>
-                                <Space>
-                                    <Typography.Text>По отделу</Typography.Text>
-                                    <Select
-                                        mode="multiple"
-                                        allowClear
-                                        style={{minWidth: '150px'}}
-                                        onChange={setDepartmentFilter}
-                                        options={filterOptions.department}
-                                    />
+                            <Card.Grid hoverable={false} style={{ display: 'flex', width: '100%', height: '60px'}}>
+                                <Space size={24}>
+                                    <>
+                                        <span>За даты:</span>
+                                        <RangePicker
+                                            allowClear={false}
+                                            placeholder={['Дата начала', 'Дата конца']}
+                                            value={period || defaultPeriod}
+                                            onChange={setPeriod}
+                                        />
+                                    </>
+                                    <>
+                                        <span>За период:</span>
+                                        <Select
+                                            defaultValue={'week,today'}
+                                            onSelect={onPeriodOptionChange}
+                                            style={{width: '150px'}}
+                                            options={periodOptions}
+                                        />
+                                    </>
+                                    <>
+                                        <span>Отдел:</span>
+                                        <Select
+                                            mode="multiple"
+                                            allowClear
+                                            style={{minWidth: '150px'}}
+                                            onChange={setDepartmentFilter}
+                                            options={filterOptions.department}
+                                        />
+                                    </>
+                                    <>
+                                        <span></span>
+                                    </>
                                 </Space>
                             </Card.Grid>
                         )
@@ -183,25 +234,12 @@ export default () => {
                     {
                         key: 'charts', label: 'Графики', children: (
                             <div style={{display: 'flex'}}>
-                                <Card.Grid hoverable={false} style={gridStyle}>
-                                    <b>Заявки по менеджерам</b>
-                                    <IssuesByManager
-                                        closedIssues={closedIssues}
-                                        openedIssues={openedIssues}
-                                        outdatedClosedIssues={outdatedClosedIssues}
-                                        outdatedOpenIssues={outdatedOpenIssues}
-                                    />
-                                </Card.Grid>
-
-                                <Card.Grid hoverable={false} style={gridStyle}>
-                                    <b>Заявки по заказчикам</b>
-                                    <IssuesByBrand
-                                        closedIssues={closedIssues}
-                                        openedIssues={openedIssues}
-                                        outdatedClosedIssues={outdatedClosedIssues}
-                                        outdatedOpenIssues={outdatedOpenIssues}
-                                    />
-                                </Card.Grid>
+                                <Tabs
+                                    style={{ width: '100%' }}
+                                    size='middle'
+                                    defaultActiveKey="2"
+                                    items={items}
+                                />
                             </div>
                         )
                     },

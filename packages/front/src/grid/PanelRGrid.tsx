@@ -447,6 +447,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             rowData={list}
             resource={resource}
             quickFilterText={searchText}
+            cacheQuickFilter
             ref={innerGridRef}
             onSortChanged={onSortChanged}
             onFilterChanged={({ api }) => {
