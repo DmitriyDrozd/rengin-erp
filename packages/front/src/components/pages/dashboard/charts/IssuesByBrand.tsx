@@ -1,15 +1,12 @@
 import { Column } from '@ant-design/plots';
 import {
-    IssueVO
-} from 'iso/src/store/bootstrap/repos/issues';
-import {
-    USERS,
-    UserVO
-} from 'iso/src/store/bootstrap/repos/users';
+    BRANDS,
+    BrandVO
+} from 'iso/src/store/bootstrap/repos/brands';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-export const IssuesByManager = ({
+export const IssuesByBrand = ({
                                     openedIssues,
                                     closedIssues,
                                     outdatedClosedIssues,
@@ -17,55 +14,55 @@ export const IssuesByManager = ({
                                 }) => {
     const annotations = [];
 
-    const users: UserVO[] = useSelector(USERS.selectAll);
-    const data = users.filter(user => user.role === 'менеджер').map(user => {
-        const userName = user ? `${user.lastname} ${user.name}` : 'Без менеджера';
-        const filterByUser = (i: IssueVO) => i.managerUserId === user.userId;
+    const brands: BrandVO[] = useSelector(BRANDS.selectAll);
+    const data = brands.map(brand => {
+        const brandName = brand.brandName;
+        const filterByBrand = (b: BrandVO) => b.brandId === brand.brandId;
 
-        const openedByUser = openedIssues.filter(filterByUser).length;
-        const closedByUser = closedIssues.filter(filterByUser).length;
-        const outdatedClosedByUser = outdatedClosedIssues.filter(filterByUser).length;
-        const outdatedOpenByUser = outdatedOpenIssues.filter(filterByUser).length;
+        const openedByBrand = openedIssues.filter(filterByBrand).length;
+        const closedByBrand = closedIssues.filter(filterByBrand).length;
+        const outdatedClosedByBrand = outdatedClosedIssues.filter(filterByBrand).length;
+        const outdatedOpenByBrand = outdatedOpenIssues.filter(filterByBrand).length;
 
-        if (!openedByUser && !closedByUser && !outdatedClosedByUser && !outdatedOpenByUser) {
+        if (!openedByBrand && !closedByBrand && !outdatedClosedByBrand && !outdatedOpenByBrand) {
             return [];
         }
 
         const getData = (count, type) => ({
-            'manager': userName,
+            'brand': brandName,
             'value': count,
             'type': type,
         });
 
         return [
-            getData(openedByUser, 'Новые'),
-            getData(closedByUser, 'Закрытые'),
-            getData(outdatedClosedByUser, 'Просрочено в закрытых'),
-            getData(outdatedOpenByUser, 'Просрочено в работе'),
+            getData(openedByBrand, 'Активные'),
+            getData(closedByBrand, 'Закрытые'),
+            getData(outdatedClosedByBrand, 'Просрочено в закрытых'),
+            getData(outdatedOpenByBrand, 'Просрочено в работе'),
         ]
     })
         .flat();
 
     const dataObj = data
         .reduce((acc, item) => {
-            if (!acc[item.manager]) {
-                acc[item.manager] = [item];
+            if (!acc[item.brand]) {
+                acc[item.brand] = [item];
             } else {
-                acc[item.manager].push(item);
+                acc[item.brand].push(item);
             }
 
             return acc;
         }, {});
 
-    users.map(user => {
-        const userName = user ? `${user.lastname} ${user.name}` : 'Без менеджера';
-        const userData = dataObj[userName];
+    brands.map(brand => {
+        const brandName = brand.brandName;
+        const userData = dataObj[brandName];
 
         if (userData) {
             const value = userData.reduce((a, d) => a += d.value, 0);
             annotations.push({
                 type: 'text',
-                position: [userName, value],
+                position: [brandName, value],
                 content: `${value}`,
                 style: {
                     textAlign: 'center',
@@ -80,7 +77,7 @@ export const IssuesByManager = ({
     const config = {
         data,
         isStack: true,
-        xField: 'manager',
+        xField: 'brand',
         yField: 'value',
         seriesField: 'type',
         label: {

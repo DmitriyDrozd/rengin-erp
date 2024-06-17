@@ -1,19 +1,21 @@
 import { Card } from 'antd';
 import React, { CSSProperties } from 'react';
-import { IssuesByBrand } from '../IssuesByBrand';
-import { IssuesByManager } from '../IssuesByManager';
+import { IssuesByBrand } from '../charts/IssuesByBrand';
+import { IssuesByManager } from '../charts/IssuesByManager';
 
-const gridStyle: CSSProperties = {
+export const gridStyle: CSSProperties = {
     width: '50%',
     textAlign: 'center',
 };
 
-export const DashboadIssuesCharts = ({
-                                         closedIssues,
-                                         openedIssues,
-                                         outdatedClosedIssues,
-                                         outdatedOpenIssues,
-                                     }) => {
+export const DashboadIssuesCharts = (
+    {
+        closedIssues,
+        openedIssues,
+        outdatedClosedIssues,
+        outdatedOpenIssues,
+    }
+) => {
     return (
         <>
             <Card.Grid hoverable={false} style={gridStyle}>

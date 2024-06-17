@@ -63,6 +63,11 @@ const departmentOptions = [
     {value: 'ИТ', label: 'ИТ'},
 ];
 
+const DEFAULT_PERIOD = {
+    selectValue: 'week,today',
+    periodValue: [dayjs(dayjs().subtract(1, 'week')), dayjs(Date.now())] as Period,
+}
+
 export default () => {
     const issues: IssueVO[] = useSelector(ISSUES.selectAll);
     const ledger = useLedger();
@@ -83,12 +88,12 @@ export default () => {
         return isManagerInDep || isEstimatorInDep;
     }) : issues;
 
-
     /**
      * Фильтрация по выбранному периоду
      */
-    const defaultPeriod = [dayjs(dayjs().subtract(1, 'month')), dayjs(Date.now())] as Period;
+    const defaultPeriod = DEFAULT_PERIOD.periodValue;
     const [period, setPeriod] = useState<Period>(defaultPeriod);
+
     const start = period[0];
     const end = period[1];
     const periodIssues = departmentFilteredIssues.filter(Days.isIssueInPeriod(period));
@@ -96,7 +101,6 @@ export default () => {
     const onPeriodOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
     };
-
 
     /**
      * Отфильтрованные таблицей записи, предоставляемые в графики
@@ -112,16 +116,19 @@ export default () => {
     useEffect(() => {
         if (gridRef.current && gridRef.current.api) {
             onIssuesListChanged({ api: gridRef.current.api });
+        } else {
+            setListData(periodIssues);
         }
     }, [departmentFilter, period]);
-
 
     /**
      * Данные для графиков
      */
     const closedIssues = listData.filter(i => i.status === 'Выполнена');
     const activeIssues = listData.filter(Days.isIssueActive);
+    const inWorkIssues = listData.filter(Days.isIssueInWork);
     const outdatedIssues = listData.filter(Days.isIssueOutdated);
+    const pausedIssues = listData.filter(Days.isIssuePaused);
 
     const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start || dayjs(new Date(0)), end));
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
@@ -143,13 +150,18 @@ export default () => {
             ),
         },
         {
-            disabled: true,
+            // disabled: true,
             key: '2',
             label: 'Успеваемость',
             children: (
-                <div style={{ display: 'flex' }}>
-                    <DashboardPerformanceCharts />
-                </div>
+                <DashboardPerformanceCharts
+                    pausedIssues={pausedIssues}
+                    closedIssues={closedIssues}
+                    allIssues={listData}
+                    inWorkIssues={inWorkIssues}
+                    outdatedClosedIssues={outdatedClosedIssues}
+                    outdatedOpenIssues={outdatedOpenIssues}
+                />
             ),
         },
         {
@@ -188,7 +200,7 @@ export default () => {
                 defaultActiveKey={['filters', 'charts']}
                 items={[
                     {
-                        key: 'filters', label: 'Фильтрация', children: (
+                        key: 'filters', label: 'Общие фильтры', children: (
                             <Card.Grid hoverable={false} style={{ display: 'flex', width: '100%', height: '60px'}}>
                                 <Space size={24}>
                                     <>
@@ -203,7 +215,7 @@ export default () => {
                                     <>
                                         <span>За период:</span>
                                         <Select
-                                            defaultValue={'week,today'}
+                                            defaultValue={DEFAULT_PERIOD.selectValue}
                                             onSelect={onPeriodOptionChange}
                                             style={{width: '150px'}}
                                             options={periodOptions}
@@ -228,7 +240,7 @@ export default () => {
                     },
                     {
                         key: 'issues-table',
-                        label: 'Таблица заявок',
+                        label: 'Дополнительная фильтрация через таблицу',
                         children: <DashboardIssuesList gridRef={gridRef} rowData={periodIssues} onFilterChanged={onIssuesListChanged}/>
                     },
                     {

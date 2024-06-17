@@ -94,17 +94,21 @@ export const getIssueDelayOrUndefined = (issue: IssueVO) => {
     return 0;
 };
 
+export const isIssuePaused = (issue: IssueVO) => {
+    return issue.status === 'Приостановлена';
+}
+
+export const isIssueInWork = (issue: IssueVO) => {
+    return issue.status === 'В работе';
+}
+
 export const isIssueActive = (issue: IssueVO) => {
-    if (issue.status === 'Отменена' || issue.status === 'Приостановлена')
-        return false;
-    return true;
+    return issue.status !== 'Отменена' && issue.status !== 'Приостановлена';
 };
 
 
 export const isIssueOutdated = (issue: IssueVO) =>
     getIssueDelayOrUndefined(issue) > 0;
-
-export const isIssueDelayed = isIssueOutdated;
 
 export type DayProp = keyof ReturnType<typeof getIssueDays>
 
