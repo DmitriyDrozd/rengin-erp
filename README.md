@@ -43,3 +43,17 @@ disown [processId]
 nohup yarn front:dev:watch &
 disown [processId]
 ```
+
+**Server side commands to build up the app**
+
+Build front
+```
+cd /home/rengin-erp
+yarn front:build:prod
+yarn copy-assets
+```
+Start backend
+```
+nohup yarn service:prod &
+disown %process_id%
+```
