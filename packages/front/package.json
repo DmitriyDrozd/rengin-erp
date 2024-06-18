@@ -26,6 +26,7 @@
     "front:build:prod": "vite build --mode=production --minify=esbuild --sourcemap=false && yarn compress:build",
     "compress:models": "brotli compress -v -q 11 --mode generic --glob \"./models/**/*.{json,wsmdl}\"",
     "compress:build": "brotli compress -v -q 11 --mode generic --glob \"../static/**/*.{js,css,json}\"",
+    "copy-assets": "cp -R assets dist",
     "copy-content": "copyfiles -u 1 \"./dist/**/*.*\" ./public && copyfiles  \"./dist/*.html\" ./public &&  copyfiles ./models/**/*.* ./assets/**/*.* ./public ",
     "preview": "vite preview",
     "android:build": "npx cap build android --androidreleasetype APK --keystorepath=../certificates/android/test-apk-keystore --keystorepass='ertc123'  --keystorealias='ertc123' --keystorealiaspass='ertc123'"
