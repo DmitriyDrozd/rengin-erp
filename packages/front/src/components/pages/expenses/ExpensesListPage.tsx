@@ -81,8 +81,16 @@ export const ExpensesListPage = () => {
             cellRenderer: (props) =>
                 getEstimationStatusTag(props.data)
         },
-        {...colMap.expensePrice, width: 200},
-        {...colMap.expensePriceFinal, width: 150},
+        {
+            ...colMap.expensePrice,
+            width: 200,
+            valueFormatter: ({ data }) => data.expensePrice === undefined ? undefined : isNaN(data.expensePrice) ? String(data.expensePrice) : data.expensePrice
+        },
+        {
+            ...colMap.expensePriceFinal,
+            width: 150,
+            valueFormatter: ({ data }) => data.expensePriceFinal === undefined ? undefined : isNaN(data.expensePriceFinal) ? String(data.expensePriceFinal) : data.expensePriceFinal
+        },
         {
             field: 'priceDiff',
             filter: 'agNumberColumnFilter',
