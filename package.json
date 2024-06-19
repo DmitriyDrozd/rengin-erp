@@ -16,6 +16,7 @@
         "front:demo": "cd ./packages/front && yarn front:demo",
         "front:build:dev": "yarn workspace front front:build:dev",
         "front:build:prod": "yarn workspace front front:build:prod",
+        "front:assets": "cd ./packages/front && cp -R assets dist",
         "front:local": "cd ./packages/front && yarn front:local",
         "front:start": "cross-env STONES_DEV_PORT=9180 STONES_SERVICE_PORT=9102 yarn workspace front front:start",
         "front:prod": "cross-env STONES_DEV_PORT=9180 STONES_SERVICE_PORT=9102 yarn workspace front front:prod",
