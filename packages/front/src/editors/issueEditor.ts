@@ -86,32 +86,40 @@ export const issuesEditor =  buildEditor(ISSUES,{
     },
     siteId: {
         getUpdate: ({item , value,state}) =>{
-           const siteId =value
-            if(siteId !== undefined && siteId !== item.siteId) {
-                const {sites,subs, contracts} = state.app.bootstrap
-                const site = sites.find(s => s.siteId === siteId)
+           const siteId = value;
 
+            if(siteId !== undefined && siteId !== item.siteId) {
+                const {sites,subs, contracts} = state.app.bootstrap;
+
+                const site = sites.find(s => s.siteId === siteId)
                 const sub = subs.find(s => s.siteId === siteId)
                 const contract = sub ? contracts.find(c => c.contractId === sub.contractId) : undefined
 
-                let newItem = {...item, siteId: siteId}
+                let newItem = {...item, siteId: siteId};
 
-                if(!item.brandId)
+                if (!item.brandId) {
                     newItem.brandId = site.brandId
-                if(!item.legalId)
-                    newItem.legalId = site.legalId
-                if(sub && contract && site) {
-                    newItem = {...newItem, contractId: contract.contractId, siteId: siteId, subId: sub.subId,contactInfo:site.contactInfo, clientsEngineerUserId: site.clientsEngineerUserId }
                 }
 
-                if(item.clientsEngineerUserId === undefined && site && site.clientsEngineerUserId) {
-                    newItem.clientsEngineerUserId = site.clientsEngineerUserId
-                }if(item.managerUserId === undefined && site && site.managerUserId) {
-                    newItem.managerUserId = site.managerUserId
-                }if(item.techUserId === undefined && site && site.techUserId) {
-                    newItem.techUserId = site.techUserId
-                }if(item.estimatorUserId === undefined && site && site.estimatorUserId) {
-                    newItem.estimatorUserId = site.estimatorUserId
+                if (!item.legalId) {
+                    newItem.legalId = site.legalId
+                }
+
+                if (sub && contract) {
+                    newItem.contractId = contract.contractId;
+                    newItem.subId = sub.subId;
+                }
+
+                if (site) {
+                    newItem = {
+                        ...newItem,
+                        siteId: siteId,
+                        contactInfo:site.contactInfo,
+                        clientsEngineerUserId: site.clientsEngineerUserId,
+                        managerUserId: site.managerUserId,
+                        techUserId: site.techUserId,
+                        estimatorUserId: site.estimatorUserId,
+                    }
                 }
 
                 return newItem
