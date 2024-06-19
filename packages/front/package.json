@@ -23,7 +23,7 @@
     "front:local": "cross-env RENGIN_SERVICE_API=http://localhost:9102 vite --host",
     "front:demo": "cross-env RENGIN_SERVICE_API=https://demo.stroy-monitoring.ru vite --host",
     "front:build:dev": "cross-env RENGIN_LOG_ROCKET=ws/webstone vite build --mode=development --minify=false --sourcemap=true --emptyOutDir",
-    "front:build:prod": "vite build --mode=production --minify=esbuild --sourcemap=false && yarn compress:build",
+    "front:build:prod": "vite build --mode=production --minify=esbuild --sourcemap=false && yarn compress:build && cp -R assets dist",
     "compress:models": "brotli compress -v -q 11 --mode generic --glob \"./models/**/*.{json,wsmdl}\"",
     "compress:build": "brotli compress -v -q 11 --mode generic --glob \"../static/**/*.{js,css,json}\"",
     "copy-assets": "cp -R assets dist",
