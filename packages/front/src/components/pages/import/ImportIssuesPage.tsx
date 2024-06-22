@@ -18,7 +18,10 @@ import {
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
 import ImportCard from '../../elements/ImportCard';
-import * as R from 'ramda';
+import {
+    AVERAGE_CREATE_TIME,
+    rejectFn
+} from './helper';
 
 interface IIssue {
     clientsIssueNumber: string,
@@ -65,8 +68,6 @@ const formatExcelDate = (excelDate: number | string): string => {
     return new Date(Date.UTC(0, 0, excelDate - 1))?.toDateString();
 };
 
-const rejectFn = R.reject(R.anyPass([R.isEmpty, R.isNil]));
-
 export const importIssuesXlsxCols = [
     'clientsIssueNumber',
     'clientsSiteNumber',
@@ -108,7 +109,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
 
             if (!site) {
                 const error = 'не найден обьект';
-                invalidIssues.push({clientsIssueNumber, clientsSiteNumber, error});
+                invalidIssues.push({clientsNumber: clientsIssueNumber, clientsSiteNumber, error});
                 return null;
             }
 
@@ -135,7 +136,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
 
                 if ([formattedRegisterDate, formattedPlannedDate, formattedCompletedDate].includes('Invalid Date')) {
                     const error = 'неверный формат даты';
-                    invalidIssues.push({clientsIssueNumber, clientsSiteNumber, error});
+                    invalidIssues.push({clientsNumber: clientsIssueNumber, clientsSiteNumber, error});
                     return null;
                 }
 
@@ -195,20 +196,17 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
     return importIssuesSaga;
 };
 
-// ms
-const averageCreateTime = 5;
-
 export const ImportIssuesPage = () => {
     const store = useStore();
     const importFile = async (
         data: Datum[],
         callback?: ({
-                        newIssues,
-                        invalidIssues,
-                        duplicatedIssues
-                    }: { newIssues: any[], invalidIssues: any[], duplicatedIssues: any[] }) => void) => {
+                        newItems,
+                        invalidItems,
+                        duplicatedItems
+                    }: { newItems: any[], invalidItems: any[], duplicatedItems: any[] }) => void) => {
         const newIssues: Partial<IssueVO>[] = [];
-        const invalidIssues: { clientsIssueNumber: string, clientsSiteNumber: string }[] = [];
+        const invalidIssues: { clientsNumber: string, clientsSiteNumber: string }[] = [];
         const duplicatedIssues: { clientsIssueNumber: string }[] = [];
 
         const importIssuesSaga = getImportIssuesSaga({ newIssues, invalidIssues, duplicatedIssues });
@@ -218,11 +216,11 @@ export const ImportIssuesPage = () => {
 
         setTimeout(() => {
             callback?.({
-                newIssues,
-                invalidIssues,
-                duplicatedIssues,
+                newItems: newIssues,
+                invalidItems: invalidIssues,
+                duplicatedItems: duplicatedIssues,
             });
-        }, data.length * averageCreateTime * 2);
+        }, data.length * AVERAGE_CREATE_TIME * 2);
     };
 
     return (

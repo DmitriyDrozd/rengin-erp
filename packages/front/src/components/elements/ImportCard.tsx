@@ -23,8 +23,9 @@ export type ImportCardProps<D extends any, K extends keyof D = keyof D> = {
     title: string
     importedItemsFound: string
     xlsxCols: Readonly<Array<K>>
-    onImport: (items: D[], callback?: (args: { newIssues: any[], invalidIssues: any[], duplicatedIssues: any[] }) => void) => Promise<any>
+    onImport: (items: D[], callback?: (args: { newItems: any[], invalidItems: any[], duplicatedItems: any[] }) => void) => Promise<any>
 }
+
 export default <D, >(props: ImportCardProps<D>) => {
     const [isLoading, setLoading] = useState(false);
     return <Card
@@ -60,37 +61,36 @@ export default <D, >(props: ImportCardProps<D>) => {
                         onOk: async () => {
                             setLoading(true);
                             props.onImport(arr as any, ({
-                                                            newIssues,
-                                                            invalidIssues,
-                                                            duplicatedIssues
+                                                            newItems,
+                                                            invalidItems,
+                                                            duplicatedItems
                                                         }) => {
                                 info({
                                     title: 'Записи успешно импортированы',
                                     content: (
                                         <>
-                                            <Card title={<><CheckOutlined style={{ color: '#a0d911'}}/> Импортировано заявок</>}>
-                                                <Typography.Text>{newIssues.length}</Typography.Text>
+                                            <Card title={<><CheckOutlined style={{ color: '#a0d911'}}/> Импортировано записей</>}>
+                                                <Typography.Text>{newItems.length}</Typography.Text>
                                             </Card>
 
-                                            {duplicatedIssues.length > 0 && (
-                                                <Card title={<><IssuesCloseOutlined style={{ color: '#fa8c16'}} /> Заявки с дублирующимся номером</>}>
-                                                    {duplicatedIssues.map(({clientsIssueNumber}, index) => (
-                                                        <Typography.Text key={clientsIssueNumber}>
-                                                            {clientsIssueNumber || 'номер заявки не указан'}
-                                                            {index < duplicatedIssues.length - 1 ? ', ' : ''}
-                                                        </Typography.Text>
-                                                    ))}
+                                            {duplicatedItems.length > 0 && (
+                                                <Card title={<><IssuesCloseOutlined style={{ color: '#fa8c16'}} /> Записи с дублирующимся номером</>}>
+                                                    <Typography.Text>
+                                                        {duplicatedItems.map(({ clientsNumber }, index) =>
+                                                            `${clientsNumber || 'номер не указан'}${index < duplicatedItems.length - 1 ? ', ' : ''}`
+                                                        )}
+                                                    </Typography.Text>
                                                 </Card>
                                             )}
 
-                                            {invalidIssues.length > 0 && (
-                                                <Card title={<><StopOutlined style={{ color: '#cf1322'}} /> Заявки с неверными данными</>}>
-                                                    {invalidIssues.map(({clientsIssueNumber, clientsSiteNumber, error}, index) => (
-                                                        <p key={clientsIssueNumber}>
-                                                            Номер {clientsIssueNumber || 'не указан'},
+                                            {invalidItems.length > 0 && (
+                                                <Card title={<><StopOutlined style={{ color: '#cf1322'}} /> Записи с неверными данными</>}>
+                                                    {invalidItems.map(({clientsNumber, clientsSiteNumber, error}, index) => (
+                                                        <p key={clientsNumber}>
+                                                            Номер {clientsNumber || 'не указан'},
                                                             код объекта: {clientsSiteNumber || 'не указан'}.
                                                             Ошибка: {error}
-                                                            {index < invalidIssues.length - 1 ? '; ' : ''}
+                                                            {index < invalidItems.length - 1 ? '; ' : ''}
                                                         </p>
                                                     ))}
                                                 </Card>
