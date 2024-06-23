@@ -88,7 +88,7 @@ export default ({newClientsNumber, isEditMode}: {
             {...layoutPropsModalForm}
             layout={'horizontal'}
         >
-            <RenField meta={ISSUES.properties.clientsIssueNumber}/>
+            <RenField meta={ISSUES.properties.clientsIssueNumber} disabled={role === roleEnum['сметчик']}/>
             <RenField meta={ISSUES.properties.brandId} immutable={!!initValues.brandId}
                       disabled={!!initValues.brandId}/>
             <RenField meta={ISSUES.properties.legalId} immutable={!!initValues.legalId}
