@@ -152,7 +152,6 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
 };
 
 let interval;
-let timerInterval;
 
 export default () => {
     const store = useStore();

@@ -1,6 +1,7 @@
 import { ColDef } from 'ag-grid-community';
 import {
     Button,
+    Modal,
     notification,
     Space
 } from 'antd';
@@ -16,6 +17,7 @@ import { useAllColumns } from '../../../grid/RCol';
 import useCurrentUser from '../../../hooks/useCurrentUser';
 import useLedger from '../../../hooks/useLedger';
 import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
+import { ProgressCircle } from '../../misc/ProgressCircle';
 import ItemChapter, { fieldMetaToProProps } from '../chapter-routed/ItemChapter';
 import {
     ProFormSelect,
@@ -33,9 +35,31 @@ import Typography from 'antd/es/typography';
 
 const RESOURCE = SITES;
 
+const GMAPS_CHUNK_SIZE = 50;
+const getGmapsPromises = (sites) => {
+    return sites.map(site => {
+        return new Promise(async (resolve, reject) => {
+            const loadUrl = encodeURI(`https://maps.googleapis.com/maps/api/geocode/json?address=Россия, ${site.city}, ${site.address}&key=${GOOGLE_MAPS_API_KEY}`);
+            const config = {
+                method: 'get',
+                url: loadUrl,
+                headers: {}
+            };
+
+            const response = await axios(config);
+
+            if (response.data?.status === 'OK') {
+                const location = response.data?.results[0]?.geometry?.location;
+
+                site.geoPosition = [location?.lat, location?.lng].join();
+                resolve(site);
+            }
+        });
+    });
+};
 
 export default () => {
-    const { currentUser } = useCurrentUser();
+    const {currentUser} = useCurrentUser();
     const isViewMode = currentUser.role === roleEnum['менеджер'];
 
     const [cols, colMap] = useAllColumns(RESOURCE);
@@ -60,31 +84,44 @@ export default () => {
     const allSites = ledger.sites.list;
     const isAllSitesHasGeo = allSites.every(site => !!site.geoPosition);
 
+    const [percent, setPercent] = useState(0);
+
     const onAddGeo = async () => {
-        const resultSites = await Promise.all(allSites.map(site => {
-            return new Promise(async (resolve, reject) => {
-                const isAddressProvided = site.address && site.city;
+        setPercent(1);
 
-                if (!site.geoPosition && isAddressProvided) {
-                    const loadUrl = encodeURI(`https://maps.googleapis.com/maps/api/geocode/json?address=Россия, ${site.city}, ${site.address}&key=${GOOGLE_MAPS_API_KEY}`);
-                    const config = {
-                        method: 'get',
-                        url: loadUrl,
-                        headers: { }
-                    };
+        const sitesWithoutGeo = allSites.filter(site => {
+            const isAddressProvided = site.address && site.city;
 
-                    const response = await axios(config);
-                    if (response.data?.status === 'OK') {
-                        const location = response.data?.results[0]?.geometry?.location;
+            return !site.geoPosition && isAddressProvided;
+        });
 
-                        site.geoPosition = [location?.lat, location?.lng].join();
-                        resolve(site);
-                    }
-                } else {
-                    resolve(null);
+        const chunkCount = Math.ceil(sitesWithoutGeo.length / GMAPS_CHUNK_SIZE);
+        const itemsInChunk = Math.ceil(sitesWithoutGeo.length / chunkCount);
+        const percentPerChunk = 100 / chunkCount;
+
+        let resultSites: any[] = [];
+
+        if (sitesWithoutGeo.length < GMAPS_CHUNK_SIZE) {
+            resultSites = await Promise.all(getGmapsPromises(sitesWithoutGeo));
+        } else {
+            for (let i = 0; i < chunkCount; i++) {
+                const chunk = sitesWithoutGeo.slice(i * itemsInChunk, (i + 1) * itemsInChunk);
+
+                try {
+                    const chunkResult = await Promise.all(getGmapsPromises(chunk));
+                    resultSites = [...resultSites, ...chunkResult];
+
+                    const progress = percentPerChunk * i > 1 ? percentPerChunk * i : 1;
+                    setPercent(progress);
+                } catch (e) {
+                    console.error(e);
+                    notification.open({
+                        message: `Не удалось выполнить запросы`,
+                        type: 'error'
+                    });
                 }
-            })
-        }));
+            }
+        }
 
         const updated = resultSites.filter(s => s !== null);
         const updatedCount = updated.length;
@@ -92,6 +129,8 @@ export default () => {
         dispatch(getAction());
 
         setTimeout(() => {
+            setPercent(0);
+
             notification.open({
                 message: `Добавлены координаты к ${updatedCount} объектам`,
                 type: 'success'
@@ -99,17 +138,12 @@ export default () => {
         }, updatedCount * 5);
     };
 
-    const BottomBar = useMemo(() => {
-        if (isAllSitesHasGeo) {
-            return undefined;
-        }
-
-        return () => (
-            <Space>
-                <Button onClick={onAddGeo}>Добавить локацию ко всем объектам</Button>
-            </Space>
-        );
-    }, [isAllSitesHasGeo]);
+    const isLoadingGeo = percent > 0;
+    const BottomBar = isAllSitesHasGeo ? undefined : () => (
+        <Space>
+            <Button onClick={onAddGeo}>Добавить локацию ко всем объектам</Button>
+        </Space>
+    );
 
     return (
         <ItemChapter
@@ -131,7 +165,7 @@ export default () => {
                         const config = {
                             method: 'get',
                             url: loadUrl,
-                            headers: { }
+                            headers: {}
                         };
 
                         axios(config)
@@ -180,14 +214,14 @@ export default () => {
                             disabled={isViewMode}
                         />
                         {geoCoordinates && !item.geoPosition && (
-                            <div className='ant-form-item'>
-                                <div className='ant-row ant-form-item-row'>
-                                <div className='ant-col ant-col-6 ant-form-item-label'>
-                                    <Typography.Text>Предложенные координаты: </Typography.Text>
-                                </div>
-                                <div className='ant-col ant-col-18 ant-form-item-control'>
-                                    <CellRendererWithCopy value={geoCoordinates}/>
-                                </div>
+                            <div className="ant-form-item">
+                                <div className="ant-row ant-form-item-row">
+                                    <div className="ant-col ant-col-6 ant-form-item-label">
+                                        <Typography.Text>Предложенные координаты: </Typography.Text>
+                                    </div>
+                                    <div className="ant-col ant-col-18 ant-form-item-control">
+                                        <CellRendererWithCopy value={geoCoordinates}/>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -234,13 +268,21 @@ export default () => {
             }
             renderList={() => {
                 return (
-                    <PanelRGrid
-                        BottomBar={BottomBar}
-                        columnDefs={columns}
-                        resource={SITES}
-                        fullHeight={true}
-                        title={'Все объекты'}
-                    />
+                    <>
+                        <Modal centered cancelButtonProps={{loading: isLoadingGeo}} open={isLoadingGeo} closable={false}
+                               confirmLoading={isLoadingGeo}>
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <ProgressCircle progress={Math.floor(percent)} label={'Загрузка данных геопозиции'}/>
+                            </div>
+                        </Modal>
+                        <PanelRGrid
+                            BottomBar={BottomBar}
+                            columnDefs={columns}
+                            resource={SITES}
+                            fullHeight={true}
+                            title={'Все объекты'}
+                        />
+                    </>
                 );
             }}
         />
