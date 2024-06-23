@@ -39,7 +39,6 @@ export const DashboardIssuesList: FC<IDashboardIssuesList> = ({ gridRef, rowData
     return (
         <PanelRGrid
             isCreateButtonDisabled
-            fullHeight
             gridRef={gridRef}
             rowData={rowData}
             resource={ISSUES}

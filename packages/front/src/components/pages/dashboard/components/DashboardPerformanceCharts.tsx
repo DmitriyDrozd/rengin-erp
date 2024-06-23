@@ -71,6 +71,7 @@ const SUBJ_FILTER = {
 export const DashboardPerformanceCharts = (
     {
         Filters,
+        onSubFilterChange,
         allIssues,
         inWorkIssues,
         pausedIssues,
@@ -118,6 +119,10 @@ export const DashboardPerformanceCharts = (
     }, [type]);
 
     const subjectFilter = subject ? SUBJ_FILTER[type](subject, ledger) : (() => true);
+
+    useEffect(() => {
+        onSubFilterChange(subjectFilter);
+    }, [subject]);
 
     const fAll = allIssues.filter(subjectFilter);
     const fInWork = inWorkIssues.filter(subjectFilter);

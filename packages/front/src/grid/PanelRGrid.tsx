@@ -403,6 +403,10 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
     const [displayedItemsCount, setDisplayedItemsCount] = useState(list.length);
 
+    useEffect(() => {
+        setDisplayedItemsCount(list.length);
+    }, [list])
+
     return <>
         <div
             style={{

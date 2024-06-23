@@ -104,10 +104,26 @@ export default () => {
     };
 
     /**
+     * Применение подфильтров из графиков
+     */
+    const [currentTab, setCurrentTab] = useState('1');
+    const [subjectFilter, setSubjectFilter] = useState<{ [key: string]: () => boolean }>({
+        '1': () => true,
+        '2': () => true,
+    });
+
+    const onChangeSubjectFilter = (key: string) => (filterFunction: () => boolean) => setSubjectFilter({ ...subjectFilter, [key]: filterFunction })
+
+    debugger;
+    const subjectFilteredIssues = periodIssues.filter(subjectFilter[currentTab]);
+
+    const finalIssues = subjectFilteredIssues;
+
+    /**
      * Отфильтрованные таблицей записи, предоставляемые в графики
     */
     const gridRef = createRef<AgGridReact>();
-    const [listData, setListData] = useState(periodIssues);
+    const [listData, setListData] = useState(finalIssues);
 
     const onIssuesListChanged = ({ api }: { api: GridApi }) => {
         const displayedRows = getDisplayedGridRows(api);
@@ -118,7 +134,7 @@ export default () => {
         if (gridRef.current && gridRef.current.api) {
             onIssuesListChanged({ api: gridRef.current.api });
         } else {
-            setListData(periodIssues);
+            setListData(finalIssues);
         }
     }, [period]); // [departmentFilter, period]
 
@@ -135,7 +151,7 @@ export default () => {
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
 
-    const FiltersItem = ({ children }) => (
+    const FiltersItem = ({ children }: { children: React.ReactNode }) => (
         <Space direction='vertical' size={12} style={{ paddingBottom: 12, width: 408 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ textWrap: 'nowrap' }}>За даты:</span>
@@ -194,6 +210,7 @@ export default () => {
             children: (
                 <DashboardPerformanceCharts
                     Filters={FiltersItem}
+                    onSubFilterChange={onChangeSubjectFilter('2')}
                     pausedIssues={pausedIssues}
                     closedIssues={closedIssues}
                     allIssues={registeredIssues}
@@ -239,8 +256,9 @@ export default () => {
                     <Tabs
                         style={{ width: '100%' }}
                         size='large'
-                        defaultActiveKey="2"
                         items={items}
+                        activeKey={currentTab}
+                        onChange={setCurrentTab}
                     />
                 </div>
             </Card.Grid>
@@ -251,7 +269,7 @@ export default () => {
                     {
                         key: 'issues-table',
                         label: 'Дополнительная фильтрация через таблицу',
-                        children: <DashboardIssuesList gridRef={gridRef} rowData={periodIssues} onFilterChanged={onIssuesListChanged}/>
+                        children: <DashboardIssuesList gridRef={gridRef} rowData={finalIssues} onFilterChanged={onIssuesListChanged}/>
                     },
                 ]}
             />
