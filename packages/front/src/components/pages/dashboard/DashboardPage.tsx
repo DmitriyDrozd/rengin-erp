@@ -114,7 +114,6 @@ export default () => {
 
     const onChangeSubjectFilter = (key: string) => (filterFunction: () => boolean) => setSubjectFilter({ ...subjectFilter, [key]: filterFunction })
 
-    debugger;
     const subjectFilteredIssues = periodIssues.filter(subjectFilter[currentTab]);
 
     const finalIssues = subjectFilteredIssues;
