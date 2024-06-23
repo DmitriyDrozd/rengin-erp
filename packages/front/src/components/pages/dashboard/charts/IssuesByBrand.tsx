@@ -7,7 +7,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 export const IssuesByBrand = ({
-                                    openedIssues,
+                                    registeredIssues,
                                     closedIssues,
                                     outdatedClosedIssues,
                                     outdatedOpenIssues,
@@ -19,12 +19,12 @@ export const IssuesByBrand = ({
         const brandName = brand.brandName;
         const filterByBrand = (b: BrandVO) => b.brandId === brand.brandId;
 
-        const openedByBrand = openedIssues.filter(filterByBrand).length;
+        const registeredByBrand = registeredIssues.filter(filterByBrand).length;
         const closedByBrand = closedIssues.filter(filterByBrand).length;
         const outdatedClosedByBrand = outdatedClosedIssues.filter(filterByBrand).length;
         const outdatedOpenByBrand = outdatedOpenIssues.filter(filterByBrand).length;
 
-        if (!openedByBrand && !closedByBrand && !outdatedClosedByBrand && !outdatedOpenByBrand) {
+        if (!registeredByBrand && !closedByBrand && !outdatedClosedByBrand && !outdatedOpenByBrand) {
             return [];
         }
 
@@ -35,7 +35,7 @@ export const IssuesByBrand = ({
         });
 
         return [
-            getData(openedByBrand, 'Активные'),
+            getData(registeredByBrand, 'Созданные'),
             getData(closedByBrand, 'Закрытые'),
             getData(outdatedClosedByBrand, 'Просрочено в закрытых'),
             getData(outdatedOpenByBrand, 'Просрочено в работе'),

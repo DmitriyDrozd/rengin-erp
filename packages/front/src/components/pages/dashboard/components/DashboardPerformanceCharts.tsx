@@ -70,6 +70,7 @@ const SUBJ_FILTER = {
 
 export const DashboardPerformanceCharts = (
     {
+        Filters,
         allIssues,
         inWorkIssues,
         pausedIssues,
@@ -126,36 +127,40 @@ export const DashboardPerformanceCharts = (
     const fOutdatedOpen = outdatedOpenIssues.filter(subjectFilter);
 
     return (
-        <Space size={48} direction='vertical' style={{ width: '100%' }}>
-            <Space>
-                <Select
-                    defaultValue={type}
-                    style={{width: '150px'}}
-                    options={typeOptions}
-                    onSelect={setType}
-                />
-                <Select
-                    virtual
-                    showSearch
-                    value={subject}
-                    optionFilterProp="label"
-                    style={{width: '250px'}}
-                    options={subjectOptions}
-                    onSelect={setSubject}
-                />
-            </Space>
-            {type && subject && (
-                <Card.Grid hoverable={false}>
-                    <IssuesPerformance
-                        allIssues={fAll}
-                        inWorkIssues={fInWork}
-                        pausedIssues={fPaused}
-                        closedIssues={fClosed}
-                        outdatedClosedIssues={fOutdatedClosed}
-                        outdatedOpenIssues={fOutdatedOpen}
+        <div style={{ display: 'flex', gap: 24, width: '100%' }}>
+            <Filters>
+                <Space>
+                    <Select
+                        defaultValue={type}
+                        style={{width: '150px'}}
+                        options={typeOptions}
+                        onSelect={setType}
                     />
-                </Card.Grid>
+                    <Select
+                        virtual
+                        showSearch
+                        value={subject}
+                        optionFilterProp="label"
+                        style={{width: '250px'}}
+                        options={subjectOptions}
+                        onSelect={setSubject}
+                    />
+                </Space>
+            </Filters>
+            {type && subject && (
+                <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                    <Card.Grid hoverable={false}>
+                        <IssuesPerformance
+                            allIssues={fAll}
+                            inWorkIssues={fInWork}
+                            pausedIssues={fPaused}
+                            closedIssues={fClosed}
+                            outdatedClosedIssues={fOutdatedClosed}
+                            outdatedOpenIssues={fOutdatedOpen}
+                        />
+                    </Card.Grid>
+                </div>
             )}
-        </Space>
+        </div>
     );
 };

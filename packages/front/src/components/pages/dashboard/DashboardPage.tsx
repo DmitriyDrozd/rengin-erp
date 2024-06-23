@@ -56,12 +56,12 @@ const periodOptions = [
 
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
-const departmentOptions = [
-    {value: 'строительный', label: 'строительный'},
-    {value: 'сметный', label: 'сметный'},
-    {value: 'сервисный', label: 'сервисный'},
-    {value: 'ИТ', label: 'ИТ'},
-];
+// const departmentOptions = [
+//     {value: 'строительный', label: 'строительный'},
+//     {value: 'сметный', label: 'сметный'},
+//     {value: 'сервисный', label: 'сервисный'},
+//     {value: 'ИТ', label: 'ИТ'},
+// ];
 
 const DEFAULT_PERIOD = {
     selectValue: 'week,today',
@@ -70,36 +70,37 @@ const DEFAULT_PERIOD = {
 
 export default () => {
     const issues: IssueVO[] = useSelector(ISSUES.selectAll);
-    const ledger = useLedger();
-
 
     /**
      * Применение кастомных фильтров
      */
-    const [departmentFilter, setDepartmentFilter] = useState([]);
-    const filterOptions = {
-        department: departmentOptions,
-    };
-
-    const departmentFilteredIssues = departmentFilter.length > 0 ? issues.filter(i => {
-        const isManagerInDep = departmentFilter.includes(ledger.users.byId[i.managerUserId]?.department);
-        const isEstimatorInDep = departmentFilter.includes(ledger.users.byId[i.estimatorUserId]?.department);
-
-        return isManagerInDep || isEstimatorInDep;
-    }) : issues;
+    // const ledger = useLedger();
+    // const [departmentFilter, setDepartmentFilter] = useState([]);
+    // const filterOptions = {
+    //     department: departmentOptions,
+    // };
+    //
+    // const departmentFilteredIssues = departmentFilter.length > 0 ? issues.filter(i => {
+    //     const isManagerInDep = departmentFilter.includes(ledger.users.byId[i.managerUserId]?.department);
+    //     const isEstimatorInDep = departmentFilter.includes(ledger.users.byId[i.estimatorUserId]?.department);
+    //
+    //     return isManagerInDep || isEstimatorInDep;
+    // }) : issues;
 
     /**
      * Фильтрация по выбранному периоду
      */
     const defaultPeriod = DEFAULT_PERIOD.periodValue;
     const [period, setPeriod] = useState<Period>(defaultPeriod);
+    const [periodOption, setPeriodOption] = useState('week,today');
 
     const start = period[0];
     const end = period[1];
-    const periodIssues = departmentFilteredIssues.filter(Days.isIssueInPeriod(period));
+    const periodIssues = issues.filter(Days.isIssueInPeriod(period)); // departmentFilteredIssues.filter...
 
     const onPeriodOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
+        setPeriodOption(option);
     };
 
     /**
@@ -119,7 +120,7 @@ export default () => {
         } else {
             setListData(periodIssues);
         }
-    }, [departmentFilter, period]);
+    }, [period]); // [departmentFilter, period]
 
     /**
      * Данные для графиков
@@ -130,34 +131,72 @@ export default () => {
     const outdatedIssues = listData.filter(Days.isIssueOutdated);
     const pausedIssues = listData.filter(Days.isIssuePaused);
 
-    const openedIssues = activeIssues.filter(i => dayjs(i.registerDate).isBetween(start || dayjs(new Date(0)), end));
+    const registeredIssues = activeIssues.filter(i => !!i.registerDate && dayjs(i.registerDate).isBetween(start || dayjs(new Date(0)), end));
     const outdatedClosedIssues = outdatedIssues.filter(i => i.status === 'Выполнена' || i.status === 'Отменена');
     const outdatedOpenIssues = outdatedIssues.filter(i => i.status === 'В работе');
+
+    const FiltersItem = ({ children }) => (
+        <Space direction='vertical' size={12} style={{ paddingBottom: 12, width: 408 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ textWrap: 'nowrap' }}>За даты:</span>
+                <RangePicker
+                    allowClear={false}
+                    style={{ width: '100%' }}
+                    placeholder={['Дата начала', 'Дата конца']}
+                    value={period || defaultPeriod}
+                    onChange={setPeriod}
+                />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ textWrap: 'nowrap' }}>За период:</span>
+                <Select
+                    defaultValue={DEFAULT_PERIOD.selectValue}
+                    value={periodOption}
+                    onSelect={onPeriodOptionChange}
+                    style={{width: '100%'}}
+                    options={periodOptions}
+                />
+            </div>
+            {/*<>*/}
+            {/*    <span>Отдел:</span>*/}
+            {/*    <Select*/}
+            {/*        mode="multiple"*/}
+            {/*        allowClear*/}
+            {/*        style={{minWidth: '150px'}}*/}
+            {/*        onChange={setDepartmentFilter}*/}
+            {/*        options={filterOptions.department}*/}
+            {/*    />*/}
+            {/*</>*/}
+            {/*<>*/}
+            {/*    <span></span>*/}
+            {/*</>*/}
+            {children}
+        </Space>
+    );
 
     const items: TabsProps['items'] = [
         {
             key: '1',
             label: 'Заявки',
             children: (
-                <div style={{ display: 'flex' }}>
-                    <DashboadIssuesCharts
-                        closedIssues={closedIssues}
-                        openedIssues={openedIssues}
-                        outdatedClosedIssues={outdatedClosedIssues}
-                        outdatedOpenIssues={outdatedOpenIssues}
-                    />
-                </div>
+                <DashboadIssuesCharts
+                    Filters={FiltersItem}
+                    closedIssues={closedIssues}
+                    registeredIssues={registeredIssues}
+                    outdatedClosedIssues={outdatedClosedIssues}
+                    outdatedOpenIssues={outdatedOpenIssues}
+                />
             ),
         },
         {
-            // disabled: true,
             key: '2',
             label: 'Успеваемость',
             children: (
                 <DashboardPerformanceCharts
+                    Filters={FiltersItem}
                     pausedIssues={pausedIssues}
                     closedIssues={closedIssues}
-                    allIssues={listData}
+                    allIssues={registeredIssues}
                     inWorkIssues={inWorkIssues}
                     outdatedClosedIssues={outdatedClosedIssues}
                     outdatedOpenIssues={outdatedOpenIssues}
@@ -195,76 +234,25 @@ export default () => {
                 }
             }}
         >
+            <Card.Grid hoverable={false} style={{ display: 'flex', width: '100%', padding: 20}}>
+                <div style={{display: 'flex', width: '100%'}}>
+                    <Tabs
+                        style={{ width: '100%' }}
+                        size='large'
+                        defaultActiveKey="2"
+                        items={items}
+                    />
+                </div>
+            </Card.Grid>
             <Collapse
                 size="small"
-                defaultActiveKey={['filters', 'charts']}
+                defaultActiveKey={[]}
                 items={[
-                    {
-                        key: 'filters', label: 'Общие фильтры', children: (
-                            <Card.Grid hoverable={false} style={{ display: 'flex', width: '100%', height: '60px'}}>
-                                <Space size={24}>
-                                    <>
-                                        <span>За даты:</span>
-                                        <RangePicker
-                                            allowClear={false}
-                                            placeholder={['Дата начала', 'Дата конца']}
-                                            value={period || defaultPeriod}
-                                            onChange={setPeriod}
-                                        />
-                                    </>
-                                    <>
-                                        <span>За период:</span>
-                                        <Select
-                                            defaultValue={DEFAULT_PERIOD.selectValue}
-                                            onSelect={onPeriodOptionChange}
-                                            style={{width: '150px'}}
-                                            options={periodOptions}
-                                        />
-                                    </>
-                                    <>
-                                        <span>Отдел:</span>
-                                        <Select
-                                            mode="multiple"
-                                            allowClear
-                                            style={{minWidth: '150px'}}
-                                            onChange={setDepartmentFilter}
-                                            options={filterOptions.department}
-                                        />
-                                    </>
-                                    <>
-                                        <span></span>
-                                    </>
-                                </Space>
-                            </Card.Grid>
-                        )
-                    },
                     {
                         key: 'issues-table',
                         label: 'Дополнительная фильтрация через таблицу',
                         children: <DashboardIssuesList gridRef={gridRef} rowData={periodIssues} onFilterChanged={onIssuesListChanged}/>
                     },
-                    {
-                        key: 'charts', label: 'Графики', children: (
-                            <div style={{display: 'flex'}}>
-                                <Tabs
-                                    style={{ width: '100%' }}
-                                    size='middle'
-                                    defaultActiveKey="2"
-                                    items={items}
-                                />
-                            </div>
-                        )
-                    },
-                    // {
-                    //     key: 'general-charts',
-                    //     label: 'Общие графики',
-                    //     children: (
-                    //         <Card.Grid hoverable={true} style={gridStyle}>
-                    //             <b>Объекты по заказчикам</b>
-                    //             <SitesByBrand />
-                    //         </Card.Grid>
-                    //     )
-                    // }
                 ]}
             />
         </AppLayout>

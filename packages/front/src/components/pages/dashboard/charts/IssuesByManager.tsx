@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 export const IssuesByManager = (
     {
-        openedIssues,
+        registeredIssues,
         closedIssues,
         outdatedClosedIssues,
         outdatedOpenIssues,
@@ -24,12 +24,12 @@ export const IssuesByManager = (
         const userName = user ? `${user.lastname} ${user.name}` : 'Без менеджера';
         const filterByUser = (i: IssueVO) => i.managerUserId === user.userId;
 
-        const openedByUser = openedIssues.filter(filterByUser).length;
+        const registeredByUser = registeredIssues.filter(filterByUser).length;
         const closedByUser = closedIssues.filter(filterByUser).length;
         const outdatedClosedByUser = outdatedClosedIssues.filter(filterByUser).length;
         const outdatedOpenByUser = outdatedOpenIssues.filter(filterByUser).length;
 
-        if (!openedByUser && !closedByUser && !outdatedClosedByUser && !outdatedOpenByUser) {
+        if (!registeredByUser && !closedByUser && !outdatedClosedByUser && !outdatedOpenByUser) {
             return [];
         }
 
@@ -40,7 +40,7 @@ export const IssuesByManager = (
         });
 
         return [
-            getData(openedByUser, 'Активные'),
+            getData(registeredByUser, 'Созданные'),
             getData(closedByUser, 'Закрытые'),
             getData(outdatedClosedByUser, 'Просрочено в закрытых'),
             getData(outdatedOpenByUser, 'Просрочено в работе'),

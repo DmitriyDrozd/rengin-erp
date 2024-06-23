@@ -1,42 +1,58 @@
-import { Card } from 'antd';
-import React, { CSSProperties } from 'react';
+import {
+    Card,
+    Select
+} from 'antd';
+import React, {
+    useState
+} from 'react';
 import { IssuesByBrand } from '../charts/IssuesByBrand';
 import { IssuesByManager } from '../charts/IssuesByManager';
 
-export const gridStyle: CSSProperties = {
-    width: '50%',
-    textAlign: 'center',
-};
+const issuesOptions = [
+    {
+        label: 'менеджерам',
+        value: 'менеджерам',
+    },
+    {
+        label: 'заказчикам',
+        value: 'заказчикам',
+    }
+]
 
 export const DashboadIssuesCharts = (
     {
+        Filters,
         closedIssues,
-        openedIssues,
+        registeredIssues,
         outdatedClosedIssues,
         outdatedOpenIssues,
     }
 ) => {
-    return (
-        <>
-            <Card.Grid hoverable={false} style={gridStyle}>
-                <b>Заявки по менеджерам</b>
-                <IssuesByManager
-                    closedIssues={closedIssues}
-                    openedIssues={openedIssues}
-                    outdatedClosedIssues={outdatedClosedIssues}
-                    outdatedOpenIssues={outdatedOpenIssues}
-                />
-            </Card.Grid>
+    const [option, setOption] = useState('менеджерам');
+    const Chart = option === 'менеджерам' ? IssuesByManager : IssuesByBrand;
 
-            <Card.Grid hoverable={false} style={gridStyle}>
-                <b>Заявки по заказчикам</b>
-                <IssuesByBrand
-                    closedIssues={closedIssues}
-                    openedIssues={openedIssues}
-                    outdatedClosedIssues={outdatedClosedIssues}
-                    outdatedOpenIssues={outdatedOpenIssues}
-                />
-            </Card.Grid>
-        </>
+    return (
+        <div style={{ display: 'flex', gap: 24, width: '100%' }}>
+            <Filters>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{ textWrap: 'nowrap' }}>Заявки по:</span>
+                    <Select
+                        defaultValue={option}
+                        onSelect={setOption}
+                        style={{width: '100%'}}
+                        options={issuesOptions}
+                    />
+                </div>
+            </Filters>
+            <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                <b>Заявки по {option}</b>
+                    <Chart
+                        closedIssues={closedIssues}
+                        registeredIssues={registeredIssues}
+                        outdatedClosedIssues={outdatedClosedIssues}
+                        outdatedOpenIssues={outdatedOpenIssues}
+                    />
+            </div>
+        </div>
     );
 };
