@@ -33,10 +33,13 @@ const CHUNK_SIZE = 1000;
 /**
  * Mongo processes one record around 120ms
  */
-const chunkImportInterval = 120 * CHUNK_SIZE;
+const itemImportTime = 120;
+const chunkImportInterval = itemImportTime * CHUNK_SIZE;
 
 const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSites: any[], invalidSites: any[], duplicatedSites: any[] }) => {
-    const generateClientsNumber = getItemNumberGenerator();
+    const generateClientsBrandNumber = getItemNumberGenerator();
+    const generateClientsLegalNumber = getItemNumberGenerator();
+    const generateClientsSiteNumber = getItemNumberGenerator();
 
     return function* importObjectsSaga(data: Datum[]) {
         let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
@@ -53,14 +56,13 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
             address: string
         }) {
             let brand = ledger.brands.byName[brandName];
-            let legal = ledger.legals.byName[legalName];
 
             if (!brand) {
-                const action = BRANDS.actions.added({
+                const newBrand = {
                     brandId: generateGuid(),
                     brandName,
                     address: `${city}, ${address}`,
-                    clientsBrandNumber: generateClientsNumber(ledger.brands.list, 'clientsBrandNumber'),
+                    clientsBrandNumber: generateClientsBrandNumber(ledger.brands.list, 'clientsBrandNumber'),
                     brandType: 'Заказчик',
                     person: '',
                     email: '',
@@ -68,39 +70,48 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
                     web: '',
                     managerUserId: '',
                     removed: false
-                });
+                };
+
+                const action = BRANDS.actions.added(newBrand);
                 console.log(`Brand ${brandName} not found, create one`, action);
                 yield* put(action);
 
-                yield* call(sleep, 10);
                 yield* call(updateLedger);
+                yield* call(sleep, 50);
+
+                brand = newBrand;
             } else {
                 console.log(`Brand ${brandName} found`);
             }
 
-            brand = ledger.brands.byName[brandName];
+            let legal = ledger.legals.list.find(l => l.brandId === brand.brandId && l.legalName === legalName);
 
             if (!legal) {
-                const action = LEGALS.actions.added({
+                const newLegal = {
                     brandId: brand.brandId,
                     legalId: generateGuid(),
                     legalName,
                     region: city,
-                    clientsLegalNumber: generateClientsNumber(ledger.legals.list, 'clientsLegalNumber'),
-                });
+                    clientsLegalNumber: generateClientsLegalNumber(ledger.legals.list, 'clientsLegalNumber'),
+                };
+
+                const action = LEGALS.actions.added(newLegal);
                 console.log(`Legal ${legalName} not found, create one`, action);
                 yield* put(action);
 
-                yield* call(sleep, 10);
                 yield* call(updateLedger);
+                yield* call(sleep, 50);
+
+                legal = newLegal;
+            } else {
+                console.log(`Legal ${legalName} found`);
             }
-            legal = ledger.legals.byName[legalName];
 
             let site = ledger.sites.list.find(s => s.brandId === brand.brandId && s.legalId === legal.legalId &&
                 s.city === city && s.address === address);
 
             if (!site) {
-                const site = {
+                const newSite = {
                     brandId: brand.brandId,
                     legalId: legal.legalId,
                     city,
@@ -108,15 +119,13 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
                     siteId: generateGuid(),
                     clientsSiteNumber: clientsSiteNumber
                         ? String(clientsSiteNumber)
-                        : generateClientsNumber(ledger.sites.list, 'clientsSiteNumber'),
+                        : generateClientsSiteNumber(ledger.sites.list, 'clientsSiteNumber'),
                 };
-                console.log(`Site not found, create one`, site.address);
-                newSites.push(rejectFn(site));
+                console.log(`Site not found, create one`, newSite.address);
+                newSites.push(rejectFn(newSite));
             } else {
                 duplicatedSites.push({clientsNumber: site.clientsSiteNumber});
             }
-
-            return site;
         }
 
         for (let i = 0; i < data.length; i++) {
@@ -153,6 +162,12 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
 
 let interval;
 
+const getFullDuration = (dataLength: number) => {
+    const ledgerDuration = dataLength * (AVERAGE_CREATE_TIME + importInterval);
+    const creationDuration = dataLength > CHUNK_SIZE ? (Math.ceil(dataLength / CHUNK_SIZE) * chunkImportInterval) : dataLength * itemImportTime;
+    return ledgerDuration + creationDuration;
+}
+
 export default () => {
     const store = useStore();
     const [percent, setPercent] = useState(0);
@@ -161,18 +176,18 @@ export default () => {
     const startProgress = (dataLength: number) => {
         let _percent = percent || 0;
 
-        const ledgerDuration = dataLength * (AVERAGE_CREATE_TIME + importInterval);
-        const creationDuration = dataLength > CHUNK_SIZE ? (Math.ceil(dataLength / CHUNK_SIZE) * chunkImportInterval) : 0;
-        const fullDuration = ledgerDuration + creationDuration;
+        const fullDuration = getFullDuration(dataLength);
         const progressInterval = fullDuration / 100;
 
-        setPercent(1);
-        interval = setInterval(() => {
-            _percent += 1;
-            setPercent(_percent);
-        }, progressInterval);
+        if (fullDuration > 1000) {
+            setPercent(1);
+            interval = setInterval(() => {
+                _percent += 1;
+                setPercent(_percent);
+            }, progressInterval);
 
-        setFullDuration(fullDuration);
+            setFullDuration(fullDuration);
+        }
     };
 
     const newSites: Partial<SiteVO>[] = [];
@@ -190,12 +205,11 @@ export default () => {
     ) => {
         startProgress(data.length);
 
+        const importObjectsSaga = getImportObjectsSaga({newSites, invalidSites, duplicatedSites});
         // @ts-ignore
-        const task = store.runSaga(getImportObjectsSaga({newSites, invalidSites, duplicatedSites}), data);
-        await task;
+        await store.runSaga(importObjectsSaga, data);
 
-        const ledgerDuration = data.length * (AVERAGE_CREATE_TIME + importInterval);
-        const creationDuration = data.length > CHUNK_SIZE ? (Math.ceil(data.length / CHUNK_SIZE) * chunkImportInterval) : 0;
+        const fullDuration = getFullDuration(data.length);
 
         setTimeout(() => {
             callback?.({
@@ -207,7 +221,7 @@ export default () => {
             setPercent(0);
             setFullDuration(0);
             clearInterval(interval);
-        }, ledgerDuration + creationDuration);
+        }, fullDuration);
     };
 
     const isImporting = percent > 0;
