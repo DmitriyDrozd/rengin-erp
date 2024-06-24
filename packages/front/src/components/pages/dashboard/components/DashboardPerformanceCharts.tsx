@@ -22,6 +22,7 @@ const TYPES = {
     department: 'department',
     manager: 'manager',
     tech: 'tech',
+    brand: 'brand',
 };
 
 const typeOptions: DefaultOptionType[] = [
@@ -37,6 +38,10 @@ const typeOptions: DefaultOptionType[] = [
         label: 'Техник',
         value: TYPES.tech
     },
+    {
+        label: 'Заказчик',
+        value: TYPES.brand,
+    }
 ];
 
 const DEPS = {
@@ -61,11 +66,13 @@ const departmentFilter = (department: string, ledger: any) => (issue: IssueVO) =
 
     return isManagerInDep || isEstimatorInDep;
 };
+const brandFilter = (brandId: string) => (issue: IssueVO) => issue.brandId === brandId;
 
 const SUBJ_FILTER = {
     [TYPES.tech]: techFilter,
     [TYPES.manager]: managerFilter,
     [TYPES.department]: departmentFilter,
+    [TYPES.brand]: brandFilter,
 };
 
 export const DashboardPerformanceCharts = (
@@ -111,6 +118,14 @@ export const DashboardPerformanceCharts = (
             case TYPES.department: {
                 _subjectOptions = departmentOptions;
                 break;
+            }
+            case TYPES.brand: {
+                const brands = ledger.brands.list;
+
+                _subjectOptions = brands.map(b => ({
+                    label: b.brandName,
+                    value: b.brandId,
+                }));
             }
         }
 
