@@ -15,7 +15,8 @@ export const estimationStatusesList = [
     'Согласована',
     'Выставлена в оплату',
     'Оплачена',
-    'Не оплачена'
+    'Не оплачена',
+    'Входит в АТО',
 ] as const;
 
 export type EstimationStatus = typeof estimationStatusesList[number]
@@ -24,12 +25,14 @@ export const estimationsStatusesRulesForManager: {
     'Новая': string[];
     'Выставлена в оплату': (string)[];
     'Согласована': string[];
-    'На согласовании': string[]
+    'На согласовании': string[];
+    'Входит в АТО': string[];
 } = {
     'Новая': ['На согласовании'],
     'На согласовании': ['Согласована'],
-    'Согласована': ['Выставлена в оплату'],
-    'Выставлена в оплату': ['Оплачена', 'Не оплачена'],
+    'Согласована': ['Выставлена в оплату', 'Входит в АТО'],
+    'Выставлена в оплату': ['Оплачена', 'Не оплачена', 'Входит в АТО'],
+    'Входит в АТО': ['Согласована', 'Выставлена в оплату', 'Оплачена', 'Не оплачена'],
 };
 
 export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
@@ -39,6 +42,7 @@ export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Выставлена в оплату': 'orange',
     'Оплачена': 'darkgreen',
     'Не оплачена': 'red',
+    'Входит в АТО': 'darkblue',
 };
 
 const expensesRaw = createResource('expense', {
