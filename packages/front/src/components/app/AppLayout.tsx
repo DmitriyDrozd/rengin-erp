@@ -89,7 +89,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
         <ProLayout
             breakpoint={false}
             loading={ui.busy.length !== 0}
-            {...routes(currentUser.role)}
+            {...routes(currentUser)}
             location={{
                 pathname
             }}

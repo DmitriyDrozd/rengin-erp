@@ -11,6 +11,7 @@ import {
     roleEnum,
     RoleType
 } from 'iso/src/store/bootstrap/repos/users';
+import { isUserCustomer } from '../../utils/userUtils';
 
 const RolesMap = {
     admin: roleEnum['руководитель'],
@@ -24,10 +25,15 @@ type TRoute = {
     name: string,
     icon?: JSX.Element,
     roles?: Array<typeof RolesMap>,
+    isCustomerRestricted?: boolean,
     routes?: TRoute[],
 };
 
-const filterAdminRole = (role: RoleType) => (item: TRoute) => {
+const filterRole = (role: RoleType, isCustomer: boolean) => (item: TRoute): boolean => {
+    if (item.isCustomerRestricted && isCustomer) {
+        return false;
+    }
+
     if (role === roleEnum['руководитель'] || !item.roles || item.roles.length === 0) {
         return true;
     }
@@ -36,13 +42,15 @@ const filterAdminRole = (role: RoleType) => (item: TRoute) => {
 };
 
 const mapFiltered = (item: TRoute) => {
-    const { roles, ...rest } = item;
+    const { roles, isCustomerRestricted, ...rest } = item;
 
     return rest;
 };
 
-export default (role: RoleType) => {
-    const adminFilter = filterAdminRole(role);
+export default (user) => {
+    const role: RoleType = user.role;
+    const isCustomer = isUserCustomer(user);
+    const roleFilter = filterRole(role, isCustomer);
 
     const routesDictionaries: TRoute[] = [
         {
@@ -70,7 +78,7 @@ export default (role: RoleType) => {
             name: "Импорт",
             roles: [RolesMap.admin],
         }
-    ].filter(adminFilter).map(mapFiltered);
+    ].filter(roleFilter).map(mapFiltered);
 
     const routes: TRoute[] = [
         {
@@ -115,6 +123,7 @@ export default (role: RoleType) => {
             name: "Задачи",
             icon: <Icons.ToolOutlined />,
             roles: [],
+            isCustomerRestricted: true,
         },
         {
             path: "/app/in/backup",
@@ -122,7 +131,7 @@ export default (role: RoleType) => {
             icon: <Icons.HistoryOutlined/>,
             roles: [RolesMap.admin],
         }
-    ].filter(adminFilter).map(mapFiltered);
+    ].filter(roleFilter).map(mapFiltered);
 
     return {
         route: {
