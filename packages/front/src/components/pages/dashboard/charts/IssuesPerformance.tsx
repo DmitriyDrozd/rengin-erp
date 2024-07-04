@@ -1,20 +1,19 @@
 import { Column } from '@ant-design/plots';
-import React from 'react';
+import React, { FC } from 'react';
 import useLedger from '../../../../hooks/useLedger';
+import { getAnnotation } from './helpers';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 
-const getAnnotation = (type, value) => ({
-    type: 'text',
-    position: [type, value],
-    content: `${value}`,
-    style: {
-        textAlign: 'center',
-        fontSize: 14,
-        fill: 'rgba(0,0,0,0.85)',
-    },
-    offsetY: -10,
-})
+interface IssuesPerformanceProps {
+    allIssues: IssueVO[],
+    inWorkIssues: IssueVO[],
+    pausedIssues: IssueVO[],
+    closedIssues: IssueVO[],
+    outdatedClosedIssues: IssueVO[],
+    outdatedOpenIssues: IssueVO[],
+}
 
-export const IssuesPerformance = (
+export const IssuesPerformance: FC<IssuesPerformanceProps> = (
     {
         allIssues,
         inWorkIssues,
@@ -38,7 +37,7 @@ export const IssuesPerformance = (
         .map(customerId => ledger.brands.byId[customerId]);
 
     allCustomers.forEach(customer => {
-        const customerFilter = i => i.brandId === customer.brandId;
+        const customerFilter = (i: { brandId: string; }) => i.brandId === customer.brandId;
 
         data = [
             ...data,

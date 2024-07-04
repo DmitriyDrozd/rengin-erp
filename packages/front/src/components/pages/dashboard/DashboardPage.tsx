@@ -1,7 +1,6 @@
 import { GridApi } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { getDisplayedGridRows } from '../../../grid/PanelRGrid';
-import useLedger from '../../../hooks/useLedger';
 import AppLayout from '../../app/AppLayout';
 import { ISSUES } from 'iso/src/store/bootstrap';
 import { useSelector } from 'react-redux';
@@ -56,13 +55,6 @@ const periodOptions = [
 
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
-// const departmentOptions = [
-//     {value: 'строительный', label: 'строительный'},
-//     {value: 'сметный', label: 'сметный'},
-//     {value: 'сервисный', label: 'сервисный'},
-//     {value: 'ИТ', label: 'ИТ'},
-// ];
-
 const DEFAULT_PERIOD = {
     selectValue: 'week,today',
     periodValue: [dayjs(dayjs().subtract(1, 'week')), dayjs(Date.now())] as Period,
@@ -70,22 +62,6 @@ const DEFAULT_PERIOD = {
 
 export default () => {
     const issues: IssueVO[] = useSelector(ISSUES.selectAll);
-
-    /**
-     * Применение кастомных фильтров
-     */
-    // const ledger = useLedger();
-    // const [departmentFilter, setDepartmentFilter] = useState([]);
-    // const filterOptions = {
-    //     department: departmentOptions,
-    // };
-    //
-    // const departmentFilteredIssues = departmentFilter.length > 0 ? issues.filter(i => {
-    //     const isManagerInDep = departmentFilter.includes(ledger.users.byId[i.managerUserId]?.department);
-    //     const isEstimatorInDep = departmentFilter.includes(ledger.users.byId[i.estimatorUserId]?.department);
-    //
-    //     return isManagerInDep || isEstimatorInDep;
-    // }) : issues;
 
     /**
      * Фильтрация по выбранному периоду
@@ -96,7 +72,7 @@ export default () => {
 
     const start = period[0];
     const end = period[1];
-    const periodIssues = issues.filter(Days.isIssueInPeriod(period)); // departmentFilteredIssues.filter...
+    const periodIssues = issues.filter(Days.isIssueInPeriod(period));
 
     const onPeriodOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
@@ -110,6 +86,8 @@ export default () => {
     const [subjectFilter, setSubjectFilter] = useState<{ [key: string]: () => boolean }>({
         '1': () => true,
         '2': () => true,
+        '3': () => true,
+        '4': () => true,
     });
 
     const onChangeSubjectFilter = (key: string) => (filterFunction: () => boolean) => setSubjectFilter({ ...subjectFilter, [key]: filterFunction })
@@ -135,7 +113,7 @@ export default () => {
         } else {
             setListData(finalIssues);
         }
-    }, [period]); // [departmentFilter, period]
+    }, [period]);
 
     /**
      * Данные для графиков
@@ -172,19 +150,6 @@ export default () => {
                     options={periodOptions}
                 />
             </div>
-            {/*<>*/}
-            {/*    <span>Отдел:</span>*/}
-            {/*    <Select*/}
-            {/*        mode="multiple"*/}
-            {/*        allowClear*/}
-            {/*        style={{minWidth: '150px'}}*/}
-            {/*        onChange={setDepartmentFilter}*/}
-            {/*        options={filterOptions.department}*/}
-            {/*    />*/}
-            {/*</>*/}
-            {/*<>*/}
-            {/*    <span></span>*/}
-            {/*</>*/}
             {children}
         </Space>
     );
@@ -220,12 +185,15 @@ export default () => {
             ),
         },
         {
-            disabled: true,
             key: '3',
             label: 'Расходы',
             children: (
                 <div style={{ display: 'flex' }}>
-                    <DashboardExpensesCharts />
+                    <DashboardExpensesCharts
+                        allIssues={finalIssues}
+                        Filters={FiltersItem}
+                        onSubFilterChange={onChangeSubjectFilter('3')} 
+                    />
                 </div>
             ),
         },

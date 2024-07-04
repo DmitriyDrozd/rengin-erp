@@ -161,8 +161,14 @@ export const issueResource = {
     rolesProps: ['managerUserId', 'techUserId', 'clientsEngineerUserId', 'estimatorUserId'],
 };
 
-export type IssueVO = typeof issuesRaw.exampleItem
-export type ExpenseItem = IssueVO['expenses'][number]
+export type TExpense = {
+    amount: number,
+    paymentType: string,
+    purposeType: string,
+}
+
+export type IssueVO = typeof issuesRaw.exampleItem & { expenses: TExpense[]; };
+export type ExpenseItem = IssueVO['expenses'][number];
 
 export const ISSUES = issueResource;
 

@@ -151,7 +151,7 @@ export default (props) => {
                                 ...rowData,
                                 {
                                     paymentType: paymentTypes.cash,
-                                    purpuseType: 'Материалы'
+                                    purposeType: 'Материалы'
                                 }
                             ]
                         )

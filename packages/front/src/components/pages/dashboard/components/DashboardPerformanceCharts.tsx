@@ -7,75 +7,19 @@ import { DefaultOptionType } from 'antd/es/select';
 import {
     employeeRoleEnum,
 } from 'iso/src/store/bootstrap/repos/employees';
-import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import {
     roleEnum,
 } from 'iso/src/store/bootstrap/repos/users';
 import React, {
+    FC,
     useEffect,
     useState
 } from 'react';
 import useLedger from '../../../../hooks/useLedger';
 import { IssuesPerformance } from '../charts/IssuesPerformance';
+import { departmentOptions, SUBJ_FILTER, typeOptions, TYPES } from './helpers';
 
-const TYPES = {
-    department: 'department',
-    manager: 'manager',
-    tech: 'tech',
-    brand: 'brand',
-};
-
-const typeOptions: DefaultOptionType[] = [
-    {
-        label: 'Отдел',
-        value: TYPES.department
-    },
-    {
-        label: 'Менеджер',
-        value: TYPES.manager
-    },
-    {
-        label: 'Техник',
-        value: TYPES.tech
-    },
-    {
-        label: 'Заказчик',
-        value: TYPES.brand,
-    }
-];
-
-const DEPS = {
-    build: 'строительный',
-    estimator: 'сметный',
-    service: 'сервисный',
-    IT: 'ИТ',
-};
-
-const departmentOptions = [
-    {value: DEPS.build, label: 'строительный'},
-    {value: DEPS.estimator, label: 'сметный'},
-    {value: DEPS.service, label: 'сервисный'},
-    {value: DEPS.IT, label: 'ИТ'},
-];
-
-const techFilter = (techId: string) => (issue: IssueVO) => issue.techUserId === techId;
-const managerFilter = (managerId: string) => (issue: IssueVO) => issue.managerUserId === managerId;
-const departmentFilter = (department: string, ledger: any) => (issue: IssueVO) => {
-    const isManagerInDep = ledger.users.byId[issue.managerUserId]?.department === department;
-    const isEstimatorInDep = ledger.users.byId[issue.estimatorUserId]?.department === department;
-
-    return isManagerInDep || isEstimatorInDep;
-};
-const brandFilter = (brandId: string) => (issue: IssueVO) => issue.brandId === brandId;
-
-const SUBJ_FILTER = {
-    [TYPES.tech]: techFilter,
-    [TYPES.manager]: managerFilter,
-    [TYPES.department]: departmentFilter,
-    [TYPES.brand]: brandFilter,
-};
-
-export const DashboardPerformanceCharts = (
+export const DashboardPerformanceCharts: FC<any> = (
     {
         Filters,
         onSubFilterChange,
