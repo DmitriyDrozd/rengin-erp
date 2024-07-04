@@ -30,6 +30,7 @@ import { DashboardExpensesCharts } from './components/DashboardExpensesCharts';
 import { DashboardIssuesList } from './components/DashboardIssuesList';
 import { DashboardPerformanceCharts } from './components/DashboardPerformanceCharts';
 import { DashboardProfitCharts } from './components/DashboardProfitCharts';
+import EXPENSES, { ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
 
 dayjs.extend(isBetween);
 
@@ -62,6 +63,7 @@ const DEFAULT_PERIOD = {
 
 export default () => {
     const issues: IssueVO[] = useSelector(ISSUES.selectAll);
+    const estimations: ExpenseVO[] = useSelector(EXPENSES.selectAll);
 
     /**
      * Фильтрация по выбранному периоду
@@ -72,6 +74,8 @@ export default () => {
 
     const start = period[0];
     const end = period[1];
+
+    const periodEstimations = estimations.filter(Days.isEstimationInPeriod(period));
     const periodIssues = issues.filter(Days.isIssueInPeriod(period));
 
     const onPeriodOptionChange = (option: string) => {
@@ -94,6 +98,7 @@ export default () => {
 
     const subjectFilteredIssues = periodIssues.filter(subjectFilter[currentTab]);
 
+    const finalEstimations = periodEstimations.filter(subjectFilter[currentTab]);
     const finalIssues = subjectFilteredIssues;
 
     /**
@@ -188,23 +193,22 @@ export default () => {
             key: '3',
             label: 'Расходы',
             children: (
-                <div style={{ display: 'flex' }}>
-                    <DashboardExpensesCharts
-                        allIssues={finalIssues}
-                        Filters={FiltersItem}
-                        onSubFilterChange={onChangeSubjectFilter('3')} 
-                    />
-                </div>
+                <DashboardExpensesCharts
+                    allIssues={finalIssues}
+                    Filters={FiltersItem}
+                    onSubFilterChange={onChangeSubjectFilter('3')} 
+                />
             ),
         },
         {
-            disabled: true,
             key: '4',
             label: 'Доходы',
             children: (
-                <div style={{ display: 'flex' }}>
-                    <DashboardProfitCharts />
-                </div>
+                <DashboardProfitCharts
+                    allEstimations={finalEstimations}
+                    Filters={FiltersItem}
+                    onSubFilterChange={onChangeSubjectFilter('4')}
+                />
             ),
         },
     ];

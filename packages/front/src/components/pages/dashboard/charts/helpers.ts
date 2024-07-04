@@ -15,4 +15,4 @@ export const getAnnotation: (
 });
 
 const formatter = new Intl.NumberFormat('RU-ru');
-export const formatMoneyRub = (amount: number) => formatter.format(amount);
+export const formatMoneyRub = (amount: number) => formatter.format(amount) + ' ₽';

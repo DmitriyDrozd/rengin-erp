@@ -3,6 +3,7 @@ import { IssueVO } from '../store/bootstrap/repos/issues';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isToday from 'dayjs/plugin/isToday';
 import isBetween from 'dayjs/plugin/isBetween';
+import { ExpenseVO } from '../store/bootstrap/repos/expenses';
 
 type ConfigType = string | Date | Dayjs | null | undefined
 
@@ -46,7 +47,7 @@ export const asDay = (value: string | Date | Day) =>
     value ? dayjs(value).startOf('d') : undefined;
 
 export const asMonthYear = (value: string | Date) =>
-    value ? dayjs(value).format('MMMM YYYY') : undefined;
+    value ? dayjs(value).locale('ru').format('MMMM YYYY') : undefined;
 
 const calcToday = () =>
     dayjs().startOf('d');
@@ -123,6 +124,16 @@ export const isDayPropInPeriod = (prop: DayProp) =>
             return day.isInPeriod(period);
         };
 
+export const isDateFRPropInPeriod = (period: Period, includeUndefined: boolean = false) =>
+    (estimation: ExpenseVO) => {
+        if (!estimation.dateFR) {
+            return includeUndefined;
+        }
+
+        const day = dayjs(estimation.dateFR);
+        return day.isInPeriod(period);
+    }
+
 export const isRegisteredIn = isDayPropInPeriod('registerDate');
 export const isCompletedIn = isDayPropInPeriod('completedDate');
 export const isWorkStartedIn = isDayPropInPeriod('workStartedDate');
@@ -145,6 +156,9 @@ export const isIssueInPeriod = (period: Period) => (issue: IssueVO) => {
     // return !completedDate && registerDate && registerDate.isBefore(period[1]);
 };
 
+export const isEstimationInPeriod = (period: Period) => (estimation: ExpenseVO) => {
+    return isDateFRPropInPeriod(period)(estimation);
+};
 
 export const toDayString = (d: ConfigType) =>
     d ? asDayOrToday(d).toString() : 'Дата не указана';
