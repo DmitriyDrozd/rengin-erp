@@ -14,8 +14,20 @@ const estimationStatuses = [
     estimationStatusesList[4],
 ];
 
-const amountReducer = (acc: number, estimation: ExpenseVO) => {
-    return estimation.expensePriceFinal ? acc + estimation.expensePriceFinal : acc;
+const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
+    if (isNaN(expensePriceFinal)) {
+        const tryFix = String(expensePriceFinal).replace(',', '.');
+
+        if (isNaN(+tryFix)) {
+            return acc;
+        } else {
+            return acc + +tryFix;
+        }
+    } else if (!!expensePriceFinal) {
+        return acc + expensePriceFinal;
+    }
+
+    return acc;
 };
 
 interface ProfitsChartProps {
