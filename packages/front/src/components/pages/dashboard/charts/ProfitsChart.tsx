@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import { getAnnotation, formatMoneyRub } from './helpers';
 import { estimationStatusesList, ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
 import { Days } from 'iso/src/utils';
-import Space from 'antd/es/space';
 import Card from 'antd/es/card/Card';
 import { Typography } from 'antd';
 
@@ -15,17 +14,12 @@ const estimationStatuses = [
 ];
 
 const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
-    if (isNaN(+expensePriceFinal)) {
-        const tryFix = String(expensePriceFinal).replace(',', '.');
-
-        if (isNaN(+tryFix)) {
+    if (!!expensePriceFinal) {
+        if (isNaN(+expensePriceFinal) || isNaN(acc + +expensePriceFinal)) {
             return acc;
-        } else {
-            return acc + +tryFix;
         }
-    } else if (!!expensePriceFinal) {
-        const sum = acc + +expensePriceFinal;
-        return sum;
+
+        return acc + +expensePriceFinal;
     }
 
     return acc;
@@ -75,7 +69,7 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
 
         annotations.push(getAnnotation(FR, totalFRProfit, formatMoneyRub(totalFRProfit)));
 
-        data = [...data, ...dataByStatuses];
+        data = [...dataByStatuses, ...data];
     }
 
     const config = {
