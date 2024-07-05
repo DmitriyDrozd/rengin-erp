@@ -1,4 +1,4 @@
-import { Column } from '@ant-design/plots';
+import { Area, Column } from '@ant-design/plots';
 import React, { FC } from 'react';
 import { getAnnotation, formatMoneyRub } from './helpers';
 import { estimationStatusesList, ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
@@ -67,7 +67,7 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
             };
         });
 
-        annotations.push(getAnnotation(FR, totalFRProfit, formatMoneyRub(totalFRProfit)));
+        annotations.push(getAnnotation(FR, 0, formatMoneyRub(totalFRProfit)));
 
         data = [...dataByStatuses, ...data];
     }
@@ -80,6 +80,13 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
         isStack: true,
         seriesField: 'status',
         label: {
+            formatter: (datanum) => {
+                if (datanum.value === 0) {
+                    return null;
+                }
+                
+                return formatMoneyRub(datanum.value);
+            },
             position: 'middle',
             layout: [
                 {
@@ -111,9 +118,11 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
     const countProcessingDone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[1] && !!e.expensePriceFinal).length;
     const countProcessedUndone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[2] && !e.expensePriceFinal).length;
 
+    const ChartElement = Object.keys(FRs).length <= 1 ? Column : Area;
+
     return (
         <div style={{ width: '100%' }}>
-            <Column {...config} />
+            <ChartElement {...config} />
             <Card bodyStyle={{ display: 'flex', justifyContent: 'space-between', gap: 36 }}>
                 <div>
                     <Typography.Title level={5}>Общий доход:</Typography.Title> {formatMoneyRub(totalProfit)}
