@@ -24,7 +24,10 @@ const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
             return acc + +tryFix;
         }
     } else if (!!expensePriceFinal) {
-        return acc + expensePriceFinal;
+        console.log('expensePriceFinal', expensePriceFinal);
+        const sum = acc + expensePriceFinal;
+        console.log('sum:', sum)
+        return sum;
     }
 
     return acc;
