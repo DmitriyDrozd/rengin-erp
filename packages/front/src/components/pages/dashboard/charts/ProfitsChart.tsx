@@ -15,11 +15,7 @@ const estimationStatuses = [
 ];
 
 const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
-    if (!expensePriceFinal) {
-        return acc;
-    }
-
-    if (isNaN(expensePriceFinal)) {
+    if (isNaN(+expensePriceFinal)) {
         const tryFix = String(expensePriceFinal).replace(',', '.');
 
         if (isNaN(+tryFix)) {
@@ -28,8 +24,8 @@ const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
             return acc + +tryFix;
         }
     } else if (!!expensePriceFinal) {
-        const sum = acc + expensePriceFinal;
-        return Math.round(sum);
+        const sum = acc + +expensePriceFinal;
+        return sum;
     }
 
     return acc;
