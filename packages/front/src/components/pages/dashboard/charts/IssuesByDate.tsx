@@ -4,6 +4,7 @@ import { Days } from 'iso/src/utils';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import useLedger from '../../../../hooks/useLedger';
 import { Line } from '@ant-design/plots';
+import { XAxis } from 'recharts';
 
 interface ProfitsChartProps {
     typeFilter: (subject: string, ledger?: any) => (issue: IssueVO) => boolean,
@@ -65,6 +66,25 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
         annotations,
         data,
         xField: 'day',
+        xAxis: {
+            label: {
+                rotate: Math.PI / 6,
+                offset: 20,
+                style: {
+                    fill: '#aaa',
+                    fontSize: 12,
+                },
+            },
+            grid: {
+                line: {
+                    style: {
+                        stroke: '#ddd',
+                        lineDash: [4, 2],
+                    },
+                },
+                alternateColor: 'rgba(0,0,0,0.05)',
+            },
+        },
         yField: 'value',
         seriesField: 'subject',
         label: {
