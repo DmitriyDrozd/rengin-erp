@@ -18,6 +18,7 @@ import React, {
 import useLedger from '../../../../hooks/useLedger';
 import { IssuesPerformance } from '../charts/IssuesPerformance';
 import { departmentOptions, SUBJ_FILTER, typeOptions, TYPES } from './helpers';
+import { IssuesByDateChart } from '../charts/IssuesByDate';
 
 export const DashboardPerformanceCharts: FC<any> = (
     {
@@ -37,7 +38,7 @@ export const DashboardPerformanceCharts: FC<any> = (
 
     const ledger = useLedger();
 
-    useEffect(() => {
+    const updateSubjectOptions = () => {
         let _subjectOptions: DefaultOptionType[] = [];
 
         switch (type) {
@@ -75,8 +76,12 @@ export const DashboardPerformanceCharts: FC<any> = (
 
         setSubject(null);
         setSubjectOptions(_subjectOptions);
-    }, [type]);
+    };
 
+    useEffect(updateSubjectOptions, [type]);
+    useEffect(updateSubjectOptions, []);
+
+    const typeFilter = type ? SUBJ_FILTER[type] : () => true;
     const subjectFilter = subject ? SUBJ_FILTER[type](subject, ledger) : (() => true);
 
     useEffect(() => {
@@ -103,14 +108,27 @@ export const DashboardPerformanceCharts: FC<any> = (
                     <Select
                         virtual
                         showSearch
+                        allowClear
                         value={subject}
                         optionFilterProp="label"
                         style={{width: '250px'}}
                         options={subjectOptions}
                         onSelect={setSubject}
+                        onClear={() => setSubject(null)}
                     />
                 </Space>
             </Filters>
+            {type && !subject && (
+                <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                <Card.Grid hoverable={false}>
+                    <IssuesByDateChart
+                        typeFilter={typeFilter}
+                        subjectOptions={subjectOptions}
+                        allIssues={fAll}
+                    />
+                </Card.Grid>
+                </div>
+            )}
             {type && subject && (
                 <div style={{ textAlign: 'center', flexGrow: 1 }}>
                     <Card.Grid hoverable={false}>
