@@ -57,7 +57,12 @@ export const ExpensesListPage = () => {
         {...colMap.clientsNumberCol},
         {...colMap.legalId, width: 150},
         {...colMap.brandId, width: 150},
-        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
+        {
+            ...colMap.dateFR,
+            width: 150,
+            cellRenderer: ({data}) => Days.asMonthYear(data.dateFR),
+            filterValueGetter: ({ data }) => Days.asMonthYear(data.dateFR),
+        },
         {...colMap.managerUserId, width: 130},
         {...colMap.estimatorUserId, width: 130},
         {
