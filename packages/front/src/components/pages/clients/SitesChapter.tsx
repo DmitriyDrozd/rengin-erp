@@ -117,12 +117,13 @@ export default () => {
         if (sitesWithoutGeo.length < GMAPS_CHUNK_SIZE) {
             resultSites = await Promise.all(getGmapsPromises(sitesWithoutGeo));
         } else {
-            for (let i = 0; i < chunkCount; i++) {
+            for (let i = 0; i <= chunkCount; i++) {
                 const chunk = sitesWithoutGeo.slice(i * itemsInChunk, (i + 1) * itemsInChunk);
 
                 try {
                     const chunkResult = await Promise.all(getGmapsPromises(chunk));
                     resultSites = [...resultSites, ...chunkResult];
+                    console.log('resultSites: ', i, '/', chunkCount, ': ', resultSites);
 
                     const progress = percentPerChunk * i > 1 ? percentPerChunk * i : 1;
                     setPercent(progress);
@@ -136,19 +137,21 @@ export default () => {
             }
         }
 
+        
         const updated = resultSites.filter(s => s !== null);
         const updatedCount = updated.length;
+        console.log(updated);
 
         if (updated.length) {
             if (updated.length > CHUNK_SIZE) {
-                const chunkCount = Math.ceil(updated.length / CHUNK_SIZE);
-                const itemsInChunk = Math.ceil(updated.length / chunkCount);
+                const _chunkCount = Math.ceil(updated.length / CHUNK_SIZE);
+                const _itemsInChunk = Math.ceil(updated.length / _chunkCount);
 
-                for (let i = 0; i < chunkCount; i++) {
-                    const chunk = updated.slice(i * itemsInChunk, (i + 1) * itemsInChunk);
-                    console.log('dispatched put ', chunk.length, ' items');
+                for (let i = 0; i < _chunkCount; i++) {
+                    const _chunk = updated.slice(i * _itemsInChunk, (i + 1) * _itemsInChunk);
+                    console.log('dispatched put ', _chunk.length, ' items');
 
-                    dispatch(SITES.actions.updatedBatch(chunk));
+                    dispatch(SITES.actions.updatedBatch(_chunk));
                 }
             } else {
                 dispatch(SITES.actions.updatedBatch(updated));
