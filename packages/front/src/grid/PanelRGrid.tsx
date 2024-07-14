@@ -182,8 +182,18 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
     const defaultList = useSelector(resource.selectList);
     const list = rowData || defaultList;
-    const [searchText, setSearchText] = useState('');
 
+    const [displayedItemsCount, setDisplayedItemsCount] = useState(list.length);
+    
+    useEffect(() => {
+        const displayedCount = innerGridRef.current?.api?.rowModel?.rowsToDisplay?.length;
+
+        if (Number.isInteger(displayedCount)) {
+            setDisplayedItemsCount(displayedCount);
+        }
+    }, [list]);
+
+    const [searchText, setSearchText] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
     const onSearchTextChanged: ChangeEventHandler<HTMLInputElement> = e => {
@@ -401,12 +411,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         innerGridRef.current!.api.exportDataAsExcel();
     }, []);
 
-    const [displayedItemsCount, setDisplayedItemsCount] = useState(list.length);
-
-    useEffect(() => {
-        setDisplayedItemsCount(list.length);
-    }, [list])
-
     return <>
         <div
             style={{
@@ -454,12 +458,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             cacheQuickFilter
             ref={innerGridRef}
             onSortChanged={onSortChanged}
-            onFilterChanged={({ api }) => {
-                const { rowsToDisplay } = api.getModel();
-                setDisplayedItemsCount(rowsToDisplay.length);
-
-                onFilterChanged?.({ api });
-            }}
+            onFilterChanged={onFilterChanged}
             onRowDoubleClicked={onRowDoubleClicked}
             /** Displayed rows have changed. Triggered after sort, filter or tree expand / collapse events. */
             // onModelUpdated 
