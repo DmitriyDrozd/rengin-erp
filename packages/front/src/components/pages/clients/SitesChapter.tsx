@@ -30,12 +30,25 @@ import {
     useDispatch,
     useSelector
 } from 'react-redux';
+import {
+    call,
+    put,
+} from 'typed-redux-saga';
 import PanelRGrid from '../../../grid/PanelRGrid';
 import Typography from 'antd/es/typography';
+import { sleep } from '@sha/utils/src/async';
 
 const RESOURCE = SITES;
 
 const GMAPS_CHUNK_SIZE = 50;
+const CHUNK_SIZE = 1000;
+/**
+ * Mongo processes one record around 120ms
+ */
+const itemImportTime = 120;
+const chunkImportInterval = itemImportTime * CHUNK_SIZE;
+
+
 const getGmapsPromises = (sites) => {
     return sites.map(site => {
         return new Promise(async (resolve, reject) => {
@@ -125,8 +138,22 @@ export default () => {
 
         const updated = resultSites.filter(s => s !== null);
         const updatedCount = updated.length;
-        const getAction = () => SITES.actions.updatedBatch(updated);
-        dispatch(getAction());
+
+        if (updated.length) {
+            if (updated.length > CHUNK_SIZE) {
+                const chunkCount = Math.ceil(updated.length / CHUNK_SIZE);
+                const itemsInChunk = Math.ceil(updated.length / chunkCount);
+
+                for (let i = 0; i < chunkCount; i++) {
+                    const chunk = updated.slice(i * itemsInChunk, (i + 1) * itemsInChunk);
+                    console.log('dispatched put ', chunk.length, ' items');
+
+                    dispatch(SITES.actions.updatedBatch(chunk));
+                }
+            } else {
+                dispatch(SITES.actions.updatedBatch(updated));
+            }
+        }
 
         setTimeout(() => {
             setPercent(0);
