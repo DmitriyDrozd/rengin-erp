@@ -5,6 +5,7 @@ import { estimationStatusesList, ExpenseVO } from 'iso/src/store/bootstrap/repos
 import { Days } from 'iso/src/utils';
 import Card from 'antd/es/card/Card';
 import { Typography } from 'antd';
+import { groupBy, prop } from 'ramda';
 
 const estimationStatuses = [
     estimationStatusesList[1],
@@ -117,6 +118,7 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
     const countProcessingUndone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[1] && !e.expensePriceFinal).length;
     const countProcessingDone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[1] && !!e.expensePriceFinal).length;
     const countProcessedUndone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[2] && !e.expensePriceFinal).length;
+    const byStatus = groupBy<ExpenseVO>(prop('estimationsStatus'), allEstimations);
 
     const ChartElement = Object.keys(FRs).length <= 1 ? Column : Area;
 
@@ -125,16 +127,36 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
             <ChartElement {...config} />
             <Card bodyStyle={{ display: 'flex', justifyContent: 'space-between', gap: 36 }}>
                 <div>
-                    <Typography.Title level={5}>Общий доход:</Typography.Title> {formatMoneyRub(totalProfit)}
+                    <div>
+                        <Typography.Title level={5}>Количество смет:</Typography.Title>
+                        {allEstimations.length}
+                    </div>
+                    <div>
+                        <Typography.Title level={5}>Общий доход:</Typography.Title>
+                        {formatMoneyRub(totalProfit)}
+                    </div>
                 </div>
                 <div>
-                    <Typography.Title level={5}>На согласовании, не выполнено:</Typography.Title> {countProcessingUndone}
+                    {Object.keys(byStatus).map(status => (
+                        <div>
+                            <Typography.Title level={5}>{status}:</Typography.Title>
+                            {byStatus[status].length}
+                        </div>
+                    ))}
                 </div>
                 <div>
-                    <Typography.Title level={5}>На согласовании, выполнено:</Typography.Title> {countProcessingDone}
-                </div>
-                <div>
-                    <Typography.Title level={5}>Согласовано, не выполнено:</Typography.Title> {countProcessedUndone}
+                    <div>
+                        <Typography.Title level={5}>На согласовании, не выполнено:</Typography.Title>
+                        {countProcessingUndone}
+                    </div>
+                    <div>
+                        <Typography.Title level={5}>На согласовании, выполнено:</Typography.Title>
+                        {countProcessingDone}
+                    </div>
+                    <div>
+                        <Typography.Title level={5}>Согласовано, не выполнено:</Typography.Title>
+                        {countProcessedUndone}
+                    </div>
                 </div>
             </Card>
         </div>
