@@ -45,7 +45,7 @@ export const useAllColumns = <
         sourceResourceName: res.clientsNumberProp,
         width:100,
         fieldName: res.clientsNumberProp,
-        resizable: false,
+        resizable: true,
         resource: res,
         valueGetter: (params => {
             const value = params.data[res.clientsNumberProp];
