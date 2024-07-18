@@ -16,7 +16,7 @@ import { CellRendererWithCopy } from '../elements/CellRendererWithCopy';
 
 type Point = google.maps.LatLngLiteral & {key: string};
 
-const updateMarkers = async (map, points, clusterer) => {
+const updateMarkers = async (map, points, clusterer, sourceTitle) => {
     const {InfoWindow} = await google.maps.importLibrary("maps");
     const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
 
@@ -41,7 +41,7 @@ const updateMarkers = async (map, points, clusterer) => {
                         <Typography.Title level={5} style={{ margin: 0 }}>{point.brandName}</Typography.Title>
                     </div>
                     <div>
-                        <span>Заявка № <CellRendererWithCopy value={point.name}/></span>
+                        <span>{sourceTitle} № <CellRendererWithCopy value={point.name}/></span>
                     </div>
                     <div>
                         <Typography.Paragraph copyable>{point.address}</Typography.Paragraph>
@@ -64,9 +64,10 @@ const updateMarkers = async (map, points, clusterer) => {
 
 interface IClusteredMapProps {
     points: Point[];
+    sourceTitle: string;
 }
 
-export const ClusteredMap: FC<IClusteredMapProps> = ({ points }) => {
+export const ClusteredMap: FC<IClusteredMapProps> = ({ points, sourceTitle }) => {
     const map = useMap();
     const clusterer = useRef<MarkerClusterer | null>(null);
     const [isReady, setIsReady] = useState(false);
@@ -76,7 +77,7 @@ export const ClusteredMap: FC<IClusteredMapProps> = ({ points }) => {
             return;
         }
 
-        updateMarkers(map, points, clusterer);
+        updateMarkers(map, points, clusterer, sourceTitle);
     }, [points, isReady]);
 
     useEffect(() => {

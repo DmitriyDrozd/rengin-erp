@@ -46,6 +46,6 @@ export const IssuesMap: FC<IIssuesMapProps> = ({ issues }) => {
     }, [issues]);
 
     return (
-        <ClusteredMap points={points} />
+        <ClusteredMap points={points} sourceTitle='Заявка'/>
     )
 }

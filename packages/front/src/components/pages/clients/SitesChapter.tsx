@@ -34,9 +34,13 @@ import {
     call,
     put,
 } from 'typed-redux-saga';
-import PanelRGrid from '../../../grid/PanelRGrid';
+import PanelRGrid, { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import Typography from 'antd/es/typography';
 import { sleep } from '@sha/utils/src/async';
+import Divider from 'antd/lib/divider';
+import { SitesMap } from './SitesMap';
+import GlobalOutlined from '@ant-design/icons/lib/icons/GlobalOutlined';
+import UpOutlined from '@ant-design/icons/lib/icons/UpOutlined';
 
 const RESOURCE = SITES;
 
@@ -48,6 +52,7 @@ const CHUNK_SIZE = 1000;
 const itemImportTime = 120;
 const chunkImportInterval = itemImportTime * CHUNK_SIZE;
 
+const MAP_DIVIDER_HEIGHT = 64;
 
 const getGmapsPromises = (sites) => {
     return sites.map(site => {
@@ -136,7 +141,6 @@ export default () => {
                 }
             }
         }
-
         
         const updated = resultSites.filter(s => s !== null);
         const updatedCount = updated.length;
@@ -174,6 +178,9 @@ export default () => {
             <Button onClick={onAddGeo}>Добавить локацию ко всем объектам</Button>
         </Space>
     );
+
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    const [mapData, setMapData] = useState(allSites);
 
     return (
         <ItemChapter
@@ -300,17 +307,28 @@ export default () => {
                 return (
                     <>
                         <Modal centered cancelButtonProps={{loading: isLoadingGeo}} open={isLoadingGeo} closable={false}
-                               confirmLoading={isLoadingGeo}>
+                                confirmLoading={isLoadingGeo}>
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                 <ProgressCircle progress={Math.floor(percent)} label={'Загрузка данных геопозиции'}/>
                             </div>
                         </Modal>
+                        {isMapOpen && (
+                            <SitesMap sites={mapData} />
+                        )}
+                        <Divider plain>
+                            <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? <UpOutlined /> : <GlobalOutlined /> }</Button>
+                        </Divider>
                         <PanelRGrid
                             BottomBar={BottomBar}
                             columnDefs={columns}
+                            headerHeight={MAP_DIVIDER_HEIGHT}
                             resource={SITES}
                             fullHeight={true}
                             title={'Все объекты'}
+                            onFilterChanged={({ api }) => {
+                                const displayedRows = getDisplayedGridRows(api);
+                                setMapData(displayedRows);
+                            }}
                         />
                     </>
                 );
