@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { IssuesByBrand } from '../charts/IssuesByBrand';
 import { IssuesByManager } from '../charts/IssuesByManager';
+import { IssuesByDepartment } from '../charts/IssuesByDepartment';
 
 const issuesOptions = [
     {
@@ -16,6 +17,10 @@ const issuesOptions = [
     {
         label: 'заказчикам',
         value: 'заказчикам',
+    },
+    {
+        label: 'отделам',
+        value: 'отделам',
     }
 ]
 
@@ -29,7 +34,23 @@ export const DashboadIssuesCharts = (
     }
 ) => {
     const [option, setOption] = useState('менеджерам');
-    const Chart = option === 'менеджерам' ? IssuesByManager : IssuesByBrand;
+
+    let Chart;
+
+    switch (option) {
+        case 'менеджерам': {
+            Chart = IssuesByManager;
+            break;
+        };
+        case 'заказчикам': {
+            Chart = IssuesByBrand;
+            break;
+        };
+        case 'отделам': {
+            Chart = IssuesByDepartment;
+            break;
+        };
+    }
 
     return (
         <div style={{ display: 'flex', gap: 24, width: '100%' }}>
