@@ -82,20 +82,20 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                     <ProCard.TabPane key="tab4" tab={'Файлы'} disabled={!isEditMode}>
                         {!disabledEdit && (
                             <UploadIssue
-                                {...getFilesProps('checkFiles', 'Чеки', 10)}
+                                {...getFilesProps('checkFiles', 'Чеки', 100)}
                                 {...uploadProps}
                             />
                         )}
                         <UploadIssue
-                            {...getFilesProps('actFiles', 'Акты', 5)}
+                            {...getFilesProps('actFiles', 'Акты', 100)}
                             {...uploadProps}
                         />
                         <UploadIssue
-                            {...getFilesProps('workFiles', 'Работы', 70)}
+                            {...getFilesProps('workFiles', 'Работы', 100)}
                             {...uploadProps}
                         />
                         <UploadEstimation
-                            {...getFilesProps('expenseFiles', 'Сметы', 10)}
+                            {...getFilesProps('expenseFiles', 'Сметы', 100)}
                             actionPath='/api/upload/issue/'
                             sourceId={issueId}
                         />
