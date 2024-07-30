@@ -164,7 +164,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
                 console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
                 newIssues.push(rejectFn(newIssue));
             } else {
-                duplicatedIssues.push({clientsIssueNumber: issueNumber});
+                duplicatedIssues.push({clientsNumber: issueNumber});
             }
 
             return foundIssue;
