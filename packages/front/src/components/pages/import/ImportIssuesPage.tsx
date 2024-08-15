@@ -164,7 +164,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
                 console.log(`Issue not found, create one`, newIssue.clientsIssueNumber);
                 newIssues.push(rejectFn(newIssue));
             } else {
-                duplicatedIssues.push({clientsNumber: issueNumber});
+                duplicatedIssues.push({clientsNumber: issueNumber || clientsIssueNumber});
             }
 
             return foundIssue;
@@ -207,7 +207,7 @@ export const ImportIssuesPage = () => {
                     }: { newItems: any[], invalidItems: any[], duplicatedItems: any[] }) => void) => {
         const newIssues: Partial<IssueVO>[] = [];
         const invalidIssues: { clientsNumber: string, clientsSiteNumber: string }[] = [];
-        const duplicatedIssues: { clientsIssueNumber: string }[] = [];
+        const duplicatedIssues: { clientsNumber: string }[] = [];
 
         const importIssuesSaga = getImportIssuesSaga({ newIssues, invalidIssues, duplicatedIssues });
 

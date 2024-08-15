@@ -124,7 +124,7 @@ const getImportObjectsSaga = ({newSites, invalidSites, duplicatedSites}: { newSi
                 console.log(`Site not found, create one`, newSite.address);
                 newSites.push(rejectFn(newSite));
             } else {
-                duplicatedSites.push({clientsNumber: site.clientsSiteNumber});
+                duplicatedSites.push({clientsNumber: site.clientsSiteNumber || clientsSiteNumber});
             }
         }
 
