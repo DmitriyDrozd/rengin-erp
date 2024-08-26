@@ -260,9 +260,7 @@ export default () => {
                 ? departmentUserIds.includes(id)
                 : id === currentUser.userId;
 
-            const estimationStatusComparator = (es: string | null | undefined) => es !== undefined && es !== null;
-
-            dataForUser = outdatedIssues.filter(i => userIdComparator(i.estimatorUserId) && estimationStatusComparator(i.estimationsStatus));
+            dataForUser = outdatedIssues.filter(i => userIdComparator(i.estimatorUserId));
             break;
         }
         case roleEnum['инженер']: {
