@@ -48,10 +48,10 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
 
         return (
             <>
-                <CellRendererWithCopy value={issue.clientsIssueNumber}/> по адресу 
+                <CellRendererWithCopy value={issue.clientsIssueNumber}/><> по адресу </>
                 <CellRendererWithCopy value={siteAddress}/>
-                (код <CellRendererWithCopy value={site.clientsSiteNumber}/>) 
-                от {Days.toDayString(issue.registerDate)}
+                {site && <>код <CellRendererWithCopy value={site.clientsSiteNumber}/></>}
+                <> от </>{Days.toDayString(issue.registerDate)}
             </>
         );
     };
