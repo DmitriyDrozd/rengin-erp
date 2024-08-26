@@ -17,6 +17,10 @@ import EstimationsTable from './tabs/EstimationsTable';
 import ExpensesTable from './tabs/ExpensesTable';
 import UploadIssue from '../../elements/UploadIssue';
 import { issuesEditor } from '../../../editors/issueEditor';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
+import { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
+import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
+import { Days } from 'iso/src/utils';
 
 
 export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNumber: string, disabledEdit?: boolean }) => {
@@ -38,8 +42,22 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
         };
     };
 
+    const getIssueTitle = (issue: IssueVO) => {
+        const site: SiteVO = ledger.sites.byId[issue.siteId];
+        const siteAddress = site ? site.city + ' ' + site.address + ' ' : ' НЕ УКАЗАН ';
+
+        return (
+            <>
+                <CellRendererWithCopy value={issue.clientsIssueNumber}/> по адресу 
+                <CellRendererWithCopy value={siteAddress}/>
+                (код <CellRendererWithCopy value={site.clientsSiteNumber}/>) 
+                от {Days.toDayString(issue.registerDate)}
+            </>
+        );
+    };
+
     const title = useEditorData.mode === 'create'
-        ? 'Новая заявка' : ISSUES.getIssueTitle(useEditorData.item);
+        ? 'Новая заявка' : getIssueTitle(useEditorData.item);
 
     const [uploadProps, setUploadProps] = useState<{
         brandName?: string,
