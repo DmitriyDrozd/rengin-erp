@@ -30,7 +30,7 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
 
     const allCustomers = allIssues
         .reduce((acc, curr) => {
-            if (!acc.includes(curr.brandId)) {
+            if (curr && curr.brandId && !acc.includes(curr.brandId)) {
                 return [...acc, curr.brandId];
             }
 
