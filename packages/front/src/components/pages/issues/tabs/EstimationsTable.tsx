@@ -1,5 +1,4 @@
 import { ISSUES } from 'iso/src/store/bootstrap';
-import { estimationStatusesList } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useCallback,
@@ -14,6 +13,7 @@ import {
     RowEditingStoppedEvent
 } from 'ag-grid-community';
 import {
+    DEPRECATED_issueEstimationStatusesList,
     ExpenseItem,
     IssueVO
 } from 'iso/src/store/bootstrap/repos/issues';
@@ -124,7 +124,7 @@ export default () => {
                     value={item[name]}
                     disabled={!canEdit}
                     onSelect={updateItemProperty(name)}
-                    options={estimationStatusesList.map(st => ({label: st, value: st}))}
+                    options={DEPRECATED_issueEstimationStatusesList.map(st => ({label: st, value: st}))}
                     style={{ width: 300 }}
                 />
             </ProForm.Item>
