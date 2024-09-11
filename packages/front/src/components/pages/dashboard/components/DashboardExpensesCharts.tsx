@@ -90,10 +90,12 @@ export const DashboardExpensesCharts: FC<DashboardExpensesChartsProps> = ({
                     <Select
                         virtual
                         showSearch
+                        allowClear
                         value={subject}
                         optionFilterProp="label"
                         style={{width: '250px'}}
                         options={subjectOptions}
+                        onClear={() => setSubject(null)}
                         onSelect={setSubject}
                     />
                 </Space>

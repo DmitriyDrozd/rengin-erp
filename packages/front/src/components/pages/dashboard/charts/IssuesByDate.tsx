@@ -3,20 +3,35 @@ import { getAnnotation, formatMoneyRub } from './helpers';
 import { Days } from 'iso/src/utils';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import useLedger from '../../../../hooks/useLedger';
-import { Line } from '@ant-design/plots';
-import { XAxis } from 'recharts';
+import { Column, Line } from '@ant-design/plots';
+import { PERIOD_TYPE, PERIOD_TYPES } from '../components/helpers';
+import { asDay } from 'iso/src/utils/date-utils';
 
 interface ProfitsChartProps {
+    periodType: PERIOD_TYPE,
     typeFilter: (subject: string, ledger?: any) => (issue: IssueVO) => boolean,
     subjectOptions?: { label: string, value: string }[],
+    subjectFilter?: (issue: IssueVO) => boolean,
+    subject?: { label: string, value: string },
     allIssues: IssueVO[];
+    performance?: {
+        pausedIssues: IssueVO[],
+        closedIssues: IssueVO[],
+        inWorkIssues: IssueVO[],
+        outdatedClosedIssues: IssueVO[],
+        outdatedOpenIssues: IssueVO[],
+    }
 }
 
 export const IssuesByDateChart: FC<ProfitsChartProps> = (
     {
+        periodType,
         typeFilter,
         subjectOptions,
+        subjectFilter,
+        subject,
         allIssues,
+        performance,
     }
 ) => {
     const ledger = useLedger();
@@ -26,49 +41,140 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
     }
 
     const isLargeSubjectCount = subjectOptions.length > 20;
-
-    let data: Array<{ day: string, value: number, subject: string }> = [];
     const annotations = [];
 
-    const dates = allIssues.reduce((acc: {
+    let data: Array<{ day: string, value: number, subject?: string, type?: string }> = [];
+    let dateFormat;
+
+    switch (periodType) {
+        case PERIOD_TYPES.hour:
+            dateFormat = 'HH:MM:SS';
+            break;
+        case PERIOD_TYPES.day:
+            dateFormat = 'DD/MM/YYYY';
+            break;
+        case PERIOD_TYPES.month:
+            dateFormat = 'MM/YYYY';
+            break;
+        default:
+            dateFormat = 'DD/MM/YYYY';
+            break;
+    }
+
+    const dateReducer = (acc: {
         [registerDate: string]: IssueVO[];
     }, issue: IssueVO) => {
-        const dateR = Days.asDay(issue.registerDate).format('DD/MM/YYYY');
+        const regDate = Days.asDay(issue.registerDate);
+
+        if (!regDate) {
+            return acc;
+        }
+
+        const dateR = regDate.format(dateFormat);
 
         return {
             ...acc,
             [dateR]: [...(acc[dateR] || []), issue],
         };
-    }, {});
+    };
 
-    for (const date in dates) {
-        const values = dates[date];
-        
-        subjectOptions.forEach(({ label: name, value: id }: { label: string, value: string }) => {
-            const subjectFilter = typeFilter(id, ledger);
-            const subjectIssues = values.filter(subjectFilter);
+    const issuesByDate = allIssues.reduce(dateReducer, {});
+    const isSubjectFiltered = subject && performance;
 
-            if (isLargeSubjectCount && !subjectIssues.length) {
-                return;
-            }
+    if (isSubjectFiltered) {
+        const {
+            pausedIssues,
+            closedIssues,
+            inWorkIssues,
+            outdatedClosedIssues,
+            outdatedOpenIssues,
+        } = performance;
 
-            data.push({
-                day: date,
-                value: subjectIssues.length,
-                subject: name,
+        const fAll = allIssues.reduce(dateReducer, {});
+        const fInWork = inWorkIssues.reduce(dateReducer, {});
+        const fPaused = pausedIssues.reduce(dateReducer, {});
+        const fClosed = closedIssues.reduce(dateReducer, {});
+        const fOutdatedC = outdatedClosedIssues.reduce(dateReducer, {});
+        const fOutdatedO = outdatedOpenIssues.reduce(dateReducer, {});
+
+        for (const date in issuesByDate) {
+            const newData = [
+                {
+                    type: 'Всего заявок',
+                    value: fAll[date].filter(subjectFilter).length,
+                    day: date,
+                },
+                fInWork[date] && {
+                    type: 'В работе',
+                    value: fInWork[date].filter(subjectFilter).length,
+                    day: date,
+                },
+                fPaused[date] && {
+                    type: 'Приостановлено',
+                    value: fPaused[date].filter(subjectFilter).length,
+                    day: date,
+                },
+                fClosed[date] && {
+                    type: 'Закрыто',
+                    value: fClosed[date].filter(subjectFilter).length,
+                    day: date,
+                },
+                fOutdatedC[date] && {
+                    type: 'Просрочено в закрытых',
+                    value: fOutdatedC[date].filter(subjectFilter).length,
+                    day: date,
+                },
+                fOutdatedO[date] && {
+                    type: 'Просрочено в активных',
+                    value: fOutdatedO[date].filter(subjectFilter).length,
+                    day: date,
+                },
+            ].filter(d => d !== undefined);
+
+            data = [
+                ...data,
+                ...newData,
+            ];
+
+            annotations.push(getAnnotation('Всего заявок', allIssues.length));
+            annotations.push(getAnnotation('В работе', inWorkIssues.length));
+            annotations.push(getAnnotation('Приостановлено', pausedIssues.length));
+            annotations.push(getAnnotation('Закрыто', closedIssues.length));
+            annotations.push(getAnnotation('Просрочено в закрытых', outdatedClosedIssues.length));
+            annotations.push(getAnnotation('Просрочено в активных', outdatedOpenIssues.length));
+        }
+    } else {
+        for (const date in issuesByDate) {
+            const values = issuesByDate[date];
+            
+            subjectOptions.forEach(({ label: name, value: id }: { label: string, value: string }) => {
+                const _subjectFilter = typeFilter(id, ledger);
+                const subjectIssues = values.filter(_subjectFilter);
+    
+                if (isLargeSubjectCount && !subjectIssues.length) {
+                    return;
+                }
+    
+                data.push({
+                    day: date,
+                    value: subjectIssues.length,
+                    subject: name,
+                });
             });
-        });
-
-        annotations.push(getAnnotation(date, values.length));
+    
+            annotations.push(getAnnotation(date, values.length));
+        }
     }
+
+    const sortedData = data.sort((a, b) => a.day === b.day ? 0 : asDay(a.day).isSameOrAfter(asDay(b.day)) ? 1 : -1);
 
     const config = {
         annotations,
-        data,
+        data: sortedData,
         xField: 'day',
         xAxis: {
             label: {
-                rotate: Math.PI / 6,
+                rotate: Math.PI / -6,
                 offset: 20,
                 style: {
                     fill: '#aaa',
@@ -86,7 +192,7 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
             },
         },
         yField: 'value',
-        seriesField: 'subject',
+        seriesField: isSubjectFiltered ? 'type' : 'subject',
         label: {
             position: 'middle',
             layout: [
@@ -109,9 +215,11 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
         },
     };
 
+    const Chart = subject ? Column : Line;
+
     return (
         <div style={{ width: '100%' }}>
-            <Line {...config} />
+            <Chart {...config} />
         </div>
     );
 };

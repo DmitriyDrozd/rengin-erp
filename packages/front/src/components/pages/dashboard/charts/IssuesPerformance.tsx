@@ -5,6 +5,7 @@ import { getAnnotation } from './helpers';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 
 interface IssuesPerformanceProps {
+    invert?: boolean,
     allIssues: IssueVO[],
     inWorkIssues: IssueVO[],
     pausedIssues: IssueVO[],
@@ -15,6 +16,7 @@ interface IssuesPerformanceProps {
 
 export const IssuesPerformance: FC<IssuesPerformanceProps> = (
     {
+        invert,
         allIssues,
         inWorkIssues,
         pausedIssues,

@@ -57,3 +57,27 @@ export const SUBJ_FILTER = {
     [TYPES.department]: departmentFilter,
     [TYPES.brand]: brandFilter,
 };
+
+export const periodOptions = [
+    {value: 'day,today', label: 'День' },
+    {value: 'week,today', label: 'Неделя' },
+    {value: 'month,today', label: 'Месяц'},
+    {value: 'year,today', label: 'Год'},
+    {value: 'all,today', label: 'Все время'},
+];
+
+export const PERIOD_TYPES = {
+    hour: 'hour',
+    day: 'day',
+    month: 'month',
+};
+
+export type PERIOD_TYPE = keyof typeof PERIOD_TYPES;
+
+export const periodTypesMap: { [periodOption: string]: string } = {
+    'day,today': PERIOD_TYPES.hour,
+    'week,today': PERIOD_TYPES.day,
+    'month,today': PERIOD_TYPES.day,
+    'year,today': PERIOD_TYPES.month,
+    'all,today': PERIOD_TYPES.month,
+}

@@ -3,77 +3,133 @@ import {
     Select
 } from 'antd';
 import React, {
+    FC,
+    useEffect,
     useState
 } from 'react';
-import { IssuesByBrand } from '../charts/IssuesByBrand';
-import { IssuesByManager } from '../charts/IssuesByManager';
-import { IssuesByDepartment } from '../charts/IssuesByDepartment';
+import Space from 'antd/es/space';
+import { departmentOptions, PERIOD_TYPE, SUBJ_FILTER, typeOptions, TYPES } from './helpers';
+import useLedger from '../../../../hooks/useLedger';
+import { DefaultOptionType } from 'antd/es/select';
+import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
+import { IssuesByDateChart } from '../charts/IssuesByDate';
+import { IssuesPerformance } from '../charts/IssuesPerformance';
+import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 
-const issuesOptions = [
-    {
-        label: 'менеджерам',
-        value: 'менеджерам',
-    },
-    {
-        label: 'заказчикам',
-        value: 'заказчикам',
-    },
-    {
-        label: 'отделам',
-        value: 'отделам',
-    }
-]
+const issuesOptions = typeOptions.filter(to => to.value !== TYPES.tech);
 
-export const DashboadIssuesCharts = (
+interface DashboadIssuesChartsProps {
+    allIssues: IssueVO[];
+    periodType: PERIOD_TYPE;
+    Filters: ({ children }: { children: React.ReactNode }) => JSX.Element,
+    onSubFilterChange: (filterFunction: (issue: IssueVO) => boolean) => void;
+    performance?: any;
+}
+
+export const DashboadIssuesCharts: FC<DashboadIssuesChartsProps> = (
     {
+        allIssues,
+        periodType,
         Filters,
-        closedIssues,
-        registeredIssues,
-        outdatedClosedIssues,
-        outdatedOpenIssues,
+        onSubFilterChange,
+        performance,
     }
 ) => {
-    const [option, setOption] = useState('менеджерам');
+    const [type, setType] = useState(TYPES.manager);
+    const [subject, setSubject] = useState(null);
+    const [subjectOptions, setSubjectOptions] = useState(null);
+    const ledger = useLedger();
 
-    let Chart;
+    useEffect(() => {
+        let _subjectOptions: DefaultOptionType[] = [];
 
-    switch (option) {
-        case 'менеджерам': {
-            Chart = IssuesByManager;
-            break;
-        };
-        case 'заказчикам': {
-            Chart = IssuesByBrand;
-            break;
-        };
-        case 'отделам': {
-            Chart = IssuesByDepartment;
-            break;
-        };
-    }
+        switch (type) {
+            case TYPES.manager: {
+                const managers = ledger.users.list.filter(u => u.role === roleEnum['менеджер']);
+
+                _subjectOptions = managers.map(t => ({
+                    label: `${t.name} ${t.lastname || ''}`,
+                    value: t.userId,
+                }));
+                break;
+            }
+            case TYPES.department: {
+                _subjectOptions = departmentOptions;
+                break;
+            }
+            case TYPES.brand: {
+                const brands = ledger.brands.list;
+
+                _subjectOptions = brands.map(b => ({
+                    label: b.brandName,
+                    value: b.brandId,
+                }));
+            }
+        }
+
+        setSubject(null);
+        setSubjectOptions(_subjectOptions);
+    }, [type]);
+
+    const typeFilter = type ? SUBJ_FILTER[type] : () => true;
+    const subjectFilter = subject ? SUBJ_FILTER[type](subject, ledger) : (() => true);
+
+    useEffect(() => {
+        onSubFilterChange(subjectFilter);
+    }, [subject]);
+
+    const fAll = allIssues.filter(subjectFilter);
 
     return (
         <div style={{ display: 'flex', gap: 24, width: '100%' }}>
             <Filters>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ textWrap: 'nowrap' }}>Заявки по:</span>
+                <Space>
                     <Select
-                        defaultValue={option}
-                        onSelect={setOption}
-                        style={{width: '100%'}}
+                        defaultValue={type}
+                        style={{width: '150px'}}
                         options={issuesOptions}
+                        onSelect={setType}
                     />
-                </div>
+                    <Select
+                        virtual
+                        showSearch
+                        allowClear
+                        value={subject}
+                        optionFilterProp="label"
+                        style={{width: '250px'}}
+                        options={subjectOptions}
+                        onClear={() => setSubject(null)}
+                        onSelect={setSubject}
+                    />
+                </Space>
             </Filters>
-            <div style={{ textAlign: 'center', flexGrow: 1 }}>
-                <b>Заявки по {option}</b>
-                    <Chart
-                        closedIssues={closedIssues}
-                        registeredIssues={registeredIssues}
-                        outdatedClosedIssues={outdatedClosedIssues}
-                        outdatedOpenIssues={outdatedOpenIssues}
-                    />
-            </div>
+            {type && !subject && (
+                <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                    <Card.Grid hoverable={false}>
+                        <IssuesByDateChart
+                            periodType={periodType}
+                            typeFilter={typeFilter}
+                            subjectOptions={subjectOptions}
+                            allIssues={fAll}
+                        />
+                    </Card.Grid>
+                </div>
+            )}
+            {type && subject && (
+                <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                    <Card.Grid hoverable={false}>
+                        <IssuesByDateChart
+                            periodType={periodType}
+                            typeFilter={typeFilter}
+                            subjectFilter={subjectFilter}
+                            subject={subject}
+                            subjectOptions={subjectOptions}
+                            allIssues={fAll}
+                            performance={performance}
+                        />
+                    </Card.Grid>
+                </div>
+            )}
         </div>
     );
 };

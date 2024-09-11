@@ -12,6 +12,8 @@ const estimationStatuses = [
     estimationStatusesList[2],
     estimationStatusesList[3],
     estimationStatusesList[4],
+    estimationStatusesList[5],
+    estimationStatusesList[6],
 ];
 
 const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
@@ -138,7 +140,7 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
                 </div>
                 <div>
                     {Object.keys(byStatus).map(status => (
-                        <div>
+                        <div key={status}>
                             <Typography.Title level={5}>{status}:</Typography.Title>
                             {byStatus[status].length}
                         </div>

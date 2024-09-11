@@ -31,6 +31,7 @@ import { DashboardIssuesList } from './components/DashboardIssuesList';
 import { DashboardPerformanceCharts } from './components/DashboardPerformanceCharts';
 import { DashboardProfitCharts } from './components/DashboardProfitCharts';
 import EXPENSES, { ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
+import { periodOptions, periodTypesMap } from './components/helpers';
 
 dayjs.extend(isBetween);
 
@@ -45,14 +46,6 @@ const offsetDates: { [offset: string]: Dayjs } = {
     year: today.subtract(1, 'year'),
     all: null,
 };
-
-const periodOptions = [
-    {value: 'day,today', label: 'День' },
-    {value: 'week,today', label: 'Неделя' },
-    {value: 'month,today', label: 'Месяц'},
-    {value: 'year,today', label: 'Год'},
-    {value: 'all,today', label: 'Все время'},
-];
 
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
@@ -165,11 +158,17 @@ export default () => {
             label: 'Заявки',
             children: (
                 <DashboadIssuesCharts
+                    periodType={periodTypesMap[periodOption]}
                     Filters={FiltersItem}
-                    closedIssues={closedIssues}
-                    registeredIssues={registeredIssues}
-                    outdatedClosedIssues={outdatedClosedIssues}
-                    outdatedOpenIssues={outdatedOpenIssues}
+                    allIssues={registeredIssues}
+                    onSubFilterChange={onChangeSubjectFilter('1')}
+                    performance={{
+                        pausedIssues,
+                        closedIssues,
+                        inWorkIssues,
+                        outdatedClosedIssues,
+                        outdatedOpenIssues,
+                    }}
                 />
             ),
         },

@@ -121,10 +121,13 @@ export const DashboardPerformanceCharts: FC<any> = (
             {type && !subject && (
                 <div style={{ textAlign: 'center', flexGrow: 1 }}>
                 <Card.Grid hoverable={false}>
-                    <IssuesByDateChart
-                        typeFilter={typeFilter}
-                        subjectOptions={subjectOptions}
+                    <IssuesPerformance
                         allIssues={fAll}
+                        inWorkIssues={fInWork}
+                        pausedIssues={fPaused}
+                        closedIssues={fClosed}
+                        outdatedClosedIssues={fOutdatedClosed}
+                        outdatedOpenIssues={fOutdatedOpen}
                     />
                 </Card.Grid>
                 </div>
@@ -133,6 +136,7 @@ export const DashboardPerformanceCharts: FC<any> = (
                 <div style={{ textAlign: 'center', flexGrow: 1 }}>
                     <Card.Grid hoverable={false}>
                         <IssuesPerformance
+                            invert
                             allIssues={fAll}
                             inWorkIssues={fInWork}
                             pausedIssues={fPaused}
