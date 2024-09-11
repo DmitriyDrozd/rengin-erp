@@ -209,7 +209,7 @@ export default () => {
                 applyMiniFilterWhileTyping: true,
             },
             headerName: 'Статус сметы',
-            width: 150,
+            width: 210,
             editable: true,
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
                 const issue: Partial<IssueVO> = {issueId: event.data.issueId, estimationsStatus: event.newValue};

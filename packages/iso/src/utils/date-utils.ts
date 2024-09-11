@@ -43,8 +43,8 @@ dayjs.extend(isInPeriod);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isToday);
 
-export const asDay = (value: string | Date | Day) =>
-    value ? dayjs(value).startOf('d') : undefined;
+export const asDay = (value: string | Date | Day, format?: string) =>
+    value ? dayjs(value, format).startOf('d') : undefined;
 
 export const asMonthYear = (value: string | Date) =>
     value ? dayjs(value).locale('ru').format('MMMM YYYY') : undefined;

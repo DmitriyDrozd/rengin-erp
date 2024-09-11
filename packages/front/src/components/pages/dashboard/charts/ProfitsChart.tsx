@@ -7,14 +7,6 @@ import Card from 'antd/es/card/Card';
 import { Typography } from 'antd';
 import { groupBy, prop } from 'ramda';
 
-const estimationStatuses = [
-    estimationStatusesList[0],
-    estimationStatusesList[1],
-    estimationStatusesList[2],
-    estimationStatusesList[3],
-    estimationStatusesList[4],
-];
-
 const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
     if (!!expensePriceFinal) {
         if (isNaN(+expensePriceFinal) || isNaN(acc + +expensePriceFinal)) {
@@ -53,7 +45,7 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
     for (const FR in FRs) {
         let totalFRProfit = 0;
 
-        const dataByStatuses = estimationStatuses.map((status) => {
+        const dataByStatuses = estimationStatusesList.map((status) => {
             const estimationsInStatus = FRs[FR].filter((estimation: ExpenseVO) => {
                 return estimation.estimationsStatus === status;
             });
@@ -116,9 +108,6 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
     };
 
     const totalProfit = allEstimations.reduce(amountReducer, 0);
-    const countProcessingUndone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[1] && !e.expensePriceFinal).length;
-    const countProcessingDone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[1] && !!e.expensePriceFinal).length;
-    const countProcessedUndone = allEstimations.filter(e => e.estimationsStatus === estimationStatusesList[2] && !e.expensePriceFinal).length;
     const byStatus = groupBy<ExpenseVO>(prop('estimationsStatus'), allEstimations);
 
     const ChartElement = Object.keys(FRs).length <= 1 ? Column : Area;
@@ -144,20 +133,6 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
                             {byStatus[status].length}
                         </div>
                     ))}
-                </div>
-                <div>
-                    <div>
-                        <Typography.Title level={5}>На согласовании, не выполнено:</Typography.Title>
-                        {countProcessingUndone}
-                    </div>
-                    <div>
-                        <Typography.Title level={5}>На согласовании, выполнено:</Typography.Title>
-                        {countProcessingDone}
-                    </div>
-                    <div>
-                        <Typography.Title level={5}>Согласовано, не выполнено:</Typography.Title>
-                        {countProcessedUndone}
-                    </div>
                 </div>
             </Card>
         </div>

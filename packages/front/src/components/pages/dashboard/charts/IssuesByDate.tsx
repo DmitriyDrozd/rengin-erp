@@ -48,7 +48,7 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
 
     switch (periodType) {
         case PERIOD_TYPES.hour:
-            dateFormat = 'HH:MM:SS';
+            dateFormat = 'HH:MM';
             break;
         case PERIOD_TYPES.day:
             dateFormat = 'DD/MM/YYYY';
@@ -166,7 +166,7 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
         }
     }
 
-    const sortedData = data.sort((a, b) => a.day === b.day ? 0 : asDay(a.day).isSameOrAfter(asDay(b.day)) ? 1 : -1);
+    const sortedData = data.sort((a, b) => a.day === b.day ? 0 : asDay(a.day, dateFormat).isSameOrAfter(asDay(b.day, dateFormat)) ? 1 : -1);
 
     const config = {
         annotations,

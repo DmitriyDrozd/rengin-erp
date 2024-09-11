@@ -125,6 +125,7 @@ export default () => {
                     disabled={!canEdit}
                     onSelect={updateItemProperty(name)}
                     options={estimationStatusesList.map(st => ({label: st, value: st}))}
+                    style={{ width: 300 }}
                 />
             </ProForm.Item>
         );
