@@ -28,6 +28,7 @@ export const DEPRECATED_issueEstimationStatusesList = [
     'Выставлена в оплату',
     'Оплачена',
     'Не оплачена',
+    'Входит в АТО'
 ] as const;
 
 export const statusesList = ['Новая', 'В работе', 'Выполнена', 'Отменена', 'Приостановлена'] as const;
