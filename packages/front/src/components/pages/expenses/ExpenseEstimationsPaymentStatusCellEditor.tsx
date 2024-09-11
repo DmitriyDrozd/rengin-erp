@@ -1,5 +1,5 @@
 import {
-    EstimationStatus,
+    EstimationPaymentStatus,
     ExpenseVO
 } from 'iso/src/store/bootstrap/repos/expenses';
 import * as React from 'react';
@@ -15,13 +15,12 @@ import { CellEditorProps } from '../../../grid/RGrid';
 import { Select } from 'antd';
 import { BaseSelectRef } from 'rc-select';
 import { optionsFromValuesList } from '../../form/RenFormSelect';
-import useRole from '../../../hooks/useRole';
 import {
     useDispatch,
     useSelector
 } from 'react-redux';
 
-export const ExpenseEstimationsStatusCellEditor = forwardRef((props: CellEditorProps<typeof EXPENSES, string>, ref) => {
+export const ExpenseEstimationsPaymentStatusCellEditor = forwardRef((props: CellEditorProps<typeof EXPENSES, string>, ref) => {
     const [value] = useState(props.value);
     const refInput = useRef<BaseSelectRef>(null);
 
@@ -62,10 +61,10 @@ export const ExpenseEstimationsStatusCellEditor = forwardRef((props: CellEditorP
 
     return (
         <Select
-            options={optionsFromValuesList(EXPENSES.properties.estimationsStatus.enum)}
+            options={optionsFromValuesList(EXPENSES.properties.estimationsPaymentStatus.enum)}
             placeholder={'Статус не указан'}
-            onChange={(value: EstimationStatus) => {
-                setIssueProperty('estimationsStatus')(value);
+            onChange={(value: EstimationPaymentStatus) => {
+                setIssueProperty('estimationsPaymentStatus')(value);
             }}
             ref={refInput}
             value={value}

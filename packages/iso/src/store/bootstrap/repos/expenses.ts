@@ -11,39 +11,41 @@ import {
 
 export const estimationStatusesList = [
     'Новая',
+    'На согласовании, не выполнена',
+    'На согласовании, выполнена',
+    'Согласована, не выполнена',
+    'Согласована, выполнена',
     'На согласовании',
-    'Согласована',
-    'Выставлена в оплату',
-    'Оплачена',
-    'Не оплачена',
+    'Согласована'
+] as const;
+
+export const estimationPaymentStatusesList = [
+    'Не оплачен',
+    'Выставлен в оплату',
+    'Оплачен',
     'Входит в АТО',
 ] as const;
 
-export type EstimationStatus = typeof estimationStatusesList[number]
-
-export const estimationsStatusesRulesForManager: {
-    'Новая': string[];
-    'Выставлена в оплату': (string)[];
-    'Согласована': string[];
-    'На согласовании': string[];
-    'Входит в АТО': string[];
-} = {
-    'Новая': ['На согласовании'],
-    'На согласовании': ['Согласована'],
-    'Согласована': ['Выставлена в оплату', 'Входит в АТО'],
-    'Выставлена в оплату': ['Оплачена', 'Не оплачена', 'Входит в АТО'],
-    'Входит в АТО': ['Согласована', 'Выставлена в оплату', 'Оплачена', 'Не оплачена'],
-};
+export type EstimationStatus = typeof estimationStatusesList[number];
+export type EstimationPaymentStatus = typeof estimationPaymentStatusesList[number];
 
 export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Новая': 'green',
+    'На согласовании, не выполнена': 'orange',
+    'На согласовании, выполнена': 'darkgreen',
+    'Согласована, не выполнена': 'red',
+    'Согласована, выполнена': 'darkblue',
     'На согласовании': 'yellow',
     'Согласована': 'blue',
-    'Выставлена в оплату': 'orange',
-    'Оплачена': 'darkgreen',
-    'Не оплачена': 'red',
+};
+
+export const estimationsPaymentStatusesColorsMap: Record<EstimationPaymentStatus, string> = {
+    'Выставлен в оплату': 'green',
+    'Не оплачен': 'orange',
+    'Оплачен': 'blue',
     'Входит в АТО': 'darkblue',
 };
+
 
 const expensesRaw = createResource('expense', {
         clientsExpenseNumber: valueTypes.string({headerName: 'Номер сметы', required: true, unique: true}),
@@ -61,7 +63,9 @@ const expensesRaw = createResource('expense', {
                 url: valueTypes.string()
             }
         }),
+
         estimationsStatus: valueTypes.enum({headerName: 'Статус сметы', internal: true, enum: estimationStatusesList}),
+        estimationsPaymentStatus: valueTypes.enum({headerName: 'Статус оплаты', internal: true, enum: estimationPaymentStatusesList}),
 
         managerUserId: valueTypes.itemOf({
             headerName: 'Менеджер',

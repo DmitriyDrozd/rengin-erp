@@ -10,13 +10,13 @@ import React, {
 } from 'react';
 
 import 'dayjs/locale/ru';
-import useRole from '../../../../hooks/useRole';
 import RenField from '../../../form/RenField';
 import {
     useContextEditor,
     useContextEditorProperty
 } from '../../chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../../../form/ModalForm';
+import { estimationStatusesList } from 'iso/src/store/bootstrap/repos/expenses';
 
 interface EditExpenseItemFormProps {
     newClientsNumber: string,
@@ -24,7 +24,6 @@ interface EditExpenseItemFormProps {
 }
 
 export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNumber, isEditMode }) => {
-    const role = useRole();
     const editor = useContextEditor();
     const priceProp = useContextEditorProperty(EXPENSES.properties.expensePrice.name);
     const priceFinalProp = useContextEditorProperty(EXPENSES.properties.expensePriceFinal.name);
@@ -43,6 +42,11 @@ export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNu
         }
     }, []);
 
+    /**
+     * Отключение поля статуса оплаты, пока смета не в статусе 'Согласована, выполнена'
+     */
+    const isPaymentStatusDisabled = editor.item?.estimationsStatus !== estimationStatusesList[4];
+
     return (
         <Form
             style={{maxWidth: 800}}
@@ -59,6 +63,7 @@ export const EditExpenseItemForm: FC<EditExpenseItemFormProps> = ({ newClientsNu
             <RenField meta={EXPENSES.properties.managerUserId}/>
             <RenField meta={EXPENSES.properties.estimatorUserId} />
             <RenField meta={EXPENSES.properties.estimationsStatus} />
+            <RenField meta={EXPENSES.properties.estimationsPaymentStatus} disabled={isPaymentStatusDisabled} />
             <RenField meta={EXPENSES.properties.expensePrice} />
             <RenField meta={EXPENSES.properties.expensePriceFinal} />
             <Form.Item label={'Разница, сумма'}>{priceDiff}</Form.Item>

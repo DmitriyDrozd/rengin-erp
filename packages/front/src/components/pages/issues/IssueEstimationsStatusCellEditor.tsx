@@ -1,8 +1,6 @@
 import {
-    estimationsStatusesRulesForManager,
     EstimationStatus
 } from 'iso/src/store/bootstrap/repos/expenses';
-import * as React from "react";
 import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ISSUES} from "iso/src/store/bootstrap";
 import {CellEditorProps} from "../../../grid/RGrid";
@@ -12,7 +10,6 @@ import {optionsFromValuesList} from "../../form/RenFormSelect";
 import {
     IssueVO,
 } from 'iso/src/store/bootstrap/repos/issues';
-import useRole from "../../../hooks/useRole";
 import {useDispatch, useSelector} from "react-redux";
 
 export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) => {
@@ -30,7 +27,6 @@ export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) =
         refInput.current!.focus()
     }, []);
 
-    const role = useRole()
     /* Component Editor Lifecycle methods */
     useImperativeHandle(ref, () => {
         return {
@@ -57,13 +53,7 @@ export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) =
 
     return (
         <Select
-            options={optionsFromValuesList(ISSUES.properties.estimationsStatus.enum).map( o => {
-                if(role === 'менеджер') {
-                    const availableStatuses  = estimationsStatusesRulesForManager[issue.estimationsStatus]
-                    o.disabled = !availableStatuses.includes(o.value)
-                }
-                return o
-            })}
+            options={optionsFromValuesList(ISSUES.properties.estimationsStatus.enum)}
             placeholder={'Статус не указан'}
             onChange={ (value: EstimationStatus) => {
                 setIssueProperty('estimationsStatus')(value)

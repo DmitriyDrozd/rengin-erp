@@ -4,7 +4,8 @@ import { EXPENSES } from 'iso/src/store/bootstrap';
 import {
     estimationStatusesList,
     estimationsStatusesColorsMap,
-    ExpenseVO
+    ExpenseVO,
+    estimationsPaymentStatusesColorsMap
 } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { Days } from 'iso/src/utils';
@@ -33,10 +34,16 @@ import useCurrentUser from '../../../hooks/useCurrentUser';
 import { ExpenseModal } from './ExpenseModal';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import { ExpenseEstimationsStatusCellEditor } from './ExpenseEstimationsStatusCellEditor';
+import { ExpenseEstimationsPaymentStatusCellEditor } from './ExpenseEstimationsPaymentStatusCellEditor';
 
-const getEstimationStatusTag = (data: IssueVO) => {
+const getEstimationStatusTag = (data: ExpenseVO) => {
     const {estimationsStatus} = data;
     return <Tag color={estimationsStatusesColorsMap[estimationsStatus]}>{estimationsStatus}</Tag>;
+};
+
+const getEstimationPaymentStatusTag = (data: ExpenseVO) => {
+    const {estimationsPaymentStatus} = data;
+    return <Tag color={estimationsPaymentStatusesColorsMap[estimationsPaymentStatus]}>{estimationsPaymentStatus}</Tag>;
 };
 
 export const ExpensesListPage = () => {
@@ -74,9 +81,9 @@ export const ExpensesListPage = () => {
             headerName: 'Статус сметы',
             width: 150,
             editable: true,
-            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
-                const issue: Partial<IssueVO> = {issueId: event.data.issueId, estimationsStatus: event.newValue};
-                dispatch(EXPENSES.actions.patched(issue));
+            onCellValueChanged: (event: NewValueParams<ExpenseVO, ExpenseVO['estimationsStatus']>) => {
+                const expense: Partial<ExpenseVO> = {expenseId: event.data.expenseId, estimationsStatus: event.newValue};
+                dispatch(EXPENSES.actions.patched(expense));
             },
             cellEditor: ExpenseEstimationsStatusCellEditor,
             cellEditorParams: {
@@ -85,6 +92,27 @@ export const ExpensesListPage = () => {
             },
             cellRenderer: (props) =>
                 getEstimationStatusTag(props.data)
+        },
+        {
+            field: 'estimationsPaymentStatus',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
+            headerName: 'Статус оплаты',
+            width: 150,
+            editable: true,
+            onCellValueChanged: (event: NewValueParams<ExpenseVO, ExpenseVO['estimationsPaymentStatus']>) => {
+                const expense: Partial<ExpenseVO> = {expenseId: event.data.expenseId, estimationsPaymentStatus: event.newValue};
+                dispatch(EXPENSES.actions.patched(expense));
+            },
+            cellEditor: ExpenseEstimationsPaymentStatusCellEditor,
+            cellEditorParams: {
+                values: (params) => [params.data.estimationsPaymentStatus, 'sd'],
+                valueListGap: 0,
+            },
+            cellRenderer: (props) =>
+                getEstimationPaymentStatusTag(props.data)
         },
         {
             ...colMap.expensePrice,

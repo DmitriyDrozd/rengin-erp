@@ -8,12 +8,11 @@ import { Typography } from 'antd';
 import { groupBy, prop } from 'ramda';
 
 const estimationStatuses = [
+    estimationStatusesList[0],
     estimationStatusesList[1],
     estimationStatusesList[2],
     estimationStatusesList[3],
     estimationStatusesList[4],
-    estimationStatusesList[5],
-    estimationStatusesList[6],
 ];
 
 const amountReducer = (acc: number, { expensePriceFinal }: ExpenseVO) => {
