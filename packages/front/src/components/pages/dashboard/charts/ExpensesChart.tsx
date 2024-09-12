@@ -1,7 +1,8 @@
-import { Column } from '@ant-design/plots';
+import { Column, Pie } from '@ant-design/plots';
 import React, { FC } from 'react';
 import { IssueVO, paymentTypes, TExpense } from 'iso/src/store/bootstrap/repos/issues';
 import { getAnnotation, formatMoneyRub } from './helpers';
+import Space from 'antd/es/space';
 
 const getExpenses = (issue: IssueVO): TExpense[] => issue.expenses;
 
@@ -99,6 +100,22 @@ export const ExpensesChart: FC<ExpensesChartProps> = (
             paymentType: paymentTypes.cashless,
         },
     ];
+
+    const pieDataType = Object.values(EXPENSE_PURPOSE).map(category => ({
+        type: category,
+        value: data.reduce((acc, current) => current.type === category ? acc + current.value : acc, 0),
+    }));
+
+    const pieDataPaymentType = [
+        {
+            type: paymentTypes.cash,
+            value: data.reduce((acc, current) => current.paymentType === paymentTypes.cash ? acc + current.value : acc, 0),
+        },
+        {
+            type: paymentTypes.cashless,
+            value: data.reduce((acc, current) => current.paymentType === paymentTypes.cashless ? acc + current.value : acc, 0),
+        },
+    ];
  
     const materialAmount = amount.material.cash + amount.material.cashless;
     const serviceAmount = amount.service.cash + amount.service.cashless;
@@ -141,5 +158,38 @@ export const ExpensesChart: FC<ExpensesChartProps> = (
           },
     };
 
-    return <Column {...config} />;
+    const pieConfigType = {
+        appendPadding: 10,
+        data: pieDataType,
+        angleField: 'value',
+        colorField: 'type',
+        radius: 1,
+        label: {
+            type: 'inner',
+            content: '{percentage}',
+        },
+        interactions: [
+            {
+                type: 'pie-legend-active',
+            },
+            {
+                type: 'element-active',
+            },
+        ],
+    };
+
+    const pieConfigPaymentType = {
+        ...pieConfigType,
+        data: pieDataPaymentType,
+    };
+
+    return (
+        <Space direction='vertical' style={{ width: '100%' }}>
+            <Column {...config} />
+            <Space>
+                <Pie {...pieConfigType} />
+                <Pie {...pieConfigPaymentType} />
+            </Space>
+        </Space>
+    );
 };

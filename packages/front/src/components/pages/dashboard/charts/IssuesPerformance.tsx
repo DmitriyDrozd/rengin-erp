@@ -92,7 +92,7 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
             type: category,
             value: data.reduce((acc, current) => {
                 if (current.type === category) {
-                    return acc += current.value;
+                    return acc + current.value;
                 }
 
                 return acc;
@@ -137,7 +137,6 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
         data: pieData,
         angleField: 'value',
         colorField: 'type',
-        seriesField: 'customer',
         radius: 0.8,
         label: {
           type: 'outer',
