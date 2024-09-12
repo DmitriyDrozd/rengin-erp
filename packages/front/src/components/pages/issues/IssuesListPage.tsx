@@ -14,7 +14,7 @@ import {
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 import { isUserCustomer } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
 import {
     Badge,
@@ -327,6 +327,10 @@ export default () => {
 
     const [isMapOpen, setIsMapOpen] = useState(false);
     const [mapData, setMapData] = useState(rowData);
+
+    useEffect(() => {
+        setMapData(rowData);
+    }, [statuses]);
 
     return (
         <AppLayout
