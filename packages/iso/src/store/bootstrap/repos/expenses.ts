@@ -11,19 +11,19 @@ import {
 
 export const estimationStatusesList = [
     'Новая',
+    'На согласовании',
+    'Согласована',
+    'Входит в АТО',
     'На согласовании, не выполнена',
     'На согласовании, выполнена',
     'Согласована, не выполнена',
     'Согласована, выполнена',
-    'На согласовании',
-    'Согласована'
 ] as const;
 
 export const estimationPaymentStatusesList = [
     'Не оплачен',
     'Выставлен в оплату',
     'Оплачен',
-    'Входит в АТО',
 ] as const;
 
 export type EstimationStatus = typeof estimationStatusesList[number];
@@ -37,13 +37,13 @@ export const estimationsStatusesColorsMap: Record<EstimationStatus, string> = {
     'Согласована, выполнена': 'darkblue',
     'На согласовании': 'yellow',
     'Согласована': 'blue',
+    'Входит в АТО': 'darkblue',
 };
 
 export const estimationsPaymentStatusesColorsMap: Record<EstimationPaymentStatus, string> = {
     'Выставлен в оплату': 'green',
     'Не оплачен': 'orange',
     'Оплачен': 'blue',
-    'Входит в АТО': 'darkblue',
 };
 
 
