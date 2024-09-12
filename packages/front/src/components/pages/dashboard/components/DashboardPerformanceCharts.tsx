@@ -18,7 +18,6 @@ import React, {
 import useLedger from '../../../../hooks/useLedger';
 import { IssuesPerformance } from '../charts/IssuesPerformance';
 import { departmentOptions, SUBJ_FILTER, typeOptions, TYPES } from './helpers';
-import { IssuesByDateChart } from '../charts/IssuesByDate';
 
 export const DashboardPerformanceCharts: FC<any> = (
     {

@@ -1,8 +1,9 @@
-import { Column } from '@ant-design/plots';
+import { Column, Pie } from '@ant-design/plots';
 import React, { FC } from 'react';
 import useLedger from '../../../../hooks/useLedger';
 import { getAnnotation } from './helpers';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
+import Space from 'antd/es/space';
 
 interface IssuesPerformanceProps {
     invert?: boolean,
@@ -13,6 +14,15 @@ interface IssuesPerformanceProps {
     outdatedClosedIssues: IssueVO[],
     outdatedOpenIssues: IssueVO[],
 }
+
+const categories = [
+    'Всего заявок',
+    'В работе',
+    'Приостановлено',
+    'Закрыто',
+    'Просрочено в закрытых',
+    'Просрочено в активных',
+];
 
 export const IssuesPerformance: FC<IssuesPerformanceProps> = (
     {
@@ -30,13 +40,14 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
 
     const allCustomers = allIssues
         .reduce((acc, curr) => {
-            if (curr && curr.brandId && !acc.includes(curr.brandId)) {
+            if (!acc.includes(curr.brandId)) {
                 return [...acc, curr.brandId];
             }
 
             return acc;
         }, [])
-        .map(customerId => ledger.brands.byId[customerId]);
+        .map(customerId => ledger.brands.byId[customerId])
+        .filter(c => !!c);
 
     allCustomers.forEach(customer => {
         const customerFilter = (i: { brandId: string; }) => i.brandId === customer.brandId;
@@ -76,6 +87,19 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
         ];
     });
 
+    const pieData = categories.map(category => {
+        return {
+            type: category,
+            value: data.reduce((acc, current) => {
+                if (current.type === category) {
+                    return acc += current.value;
+                }
+
+                return acc;
+            }, 0)
+        }
+    });
+
     const annotations = [
         getAnnotation('Всего заявок', allIssues.length),
         getAnnotation('В работе', inWorkIssues.length),
@@ -108,5 +132,40 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
         },
     };
 
-    return <Column {...config} />;
+    const pieConfig = {
+        appendPadding: 10,
+        data: pieData,
+        angleField: 'value',
+        colorField: 'type',
+        seriesField: 'customer',
+        radius: 0.8,
+        label: {
+          type: 'outer',
+          content: '{name} {percentage}',
+        },
+        legend: {
+            selected: {
+                [categories[0]]: false,
+                [categories[1]]: true,
+                [categories[2]]: true,
+                [categories[3]]: true,
+                [categories[4]]: true,
+            },
+        },
+        interactions: [
+          {
+            type: 'pie-legend-active',
+          },
+          {
+            type: 'element-active',
+          },
+        ],
+      };
+
+    return (
+        <Space direction='vertical' style={{ width: '100%' }} size={48}>
+            <Column {...config} />
+            <Pie {...pieConfig} />
+        </Space>
+    );
 };
