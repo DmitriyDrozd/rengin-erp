@@ -136,7 +136,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
         await handlePreview(items[previewIndex + 1]);
     }
 
-    const isDisabledUpload = role === roleEnum['сметчик'] || role === roleEnum['инженер'];
+    const isDisabledUpload = role === roleEnum['инженер'];
     const isMaxCount = items?.length >= maxCount;
 
     const uploadButton = (
