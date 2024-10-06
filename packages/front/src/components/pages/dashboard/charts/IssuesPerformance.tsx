@@ -1,7 +1,7 @@
 import { Column, Pie } from '@ant-design/plots';
 import React, { FC } from 'react';
 import useLedger from '../../../../hooks/useLedger';
-import { getAnnotation } from './helpers';
+import { getAnnotation, getAnnotationDataCount } from './helpers';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import Space from 'antd/es/space';
 
@@ -100,13 +100,14 @@ export const IssuesPerformance: FC<IssuesPerformanceProps> = (
         }
     });
 
+    const dataCount = getAnnotationDataCount(data);
     const annotations = [
-        getAnnotation('Всего заявок', allIssues.length),
-        getAnnotation('В работе', inWorkIssues.length),
-        getAnnotation('Приостановлено', pausedIssues.length),
-        getAnnotation('Закрыто', closedIssues.length),
-        getAnnotation('Просрочено в закрытых', outdatedClosedIssues.length),
-        getAnnotation('Просрочено в активных', outdatedOpenIssues.length),
+        getAnnotation('Всего заявок', allIssues.length, { dataCount }),
+        getAnnotation('В работе', inWorkIssues.length, { dataCount }),
+        getAnnotation('Приостановлено', pausedIssues.length, { dataCount }),
+        getAnnotation('Закрыто', closedIssues.length, { dataCount }),
+        getAnnotation('Просрочено в закрытых', outdatedClosedIssues.length, { dataCount }),
+        getAnnotation('Просрочено в активных', outdatedOpenIssues.length, { dataCount }),
     ];
 
     const config = {

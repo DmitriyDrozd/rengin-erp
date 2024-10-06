@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { getAnnotation, formatMoneyRub } from './helpers';
+import { getAnnotation, getAnnotationDataCount } from './helpers';
 import { Days } from 'iso/src/utils';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 import useLedger from '../../../../hooks/useLedger';
@@ -135,15 +135,18 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
                 ...data,
                 ...newData,
             ];
-
-            annotations.push(getAnnotation('Всего заявок', allIssues.length));
-            annotations.push(getAnnotation('В работе', inWorkIssues.length));
-            annotations.push(getAnnotation('Приостановлено', pausedIssues.length));
-            annotations.push(getAnnotation('Закрыто', closedIssues.length));
-            annotations.push(getAnnotation('Просрочено в закрытых', outdatedClosedIssues.length));
-            annotations.push(getAnnotation('Просрочено в активных', outdatedOpenIssues.length));
         }
+
+        const dataCount = getAnnotationDataCount(data);
+        annotations.push(getAnnotation('Всего заявок', allIssues.length, { dataCount }));
+        annotations.push(getAnnotation('В работе', inWorkIssues.length, { dataCount }));
+        annotations.push(getAnnotation('Приостановлено', pausedIssues.length, { dataCount }));
+        annotations.push(getAnnotation('Закрыто', closedIssues.length, { dataCount }));
+        annotations.push(getAnnotation('Просрочено в закрытых', outdatedClosedIssues.length, { dataCount }));
+        annotations.push(getAnnotation('Просрочено в активных', outdatedOpenIssues.length, { dataCount }));
     } else {
+        const annotationsDataCountValues: {[date: string]: number} = {};
+
         for (const date in issuesByDate) {
             const values = issuesByDate[date];
             
@@ -162,7 +165,12 @@ export const IssuesByDateChart: FC<ProfitsChartProps> = (
                 });
             });
     
-            annotations.push(getAnnotation(date, values.length));
+            annotationsDataCountValues[date] = values.length;
+        }
+
+        const dataCount = getAnnotationDataCount(data);
+        for (const date in issuesByDate) {
+            annotations.push(getAnnotation(date, annotationsDataCountValues[date], { dataCount }));
         }
     }
 

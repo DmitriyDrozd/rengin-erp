@@ -1,6 +1,6 @@
 import { Area, Column } from '@ant-design/plots';
 import React, { FC } from 'react';
-import { getAnnotation, formatMoneyRub } from './helpers';
+import { getAnnotation, formatMoneyRub, getAnnotationDataCount } from './helpers';
 import { estimationStatusesList, ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
 import { Days } from 'iso/src/utils';
 import Card from 'antd/es/card/Card';
@@ -42,6 +42,8 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
         };
     }, {});
 
+    const annotationsContentData: {[FR: string]: number} = {};
+
     for (const FR in FRs) {
         let totalFRProfit = 0;
 
@@ -61,9 +63,13 @@ export const ProfitsChart: FC<ProfitsChartProps> = (
             };
         });
 
-        annotations.push(getAnnotation(FR, 0, formatMoneyRub(totalFRProfit)));
-
+        annotationsContentData[FR] = totalFRProfit;
         data = [...dataByStatuses, ...data];
+    }
+
+    for (const FR in FRs) {
+        const dataCount = getAnnotationDataCount(data);
+        annotations.push(getAnnotation(FR, 0, { dataCount, content: formatMoneyRub(annotationsContentData[FR]) }));
     }
 
     const config = {

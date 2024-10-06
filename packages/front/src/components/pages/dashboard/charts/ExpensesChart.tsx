@@ -1,7 +1,7 @@
 import { Column, Pie } from '@ant-design/plots';
 import React, { FC } from 'react';
 import { IssueVO, paymentTypes, TExpense } from 'iso/src/store/bootstrap/repos/issues';
-import { getAnnotation, formatMoneyRub } from './helpers';
+import { getAnnotation, formatMoneyRub, getAnnotationDataCount } from './helpers';
 import Space from 'antd/es/space';
 
 const getExpenses = (issue: IssueVO): TExpense[] => issue.expenses;
@@ -122,11 +122,12 @@ export const ExpensesChart: FC<ExpensesChartProps> = (
     const gsmAmount = amount.gsm.cash + amount.gsm.cashless;
     const otherAmount = amount.other.cash + amount.other.cashless;
 
+    const dataCount = getAnnotationDataCount(data);
     const annotations = [
-        getAnnotation(EXPENSE_PURPOSE.material, materialAmount, formatMoneyRub(materialAmount)),
-        getAnnotation(EXPENSE_PURPOSE.service, serviceAmount, formatMoneyRub(serviceAmount)),
-        getAnnotation(EXPENSE_PURPOSE.gsm, gsmAmount, formatMoneyRub(gsmAmount)),
-        getAnnotation(EXPENSE_PURPOSE.other, otherAmount, formatMoneyRub(otherAmount)),
+        getAnnotation(EXPENSE_PURPOSE.material, materialAmount, { dataCount, content: formatMoneyRub(materialAmount) }),
+        getAnnotation(EXPENSE_PURPOSE.service, serviceAmount, { dataCount, content: formatMoneyRub(serviceAmount) }),
+        getAnnotation(EXPENSE_PURPOSE.gsm, gsmAmount, { dataCount, content: formatMoneyRub(gsmAmount) }),
+        getAnnotation(EXPENSE_PURPOSE.other, otherAmount, { dataCount, content: formatMoneyRub(otherAmount) }),
     ];
 
     const config = {
