@@ -193,6 +193,7 @@ export default () => {
         {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data?.registerDate)},
         {...statusColumn},
         {...colMap.brandId, width: 150},
+        {...colMap.legalId, width: 200},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
         {...contactInfoColumn},
