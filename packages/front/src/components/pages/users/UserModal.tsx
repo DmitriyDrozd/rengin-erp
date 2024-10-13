@@ -18,6 +18,7 @@ import {
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 import { usersEditor } from '../../../editors/usersEditor';
+import { chunkHandler } from '../../../utils/chunkUtils';
 
 const roleMap = {
     [roleEnum['менеджер']]: 'managerUserId',
@@ -83,7 +84,8 @@ export default ({id}: { id: string }) => {
                 [role]: id,
             }));
 
-        updateCollection(updated);
+        chunkHandler(updated, updateCollection);
+        
         notification.open({
             message: `${useEditorData.item.role} добавлен к ${updated.length} ${name}`,
             type: 'success'
@@ -98,7 +100,8 @@ export default ({id}: { id: string }) => {
                 [role]: undefined,
             }));
 
-        updateCollection(updated);
+        chunkHandler(updated, updateCollection);
+
         notification.open({
             message: `${useEditorData.item.role} удалён из ${updated.length} ${name}`,
             type: 'success'

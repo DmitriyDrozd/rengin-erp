@@ -19,7 +19,7 @@ export const SUBS_RAW = createResource('sub',{
         }),
     },
     {
-        getItemName: (item) => `Подключение от ${dayjs(item.subscribeDate).format('YYYY/MM/DD')}`,
+        getItemName: (item) => `Подключение от ${item?.subscribeDate ? dayjs(item.subscribeDate).format('YYYY/MM/DD') : 'неизвестной даты'}`,
         langRU: {
             singular:'Подключение',
             plural:'Подключения',

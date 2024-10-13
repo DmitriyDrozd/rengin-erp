@@ -16,6 +16,7 @@ import {
 } from '../chapter-modal/useEditor';
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
+import { chunkHandler } from '../../../utils/chunkUtils';
 
 const roleMap = {
     [employeeRoleEnum['техник']]: 'techUserId',
@@ -64,7 +65,8 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                 [role]: id,
             }));
 
-        updateCollection(updated);
+        chunkHandler(updated, updateCollection);
+
         notification.open({
             message: `${useEditorData.item.role} добавлен к ${updated.length} ${name}`,
             type: 'success'
@@ -79,7 +81,8 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                 [role]: undefined,
             }));
 
-        updateCollection(updated);
+        chunkHandler(updated, updateCollection);
+
         notification.open({
             message: `${useEditorData.item.role} удалён из ${updated.length} ${name}`,
             type: 'success'
@@ -114,7 +117,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                                     onCancelClick={disableAddingMode('issues')}
                                     onShowAllItems={onShowAllItems('issues')}
                                     onAddToItems={onAddToItems(ledger.issues.list, 'заявкам', ISSUES.idProp)}
-                                    onRemoveFromItems={onAddToItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
+                                    onRemoveFromItems={onRemoveFromItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
                                     resource={ISSUES}
