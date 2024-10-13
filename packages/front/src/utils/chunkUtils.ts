@@ -1,13 +1,13 @@
 /**
  * Модификатор фукнции экшена для обработки запросов со слишком большим количеством записей
- * Решает проблему ошибки 413 / payload is too big от xhr.js
+ * Решает проблему ошибки 413 (Request Entity Too Large) от xhr.js
  * 
  * Используется при массовом добавлении \ удалении из списков в модалке субъекта
  * @param updated 
  * @param updateFn 
  */
 export const chunkHandler = (updated: any[], updateFn: (updatedItems: any[]) => void) => {
-    if (updated.length > 1000) {
+    if (updated.length > 500) {
         const chunkCount = Math.ceil(updated.length / 1000);
 
         const chunks: Array<Array<any>> = updated.reduce((acc, item, index) => {
