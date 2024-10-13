@@ -1,3 +1,5 @@
+const CHUNK_SIZE = 500;
+
 /**
  * Модификатор фукнции экшена для обработки запросов со слишком большим количеством записей
  * Решает проблему ошибки 413 (Request Entity Too Large) от xhr.js
@@ -7,11 +9,11 @@
  * @param updateFn 
  */
 export const chunkHandler = (updated: any[], updateFn: (updatedItems: any[]) => void) => {
-    if (updated.length > 500) {
-        const chunkCount = Math.ceil(updated.length / 1000);
+    if (updated.length > CHUNK_SIZE) {
+        const chunkCount = Math.ceil(updated.length / CHUNK_SIZE);
 
         const chunks: Array<Array<any>> = updated.reduce((acc, item, index) => {
-            const chunkNumber = Math.floor(index / 1000);
+            const chunkNumber = Math.floor(index / CHUNK_SIZE);
             acc[chunkNumber].push(item);
             return acc;
         }, [ ...Array(chunkCount).keys() ].map(() => []));

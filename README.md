@@ -50,7 +50,7 @@ Build front
 ```
 cd /home/rengin-erp
 yarn front:build:prod
-yarn copy-assets
+yarn front:assets
 ```
 Start backend
 ```
