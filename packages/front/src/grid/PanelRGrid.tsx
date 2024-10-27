@@ -37,6 +37,7 @@ import { AntdIcons } from '../components/elements/AntdIcons';
 import DeleteButton from '../components/elements/DeleteButton';
 import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
+import { mapColumnStateToDefs } from '../utils/gridUtils';
 
 
 const getItems = (
@@ -174,11 +175,14 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const isMultipleSelection = mode !== GRID_MODES.off;
 
     const [defaultColumns, columnsMap] = useAllColumns(resource, isMultipleSelection ? 'multiple' : undefined);
+
     const usedColumns = columnDefs || defaultColumns;
+    // не обязательно первый элемент!
     const [editColumn, ...restColumns] = usedColumns;
     const firstCol = isMultipleSelection ? columnsMap.checkboxCol : editColumn;
 
-    const resultCols = [firstCol, ...restColumns];
+    const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
+    const resultCols = mapColumnStateToDefs(columnState, [firstCol, ...restColumns]);
 
     const defaultList = useSelector(resource.selectList);
     const list = rowData || defaultList;
@@ -242,29 +246,13 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
 
     const innerGridRef = gridRef || useRef<AgGridReact>(null);
 
-    /**
-     * Сохранение состояния таблицы
-     */
-    const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
-    const [isColumnStateInitialized, setIsColumnStateInitialized] = useState(!columnState);
+    const onColumnStateChanged = (ag: any) => {
+        const newColumnOrder: string[] = ag.columnApi.columnModel.displayedColumns.map(({ colId }: { colId: string }) => colId);
+        const newColumnState = ag.columnApi.getColumnState();
+        const orderedColumnState = newColumnOrder.map(columnId => newColumnState.find(({ colId }: { colId: string }) => colId === columnId));
 
-    useEffect(() => {
-        if (innerGridRef.current && innerGridRef.current.columnApi && !isColumnStateInitialized) {
-            innerGridRef.current.columnApi.applyColumnState({state: columnState, applyOrder: true});
-
-            setTimeout(() => {
-                setIsColumnStateInitialized(true);
-            }, 200);
-        }
-    }, [innerGridRef.current, isColumnStateInitialized]);
-
-    const onSortChanged = useCallback((ag: any) => {
-        if (!isColumnStateInitialized) {
-            return;
-        }
-
-        setColumnState(ag.columnApi.getColumnState());
-    }, [isColumnStateInitialized]);
+        setColumnState(orderedColumnState);
+    };
 
     const onRowDoubleClicked = (e: RowDoubleClickedEvent) => {
         const cellIds = e.eventPath.slice(0, 5).map(node => node.getAttribute('col-id')).filter(i => !!i);
@@ -457,11 +445,16 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             quickFilterText={searchText}
             cacheQuickFilter
             ref={innerGridRef}
-            onSortChanged={onSortChanged}
             onFilterChanged={onFilterChanged}
             onRowDoubleClicked={onRowDoubleClicked}
-            /** Displayed rows have changed. Triggered after sort, filter or tree expand / collapse events. */
-            // onModelUpdated 
+            onSortChanged={onColumnStateChanged}
+            onColumnPinned={onColumnStateChanged}
+            onColumnResized={onColumnStateChanged}
+            onColumnMoved={(event: ColumnMovedEvent) => {
+                if (event.finished) {
+                    onColumnStateChanged(event);
+                }
+            }}
         />
         <div style={{padding: '4px 20px', display: 'flex', justifyContent: 'space-between'}}>
             <Space>
