@@ -38,6 +38,8 @@ import DeleteButton from '../components/elements/DeleteButton';
 import CancelButton from '../components/elements/CancelButton';
 import useRole from '../hooks/useRole';
 import { mapColumnStateToDefs } from '../utils/gridUtils';
+import useCurrentUser from '../hooks/useCurrentUser';
+import { isUserCustomer } from '../utils/userUtils';
 
 
 const getItems = (
@@ -177,13 +179,12 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const [defaultColumns, columnsMap] = useAllColumns(resource, isMultipleSelection ? 'multiple' : undefined);
 
     const usedColumns = columnDefs || defaultColumns;
-    // не обязательно первый элемент!
     const [editColumn, ...restColumns] = usedColumns;
     const firstCol = isMultipleSelection ? columnsMap.checkboxCol : editColumn;
 
     const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
-    const resultCols = mapColumnStateToDefs(columnState, [firstCol, ...restColumns]);
 
+    const resultCols = [firstCol, ...mapColumnStateToDefs(columnState, restColumns)];
     const defaultList = useSelector(resource.selectList);
     const list = rowData || defaultList;
 
@@ -347,7 +348,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         );
     };
 
-    const role = useRole();
+    const { currentUser } = useCurrentUser();
+    const role = currentUser.role;
 
     const renderStandardToolBar = () => {
         const menuItems = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems, !isNotRoleSensitive, !!selectRowsProps);
@@ -387,6 +389,12 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 );
             }
             case roleEnum['инженер']: {
+                // const isCustomer = isUserCustomer(currentUser);
+
+                // if (isCustomer) {
+                //     return fullToolBar;
+                // }
+
                 return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
             }
             default: {
