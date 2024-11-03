@@ -18,7 +18,6 @@ import {
     RenEditor
 } from 'iso/src/store/bootstrap/buildEditor';
 import { generateGuid } from '@sha/random';
-import { useHistory } from 'react-router';
 import useLedger from '../../../hooks/useLedger';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
 

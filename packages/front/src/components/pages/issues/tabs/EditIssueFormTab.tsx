@@ -5,7 +5,7 @@ import {
 import dayjs from 'dayjs';
 import { Days } from 'iso';
 import {
-    ISSUES
+    ISSUES,
 } from 'iso/src/store/bootstrap';
 import {
     roleEnum,
@@ -27,6 +27,11 @@ import FinanceFooter from './FinanceFooter';
 import RenField from '../../../form/RenField';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../../../form/ModalForm';
+// import { statusesList } from 'iso/src/store/bootstrap/repos/issues';
+import LEGALS from 'iso/src/store/bootstrap/repos/legals';
+import BRANDS from 'iso/src/store/bootstrap/repos/brands';
+
+// const DEFAULT_ISSUE_STATUS = statusesList[0];
 
 const {Text} = Typography;
 export default ({newClientsNumber, isEditMode}: {
@@ -38,6 +43,8 @@ export default ({newClientsNumber, isEditMode}: {
     const editor = useContextEditor();
     const contracts: ContractVO[] = useSelector(CONTRACTS.selectList);
     const contract = contracts.find(c => c.contractId === editor.item.contractId);
+    const legals = useSelector(LEGALS.selectList);
+    const brands = useSelector(BRANDS.selectList);
 
     const [initRegisterDate, setInitRegisterDate] = useState(editor.item.registerDate);
     const [initValues] = useState({...editor.item});
@@ -47,6 +54,17 @@ export default ({newClientsNumber, isEditMode}: {
             editor.updateItemProperty(ISSUES.clientsNumberProp)(newClientsNumber);
         }
 
+        // fixme: не работает
+        // if (!isEditMode && !initValues.status) {
+        //     editor.updateItemProperty('status')(DEFAULT_ISSUE_STATUS);
+        // }
+
+        // if (isCustomer && !isEditMode) {
+        //     editor.updateItemProperty('brandId')(brandId);
+        // }
+    }, []);
+
+    useEffect(() => {
         if (!isEditMode && !initRegisterDate) {
             const today = dayjs();
 
@@ -57,6 +75,41 @@ export default ({newClientsNumber, isEditMode}: {
 
     const isManager = isManagementRole(currentUser);
     const isCustomer = isUserCustomer(currentUser);
+
+    if (isCustomer) {
+        const brandId = currentUser.brandId;
+        const brandOptions = brands.filter(brand => brand.brandId === brandId).map(brand => ({ label: brand.brandName, value: brand.brandId }));
+        const legalOptions = legals.filter(legal => legal.brandId === brandId).map(legal => ({ label: legal.legalName, value: legal.legalId }));
+
+        return (
+            <Form
+                style={{maxWidth: 800}}
+                {...layoutPropsModalForm}
+                layout={'horizontal'}
+            >
+                <RenField meta={ISSUES.properties.clientsIssueNumber}/>
+                <RenField meta={ISSUES.properties.brandId} immutable={!!initValues.brandId} customOptions={brandOptions}/>
+                <RenField meta={ISSUES.properties.legalId} immutable={!!initValues.legalId} customOptions={legalOptions}/>
+                <RenField
+                    placeholder={'Адрес не указан'}
+                    meta={ISSUES.properties.siteId}
+                    immutable={isManager ? false : !!initValues.siteId}
+                />
+                <RenField meta={ISSUES.properties.plannedDate} width={'sm'} disabled={role === 'сметчик' || role === 'менеджер'}/>
+                <RenField
+                    meta={ISSUES.properties.description}
+                    multiline
+                    width={'sm'}
+                />
+                <RenField meta={ISSUES.properties.clientsEngineerUserId}
+                      width={'sm'} defaultValue={currentUser.clientsEngineerUserId} disabled/>
+                {isEditMode && (
+                    <RenField meta={ISSUES.properties.managerUserId} disabled={role === 'сметчик'} width={'sm'} disabled/>
+                )}
+                <RenField meta={ISSUES.properties.status}/>
+            </Form>
+        );
+    }
 
     if (role === roleEnum['инженер']) {
         return (
@@ -72,11 +125,8 @@ export default ({newClientsNumber, isEditMode}: {
                     disabled
                     width={'sm'}
                 />
-                {
-                    !isCustomer && (
-                        <RenField meta={ISSUES.properties.contactInfo} disabled/>
-                    )
-                }
+                {/* contactInfo не должно быть видно заказчику */}
+                <RenField meta={ISSUES.properties.contactInfo} disabled/>
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );

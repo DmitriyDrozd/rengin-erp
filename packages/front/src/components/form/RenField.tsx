@@ -104,7 +104,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
                         updateItemProperty(e);
                     }}
                     style={{minWidth: '200px'}}
-                    options={params.options}
+                    options={customOptions || params.options}
                     dropdownRender={(menu) => (
                         <>
                             {menu}
@@ -125,10 +125,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
                     optionFilterProp={'label'}
                     showSearch={true}
                     placeholder={property.headerName}
-                    onChange={e => {
-                        console.log('Select onChange', e);
-                        updateItemProperty(e);
-                    }}
+                    onChange={updateItemProperty}
                     style={{minWidth: '200px'}}
                     options={customOptions || params.options}
                     dropdownRender={(menu) => (

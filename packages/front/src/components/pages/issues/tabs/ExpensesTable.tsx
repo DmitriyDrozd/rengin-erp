@@ -121,7 +121,7 @@ export default (props) => {
         {
             canEdit
                 ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, редактируйте смету</Typography.Text>
-                : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя менять смету</Typography.Text>
+                : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
         }
         <div className="ag-theme-alpine" style={gridStyle}>
             <AgGridReact
@@ -157,7 +157,7 @@ export default (props) => {
                         )
                         }>Добавить строку</Button>
                     </>
-                    : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
+                    : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
                 }
                 <Typography.Text>Итого: </Typography.Text>
                 <Typography.Text code strong>{item.expensePrice}</Typography.Text>

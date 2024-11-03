@@ -138,7 +138,7 @@ export default () => {
         <div>{
             canEdit
                 ? <Typography.Text type={'success'}>Ваша роль {currentUser.role}, редактируйте смету</Typography.Text>
-                : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
+                : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
         }
             {renderEstimationsStatus('estimationsStatus')}
             <div className="ag-theme-alpine" style={gridStyle}>
@@ -165,7 +165,7 @@ export default () => {
 
                             <Button type={'primary'} onClick={() => setRowData([...rowData, {}])}>Добавить
                                 строку</Button></>
-                        : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя смету</Typography.Text>
+                        : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
                     }
                     <Typography.Text>Итого: </Typography.Text>
                     <Typography.Text code strong>{item.estimationPrice}</Typography.Text>

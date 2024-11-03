@@ -20,6 +20,8 @@ import React, {
 import type {RcFile, UploadProps} from 'antd/es/upload';
 import {remove} from "ramda";
 import useRole from "../../hooks/useRole";
+import useCurrentUser from '../../hooks/useCurrentUser';
+import { isUserCustomer } from '../../utils/userUtils';
 
 export type UploadListProps = {
     items?: UploadFile[]
@@ -50,7 +52,10 @@ const downloadFile = (file) => {
 }
 
 const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName, brandPath}: UploadListProps) => {
-    const role = useRole()
+    const role = useRole();
+    const { currentUser } = useCurrentUser();
+    const isCustomer = isUserCustomer(currentUser);
+
     const max = maxCount || 1
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
@@ -136,7 +141,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
         await handlePreview(items[previewIndex + 1]);
     }
 
-    const isDisabledUpload = role === roleEnum['инженер'];
+    const isDisabledUpload = role === roleEnum['инженер'] && !isCustomer;
     const isMaxCount = items?.length >= maxCount;
 
     const uploadButton = (

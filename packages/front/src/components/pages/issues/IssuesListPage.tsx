@@ -352,7 +352,7 @@ export default () => {
                 {
                     currentItemId ? (
                         <IssueModal
-                            disabledEdit={isUserEngineer}
+                            disabledEdit={isUserEngineer && !isCustomer}
                             id={currentItemId}
                             newClientsNumber={newClientsNumber}
                         />

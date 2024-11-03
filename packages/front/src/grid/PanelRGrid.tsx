@@ -365,22 +365,21 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             </Dropdown>
         );
 
-        const fullToolBar = (
+        const getFullToolBar = (isCustomerRole: boolean = false) => (
             <>
                 {!isCreateButtonDisabled && (
                     <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
                 )}
-                {getDropdownMenu(menuItems)}
+                {!isCustomerRole && getDropdownMenu(menuItems)}
             </>
         );
 
         if (isNotRoleSensitive) {
-            return fullToolBar;
+            return getFullToolBar();
         }
 
         switch (role) {
             case roleEnum['сметчик']: {
-
                 return (
                     <>
                         <Typography.Text>Вы можете редактировать сметы</Typography.Text>
@@ -389,16 +388,16 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                 );
             }
             case roleEnum['инженер']: {
-                // const isCustomer = isUserCustomer(currentUser);
+                const isCustomer = isUserCustomer(currentUser);
 
-                // if (isCustomer) {
-                //     return fullToolBar;
-                // }
+                if (isCustomer) {
+                    return getFullToolBar(isCustomer);
+                }
 
                 return (<Typography.Text>Вы можете просматривать {resource.langRU.plural}</Typography.Text>);
             }
             default: {
-                return fullToolBar;
+                return getFullToolBar();
             }
         }
     };
