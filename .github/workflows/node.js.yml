@@ -29,10 +29,13 @@ jobs:
       run: ssh root@${{ vars.DEV_HOST }} "cd /home/${{ github.event.repository.name }}_${GITHUB_REF_NAME} && git checkout ${GITHUB_REF_NAME} && git checkout ./ && git pull && yarn install"
     - name: ssh-connect restart service
       run: | 
-        ssh root@${{ vars.DEV_HOST }} "pm2 restart ${{ github.event.repository.name }}_${GITHUB_REF_NAME}:service --update-env"
-    - name: ssh-connect restart front
+        ssh root@${{ vars.DEV_HOST }} "pm2 restart service --update-env"
+    - name: ssh-connect rebuild front
       run: |
-        ssh root@${{ vars.DEV_HOST }} "pm2 restart ${{ github.event.repository.name }}_${GITHUB_REF_NAME}:front --update-env"
+        ssh root@${{ vars.DEV_HOST }} "cd /home/${{ github.event.repository.name }} && yarn front:build:prod"
+    - name: ssh-connect rebuild assets
+      run: |
+        ssh root@${{ vars.DEV_HOST }} "cd /home/${{ github.event.repository.name }} && yarn front:assets"
     - name: cleanup
       run: rm -rf ~/.ssh
 
