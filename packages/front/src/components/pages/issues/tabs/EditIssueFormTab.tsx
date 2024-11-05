@@ -95,7 +95,10 @@ export default ({newClientsNumber, isEditMode}: {
                     meta={ISSUES.properties.siteId}
                     immutable={isManager ? false : !!initValues.siteId}
                 />
-                <RenField meta={ISSUES.properties.plannedDate} width={'sm'} disabled={role === 'сметчик' || role === 'менеджер'}/>
+                <RenField defaultValue={dayjs()} meta={ISSUES.fields.registerDate} disabled={!!initRegisterDate}/>
+                <RenField meta={ISSUES.properties.plannedDate} disabled width={'sm'}/>
+                <RenField meta={ISSUES.properties.workStartedDate} disabled width={'sm'}/>
+                <RenField meta={ISSUES.properties.completedDate} disabled width={'sm'}/>
                 <RenField
                     meta={ISSUES.properties.description}
                     multiline
@@ -106,7 +109,7 @@ export default ({newClientsNumber, isEditMode}: {
                 {isEditMode && (
                     <RenField meta={ISSUES.properties.managerUserId} disabled={role === 'сметчик'} width={'sm'} disabled/>
                 )}
-                <RenField meta={ISSUES.properties.status}/>
+                <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );
     }

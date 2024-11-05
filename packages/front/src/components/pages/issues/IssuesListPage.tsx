@@ -187,6 +187,21 @@ export default () => {
         {...statusColumn},
     ];
 
+    const customerColumns = [
+        {...colMap.clickToEditCol, headerName: 'id'},
+        {...colMap.clientsNumberCol},
+        {...statusColumn},
+        {...colMap.brandId, width: 150},
+        {...colMap.legalId, width: 200},
+        {...colMap.siteId, width: 250},
+        {...colMap.description, width: 700},
+        {...contactInfoColumn},
+        {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data?.registerDate)},
+        {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
+        {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
+        {...colMap.managerUserId, width: 130},
+    ]
+
     const defaultColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
@@ -229,7 +244,7 @@ export default () => {
         {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
     ];
 
-    const rawColumns = (isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
+    const rawColumns = (isCustomer ? customerColumns : isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
     const columns: ColDef<IssueVO>[] = rawColumns.filter(c => !c.columnToRemove);
 
     const [statuses, setStatuses] = useLocalStorageState('issuesStatusFilter', isUserEstimator ? estimationStatusesList : statusesList);
