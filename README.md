@@ -68,4 +68,3 @@ start service:
 ```
 pm2 start pm2.config.json
 ```
-test
