@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "service",
+            "script": "yarn service:prod",
+            "args" : "start"
+        }
+    ]
+}
