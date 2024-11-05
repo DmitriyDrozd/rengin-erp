@@ -57,3 +57,14 @@ Start backend
 nohup yarn service:prod &
 disown %process_id%
 ```
+
+*pm2 commands*
+init:
+```
+npm install pm2 -g
+```
+
+start service: 
+```
+pm2 start pm2.config.json
+```
