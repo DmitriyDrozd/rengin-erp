@@ -107,7 +107,7 @@ export default ({newClientsNumber, isEditMode}: {
                 <RenField meta={ISSUES.properties.clientsEngineerUserId}
                       width={'sm'} defaultValue={currentUser.clientsEngineerUserId} disabled/>
                 {isEditMode && (
-                    <RenField meta={ISSUES.properties.managerUserId} disabled={role === 'сметчик'} width={'sm'} disabled/>
+                    <RenField meta={ISSUES.properties.managerUserId} disabled width={'sm'}/>
                 )}
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
