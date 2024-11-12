@@ -36,7 +36,6 @@ import React, {
 import { AntdIcons } from '../components/elements/AntdIcons';
 import DeleteButton from '../components/elements/DeleteButton';
 import CancelButton from '../components/elements/CancelButton';
-import useRole from '../hooks/useRole';
 import { mapColumnStateToDefs } from '../utils/gridUtils';
 import useCurrentUser from '../hooks/useCurrentUser';
 import { isUserCustomer } from '../utils/userUtils';
@@ -152,6 +151,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     }: RGridProps<RID, Fields> & {
         isCreateButtonDisabled?: boolean,
         isNotRoleSensitive?: boolean,
+        /** Used to differentiate tables in local storage to save Grid preferences */
         name?: string,
         title: string;
         toolbar?: React.ReactNode,
@@ -181,8 +181,9 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const usedColumns = columnDefs || defaultColumns;
     const [editColumn, ...restColumns] = usedColumns;
     const firstCol = isMultipleSelection ? columnsMap.checkboxCol : editColumn;
+    const panelName = (name || title) + 'ColumnState';
 
-    const [columnState, setColumnState] = useLocalStorageState((name || title) + 'ColumnState', null);
+    const [columnState, setColumnState] = useLocalStorageState(panelName, null);
 
     const resultCols = [firstCol, ...mapColumnStateToDefs(columnState, restColumns)];
     const defaultList = useSelector(resource.selectList);

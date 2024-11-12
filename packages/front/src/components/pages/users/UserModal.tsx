@@ -123,6 +123,7 @@ export default ({id}: { id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.sites.list, 'объектов', SITES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_users_sites'}
                                     resource={SITES}
                                     rowData={sites}
                                 />
@@ -139,6 +140,7 @@ export default ({id}: { id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_users_issues'}
                                     resource={ISSUES}
                                     rowData={issues}
                                 />
@@ -155,6 +157,7 @@ export default ({id}: { id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.brands.list, 'заказчиков', BRANDS.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_users_brands'}
                                     resource={BRANDS}
                                     rowData={brands}
                                 />
@@ -171,6 +174,7 @@ export default ({id}: { id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.expenses.list, 'итоговых смет', EXPENSES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_users_expenses'}
                                     resource={EXPENSES}
                                     rowData={expenses}
                                 />

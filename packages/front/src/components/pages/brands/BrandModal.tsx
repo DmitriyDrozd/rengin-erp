@@ -35,6 +35,7 @@ export default ({id}: { id: string }) => {
                 <PanelRGrid
                     createItemProps={{brandId: id}}
                     title={name}
+                    name={name + '_brand_sites'}
                     resource={SITES}
                     rowData={sites}
                 />
@@ -43,6 +44,7 @@ export default ({id}: { id: string }) => {
                 <PanelRGrid
                     createItemProps={{brandId: id}}
                     title={name}
+                    name={name + '_brand_legals'}
                     resource={LEGALS}
                     rowData={legals}
                 />
@@ -51,6 +53,7 @@ export default ({id}: { id: string }) => {
                 <PanelRGrid
                     createItemProps={{brandId: id}}
                     title={name}
+                    name={name + '_brand_contracts'}
                     resource={CONTRACTS}
                     rowData={contracts}
                 />

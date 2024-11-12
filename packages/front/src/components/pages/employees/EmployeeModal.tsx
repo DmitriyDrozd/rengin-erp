@@ -104,6 +104,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.sites.list, 'объектов', SITES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_employee_sites'}
                                     resource={SITES}
                                     rowData={sites}
                                 />
@@ -120,6 +121,7 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
                                     onRemoveFromItems={onRemoveFromItems(ledger.issues.list, 'заявок', ISSUES.idProp)}
                                     createItemProps={{[role]: id}}
                                     title={name}
+                                    name={name + '_employee_issues'}
                                     resource={ISSUES}
                                     rowData={issues}
                                 />
