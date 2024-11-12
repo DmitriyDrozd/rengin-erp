@@ -22,7 +22,7 @@ jobs:
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY_GITHUB_RUNNER }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ vars.DEV_HOST }} > ~/.ssh/known_hosts
+        echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
     - name: Branch name
       run: echo running on branch ${GITHUB_REF_NAME}  ref type ${GITHUB_REF_TYPE}
     - name: ssh-connect and pull
