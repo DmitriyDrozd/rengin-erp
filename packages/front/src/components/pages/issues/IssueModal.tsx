@@ -22,12 +22,12 @@ import { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
 import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
 import { Days } from 'iso/src/utils';
 import useCurrentUser from '../../../hooks/useCurrentUser';
-import { isUserCustomer } from '../../../utils/userUtils';
+import { isManagementRole, isUserCustomer } from '../../../utils/userUtils';
 
 
 export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNumber: string, disabledEdit?: boolean }) => {
     const { currentUser } = useCurrentUser();
-    const isCustomer = isUserCustomer(currentUser);
+    const isCustomerRestriction = isUserCustomer(currentUser) && !isManagementRole(currentUser);
     const useEditorData = useEditor(issuesEditor, id);
     const issueId = useEditorData.item.issueId;
 
@@ -91,7 +91,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                     <ProCard.TabPane key="tab1" tab="Заявка">
                         <EditIssueItemForm newClientsNumber={newClientsNumber} isEditMode={isEditMode}/>
                     </ProCard.TabPane>
-                    {!disabledEdit && !isCustomer && (
+                    {!disabledEdit && !isCustomerRestriction && (
                         <>
                             <ProCard.TabPane key="tab2" tab={'Смета'}>
                                 <EstimationsTable/>
@@ -102,7 +102,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                         </>
                     )}
                     <ProCard.TabPane key="tab4" tab={'Файлы'} disabled={!isEditMode}>
-                        {!disabledEdit && !isCustomer && (
+                        {!disabledEdit && !isCustomerRestriction && (
                             <UploadIssue
                                 {...getFilesProps('checkFiles', 'Чеки', 100)}
                                 {...uploadProps}

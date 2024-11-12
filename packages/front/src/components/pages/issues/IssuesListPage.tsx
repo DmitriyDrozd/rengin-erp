@@ -244,7 +244,16 @@ export default () => {
         {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
     ];
 
-    const rawColumns = (isCustomer ? customerColumns : isUserEngineer ? engineerColumns : defaultColumns) as ColDef<IssueVO>[];
+    let rawColumns: ColDef<IssueVO>[] = [];
+
+    if (isCustomer) {
+        rawColumns = customerColumns as ColDef<IssueVO>[];
+    } else if (isUserEngineer) {
+        rawColumns = engineerColumns as ColDef<IssueVO>[];
+    } else {
+        rawColumns = defaultColumns as ColDef<IssueVO>[];
+    }
+
     const columns: ColDef<IssueVO>[] = rawColumns.filter(c => !c.columnToRemove);
 
     const [statuses, setStatuses] = useLocalStorageState('issuesStatusFilter', isUserEstimator ? estimationStatusesList : statusesList);

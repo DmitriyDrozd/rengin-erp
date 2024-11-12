@@ -75,8 +75,9 @@ export default ({newClientsNumber, isEditMode}: {
 
     const isManager = isManagementRole(currentUser);
     const isCustomer = isUserCustomer(currentUser);
+    const isEngineer = role === roleEnum['инженер'];
 
-    if (isCustomer) {
+    if (isCustomer && isEngineer) {
         const brandId = currentUser.brandId;
         const brandOptions = brands.filter(brand => brand.brandId === brandId).map(brand => ({ label: brand.brandName, value: brand.brandId }));
         const legalOptions = legals.filter(legal => legal.brandId === brandId).map(legal => ({ label: legal.legalName, value: legal.legalId }));
@@ -114,7 +115,7 @@ export default ({newClientsNumber, isEditMode}: {
         );
     }
 
-    if (role === roleEnum['инженер']) {
+    if (isEngineer) {
         return (
             <Form
                 style={{maxWidth: 800}}
@@ -128,8 +129,9 @@ export default ({newClientsNumber, isEditMode}: {
                     disabled
                     width={'sm'}
                 />
-                {/* contactInfo не должно быть видно заказчику */}
-                <RenField meta={ISSUES.properties.contactInfo} disabled/>
+                {!isCustomer && (
+                    <RenField meta={ISSUES.properties.contactInfo} disabled/>
+                )}
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );
