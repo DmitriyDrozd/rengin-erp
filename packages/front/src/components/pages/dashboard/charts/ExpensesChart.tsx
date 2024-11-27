@@ -1,22 +1,15 @@
 import { Column, Pie } from '@ant-design/plots';
 import React, { FC } from 'react';
-import { IssueVO, paymentTypes, TExpense } from 'iso/src/store/bootstrap/repos/issues';
+import { IssueVO, paymentTypes, purposeTypes, TExpense } from 'iso/src/store/bootstrap/repos/issues';
 import { getAnnotation, formatMoneyRub, getAnnotationDataCount } from './helpers';
 import Space from 'antd/es/space';
 
 const getExpenses = (issue: IssueVO): TExpense[] => issue.expenses;
 
-const EXPENSE_PURPOSE = {
-    material: 'Материалы',
-    service: 'Работы',
-    gsm: 'ГСМ',
-    other: 'Прочее',
-}
-
-const materialsFilter = (expense: TExpense) => expense.purposeType === EXPENSE_PURPOSE.material;
-const serviceFilter = (expense: TExpense) => expense.purposeType === EXPENSE_PURPOSE.service;
-const gsmFilter = (expense: TExpense) => expense.purposeType === EXPENSE_PURPOSE.gsm;
-const otherFilter = (expense: TExpense) => expense.purposeType === EXPENSE_PURPOSE.other;
+const materialsFilter = (expense: TExpense) => expense.purposeType === purposeTypes.material;
+const serviceFilter = (expense: TExpense) => expense.purposeType === purposeTypes.service;
+const gsmFilter = (expense: TExpense) => expense.purposeType === purposeTypes.gsm;
+const otherFilter = (expense: TExpense) => expense.purposeType === purposeTypes.other;
 
 const cashFilter = (expense: TExpense) => expense.paymentType === paymentTypes.cash;
 const cashlessFilter = (expense: TExpense) => expense.paymentType === paymentTypes.cashless;
@@ -60,48 +53,48 @@ export const ExpensesChart: FC<ExpensesChartProps> = (
 
     data = [
         {
-            type: EXPENSE_PURPOSE.material,
+            type: purposeTypes.material,
             value: Math.round(amount.material.cash),
             paymentType: paymentTypes.cash,
         },
         {
-            type: EXPENSE_PURPOSE.material,
+            type: purposeTypes.material,
             value: Math.round(amount.material.cashless),
             paymentType: paymentTypes.cashless,
         },
         {
-            type: EXPENSE_PURPOSE.service,
+            type: purposeTypes.service,
             value: Math.round(amount.service.cash),
             paymentType: paymentTypes.cash,
         },
         {
-            type: EXPENSE_PURPOSE.service,
+            type: purposeTypes.service,
             value: Math.round(amount.service.cashless),
             paymentType: paymentTypes.cashless,
         },
         {
-            type: EXPENSE_PURPOSE.gsm,
+            type: purposeTypes.gsm,
             value: Math.round(amount.gsm.cash),
             paymentType: paymentTypes.cash,
         },
         {
-            type: EXPENSE_PURPOSE.gsm,
+            type: purposeTypes.gsm,
             value: Math.round(amount.gsm.cashless),
             paymentType: paymentTypes.cashless,
         },
         {
-            type: EXPENSE_PURPOSE.other,
+            type: purposeTypes.other,
             value: Math.round(amount.other.cash),
             paymentType: paymentTypes.cash,
         },
         {
-            type: EXPENSE_PURPOSE.other,
+            type: purposeTypes.other,
             value: Math.round(amount.other.cashless),
             paymentType: paymentTypes.cashless,
         },
     ];
 
-    const pieDataType = Object.values(EXPENSE_PURPOSE).map(category => ({
+    const pieDataType = Object.values(purposeTypes).map(category => ({
         type: category,
         value: data.reduce((acc, current) => current.type === category ? acc + current.value : acc, 0),
     }));
@@ -124,10 +117,10 @@ export const ExpensesChart: FC<ExpensesChartProps> = (
 
     const dataCount = getAnnotationDataCount(data);
     const annotations = [
-        getAnnotation(EXPENSE_PURPOSE.material, materialAmount, { dataCount, content: formatMoneyRub(materialAmount) }),
-        getAnnotation(EXPENSE_PURPOSE.service, serviceAmount, { dataCount, content: formatMoneyRub(serviceAmount) }),
-        getAnnotation(EXPENSE_PURPOSE.gsm, gsmAmount, { dataCount, content: formatMoneyRub(gsmAmount) }),
-        getAnnotation(EXPENSE_PURPOSE.other, otherAmount, { dataCount, content: formatMoneyRub(otherAmount) }),
+        getAnnotation(purposeTypes.material, materialAmount, { dataCount, content: formatMoneyRub(materialAmount) }),
+        getAnnotation(purposeTypes.service, serviceAmount, { dataCount, content: formatMoneyRub(serviceAmount) }),
+        getAnnotation(purposeTypes.gsm, gsmAmount, { dataCount, content: formatMoneyRub(gsmAmount) }),
+        getAnnotation(purposeTypes.other, otherAmount, { dataCount, content: formatMoneyRub(otherAmount) }),
     ];
 
     const config = {

@@ -32,6 +32,7 @@ import { layoutPropsModalForm } from '../../../form/ModalForm';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import { StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
+import { FinanceSimplified } from './FinanceSimplified';
 
 // const DEFAULT_ISSUE_STATUS = statusesList[0];
 
@@ -77,7 +78,7 @@ export default ({newClientsNumber, isEditMode}: {
 
     const isManager = isManagementRole(currentUser);
     const isCustomer = isUserCustomer(currentUser);
-    const isIT = isUserIT(currentUser);
+    const isITDepartment = isUserIT(currentUser);
     const isEngineer = role === roleEnum['инженер'];
 
     if (isCustomer && isEngineer) {
@@ -162,11 +163,11 @@ export default ({newClientsNumber, isEditMode}: {
                 }
             </Form.Item>
             <RenField defaultValue={dayjs()} meta={ISSUES.fields.registerDate} disabled={!!initRegisterDate}/>
-            <RenField meta={ISSUES.properties.plannedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isIT)}
+            <RenField meta={ISSUES.properties.plannedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isITDepartment)}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.workStartedDate} disabled={role === 'сметчик' || role === 'менеджер'}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.completedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isIT)}
+            <RenField meta={ISSUES.properties.completedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isITDepartment)}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.description}
                       multiline={true}
@@ -175,22 +176,24 @@ export default ({newClientsNumber, isEditMode}: {
             <RenField meta={ISSUES.properties.managerUserId}
                       disabled={role === 'сметчик'}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.clientsEngineerUserId} hidden={isIT}
+            <RenField meta={ISSUES.properties.clientsEngineerUserId} hidden={isITDepartment}
                         width={'sm'}/>
-            <RenField meta={ISSUES.properties.techUserId} label={isIT ? 'Исполнитель' : null}
+            <RenField meta={ISSUES.properties.techUserId} label={isITDepartment ? 'Исполнитель' : null}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.estimatorUserId} hidden={isIT}
+            <RenField meta={ISSUES.properties.estimatorUserId} hidden={isITDepartment}
                     width={'sm'}/>
             <RenField meta={ISSUES.properties.contactInfo}
                         multiline={true} width={'sm'} hidden={isCustomer} />
-            <RenField meta={ISSUES.properties.status} customOptions={isIT ? StatusesListIT.map(s => ({ value: s, label: s })) : null}/>
+            <RenField meta={ISSUES.properties.status} customOptions={isITDepartment ? StatusesListIT.map(s => ({ value: s, label: s })) : null}/>
             <RenField meta={ISSUES.properties.estimationsStatus}
-                        width={'sm'} hidden={isIT} />
+                        width={'sm'} hidden={isITDepartment} />
             <RenField meta={ISSUES.properties.dateFR} customProperties={{
                 format: Days.FORMAT_MONTH_YEAR,
                 picker: 'month',
             }}/>
-
+            {isITDepartment && (
+                <FinanceSimplified issue={editor.item} onChange={editor.updateItemProperty}/>
+            )}
             <FinanceFooter issue={editor.item}/>
         </Form>);
 }

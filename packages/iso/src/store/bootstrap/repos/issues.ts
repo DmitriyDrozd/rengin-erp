@@ -56,7 +56,16 @@ export const paymentTypes = {
     cash: 'Наличные',
     cashless: 'Безналичные',
 }
+
+export const purposeTypes = {
+    material: 'Материалы',
+    service: 'Работы',
+    gsm: 'ГСМ',
+    other: 'Прочее',
+}
+
 export const paymentTypesList = [paymentTypes.cash, paymentTypes.cashless] as const;
+export const purposeTypesList = [purposeTypes.material, purposeTypes.service, purposeTypes.gsm, purposeTypes.other] as const;
 
 const issuesRaw = createResource('issue', {
         clientsIssueNumber: valueTypes.string({headerName: 'Номер заявки', required: true}),
@@ -86,6 +95,7 @@ const issuesRaw = createResource('issue', {
             headerName: 'Список расходов',
             properties: {
                 paymentType: valueTypes.enum({enum: paymentTypesList}),
+                purposeType: valueTypes.enum({enum: purposeTypesList}),
                 title: valueTypes.string(),
                 amount: valueTypes.number(),
                 comment: valueTypes.string(),

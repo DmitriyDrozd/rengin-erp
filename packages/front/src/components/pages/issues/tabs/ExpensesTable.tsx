@@ -17,7 +17,8 @@ import {
     ISSUES,
     IssueVO,
     paymentTypes,
-    paymentTypesList
+    paymentTypesList,
+    purposeTypesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import {
     Button,
@@ -59,7 +60,7 @@ export default (props) => {
             headerName: 'Оплата',
             cellEditor: 'agSelectCellEditor',
             cellEditorParams: {
-                values: paymentTypesList as string[]
+                values: [...paymentTypesList]
             } as ISelectCellEditorParams,
         },
         {
@@ -68,7 +69,7 @@ export default (props) => {
             cellEditor: 'agSelectCellEditor',
             width: 120,
             cellEditorParams: {
-                values: ['Материалы', 'Работы', 'ГСМ', 'Прочее']
+                values: [...purposeTypesList]
             } as ISelectCellEditorParams,
         },
         {field: 'title', headerName: 'Наименование', width: 140,},

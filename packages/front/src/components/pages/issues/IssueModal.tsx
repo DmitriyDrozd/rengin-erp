@@ -22,12 +22,13 @@ import { SiteVO } from 'iso/src/store/bootstrap/repos/sites';
 import { CellRendererWithCopy } from '../../elements/CellRendererWithCopy';
 import { Days } from 'iso/src/utils';
 import useCurrentUser from '../../../hooks/useCurrentUser';
-import { isManagementRole, isUserCustomer } from '../../../utils/userUtils';
+import { isManagementRole, isUserCustomer, isUserIT } from '../../../utils/userUtils';
 
 
 export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNumber: string, disabledEdit?: boolean }) => {
     const { currentUser } = useCurrentUser();
     const isCustomerRestriction = isUserCustomer(currentUser) && !isManagementRole(currentUser);
+    const isITDepartment = isUserIT(currentUser);
     const useEditorData = useEditor(issuesEditor, id);
     const issueId = useEditorData.item.issueId;
 
@@ -91,7 +92,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
                     <ProCard.TabPane key="tab1" tab="Заявка">
                         <EditIssueItemForm newClientsNumber={newClientsNumber} isEditMode={isEditMode}/>
                     </ProCard.TabPane>
-                    {!disabledEdit && !isCustomerRestriction && (
+                    {!disabledEdit && !isCustomerRestriction && !isITDepartment && (
                         <>
                             <ProCard.TabPane key="tab2" tab={'Смета'}>
                                 <EstimationsTable/>
