@@ -32,6 +32,7 @@ export const DEPRECATED_issueEstimationStatusesList = [
 ] as const;
 
 export const statusesList = ['Новая', 'В работе', 'Выполнена', 'Отменена', 'Приостановлена'] as const;
+export const StatusesListIT = ['В работе', 'Выполнена', 'Отменена', 'Приостановлена'] as const;
 
 export type Status = typeof statusesList[number]
 

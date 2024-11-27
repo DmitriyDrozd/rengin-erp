@@ -21,7 +21,8 @@ import 'dayjs/locale/ru';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import {
     isManagementRole,
-    isUserCustomer
+    isUserCustomer,
+    isUserIT
 } from '../../../../utils/userUtils';
 import FinanceFooter from './FinanceFooter';
 import RenField from '../../../form/RenField';
@@ -30,6 +31,7 @@ import { layoutPropsModalForm } from '../../../form/ModalForm';
 // import { statusesList } from 'iso/src/store/bootstrap/repos/issues';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
+import { StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
 
 // const DEFAULT_ISSUE_STATUS = statusesList[0];
 
@@ -75,6 +77,7 @@ export default ({newClientsNumber, isEditMode}: {
 
     const isManager = isManagementRole(currentUser);
     const isCustomer = isUserCustomer(currentUser);
+    const isIT = isUserIT(currentUser);
     const isEngineer = role === roleEnum['инженер'];
 
     if (isCustomer && isEngineer) {
@@ -107,9 +110,7 @@ export default ({newClientsNumber, isEditMode}: {
                 />
                 <RenField meta={ISSUES.properties.clientsEngineerUserId}
                       width={'sm'} defaultValue={currentUser.clientsEngineerUserId} disabled/>
-                {isEditMode && (
-                    <RenField meta={ISSUES.properties.managerUserId} disabled width={'sm'}/>
-                )}
+                <RenField meta={ISSUES.properties.managerUserId} disabled width={'sm'} hidden={!isEditMode}/>
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );
@@ -129,9 +130,7 @@ export default ({newClientsNumber, isEditMode}: {
                     disabled
                     width={'sm'}
                 />
-                {!isCustomer && (
-                    <RenField meta={ISSUES.properties.contactInfo} disabled/>
-                )}
+                <RenField meta={ISSUES.properties.contactInfo} hidden={isCustomer} disabled/>
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );
@@ -163,11 +162,11 @@ export default ({newClientsNumber, isEditMode}: {
                 }
             </Form.Item>
             <RenField defaultValue={dayjs()} meta={ISSUES.fields.registerDate} disabled={!!initRegisterDate}/>
-            <RenField meta={ISSUES.properties.plannedDate} disabled={role === 'сметчик' || role === 'менеджер'}
+            <RenField meta={ISSUES.properties.plannedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isIT)}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.workStartedDate} disabled={role === 'сметчик' || role === 'менеджер'}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.completedDate} disabled={role === 'сметчик' || role === 'менеджер'}
+            <RenField meta={ISSUES.properties.completedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isIT)}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.description}
                       multiline={true}
@@ -176,20 +175,17 @@ export default ({newClientsNumber, isEditMode}: {
             <RenField meta={ISSUES.properties.managerUserId}
                       disabled={role === 'сметчик'}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.clientsEngineerUserId}
+            <RenField meta={ISSUES.properties.clientsEngineerUserId} hidden={isIT}
+                        width={'sm'}/>
+            <RenField meta={ISSUES.properties.techUserId} label={isIT ? 'Исполнитель' : null}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.techUserId}
-                      width={'sm'}/>
-            <RenField meta={ISSUES.properties.estimatorUserId}
-                      width={'sm'}/>
-            {!isCustomer && (
-                <RenField meta={ISSUES.properties.contactInfo}
-                          multiline={true}
-                          width={'sm'}/>
-            )}
-            <RenField meta={ISSUES.properties.status}/>
+            <RenField meta={ISSUES.properties.estimatorUserId} hidden={isIT}
+                    width={'sm'}/>
+            <RenField meta={ISSUES.properties.contactInfo}
+                        multiline={true} width={'sm'} hidden={isCustomer} />
+            <RenField meta={ISSUES.properties.status} customOptions={isIT ? StatusesListIT.map(s => ({ value: s, label: s })) : null}/>
             <RenField meta={ISSUES.properties.estimationsStatus}
-                      width={'sm'}/>
+                        width={'sm'} hidden={isIT} />
             <RenField meta={ISSUES.properties.dateFR} customProperties={{
                 format: Days.FORMAT_MONTH_YEAR,
                 picker: 'month',

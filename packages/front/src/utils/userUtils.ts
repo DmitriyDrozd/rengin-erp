@@ -1,3 +1,4 @@
+import { departmentList } from 'iso/src/store/bootstrap/enumsList';
 import {
     roleEnum,
     UserVO
@@ -16,4 +17,10 @@ export const isManagementRole = (user: UserVO) => {
     const { role } = user;
 
     return [roleEnum['руководитель'], roleEnum['менеджер']].includes(role);
+}
+
+export const isUserIT = (user: UserVO) => {
+    const { department } = user;
+
+    return department === departmentList[3]; // "ИТ"
 }

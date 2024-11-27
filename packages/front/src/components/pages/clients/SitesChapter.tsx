@@ -41,6 +41,7 @@ import Divider from 'antd/lib/divider';
 import { SitesMap } from './SitesMap';
 import GlobalOutlined from '@ant-design/icons/lib/icons/GlobalOutlined';
 import UpOutlined from '@ant-design/icons/lib/icons/UpOutlined';
+import { isUserIT } from '../../../utils/userUtils';
 
 const RESOURCE = SITES;
 
@@ -78,7 +79,8 @@ const getGmapsPromises = (sites) => {
 
 export default () => {
     const {currentUser} = useCurrentUser();
-    const isViewMode = currentUser.role === roleEnum['менеджер'];
+    const isITDepartment = isUserIT(currentUser);
+    const isViewMode = currentUser.role === roleEnum['менеджер'] && !isITDepartment;
 
     const [cols, colMap] = useAllColumns(RESOURCE);
     const columns: ColDef<SiteVO>[] = [
@@ -294,6 +296,8 @@ export default () => {
                             allowClear
                             disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'techUserId')}
+                            label={isITDepartment ? 'Исполнитель' : null}
+                            placeholder={isITDepartment ? 'Исполнитель' : null}
                         />
                         <ProFormTextArea
                             disabled={isViewMode}

@@ -33,7 +33,26 @@ import './RenField.css';
 
 const {Text, Link} = Typography;
 
-export default ({meta, disabled, customOptions, defaultValue, immutable, customProperties}: {
+export default (props: {
+    hidden?: boolean,
+    label?: string,
+    meta: AnyMeta,
+    disabled?: boolean,
+    immutable?: boolean,
+    customOptions?: {
+        value: string,
+        label: string
+    }[],
+    defaultValue?: any,
+    customProperties?: any,
+}) => {
+    const { hidden, ...restProps } = props;
+
+    return hidden ? null : <RenField {...restProps} />
+}
+
+export const RenField = ({label, meta, disabled, customOptions, defaultValue, immutable, customProperties}: {
+    label?: string,
     meta: AnyMeta,
     disabled?: boolean,
     immutable?: boolean,
@@ -95,7 +114,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
                     optionFilterProp={'label'}
                     allowClear
                     showSearch
-                    placeholder={property.headerName}
+                    placeholder={label || property.headerName}
                     disabled={disabled}
                     onClear={() => {
                         updateItemProperty(null);
@@ -124,7 +143,7 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
                     value={value}
                     optionFilterProp={'label'}
                     showSearch={true}
-                    placeholder={property.headerName}
+                    placeholder={label || property.headerName}
                     onChange={updateItemProperty}
                     style={{minWidth: '200px'}}
                     options={customOptions || params.options}
@@ -206,12 +225,12 @@ export default ({meta, disabled, customOptions, defaultValue, immutable, customP
 
     if (error) {
         return (
-            <Form.Item label={property.headerName} validateStatus={'error'} hasFeedback={true} help={error}
+            <Form.Item label={label || property.headerName} validateStatus={'error'} hasFeedback={true} help={error}
                        required={property.required}>{renderInputControl()}</Form.Item>)
             ;
     }
     return (
-        <Form.Item label={property.headerName}
+        <Form.Item label={label || property.headerName}
                    required={property.required}>{renderInputControl()}</Form.Item>)
         ;
 };
