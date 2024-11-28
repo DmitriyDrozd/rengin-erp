@@ -75,7 +75,8 @@ const getGmapsPromises = (sites) => {
 export default () => {
     const {currentUser} = useCurrentUser();
     const isITDepartment = isUserIT(currentUser);
-    const isViewMode = currentUser.role === roleEnum['менеджер'] && !isITDepartment;
+    const isManager = currentUser.role === roleEnum['менеджер'];
+    const isViewMode = isManager && !isITDepartment;
 
     const [cols, colMap] = useAllColumns(RESOURCE);
     const columns: ColDef<SiteVO>[] = [
@@ -285,6 +286,7 @@ export default () => {
                         <ProFormSelect
                             showSearch
                             allowClear
+                            initialValue={(isManager && isITDepartment) ? currentUser.userId : undefined}
                             disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'managerUserId')}
                         />
