@@ -43,7 +43,7 @@ export const FinanceSimplified = ({ issue, onChange }: IFinanceSimplifiedProps) 
         material: findExpense(purposeTypes.material),
         service: findExpense(purposeTypes.service),
         gsm: findExpense(purposeTypes.gsm),
-        other: findExpense(purposeTypes.other),
+        zip: findExpense(purposeTypes.zip),
     }
 
     return (
@@ -67,10 +67,10 @@ export const FinanceSimplified = ({ issue, onChange }: IFinanceSimplifiedProps) 
                     onChange={onChangeExpense(purposeTypes.gsm)}
                 />
             </Form.Item>
-            <Form.Item label={purposeTypes.other + ' расход'}>
+            <Form.Item label={purposeTypes.zip + ' расход'}>
                 <NumericInput
-                    value={expenses.other}
-                    onChange={onChangeExpense(purposeTypes.other)}
+                    value={expenses.zip}
+                    onChange={onChangeExpense(purposeTypes.zip)}
                 />
             </Form.Item>
         </>

@@ -60,8 +60,9 @@ export const paymentTypes = {
 export const purposeTypes = {
     material: 'Материалы',
     service: 'Работы',
-    gsm: 'ГСМ',
+    gsm: 'ГСМ', // горюче-смазочные материалы
     other: 'Прочее',
+    zip: 'ЗИП' // запасные части, инструменты и принадлежности (только ИТ-отдел)
 }
 
 export const paymentTypesList = [paymentTypes.cash, paymentTypes.cashless] as const;

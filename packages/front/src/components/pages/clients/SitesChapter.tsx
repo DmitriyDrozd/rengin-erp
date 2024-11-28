@@ -9,7 +9,6 @@ import axios from 'axios';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import React, {
     useEffect,
-    useMemo,
     useState
 } from 'react';
 import { GOOGLE_MAPS_API_KEY } from '../../../env';
@@ -30,18 +29,14 @@ import {
     useDispatch,
     useSelector
 } from 'react-redux';
-import {
-    call,
-    put,
-} from 'typed-redux-saga';
 import PanelRGrid, { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import Typography from 'antd/es/typography';
-import { sleep } from '@sha/utils/src/async';
 import Divider from 'antd/lib/divider';
 import { SitesMap } from './SitesMap';
 import GlobalOutlined from '@ant-design/icons/lib/icons/GlobalOutlined';
 import UpOutlined from '@ant-design/icons/lib/icons/UpOutlined';
 import { isUserIT } from '../../../utils/userUtils';
+import { departmentList } from 'iso/src/store/bootstrap/enumsList';
 
 const RESOURCE = SITES;
 
@@ -102,7 +97,15 @@ export default () => {
     const ledger = useLedger();
     const dispatch = useDispatch();
     const allSites = ledger.sites.list;
+    const allUsers = ledger.users.list;
+    const ITDepartmentUserIDs = allUsers.filter(user => user.department === departmentList[3]).map(user => user.userId);
+
     const isAllSitesHasGeo = allSites.every(site => !!site.geoPosition);
+    const visibleSites = allSites.filter(site => {
+        const isSiteFromITDepartment = ITDepartmentUserIDs.includes(site.managerUserId);
+        
+        return isITDepartment ? isSiteFromITDepartment : !isSiteFromITDepartment;
+    });
 
     const [percent, setPercent] = useState(0);
 
@@ -327,6 +330,7 @@ export default () => {
                             columnDefs={columns}
                             headerHeight={MAP_DIVIDER_HEIGHT}
                             resource={SITES}
+                            rowData={visibleSites}
                             fullHeight={true}
                             title={'Все объекты'}
                             onFilterChanged={({ api }) => {
