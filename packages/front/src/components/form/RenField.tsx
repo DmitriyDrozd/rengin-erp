@@ -51,7 +51,7 @@ export default (props: {
     return hidden ? null : <RenField {...restProps} />
 }
 
-export const RenField = ({label, meta, disabled, customOptions, defaultValue, immutable, customProperties}: {
+export const RenField = ({label, meta, disabled, customOptions, defaultValue, immutable, customProperties, createButton}: {
     label?: string,
     meta: AnyMeta,
     disabled?: boolean,
@@ -62,6 +62,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
     }[],
     defaultValue?: any,
     customProperties?: any,
+    createButton?: JSX.Element,
 }) => {
     const [itemToFocus, setItemToFocus] = useState(null);
     const editorProperty = useContextEditorProperty(meta.name);
@@ -129,7 +130,9 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                             {menu}
                             <Divider style={{margin: '8px 0'}}/>
                             <Space style={{padding: '0 8px 4px'}}>
-                                <CreateButton type="text" label="Добавить" resource={resource} />
+                                {createButton ? createButton : (
+                                    <CreateButton type="text" label="Добавить" resource={resource} />
+                                )}
                             </Space>
                         </>
                     )}

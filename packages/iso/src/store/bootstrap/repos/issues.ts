@@ -1,4 +1,3 @@
-import { Dayjs } from 'dayjs';
 import { createResource } from '../core/createResource';
 import { valueTypes } from '../core/valueTypes';
 import { Days } from '../../../utils';

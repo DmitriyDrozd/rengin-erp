@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Form from "antd/es/form";
 
 import ISSUES, { IssueVO, paymentTypes, purposeTypes, TExpense } from "iso/src/store/bootstrap/repos/issues";
@@ -12,8 +12,6 @@ interface IFinanceSimplifiedProps {
 
 export const FinanceSimplified = ({ issue, onChange }: IFinanceSimplifiedProps) => {
     // Исходим из того, что у ИТ-отдела нету вкладки Расходы, а значит каждого расхода может быть только одна запись
-    // todo: Для заявок, к которым привязан менеджер не из ИТ-отдела, поле должно быть не редактируемым, чтобы не потерять записи
-
     const onChangeExpense = (purposeType: string) => (value: string) => {
         const amount = isNaN(+value) ? 0 : +value;
 

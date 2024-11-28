@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { Days } from 'iso';
 import {
     ISSUES,
+    SITES,
 } from 'iso/src/store/bootstrap';
 import {
     roleEnum,
@@ -33,6 +34,7 @@ import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import { StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
 import { FinanceSimplified } from './FinanceSimplified';
+import { SimpleCreateSiteButton } from '../../../elements/formElements/simpleCreateSiteButton';
 
 // const DEFAULT_ISSUE_STATUS = statusesList[0];
 
@@ -154,6 +156,14 @@ export default ({newClientsNumber, isEditMode}: {
                 placeholder={'Адрес не указан'}
                 meta={ISSUES.properties.siteId}
                 immutable={isManager ? false : !!initValues.siteId}
+                createButton={isITDepartment && (
+                    <SimpleCreateSiteButton
+                        brandId={editor.item.brandId}
+                        legalId={editor.item.legalId}
+                        managerUserId={editor.item.managerUserId || isManager ? currentUser.userId : ''}
+                        settleOnCreate={editor.updateItemProperty('siteId')}
+                    />
+                )}
             />
             <Form.Item name="contractId" label="Договор">
                 {
