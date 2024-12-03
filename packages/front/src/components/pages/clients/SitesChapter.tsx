@@ -301,8 +301,8 @@ export default () => {
                             allowClear
                             disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'techUserId')}
-                            label={isITDepartment ? 'Исполнитель' : null}
-                            placeholder={isITDepartment ? 'Исполнитель' : null}
+                            label={isITDepartment ? 'Исполнитель' : 'Техник'}
+                            placeholder={isITDepartment ? 'Исполнитель' : 'Техник'}
                         />
                         <ProFormTextArea
                             disabled={isViewMode}
