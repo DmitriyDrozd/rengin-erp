@@ -35,7 +35,7 @@ export const FinanceSimplified = ({ issue, onChange }: IFinanceSimplifiedProps) 
         onChange('expenses')(newExpenses);
     }
 
-    const findExpense = (purposeType: string): string => issue.expenses.find(e => e.purposeType === purposeType)?.amount.toString() || '';
+    const findExpense = (purposeType: string): string => issue.expenses?.find(e => e.purposeType === purposeType)?.amount.toString() || '';
 
     const expenses = {
         material: findExpense(purposeTypes.material),
