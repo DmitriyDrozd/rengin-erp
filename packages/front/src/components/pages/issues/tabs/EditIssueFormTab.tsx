@@ -175,7 +175,7 @@ export default ({newClientsNumber, isEditMode}: {
             <RenField defaultValue={dayjs()} meta={ISSUES.fields.registerDate} disabled={!!initRegisterDate}/>
             <RenField meta={ISSUES.properties.plannedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isITDepartment)}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.workStartedDate} disabled={role === 'сметчик' || role === 'менеджер'}
+            <RenField meta={ISSUES.properties.workStartedDate} disabled={role === 'сметчик'}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.completedDate} disabled={role === 'сметчик' || (role === 'менеджер' && !isITDepartment)}
                       width={'sm'}/>
