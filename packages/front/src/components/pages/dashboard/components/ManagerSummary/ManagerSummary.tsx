@@ -41,7 +41,7 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
 
         const userIssues = issuesByUser[userId];
         const profit = userIssues.reduce((acc, item) => {
-            const sum = item.estimationPrice || item.estimations?.reduce((_acc, _item) => _acc += isNaN(_item.amount) ? 0 : _item.amount, 0) || 0;
+            const sum = item.estimationPrice ? +item.estimationPrice : item.estimations?.reduce((_acc, _item) => _acc += isNaN(_item.amount) ? 0 : +_item.amount, 0) || 0;
             return acc += sum;
         }, 0);
 
