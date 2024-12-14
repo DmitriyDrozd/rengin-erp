@@ -12,13 +12,26 @@ interface DashboardManagerSummaryProps {
 
 dayjs.extend(isBetween);
 
+const getDaysDiffToTuesday = (date: Dayjs) => {
+    const dateClone = date.clone();
+
+    let res = 0;
+
+    while (!dateClone.add(res, 'day').toDate().toDateString().includes('Mon')) {
+        res++;
+    }
+
+    return res;
+}
+
+const initialEnd = dayjs().add(getDaysDiffToTuesday(dayjs()), 'days');
+const initialStart = initialEnd.subtract(6, 'days');
+
 export const DashboardManagerSummary: FC<DashboardManagerSummaryProps> = ({ allIssues }) => {
-    // todo: вычислять ближайший вторник и отталкиваться от него
-    const [period, setPeriod] = useState([dayjs().subtract(7, 'days'), dayjs()]);
+    const [period, setPeriod] = useState([initialStart, initialEnd]);
     const [periodIssues, setPeriodIssues] = useState([]);
     
     const prevPeriod = () => {
-        // если показывается текущая неделя, отнимать до вторников
         const newPeriod = [
             period[0].subtract(7, 'days'),
             period[1].subtract(7, 'days'),
@@ -36,7 +49,7 @@ export const DashboardManagerSummary: FC<DashboardManagerSummaryProps> = ({ allI
         setPeriod(newPeriod);
     }
 
-    const isPrevPeriodDisabled = false; // < allIssues.firstRegisteredDate
+    const isPrevPeriodDisabled = false;
     const isNextPeriodDisabled = period[1].clone().add(7, 'days').isAfter(dayjs());
 
     useEffect(() => {

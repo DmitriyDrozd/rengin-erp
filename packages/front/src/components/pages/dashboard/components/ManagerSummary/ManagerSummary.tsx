@@ -63,16 +63,14 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
             <Flex wrap="wrap" gap="small">
                 {
                     sortedStats.map(({ userAbbreviation, userName, profit, count }) => (
-                        <>
-                            <Card key={userName}>
-                                <Space direction="vertical" align="center">
-                                    <Avatar style={{ backgroundColor: '#87d068' }} size="large" icon={<UserOutlined />}>{userAbbreviation}</Avatar>
-                                    {userName}
-                                </Space>
-                                <Statistic value={count} title="Количество заявок" />
-                                <Statistic value={profit} title="Прибыль" />
-                            </Card>
-                        </>
+                        <Card key={userName}>
+                            <Space direction="vertical" align="center">
+                                <Avatar style={{ backgroundColor: '#87d068' }} size="large" icon={<UserOutlined />}>{userAbbreviation}</Avatar>
+                                {userName}
+                            </Space>
+                            <Statistic value={count} title="Количество заявок" />
+                            <Statistic value={profit} title="Прибыль" />
+                        </Card>
                     ))
                 }
             </Flex>
