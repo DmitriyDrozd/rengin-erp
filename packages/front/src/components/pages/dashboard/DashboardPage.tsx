@@ -32,6 +32,7 @@ import { DashboardPerformanceCharts } from './components/DashboardPerformanceCha
 import { DashboardProfitCharts } from './components/DashboardProfitCharts';
 import EXPENSES, { ExpenseVO } from 'iso/src/store/bootstrap/repos/expenses';
 import { periodOptions, periodTypesMap } from './components/helpers';
+import { DashboardManagerSummary } from './components/DashboardManagerSummary';
 
 dayjs.extend(isBetween);
 
@@ -85,6 +86,7 @@ export default () => {
         '2': () => true,
         '3': () => true,
         '4': () => true,
+        '5': () => true,
     });
 
     const onChangeSubjectFilter = (key: string) => (filterFunction: () => boolean) => setSubjectFilter({ ...subjectFilter, [key]: filterFunction })
@@ -210,7 +212,16 @@ export default () => {
                 />
             ),
         },
+        {
+            key: '5',
+            label: 'Отчёт',
+            children: (
+                <DashboardManagerSummary allIssues={issues} />
+            ),
+        },
     ];
+
+    const isTableFilterHidden = currentTab === '5';
 
     return (
         <AppLayout
@@ -232,7 +243,8 @@ export default () => {
                     />
                 </div>
             </Card.Grid>
-            <Collapse
+            {!isTableFilterHidden && (
+                <Collapse
                 size="small"
                 defaultActiveKey={[]}
                 items={[
@@ -243,6 +255,8 @@ export default () => {
                     },
                 ]}
             />
+            )}
+            
         </AppLayout>
     );
 }
