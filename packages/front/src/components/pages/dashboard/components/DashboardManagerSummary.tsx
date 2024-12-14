@@ -50,7 +50,7 @@ export const DashboardManagerSummary: FC<DashboardManagerSummaryProps> = ({ allI
     }
 
     const isPrevPeriodDisabled = false;
-    const isNextPeriodDisabled = period[1].clone().add(7, 'days').isAfter(dayjs());
+    const isNextPeriodDisabled = period[1].clone().add(7, 'days').isAfter(initialEnd);
 
     useEffect(() => {
         const result = allIssues.filter(i => !!i.completedDate && dayjs(i.completedDate).isBetween(period[0] || dayjs(new Date(0)), period[1]));
