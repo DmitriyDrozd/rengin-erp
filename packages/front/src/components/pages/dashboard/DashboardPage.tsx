@@ -51,7 +51,7 @@ const offsetDates: { [offset: string]: Dayjs } = {
 const mapOffsetToPeriod = (option: string): Period => option.split(',').map((offset: string) => offsetDates[offset]) as Period;
 
 const DEFAULT_PERIOD = {
-    selectValue: 'week,today',
+    selectValue: periodOptions[1].value,
     periodValue: [dayjs(dayjs().subtract(1, 'week')), dayjs(Date.now())] as Period,
 }
 
@@ -64,17 +64,21 @@ export default () => {
      */
     const defaultPeriod = DEFAULT_PERIOD.periodValue;
     const [period, setPeriod] = useState<Period>(defaultPeriod);
-    const [periodOption, setPeriodOption] = useState('week,today');
+    const [periodOption, setPeriodOption] = useState(periodOptions[1]);
 
     const start = period[0];
     const end = period[1];
+
+    const isWeekSelection = periodOption === periodOptions[1];
 
     const periodEstimations = estimations.filter(Days.isEstimationInPeriod(period));
     const periodIssues = issues.filter(Days.isIssueInPeriod(period));
 
     const onPeriodOptionChange = (option: string) => {
         setPeriod(mapOffsetToPeriod(option));
-        setPeriodOption(option);
+
+        const selectedPeriodOption = periodOptions.find(o => o.value === option);
+        setPeriodOption(selectedPeriodOption);
     };
 
     /**
@@ -144,7 +148,7 @@ export default () => {
                 <span style={{ textWrap: 'nowrap' }}>За период:</span>
                 <Select
                     defaultValue={DEFAULT_PERIOD.selectValue}
-                    value={periodOption}
+                    value={periodOption.value}
                     onSelect={onPeriodOptionChange}
                     style={{width: '100%'}}
                     options={periodOptions}
@@ -160,7 +164,7 @@ export default () => {
             label: 'Заявки',
             children: (
                 <DashboadIssuesCharts
-                    periodType={periodTypesMap[periodOption]}
+                    periodType={periodTypesMap[periodOption.value]}
                     Filters={FiltersItem}
                     allIssues={registeredIssues}
                     onSubFilterChange={onChangeSubjectFilter('1')}
@@ -216,7 +220,12 @@ export default () => {
             key: '5',
             label: 'Отчёт',
             children: (
-                <DashboardManagerSummary allIssues={issues} />
+                <DashboardManagerSummary 
+                    periodIssues={closedIssues} 
+                    Filters={FiltersItem}
+                    updatePeriod={setPeriod}
+                    isWeekSelection={isWeekSelection}
+                />
             ),
         },
     ];

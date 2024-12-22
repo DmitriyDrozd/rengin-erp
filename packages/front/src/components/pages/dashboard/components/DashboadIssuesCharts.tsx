@@ -13,7 +13,6 @@ import useLedger from '../../../../hooks/useLedger';
 import { DefaultOptionType } from 'antd/es/select';
 import { roleEnum } from 'iso/src/store/bootstrap/repos/users';
 import { IssuesByDateChart } from '../charts/IssuesByDate';
-import { IssuesPerformance } from '../charts/IssuesPerformance';
 import { IssueVO } from 'iso/src/store/bootstrap/repos/issues';
 
 const issuesOptions = typeOptions.filter(to => to.value !== TYPES.tech);

@@ -5,9 +5,13 @@ import Button from "antd/es/button";
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { ManagerSummary } from "./ManagerSummary/ManagerSummary";
+import { Period } from "iso/src/utils/date-utils";
 
 interface DashboardManagerSummaryProps {
-    allIssues: IssueVO[];
+    periodIssues: IssueVO[];
+    Filters: ({ children }: { children: React.ReactNode }) => JSX.Element;
+    updatePeriod: (period: Period) => void;
+    isWeekSelection: boolean;
 }
 
 dayjs.extend(isBetween);
@@ -24,49 +28,58 @@ const getDaysDiffToTuesday = (date: Dayjs) => {
     return res;
 }
 
-const initialEnd = dayjs().add(getDaysDiffToTuesday(dayjs()), 'days');
-const initialStart = initialEnd.subtract(6, 'days');
+const initialEnd: Dayjs = dayjs().add(getDaysDiffToTuesday(dayjs()), 'days');
+const initialStart: Dayjs = initialEnd.subtract(6, 'days');
+const initialPeriod: Period = [initialStart, initialEnd];
 
-export const DashboardManagerSummary: FC<DashboardManagerSummaryProps> = ({ allIssues }) => {
-    const [period, setPeriod] = useState([initialStart, initialEnd]);
-    const [periodIssues, setPeriodIssues] = useState([]);
+export const DashboardManagerSummary: FC<DashboardManagerSummaryProps> = ({ periodIssues, Filters, updatePeriod, isWeekSelection }) => {
+    const [period, setPeriod] = useState<Period>(initialPeriod);
     
     const prevPeriod = () => {
-        const newPeriod = [
+        const newPeriod: Period = [
             period[0].subtract(7, 'days'),
             period[1].subtract(7, 'days'),
         ];
 
         setPeriod(newPeriod);
+        updatePeriod(newPeriod);
     }
 
     const nextPeriod = () => {
-        const newPeriod = [
+        const newPeriod: Period = [
             period[0].add(7, 'days'),
             period[1].add(7, 'days'),
         ];
 
         setPeriod(newPeriod);
+        updatePeriod(newPeriod);
     }
 
-    const isPrevPeriodDisabled = false;
-    const isNextPeriodDisabled = period[1].clone().add(7, 'days').isAfter(initialEnd);
+    const isPrevPeriodDisabled = !isWeekSelection ||  false;
+    const isNextPeriodDisabled = !isWeekSelection || period[1].clone().add(7, 'days').isAfter(initialEnd);
 
     useEffect(() => {
-        const result = allIssues.filter(i => !!i.completedDate && dayjs(i.completedDate).isBetween(period[0] || dayjs(new Date(0)), period[1]));
-
-        setPeriodIssues(result);
-    }, [period]);
+        if (isWeekSelection) {
+            setPeriod(initialPeriod);
+            updatePeriod(initialPeriod);
+        }
+    }, [isWeekSelection]);
 
     return (
-        <Space direction="vertical" align="center" style={{ width: '100%' }}>
-            {/* *График со всеми неделями и суммам по ним* */}
-            <Space direction="horizontal">
-                <Button onClick={prevPeriod} disabled={isPrevPeriodDisabled}>предыдущая</Button>
-                {period[0].toDate().toLocaleDateString()} - {period[1].toDate().toLocaleDateString()}
-                <Button onClick={nextPeriod} disabled={isNextPeriodDisabled}>следующая</Button>
-            </Space>
+        <div style={{ display: 'flex', gap: 24, width: '100%' }}>
+            <Filters>
+                { isWeekSelection ? (
+                    <Space direction="vertical" align="center" style={{ width: '100%', alignItems: 'stretch' }}>
+                        {/* *График со всеми неделями и суммам по ним* */}
+                        <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
+                            <Button onClick={prevPeriod} disabled={isPrevPeriodDisabled}>предыдущая</Button>
+                            {period[0].toDate().toLocaleDateString()} - {period[1].toDate().toLocaleDateString()}
+                            <Button onClick={nextPeriod} disabled={isNextPeriodDisabled}>следующая</Button>
+                        </Space>
+                    </Space>
+                ) : null }
+            </Filters>
             <ManagerSummary periodIssues={periodIssues}/>
-        </Space>
+        </div>
     )
 }

@@ -2,7 +2,6 @@ import Space from "antd/es/space"
 import { IssueVO } from "iso/src/store/bootstrap/repos/issues"
 import { FC } from "react"
 import useLedger from "../../../../../hooks/useLedger";
-import { ROLES } from "iso/src/store/bootstrap/repos/users";
 import Statistic from "antd/es/statistic";
 import Card from "antd/es/card";
 import Avatar from "antd/es/avatar";
@@ -18,7 +17,7 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
     const users = ledger.users.byId;
     const issuesByUser: { [managerId: string]: IssueVO[] } = {};
     
-    periodIssues.forEach(issue => {
+    periodIssues?.forEach(issue => {
         if (!issuesByUser[issue.managerUserId]) {
             issuesByUser[issue.managerUserId] = [];
         }
@@ -41,11 +40,15 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
 
         const userIssues = issuesByUser[userId];
         const profit = userIssues.reduce((acc, item) => {
-            // (item.estimationPrice && !isNaN(+item.estimationPrice)) 
-            // ? +item.estimationPrice.toFixed(2) 
-            // : 
-            const sum = item.estimations?.reduce((_acc, _item) => _acc += isNaN(+_item.amount) ? 0 : +_item.amount.toFixed(2), 0) || 0;
-            
+            const sum = item.estimations?.reduce((_acc, _item) => {
+                if (isNaN(+_item.amount)) {
+                    console.log('NaN item:', _item.amount, item.issueId);
+                    return _acc;
+                }
+
+                return _acc += +_item.amount;
+            }, 0) || 0;
+
             return acc += sum;
         }, 0);
 
@@ -54,13 +57,13 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
         statsByUser.push({
             userAbbreviation,
             userName,
-            profit,
+            profit: profit.toFixed(2),
             count: userIssues.length,
         })
     }
 
     const sortedByCount = statsByUser.sort((a, b) => b.count - a.count);
-    const sortedStats = sortedByCount.sort((a, b) => b.profit - a.profit);
+    const sortedStats = sortedByCount.sort((a, b) => +b.profit - +a.profit);
 
     return (
         <Space direction="vertical" align="center">
@@ -79,8 +82,8 @@ export const ManagerSummary: FC<ManagerSummaryProps> = ({ periodIssues }) => {
                 }
             </Flex>
             <Flex wrap="wrap" gap="large">
-                <Statistic value={periodIssues.length} title="заявок за период" />
-                <Statistic value={profitSum} title="сумма" />
+                <Statistic value={periodIssues?.length || 0} title="заявок за период" />
+                <Statistic value={profitSum.toFixed(2)} title="сумма" />
             </Flex>
         </Space>
     )
