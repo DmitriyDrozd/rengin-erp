@@ -213,6 +213,7 @@ export default () => {
         {...colMap.description, width: 350},
         {...contactInfoColumn},
         {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
+        {...colMap.workStartedDate, cellRenderer: (props) => Days.toDayString(props.data?.workStartedDate)},
         {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
         {...colMap.managerUserId, width: 130},
         {...colMap.techUserId, width: 130},
