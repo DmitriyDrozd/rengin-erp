@@ -188,7 +188,7 @@ export default (props) => {
     return (<div>
         {
             canEdit
-                ? <Typography.Text type={'success'}> Ваша роль {currentUser.role}, редактируйте смету</Typography.Text>
+                ? <Typography.Text type={'success'}>Ваша роль {currentUser.role}, редактируйте смету</Typography.Text>
                 : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
         }
         <div className="ag-theme-alpine" style={gridStyle}>
@@ -201,7 +201,6 @@ export default (props) => {
                 onCellEditingStarted={onCellEditingStarted}
                 onCellEditingStopped={onCellEditingStopped}
             />
-
         </div>
 
         <div style={{paddingTop: '8px', display: 'flex', justifyContent: 'space-between'}}>

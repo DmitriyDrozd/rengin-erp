@@ -1,6 +1,3 @@
-import {
-    EstimationStatus
-} from 'iso/src/store/bootstrap/repos/expenses';
 import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ISSUES} from "iso/src/store/bootstrap";
 import {CellEditorProps} from "../../../grid/RGrid";
@@ -12,8 +9,7 @@ import {
 } from 'iso/src/store/bootstrap/repos/issues';
 import {useDispatch, useSelector} from "react-redux";
 
-export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) => {
-    const [value, setValue] = useState(props.value);
+export default forwardRef((props: CellEditorProps<typeof ISSUES, string> , ref) => {
     const refInput = useRef<BaseSelectRef>(null);
 
     const dispatch = useDispatch()
@@ -33,7 +29,7 @@ export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) =
             // the final value to send to the grid, on completion of editing
             getValue() {
                 // this simple editor doubles any value entered into the input
-                return value
+                return props.value
             },
 
             // Gets called once before editing starts, to give editor a chance to
@@ -46,20 +42,22 @@ export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) =
             // If you return true, then the result of the edit will be ignored.
             isCancelAfterEnd() {
                 // our editor will reject any value greater than 1000
-                return value > 1000;
+                return props.value > 1000;
             }
         };
     });
 
+    const options = optionsFromValuesList(props.enum);
+
     return (
         <Select
-            options={optionsFromValuesList(ISSUES.properties.estimationsStatus.enum)}
+            options={options}
             placeholder={'Статус не указан'}
-            onChange={ (value: EstimationStatus) => {
-                setIssueProperty('estimationsStatus')(value)
+            onChange={ (value: any) => {
+                setIssueProperty(props.prop)(value)
             }}
             ref={refInput}
-            value={value}
+            value={props.value}
             style={{width: "100%"}}
         ></Select>
 

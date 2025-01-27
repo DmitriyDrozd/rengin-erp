@@ -120,6 +120,8 @@ const GRID_MODES_LIST = [
 const EDITABLE_CELLS_ID = [
     'status',
     'estimationsStatus',
+    'paymentStatus',
+    'paymentType',
 ];
 
 export const getDisplayedGridRows = (api) => {

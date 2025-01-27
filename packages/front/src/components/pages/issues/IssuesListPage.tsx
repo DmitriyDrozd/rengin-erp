@@ -6,13 +6,15 @@ import { Days } from 'iso/src/utils';
 import { useAllColumns } from '../../../grid/RCol';
 import PanelRGrid, { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import {
+    issuePaymentStatusesColorMap,
     ISSUES,
     IssueVO,
+    paymentTypesColorMap,
     statusesColorsMap,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
-import { isUserCustomer } from '../../../utils/userUtils';
+import { isUserCustomer, isUserIT } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
 import React, { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -39,7 +41,7 @@ import { IssuesMap } from './IssuesMap';
 import StatusFilterSelector from './StatusFilterSelector';
 import { isIssueOutdated } from 'iso/src/utils/date-utils';
 import IssueStatusCellEditor from './IssueStatusCellEditor';
-import IssueEstimationsStatusCellEditor from './IssueEstimationsStatusCellEditor';
+import IssueSelectCellEditor from './IssueSelectCellEditor';
 import {
     ClockCircleOutlined,
     GlobalOutlined,
@@ -53,6 +55,14 @@ const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
     return <Tag color={estimationsStatusesColorsMap[estimationsStatus]}>{estimationsStatus}</Tag>;
 }
+
+const getPaymentTypeTag = (data) => (
+    <Tag color={paymentTypesColorMap[data]}>{data}</Tag>
+)
+
+const getPaymentStatusTag = (data) => (
+    <Tag color={issuePaymentStatusesColorMap[data]}>{data}</Tag>
+)
 
 const getStatusTag = (issue: IssueVO) => {
     const currentDJ = dayjs();
@@ -144,6 +154,7 @@ export default () => {
     const isUserEstimator = currentUser.role === roleEnum['сметчик'];
     const isUserEngineer = currentUser.role === roleEnum['инженер'];
     const isCustomer = isUserCustomer(currentUser);
+    const isITDepartment = isUserIT(currentUser);
     const statusPropToFilter = isUserEstimator ? 'estimationsStatus' : 'status';
     const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
@@ -177,7 +188,7 @@ export default () => {
             getStatusTag(props.data)
     };
 
-    const contactInfoColumn = isCustomer ? { columnToRemove: true } : {...colMap.contactInfo, width: 400};
+    const contactInfoColumn = {...colMap.contactInfo, width: 400, columnToRemove: isCustomer };
 
     const engineerColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
@@ -225,17 +236,17 @@ export default () => {
             filterParams: {
                 applyMiniFilterWhileTyping: true,
             },
-            headerName: 'Статус сметы',
+            header: ISSUES.properties.estimationsStatus.headerName,
             width: 210,
             editable: true,
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
                 const issue: Partial<IssueVO> = {issueId: event.data.issueId, estimationsStatus: event.newValue};
                 dispatch(ISSUES.actions.patched(issue));
             },
-            cellEditor: IssueEstimationsStatusCellEditor,
+            cellEditor: IssueSelectCellEditor,
             cellEditorParams: {
-                values: (params) => [params.data.estimationsStatus, 'sd'],
-                valueListGap: 0,
+                enum: ISSUES.properties.estimationsStatus.enum,
+                prop: 'estimationsStatus',
             },
             cellRenderer: (props) =>
                 getEstimationStatusTag(props.data)
@@ -243,6 +254,51 @@ export default () => {
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
         {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
+        {
+            columnToRemove: !isITDepartment,
+            field: 'paymentType',
+            filter: 'agSetColumnFilter',
+            headerName: ISSUES.properties.paymentType.headerName,
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
+            width: 160, 
+            editable: true,
+            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['paymentType']>) => {
+                const issue: Partial<IssueVO> = {issueId: event.data.issueId, paymentType: event.newValue};
+                dispatch(ISSUES.actions.patched(issue));
+            },
+            cellEditor: IssueSelectCellEditor,
+            cellEditorParams: {
+                enum: ISSUES.properties.paymentType.enum,
+                prop: 'paymentType',
+            },
+            cellRenderer: (props) =>
+                getPaymentTypeTag(props.data.paymentType)
+        },
+        {
+            columnToRemove: !isITDepartment,
+            field: 'paymentStatus',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                applyMiniFilterWhileTyping: true,
+            },
+            headerName: ISSUES.properties.paymentStatus.headerName,
+            width: 160, 
+            editable: true,
+            onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['paymentStatus']>) => {
+                const issue: Partial<IssueVO> = {issueId: event.data.issueId, paymentStatus: event.newValue};
+                dispatch(ISSUES.actions.patched(issue));
+            },
+            cellEditor: IssueSelectCellEditor,
+            cellEditorParams: {
+                enum: ISSUES.properties.paymentStatus.enum,
+                prop: 'paymentStatus',
+            },
+            cellRenderer: (props) =>
+                getPaymentStatusTag(props.data.paymentStatus)
+        },
+        {...colMap.detalization, width: 180, columnToRemove: !isITDepartment},
     ];
 
     let rawColumns: ColDef<IssueVO>[] = [];

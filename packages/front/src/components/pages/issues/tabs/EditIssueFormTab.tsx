@@ -197,6 +197,9 @@ export default ({newClientsNumber, isEditMode}: {
                 format: Days.FORMAT_MONTH_YEAR,
                 picker: 'month',
             }}/>
+            <RenField meta={ISSUES.properties.paymentType} hidden={!isITDepartment} width={'sm'}/>
+            <RenField meta={ISSUES.properties.paymentStatus} hidden={!isITDepartment} width={'sm'}/>
+            <RenField meta={ISSUES.properties.detalization} hidden={!isITDepartment} width={'sm'}/>
             <FinanceFooter issue={editor.item}/>
         </Form>);
 }

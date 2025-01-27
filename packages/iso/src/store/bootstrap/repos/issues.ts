@@ -56,6 +56,11 @@ export const paymentTypes = {
     cashless: 'Безналичные',
 }
 
+export const paymentTypesColorMap: Record<string, string> = {
+    [paymentTypes.cash]: 'green',
+    [paymentTypes.cashless]: 'blue',
+};
+
 export const purposeTypes = {
     material: 'Материалы',
     service: 'Работы',
@@ -64,8 +69,28 @@ export const purposeTypes = {
     zip: 'ЗИП' // запасные части, инструменты и принадлежности (только ИТ-отдел)
 }
 
+export const issuePaymentStatusesTypes = {
+    registry: 'В реестр',
+    payed: 'Оплачено',
+    notPayed: 'Не оплачено',
+    partlyPayed: 'Оплачено частично',
+};
+
+export const issuePaymentStatusesColorMap: Record<string, string> = {
+    [issuePaymentStatusesTypes.registry]: 'blue',
+    [issuePaymentStatusesTypes.payed]: 'green',
+    [issuePaymentStatusesTypes.notPayed]: 'red',
+    [issuePaymentStatusesTypes.partlyPayed]: 'orange',
+}
+
 export const paymentTypesList = [paymentTypes.cash, paymentTypes.cashless] as const;
 export const purposeTypesList = [purposeTypes.material, purposeTypes.service, purposeTypes.gsm, purposeTypes.other] as const;
+export const issuePaymentStatusesList = [
+    issuePaymentStatusesTypes.registry,
+    issuePaymentStatusesTypes.payed,
+    issuePaymentStatusesTypes.notPayed,
+    issuePaymentStatusesTypes.partlyPayed,
+];
 
 const issuesRaw = createResource('issue', {
         clientsIssueNumber: valueTypes.string({headerName: 'Номер заявки', required: true}),
@@ -167,6 +192,10 @@ const issuesRaw = createResource('issue', {
             defaultAsPropRef: 'siteId',
             filterLinkedResourceItems: (list: UserVO[]) => list.filter(item => item.role === roleEnum['сметчик']),
         }),
+
+        paymentType: valueTypes.enum({headerName: 'Форма оплаты', enum: paymentTypesList}),
+        paymentStatus: valueTypes.enum({headerName: 'Статус оплаты', internal: true, enum: issuePaymentStatusesList}),
+        detalization: valueTypes.text({headerName: 'Детализация заявки'}),
     },
 
     {
