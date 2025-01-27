@@ -11,9 +11,11 @@ import {
     RowEditingStoppedEvent
 } from 'ag-grid-community';
 import 'ag-grid-enterprise';
+import { generateGuid } from '@sha/random';
 
 import {
     ExpenseItem,
+    EstimationItem,
     ISSUES,
     IssueVO,
     paymentTypes,
@@ -27,7 +29,8 @@ import {
 } from 'antd';
 import {
     clone,
-    remove
+    remove,
+    update
 } from 'ramda';
 import AG_GRID_LOCALE_RU from '../../../../grid/locale.ru';
 import ImportTableButton from '../ImportTableButton';
@@ -35,25 +38,69 @@ import { DownloadOutlined } from '@ant-design/icons';
 import { useCanManage } from '../../../../hooks/useCanManage';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import { useContextEditor } from '../../chapter-modal/useEditor';
-
-const countExpenses = (expenses: IssueVO['expenses']) =>
-    expenses.reduce((prev, item) => prev + (isNaN(Number(item.amount)) ? 0 : Number(item.amount)), 0);
+import { isUserIT } from '../../../../utils/userUtils';
 
 
 export default (props) => {
     const {currentUser} = useCurrentUser();
-    const {errors, item, getRenFieldProps, updateItemProperty, params, editor, hasChanges, resource, rules} = useContextEditor(ISSUES);
-
+    const {errors, item, getRenFieldProps, updateItemProperty, updateItemProperties, params, editor, hasChanges, resource, rules} = useContextEditor(ISSUES);
+    const isITDepartment = isUserIT(currentUser);
 
     const canEdit = useCanManage();
-    const initialItems = clone(item.expenses || []);
+    const rowData = clone(item.expenses || []);
     const gridRef = useRef<AgGridReact>(null);
     const containerStyle = useMemo(() => ({width: '100%', height: '100%'}), []);
     const gridStyle = useMemo(() => ({height: '300px', width: '100%'}), []);
-    const rowData = initialItems;
-    const setRowData = (items: ExpenseItem[]) => {
-        updateItemProperty('expenses')(items);// expensePrice: countExpenses(items)})
+
+    const setRowData = (items: ExpenseItem[], updatedItem: ExpenseItem) => {
+        if (!isITDepartment) {
+            updateItemProperty('expenses')(items);
+        } else {
+             /**
+            * ИТ-отдел
+            * Копирование создаваемых расходов во вкладку доходы
+            * 
+            * amount не должен помещаться в дубликат
+            */
+            const duplicateIndex = item.estimations.findIndex((item) => item.id === updatedItem.id);
+            const isItemRemoved = items.findIndex(item => item.id === updatedItem.id) === -1;
+
+            let estimationsUpdate = [...item.estimations, updatedItem];
+
+            if (duplicateIndex > -1) {
+                if (isItemRemoved) {
+                    estimationsUpdate = remove(duplicateIndex, 1, item.estimations);
+                } else {
+                    /** 
+                     * возможно не понравится, что комментарии и остальные поля будут затирать уже заполненные в доходах
+                     * в таком случае раскоментить поля, которые затираются
+                    */
+                    const duplicateItem = item.estimations[duplicateIndex];
+                    const itemToUpdate = {
+                        ...updatedItem,
+                        amount: duplicateItem.amount || undefined,
+                        // comment: duplicateItem.comment || updatedItem.comment,
+                        // paymentType: duplicateItem.paymentType || updatedItem.paymentType,
+                        // purposeType: duplicateItem.purposeType || updatedItem.purposeType,
+                        // title: duplicateItem.title || updatedItem.title,
+                        // date: duplicateItem.date || updatedItem.date,
+                    };
+
+                    estimationsUpdate = update(duplicateIndex, itemToUpdate, item.estimations);
+                }
+            } else {
+                if (isItemRemoved) {
+                    estimationsUpdate = item.estimations;
+                }
+            }
+
+            updateItemProperties([
+                { prop: 'expenses', value: items },
+                { prop: 'estimations', value: estimationsUpdate }
+            ])
+        }
     };
+
     const columnDefs = [
         {
             field: 'paymentType',
@@ -74,15 +121,20 @@ export default (props) => {
         },
         {field: 'title', headerName: 'Наименование', width: 140,},
         {field: 'amount', headerName: 'Расходы', cellEditor: 'agNumberCellEditor',},
-        {
-            field: 'date', headerName: 'Дата оплаты', cellEditor: 'agDateCellEditor', cellClass: 'dateISO'
-        },
+        {field: 'date', headerName: 'Дата оплаты', cellEditor: 'agDateCellEditor', cellClass: 'dateISO'},
         {field: 'comment', headerName: 'Комментарий'},
         {
             cellRenderer: (props: { rowIndex: number }) =>
-                <Button danger={true} onClick={() => {
-                    setRowData(remove(props.rowIndex, 1, rowData));
-                }}>Удалить</Button>
+                (
+                    <Button 
+                        danger={true} 
+                        onClick={() => {
+                            setRowData(remove(props.rowIndex, 1, rowData), rowData[props.rowIndex]);
+                        }}
+                    >
+                        Удалить
+                    </Button>
+                )
         }
     ];
 
@@ -96,16 +148,31 @@ export default (props) => {
         };
     }, []);
 
+    const handleAddRow = () => {
+        const newItem = {
+            id: generateGuid(3),
+            paymentType: paymentTypes.cash,
+            purposeType: 'Материалы'
+        }
+
+        const expenseItems = clone(item.expenses || []);
+        const expensesUpdate = [
+            ...expenseItems,
+            newItem,
+        ];
+
+        setRowData(expensesUpdate, newItem);
+    }
+
     const onCellEditingStarted = (e: RowEditingStartedEvent) => {
         console.log('RowEditingStartedEvent', e);
     };
     const onCellEditingStopped = (e: RowEditingStoppedEvent) => {
         let items: Array<ExpenseItem> = [];
         gridRef.current.api.forEachNode(function (node) {
-
             items.push(node.data);
         });
-        setRowData(items);
+        setRowData(items, e.data);
         console.log('RowEditingStoppedEvent', e, items);
     };
 
@@ -148,15 +215,7 @@ export default (props) => {
                             imgURL={'/assets/import-expenses-example.png'}
                             importedItemsFound={'записей о расходах'}
                         ></ImportTableButton>
-                        <Button type={'primary'} onClick={() => setRowData([
-                                ...rowData,
-                                {
-                                    paymentType: paymentTypes.cash,
-                                    purposeType: 'Материалы'
-                                }
-                            ]
-                        )
-                        }>Добавить строку</Button>
+                        <Button type={'primary'} onClick={handleAddRow}>Добавить строку</Button>
                     </>
                     : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
                 }

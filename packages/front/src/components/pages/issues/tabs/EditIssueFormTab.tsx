@@ -6,7 +6,6 @@ import dayjs from 'dayjs';
 import { Days } from 'iso';
 import {
     ISSUES,
-    SITES,
 } from 'iso/src/store/bootstrap';
 import {
     roleEnum,
@@ -29,14 +28,11 @@ import FinanceFooter from './FinanceFooter';
 import RenField from '../../../form/RenField';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../../../form/ModalForm';
-// import { statusesList } from 'iso/src/store/bootstrap/repos/issues';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import { StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
-import { FinanceSimplified } from './FinanceSimplified';
 import { SimpleCreateSiteButton } from '../../../elements/formElements/simpleCreateSiteButton';
 
-// const DEFAULT_ISSUE_STATUS = statusesList[0];
 
 const {Text} = Typography;
 export default ({newClientsNumber, isEditMode}: {
@@ -201,9 +197,6 @@ export default ({newClientsNumber, isEditMode}: {
                 format: Days.FORMAT_MONTH_YEAR,
                 picker: 'month',
             }}/>
-            {isITDepartment && (
-                <FinanceSimplified issue={editor.item} onChange={editor.updateItemProperty}/>
-            )}
             <FinanceFooter issue={editor.item}/>
         </Form>);
 }

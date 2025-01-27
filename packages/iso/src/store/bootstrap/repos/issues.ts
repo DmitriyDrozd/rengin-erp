@@ -94,6 +94,7 @@ const issuesRaw = createResource('issue', {
         expenses: valueTypes.array({
             headerName: 'Список расходов',
             properties: {
+                id: valueTypes.string(),
                 paymentType: valueTypes.enum({enum: paymentTypesList}),
                 purposeType: valueTypes.enum({enum: purposeTypesList}),
                 title: valueTypes.string(),
@@ -105,10 +106,13 @@ const issuesRaw = createResource('issue', {
         estimations: valueTypes.array({
             headerName: 'Смета',
             properties: {
+                id: valueTypes.string(),
                 paymentType: valueTypes.enum({enum: paymentTypesList}),
+                purposeType: valueTypes.enum({enum: purposeTypesList}),
                 title: valueTypes.string(),
                 amount: valueTypes.number(),
                 comment: valueTypes.string(),
+                date: valueTypes.date({headerName: 'Дата'}),
             }
         }),
         estimationPrice: valueTypes.number({headerName: 'Смета сумма'}),
@@ -195,6 +199,7 @@ export type TExpense = {
 
 export type IssueVO = typeof issuesRaw.exampleItem & { expenses: TExpense[]; };
 export type ExpenseItem = IssueVO['expenses'][number];
+export type EstimationItem = IssueVO['estimations'][number];
 
 export const ISSUES = issueResource;
 

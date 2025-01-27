@@ -10,6 +10,16 @@ interface IFinanceSimplifiedProps {
     onChange: (prop: string) => (value: any) => void;
 }
 
+/**
+ * Компонент использовался для добавления расходов\доходов при скрытых соответствующих вкладках.
+ * Управление осуществляется из общей модалки заявки
+ * 
+ * Пример использования:
+ *  {isITDepartment && (
+        <FinanceSimplified issue={editor.item} onChange={editor.updateItemProperty}/>
+    )}
+ */
+
 export const FinanceSimplified = ({ issue, onChange }: IFinanceSimplifiedProps) => {
     // Исходим из того, что у ИТ-отдела нету вкладки Расходы, а значит каждого расхода может быть только одна запись
     const onChangeExpense = (purposeType: string) => (value: string) => {

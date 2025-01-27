@@ -9,13 +9,16 @@ import { AgGridReact } from 'ag-grid-react';
 
 import {
     ColDef,
+    ISelectCellEditorParams,
     RowEditingStartedEvent,
     RowEditingStoppedEvent
 } from 'ag-grid-community';
 import {
     DEPRECATED_issueEstimationStatusesList,
     ExpenseItem,
-    IssueVO
+    IssueVO,
+    paymentTypesList,
+    purposeTypesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import {
     Button,
@@ -33,6 +36,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { ProForm } from '@ant-design/pro-components';
+import { isUserIT } from '../../../../utils/userUtils';
 
 const countEstimations = (expenses: IssueVO['estimations']) =>
     expenses.reduce((prev, item) => prev + (isNaN(Number(item.amount)) ? 0 : Number(item.amount)), 0);
@@ -43,6 +47,7 @@ export default () => {
     const canEdit = currentUser.role === roleEnum['руководитель']
         || currentUser.role === roleEnum['сметчик']
         || currentUser.role === roleEnum['менеджер'];
+    const isITDepartment = isUserIT(currentUser);
 
     const editorProps = useContextEditor(ISSUES);
     const {item, params, getRenFieldProps, updateItemProperty, hasChanges, errors, isValid,} = editorProps;
@@ -55,16 +60,39 @@ export default () => {
         updateItemProperty('estimations')(items);//({...item, estimations: items, estimationPrice: countEstimations(items)})
     };
 
-    const columnDefs = [
-        /* {
-             field: 'paymentType',
-             headerName:'Оплата',
-             cellEditor: 'agSelectCellEditor',
-             cellEditorParams: {
-                 values: ['Наличные', 'Безналичные']
-             } as ISelectCellEditorParams,
+    const columnDefsIt = [
+        {
+            field: 'paymentType',
+            headerName: 'Оплата',
+            cellEditor: 'agSelectCellEditor',
+            cellEditorParams: {
+                values: [...paymentTypesList]
+            } as ISelectCellEditorParams,
+        },
+        {
+            field: 'purposeType',
+            headerName: 'Назначение',
+            cellEditor: 'agSelectCellEditor',
+            width: 120,
+            cellEditorParams: {
+                values: [...purposeTypesList]
+            } as ISelectCellEditorParams,
+        },
+        {field: 'title', headerName: 'Наименование', width: 140,},
+        {field: 'amount', headerName: 'Доходы', cellEditor: 'agNumberCellEditor'},
+        {
+            field: 'date', headerName: 'Дата оплаты', cellEditor: 'agDateCellEditor', cellClass: 'dateISO'
+        },
+        {field: 'comment', headerName: 'Комментарий'},
+        {
+            cellRenderer: (props: { rowIndex: number }) =>
+                <Button danger={true} onClick={() => {
+                    setRowData(remove(props.rowIndex, 1, rowData));
+                }}>Удалить</Button>
+        }
+    ];
 
-         },*/
+    const columnDefsDefault = [
         {
             field: 'title', headerName: 'Наименование'
         },
@@ -84,7 +112,7 @@ export default () => {
         }
     ];
 
-
+    const columnDefs = isITDepartment ? columnDefsIt : columnDefsDefault;
     const xlsxCols = columnDefs.filter(def => def.field).map(def => def.field);
     const defaultColDef = useMemo<ColDef>(() => {
         return {

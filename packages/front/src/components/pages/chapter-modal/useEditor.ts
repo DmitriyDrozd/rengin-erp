@@ -69,6 +69,22 @@ export const useEditor = <
                 mode,
             }));
         };
+
+    const updateItemProperties = (updates: { prop: string, value: any }[]) => {
+        let updatedItem = item;
+
+        for (const update of updates) {
+            updatedItem = editor.updateProperty(update.prop)({
+                item: updatedItem,
+                value: update.value,
+                state,
+                mode,
+            });
+        }
+
+        setItem(updatedItem);
+    }
+
     const errors = editor.getAllErrors(item)(state);
     const isValid = !Object.values(errors).some(e => e !== undefined);
 
@@ -105,6 +121,7 @@ export const useEditor = <
             }
         },
         updateItemProperty,
+        updateItemProperties,
         validateProps: () => {
 
         },
