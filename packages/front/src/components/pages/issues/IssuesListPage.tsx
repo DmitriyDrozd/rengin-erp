@@ -23,6 +23,7 @@ import {
     Button,
     Checkbox,
     Divider,
+    Select,
     Space,
     Tag
 } from 'antd';
@@ -39,7 +40,7 @@ import dayjs from 'dayjs';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import { IssuesMap } from './IssuesMap';
 import StatusFilterSelector from './StatusFilterSelector';
-import { isIssueOutdated } from 'iso/src/utils/date-utils';
+import { asMonthYear, isIssueOutdated } from 'iso/src/utils/date-utils';
 import IssueStatusCellEditor from './IssueStatusCellEditor';
 import IssueSelectCellEditor from './IssueSelectCellEditor';
 import {
@@ -236,7 +237,7 @@ export default () => {
             filterParams: {
                 applyMiniFilterWhileTyping: true,
             },
-            header: ISSUES.properties.estimationsStatus.headerName,
+            headerName: ISSUES.properties.estimationsStatus.headerName,
             width: 210,
             editable: true,
             onCellValueChanged: (event: NewValueParams<IssueVO, IssueVO['estimationsStatus']>) => {
@@ -377,7 +378,30 @@ export default () => {
     }
 
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
-    const rowData = dataForUser.filter(s => !s[statusPropToFilter] || statuses.includes(s[statusPropToFilter]));
+    const monthesFR = dataForUser.reduce((acc, item) => {
+        const dateFR = item.dateFR?.slice(0, 7) || null;
+
+        if (dateFR === null) {
+            return acc;
+        }
+
+        const monthFR = asMonthYear(dateFR);
+
+        return {
+            ...acc,
+            [dateFR]: monthFR,
+        };
+    }, {});
+
+    const monthFRFilterOptions = Object.keys(monthesFR).sort().reverse().map(o => ({ value: o, label: monthesFR[o] }))
+    const [monthFRFilter, setMonthFRFilter] = useState(null);
+
+    const filterByFRMonth = !!monthFRFilter ? (s: IssueVO) => s.dateFR?.startsWith(monthFRFilter) : () => true;
+    const filterByStatus = (s: IssueVO) => !s[statusPropToFilter] || statuses.includes(s[statusPropToFilter]);
+
+    const rowData = dataForUser
+        .filter(filterByFRMonth)
+        .filter(filterByStatus);
 
     const [isExportSelectorOpen, setIsExportSelectorOpen] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -404,6 +428,19 @@ export default () => {
                 <Checkbox checked={outdated}
                           onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
                 <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
+                {monthFRFilterOptions.length && (
+                    <Space>
+                        Дата ФР
+                        <Select
+                            allowClear
+                            style={{ width: 150 }}
+                            onClear={() => setMonthFRFilter(null)} 
+                            options={monthFRFilterOptions} 
+                            value={monthFRFilter} 
+                            onChange={setMonthFRFilter}
+                        />
+                    </Space>
+                )}
             </Space>
     );
 
