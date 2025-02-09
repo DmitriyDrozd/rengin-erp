@@ -51,6 +51,7 @@ import {
 import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useCustomerFilter, useMonthFilter } from './IssuesTableFilters';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -378,29 +379,27 @@ export default () => {
     }
 
     // const gridRef = useRef<AgGridReact<IssueVO>>(null);
-    const monthesFR = dataForUser.reduce((acc, item) => {
-        const dateFR = item.dateFR?.slice(0, 7) || null;
+    const { 
+        monthFRFilter,
+        monthFRFilterOptions,
+        setMonthFRFilter,
+        resetMonthFRFilter,
+        filterByFRMonth,
+    } = useMonthFilter(dataForUser);
 
-        if (dateFR === null) {
-            return acc;
-        }
+    const {
+        customersFilter,
+        customersFilterOptions,
+        setCustomersFilter,
+        resetCustomersFilter,
+        filterByCustomer,
+    } = useCustomerFilter(dataForUser);
 
-        const monthFR = asMonthYear(dateFR);
-
-        return {
-            ...acc,
-            [dateFR]: monthFR,
-        };
-    }, {});
-
-    const monthFRFilterOptions = Object.keys(monthesFR).sort().reverse().map(o => ({ value: o, label: monthesFR[o] }))
-    const [monthFRFilter, setMonthFRFilter] = useState(null);
-
-    const filterByFRMonth = !!monthFRFilter ? (s: IssueVO) => s.dateFR?.startsWith(monthFRFilter) : () => true;
     const filterByStatus = (s: IssueVO) => !s[statusPropToFilter] || statuses.includes(s[statusPropToFilter]);
 
     const rowData = dataForUser
         .filter(filterByFRMonth)
+        .filter(filterByCustomer)
         .filter(filterByStatus);
 
     const [isExportSelectorOpen, setIsExportSelectorOpen] = useState(false);
@@ -434,10 +433,19 @@ export default () => {
                         <Select
                             allowClear
                             style={{ width: 150 }}
-                            onClear={() => setMonthFRFilter(null)} 
+                            onClear={resetMonthFRFilter} 
                             options={monthFRFilterOptions} 
                             value={monthFRFilter} 
                             onChange={setMonthFRFilter}
+                        />
+                        Заказчик
+                        <Select
+                            allowClear
+                            style={{ width: 150 }}
+                            onClear={resetCustomersFilter} 
+                            options={customersFilterOptions} 
+                            value={customersFilter} 
+                            onChange={setCustomersFilter}
                         />
                     </Space>
                 )}
