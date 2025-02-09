@@ -30,7 +30,7 @@ import { useContextEditor } from '../../chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../../../form/ModalForm';
 import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
-import { StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
+import { statusesList, StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
 import { SimpleCreateSiteButton } from '../../../elements/formElements/simpleCreateSiteButton';
 
 
@@ -51,28 +51,42 @@ export default ({newClientsNumber, isEditMode}: {
     const [initValues] = useState({...editor.item});
 
     useEffect(() => {
+        const updates = [];
+
         if (!editor.item[ISSUES.clientsNumberProp]) {
-            editor.updateItemProperty(ISSUES.clientsNumberProp)(newClientsNumber);
+            updates.push({
+                prop: ISSUES.clientsNumberProp,
+                value: newClientsNumber,
+            });
         }
 
-        // fixme: не работает
-        // if (!isEditMode && !initValues.status) {
-        //     editor.updateItemProperty('status')(DEFAULT_ISSUE_STATUS);
-        // }
+        if (!isEditMode && !initValues.status) {
+            updates.push({
+                prop: 'status',
+                value: statusesList[0],
+            });
+        }
 
-        // if (isCustomer && !isEditMode) {
-        //     editor.updateItemProperty('brandId')(brandId);
-        // }
-    }, []);
+        if (isCustomer && !isEditMode) {
+            updates.push({
+                prop: 'brandId',
+                value: currentUser.brandId,
+            })
+        }
 
-    useEffect(() => {
         if (!isEditMode && !initRegisterDate) {
             const today = dayjs();
 
-            editor.updateItemProperty('registerDate')(today);
+            updates.push({
+                prop: 'registerDate',
+                value: today
+            })
+
             setInitRegisterDate(today);
         }
-    }, [initRegisterDate]);
+
+        editor.updateItemProperties(updates);
+    }, []);
 
     const isManager = isManagementRole(currentUser);
     const isCustomer = isUserCustomer(currentUser);
