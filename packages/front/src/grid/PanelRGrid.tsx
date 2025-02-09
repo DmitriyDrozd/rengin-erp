@@ -122,6 +122,12 @@ const EDITABLE_CELLS_ID = [
     'estimationsStatus',
     'paymentStatus',
     'paymentType',
+    'registerDate',
+    'plannedDate',
+    'workStartedDate',
+    'completedDate',
+    'contactInfo',
+    'description',
 ];
 
 export const getDisplayedGridRows = (api) => {

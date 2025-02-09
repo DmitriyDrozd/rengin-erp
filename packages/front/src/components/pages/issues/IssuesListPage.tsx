@@ -41,8 +41,8 @@ import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import { IssuesMap } from './IssuesMap';
 import StatusFilterSelector from './StatusFilterSelector';
 import { asMonthYear, isIssueOutdated } from 'iso/src/utils/date-utils';
-import IssueStatusCellEditor from './IssueStatusCellEditor';
-import IssueSelectCellEditor from './IssueSelectCellEditor';
+import IssueStatusCellEditor from './CellEditors/IssueStatusCellEditor';
+import IssueSelectCellEditor from './CellEditors/IssueSelectCellEditor';
 import {
     ClockCircleOutlined,
     GlobalOutlined,
@@ -52,6 +52,8 @@ import { AntdIcons } from '../../elements/AntdIcons';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useCustomerFilter, useMonthFilter } from './IssuesTableFilters';
+import { dateColumnGetter } from './CellEditors/DateCellEditor';
+import { textColumnGetter } from './CellEditors/TextCellEditor';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -162,6 +164,8 @@ export default () => {
 
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(ISSUES);
+    const getDateColumn = dateColumnGetter(dispatch);
+    const getTextColumn = textColumnGetter(dispatch);
 
     const statusColumn = {
         field: 'status',
@@ -190,12 +194,12 @@ export default () => {
             getStatusTag(props.data)
     };
 
-    const contactInfoColumn = {...colMap.contactInfo, width: 400, columnToRemove: isCustomer };
+    const contactInfoColumn = {...getTextColumn('contactInfo'), width: 400, columnToRemove: isCustomer };
 
     const engineerColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
-        {...colMap.description, width: 700},
+        {...getTextColumn('description'), width: 700},
         {...contactInfoColumn},
         {...statusColumn},
     ];
@@ -218,16 +222,16 @@ export default () => {
     const defaultColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
-        {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data?.registerDate)},
+        {...getDateColumn('registerDate')},
         {...statusColumn},
         {...colMap.brandId, width: 150},
         {...colMap.legalId, width: 200},
         {...colMap.siteId, width: 250},
-        {...colMap.description, width: 350},
+        {...getTextColumn('description'), width: 350},
         {...contactInfoColumn},
-        {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
-        {...colMap.workStartedDate, cellRenderer: (props) => Days.toDayString(props.data?.workStartedDate)},
-        {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
+        {...getDateColumn('plannedDate')},
+        {...getDateColumn('workStartedDate')},
+        {...getDateColumn('completedDate')},
         {...colMap.managerUserId, width: 130},
         {...colMap.techUserId, width: 130},
         {...colMap.clientsEngineerUserId, width: 130},
@@ -255,7 +259,7 @@ export default () => {
         },
         {...colMap.estimationPrice, editable: false, width: 130},
         {...colMap.expensePrice, editable: false, width: 100},
-        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => Days.asMonthYear(data.dateFR)},
+        {...colMap.dateFR, width: 150, cellRenderer: ({data}) => asMonthYear(data.dateFR)},
         {
             columnToRemove: !isITDepartment,
             field: 'paymentType',
