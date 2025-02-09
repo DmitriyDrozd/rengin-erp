@@ -3,6 +3,7 @@ import {
     Checkbox,
     Modal
 } from 'antd';
+import { fileTypes, fileTypesLabel } from 'iso/src/store/bootstrap/repos/issues';
 
 interface ExportArchiveSelectorProps {
     isOpen: boolean,
@@ -11,18 +12,11 @@ interface ExportArchiveSelectorProps {
     onExport: (options: { selectedIds: string[], types: string[] }) => void,
 }
 
-const fileTypes = {
-    act: 'actFiles',
-    work: 'workFiles',
-    check: 'checkFiles',
-    estimations: 'expenseFiles',
-};
-
 const options = [
-    { label: 'Акты', value: fileTypes.act },
-    { label: 'Работы', value: fileTypes.work },
-    { label: 'Чеки', value: fileTypes.check },
-    { label: 'Сметы', value: fileTypes.estimations },
+    { label: fileTypesLabel[fileTypes.act], value: fileTypes.act },
+    { label: fileTypesLabel[fileTypes.work], value: fileTypes.work },
+    { label: fileTypesLabel[fileTypes.check], value: fileTypes.check },
+    { label: fileTypesLabel[fileTypes.estimations], value: fileTypes.estimations },
 ];
 
 export const ExportArchiveSelector: React.FC<ExportArchiveSelectorProps> = ({ isOpen, selectedIds, onClose, onExport }) => {

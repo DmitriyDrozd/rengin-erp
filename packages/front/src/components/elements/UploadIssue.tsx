@@ -22,6 +22,7 @@ import {remove} from "ramda";
 import useRole from "../../hooks/useRole";
 import useCurrentUser from '../../hooks/useCurrentUser';
 import { isUserCustomer } from '../../utils/userUtils';
+import { ExportOneTypeButton } from '../pages/issues/export-archive/ExportOneType';
 
 export type UploadListProps = {
     items?: UploadFile[]
@@ -29,6 +30,7 @@ export type UploadListProps = {
     maxCount: number
     issueId: string
     label:string
+    listName:string
     brandName: string
     brandPath: string
 }
@@ -51,7 +53,7 @@ const downloadFile = (file) => {
     window.open(file.url, '_blank');
 }
 
-const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName, brandPath}: UploadListProps) => {
+const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, listName, brandName, brandPath}: UploadListProps) => {
     const role = useRole();
     const { currentUser } = useCurrentUser();
     const isCustomer = isUserCustomer(currentUser);
@@ -197,9 +199,17 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, brandName,
         ) :
         <img onClick={toggleFullScreen} alt="example" style={{ width: '100%', height: 'auto', cursor: isFullScreenPreview ? 'zoom-out' : 'zoom-in' }} src={previewImage} />
 
+    const cardTitle = (
+        <Space>
+            {label}
+            {items.length > 0 && (
+                <ExportOneTypeButton issueId={issueId} type={listName}/>
+            )}
+        </Space>
+    )
 
     return (
-        <Card title={label} key={label}>
+        <Card title={cardTitle} key={label}>
             <Upload
                 action={"/api/upload/issue/"+issueId}
                 listType="picture-card"

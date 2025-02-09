@@ -1,5 +1,4 @@
 import { AgGridReact } from 'ag-grid-react';
-import getRestApi from 'iso/src/getRestApi';
 import { estimationStatusesList, estimationsStatusesColorsMap } from 'iso/src/store/bootstrap/repos/expenses';
 import { roleEnum, USERS } from 'iso/src/store/bootstrap/repos/users';
 import { Days } from 'iso/src/utils';
@@ -54,6 +53,7 @@ import { Link } from 'react-router-dom';
 import { useCustomerFilter, useMonthFilter } from './IssuesTableFilters';
 import { dateColumnGetter } from './CellEditors/DateCellEditor';
 import { textColumnGetter } from './CellEditors/TextCellEditor';
+import { onArchiveExport } from './export-archive/utils';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -130,21 +130,6 @@ const BottomBar = () => {
             </Link>
         </Space>
     );
-};
-
-const onArchiveExport = async ({selectedIds, types}: { selectedIds: string[], types: string[] }) => {
-    const api = await getRestApi();
-    const data = await api.archiveExport({selected: selectedIds, types});
-
-    const url = data.url;
-    const element = document.createElement('a');
-    element.href = url;
-    element.download = url;
-
-    // simulate link click
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element);
 };
 
 const outdatedFilter = i => i && isIssueOutdated(i) && !(i.status === 'Выполнена' && !i.completedDate);

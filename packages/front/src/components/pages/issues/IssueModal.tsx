@@ -1,4 +1,3 @@
-import { EXPENSES } from 'iso/src/store/bootstrap';
 import { ISSUES } from 'iso/src/store/bootstrap/';
 import React, {
     useEffect,
@@ -36,6 +35,7 @@ export default ({id, newClientsNumber, disabledEdit}: { id: string, newClientsNu
     const isEditMode = useEditorData.mode === 'edit';
     const getFilesProps = (listName: 'workFiles' | 'checkFiles' | 'actFiles' | 'expenseFiles', label: string, maxCount = 1) => {
         return {
+            listName,
             items: useEditorData.item[listName],
             onItemsChange: (list: any[]) => {
                 useEditorData.getRenFieldProps(listName)

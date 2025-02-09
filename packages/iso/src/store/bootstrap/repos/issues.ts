@@ -76,6 +76,20 @@ export const issuePaymentStatusesTypes = {
     partlyPayed: 'Оплачено частично',
 };
 
+export const fileTypes = {
+    act: 'actFiles',
+    work: 'workFiles',
+    check: 'checkFiles',
+    estimations: 'expenseFiles',
+};
+
+export const fileTypesLabel = {
+    [fileTypes.act]: 'Акты',
+    [fileTypes.work]: 'Работы',
+    [fileTypes.check]: 'Чеки',
+    [fileTypes.estimations]: 'Сметы',
+}
+
 export const issuePaymentStatusesColorMap: Record<string, string> = {
     [issuePaymentStatusesTypes.registry]: 'blue',
     [issuePaymentStatusesTypes.payed]: 'green',
