@@ -186,7 +186,7 @@ export default () => {
     );
 
     const [isMapOpen, setIsMapOpen] = useState(false);
-    const [mapData, setMapData] = useState(allSites);
+    const [mapData, setMapData] = useState(visibleSites);
 
     return (
         <ItemChapter
