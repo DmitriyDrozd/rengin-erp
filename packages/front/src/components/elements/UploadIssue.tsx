@@ -202,7 +202,7 @@ const UploadIssue = ({onItemsChange, items, maxCount, issueId, label, listName, 
     const cardTitle = (
         <Space>
             {label}
-            {items.length > 0 && (
+            {items?.length > 0 && (
                 <ExportOneTypeButton issueId={issueId} type={listName}/>
             )}
         </Space>
