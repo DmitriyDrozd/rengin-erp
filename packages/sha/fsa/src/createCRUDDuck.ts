@@ -122,10 +122,15 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
         .case(
             actions.addedBatch,
             // @ts-ignore
-            (state, payload) => R.union(
-                state,
-                payload.map( item => R.mergeDeepRight(defaultProps, item)),
-            ),
+            (state, payload) => {
+                const newState = payload.map(item => ({ ...defaultProps, ...item }));
+                const result = [
+                    ...state,
+                    ...newState,
+                ];
+
+                return result;
+            },
         )
         .case(
             actions.removed,
