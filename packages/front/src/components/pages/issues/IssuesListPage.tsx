@@ -184,7 +184,7 @@ export default () => {
     const engineerColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},
         {...colMap.clientsNumberCol},
-        {...getTextColumn('description'), width: 700},
+        {...colMap.description, width: 700},
         {...contactInfoColumn},
         {...statusColumn},
     ];
@@ -212,7 +212,7 @@ export default () => {
         {...colMap.brandId, width: 150},
         {...colMap.legalId, width: 200},
         {...colMap.siteId, width: 250},
-        {...getTextColumn('description'), width: 350},
+        {...colMap.description, width: 350},
         {...contactInfoColumn},
         {...getDateColumn('plannedDate')},
         {...getDateColumn('workStartedDate')},
