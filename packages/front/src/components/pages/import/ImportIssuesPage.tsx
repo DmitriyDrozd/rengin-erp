@@ -13,15 +13,13 @@ import React from 'react';
 import { useStore } from 'react-redux';
 import {
     put,
-    select
+    select,
+    take,
 } from 'typed-redux-saga';
 import { selectLedger } from 'iso/src/store/bootstrapDuck';
 import { generateGuid } from '@sha/random';
 import ImportCard from '../../elements/ImportCard';
-import {
-    AVERAGE_CREATE_TIME,
-    rejectFn
-} from './helper';
+import { rejectFn } from './helper';
 
 interface IIssue {
     clientsIssueNumber: string,
@@ -188,13 +186,17 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
         }
 
         if (newIssues.length) {
-            // @ts-ignore
             yield* put(ISSUES.actions.addedBatch(newIssues));
         }
     }
 
     return importIssuesSaga;
 };
+
+function* awaitIssuesSaga (callback = () => {}) {
+    yield* take(ISSUES.actions.addedBatch);
+    callback();
+}
 
 export const ImportIssuesPage = () => {
     const store = useStore();
@@ -213,14 +215,12 @@ export const ImportIssuesPage = () => {
 
         // @ts-ignore
         await store.runSaga(importIssuesSaga, data);
-
-        setTimeout(() => {
-            callback?.({
-                newItems: newIssues,
-                invalidItems: invalidIssues,
-                duplicatedItems: duplicatedIssues,
-            });
-        }, data.length * AVERAGE_CREATE_TIME * 2);
+        // @ts-ignore
+        await store.runSaga(awaitIssuesSaga, () => callback?.({
+            newItems: newIssues,
+            invalidItems: invalidIssues,
+            duplicatedItems: duplicatedIssues,
+        }))
     };
 
     return (

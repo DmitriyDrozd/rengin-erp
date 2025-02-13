@@ -121,9 +121,8 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
         )
         .case(
             actions.addedBatch,
-            // @ts-ignore
-            (state, payload) => {
-                const newState = payload.map(item => ({ ...defaultProps, ...item }));
+            (state, payload, ...args) => {
+                const newState = payload.map(item => ({ ...defaultProps, ...item }))
                 const result = [
                     ...state,
                     ...newState,
