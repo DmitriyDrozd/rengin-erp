@@ -121,8 +121,9 @@ const createCRUDDuck = <T,ID extends keyof T, Prefix extends string> (
         )
         .case(
             actions.addedBatch,
-            (state, payload, ...args) => {
-                const newState = payload.map(item => ({ ...defaultProps, ...item }))
+            (state, payload) => {
+                // fixme: called 2 times (one from local, one from SSE) so need to filter. Fix first call execution
+                const newState = payload.map(item => ({ ...defaultProps, ...item })).filter(item => !state.find(s => s[idProp] === item[idProp]));
                 const result = [
                     ...state,
                     ...newState,
