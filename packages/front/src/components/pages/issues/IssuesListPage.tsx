@@ -13,7 +13,7 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
-import { isUserCustomer, isUserIT } from '../../../utils/userUtils';
+import { isDepartmentHead, isUserCustomer, isUserIT } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
 import React, { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -318,7 +318,7 @@ export default () => {
         }
         case roleEnum['сметчик']: {
             // todo: отдельная роль руководителя отдела
-            const isDepartmentHead = currentUser.title?.toLowerCase().includes('руководитель');
+            const isDepHead = isDepartmentHead(currentUser);
             const userDepartment = currentUser.department;
             const departmentUserIds: string[] = useSelector(USERS.selectAll)
                 .filter(u => {
@@ -329,7 +329,7 @@ export default () => {
                 })
                 .map(i => i.userId);
 
-            const userIdComparator = (id: string): boolean => isDepartmentHead
+            const userIdComparator = (id: string): boolean => isDepHead
                 ? departmentUserIds.includes(id)
                 : id === currentUser.userId;
 

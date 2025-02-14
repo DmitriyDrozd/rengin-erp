@@ -24,3 +24,7 @@ export const isUserIT = (user: UserVO) => {
 
     return department === departmentList[3]; // "ИТ"
 }
+
+export const isDepartmentHead = (user: UserVO) => {
+    return user.title?.toLowerCase().includes('руководитель') || false;
+}

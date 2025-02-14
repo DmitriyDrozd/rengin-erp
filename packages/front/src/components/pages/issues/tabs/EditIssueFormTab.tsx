@@ -196,8 +196,11 @@ export default ({newClientsNumber, isEditMode}: {
             <RenField meta={ISSUES.properties.managerUserId}
                       disabled={role === 'сметчик'}
                       width={'sm'}/>
-            <RenField meta={ISSUES.properties.clientsEngineerUserId} hidden={isITDepartment}
-                        width={'sm'}/>
+            <RenField 
+                meta={ISSUES.properties.clientsEngineerUserId}
+                width={'sm'}
+                label={isITDepartment ? 'Ответственный' : null}
+            />
             <RenField meta={ISSUES.properties.techUserId} label={isITDepartment ? 'Исполнитель' : null}
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.estimatorUserId} hidden={isITDepartment}
