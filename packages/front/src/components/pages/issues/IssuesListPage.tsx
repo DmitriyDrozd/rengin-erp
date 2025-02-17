@@ -13,7 +13,7 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
-import { isDepartmentHead, isUserCustomer, isUserIT } from '../../../utils/userUtils';
+import { isCustumerHead, isDepartmentHead, isUserCustomer, isUserIT } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
 import React, { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -337,7 +337,12 @@ export default () => {
             break;
         }
         case roleEnum['инженер']: {
-            dataForUser = outdatedIssues.filter(i => i.clientsEngineerUserId === currentUser.clientsEngineerUserId);
+            if (isCustumerHead(currentUser)) {
+                dataForUser = outdatedIssues.filter(i => i.brandId === currentUser.brandId);
+            } else {
+                dataForUser = outdatedIssues.filter(i => i.clientsEngineerUserId === currentUser.clientsEngineerUserId);
+            }
+
             break;
         }
         case roleEnum['руководитель']: {
