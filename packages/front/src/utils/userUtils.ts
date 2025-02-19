@@ -29,6 +29,6 @@ export const isDepartmentHead = (user: UserVO) => {
     return user.title?.toLowerCase().includes('руководитель') || false;
 }
 
-export const isCustumerHead = (user: UserVO) => {
+export const isCustomerHead = (user: UserVO) => {
     return isUserCustomer(user) && isDepartmentHead(user);
 }

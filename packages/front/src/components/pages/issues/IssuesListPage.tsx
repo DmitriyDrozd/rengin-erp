@@ -13,7 +13,7 @@ import {
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
 import { generateNewListItemNumber } from '../../../utils/byQueryGetters';
-import { isCustumerHead, isDepartmentHead, isUserCustomer, isUserIT } from '../../../utils/userUtils';
+import { isCustomerHead as getIsCustomerHead, isDepartmentHead, isUserCustomer, isUserIT } from '../../../utils/userUtils';
 import AppLayout from '../../app/AppLayout';
 import React, { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
@@ -144,6 +144,7 @@ export default () => {
     const isUserEngineer = currentUser.role === roleEnum['инженер'];
     const isCustomer = isUserCustomer(currentUser);
     const isITDepartment = isUserIT(currentUser);
+    const isCustomerHead = getIsCustomerHead(currentUser);
     const statusPropToFilter = isUserEstimator ? 'estimationsStatus' : 'status';
     const newClientsNumber = generateNewListItemNumber(allIssues, ISSUES.clientsNumberProp);
 
@@ -186,6 +187,7 @@ export default () => {
         {...colMap.clientsNumberCol},
         {...colMap.description, width: 700},
         {...contactInfoColumn},
+        {...colMap.customerComments, width: 400},
         {...statusColumn},
     ];
 
@@ -197,11 +199,12 @@ export default () => {
         {...colMap.legalId, width: 200},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 700},
-        {...contactInfoColumn},
+        {...colMap.customerComments, headerName: 'Комментарии', width: 400},
         {...colMap.registerDate, width: 150, cellRenderer: (props) => Days.toDayString(props.data?.registerDate)},
         {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
         {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
         {...colMap.managerUserId, width: 130},
+        {...colMap.detalization, width: 180, columnToRemove: !isITDepartment},
     ]
 
     const defaultColumns = [
@@ -214,6 +217,7 @@ export default () => {
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 350},
         {...contactInfoColumn},
+        {...colMap.customerComments, width: 400},
         {...getDateColumn('plannedDate')},
         {...getDateColumn('workStartedDate')},
         {...getDateColumn('completedDate')},
@@ -337,7 +341,7 @@ export default () => {
             break;
         }
         case roleEnum['инженер']: {
-            if (isCustumerHead(currentUser)) {
+            if (isCustomerHead) {
                 dataForUser = outdatedIssues.filter(i => i.brandId === currentUser.brandId);
             } else {
                 dataForUser = outdatedIssues.filter(i => i.clientsEngineerUserId === currentUser.clientsEngineerUserId);

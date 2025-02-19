@@ -121,6 +121,12 @@ export default ({newClientsNumber, isEditMode}: {
                     multiline
                     width={'sm'}
                 />
+                <RenField
+                    meta={ISSUES.properties.customerComments}
+                    label='Комментарии'
+                    multiline
+                    width={'sm'}
+                />
                 <RenField meta={ISSUES.properties.clientsEngineerUserId}
                       width={'sm'} defaultValue={currentUser.clientsEngineerUserId} disabled/>
                 <RenField meta={ISSUES.properties.managerUserId} disabled width={'sm'} hidden={!isEditMode}/>
@@ -144,6 +150,12 @@ export default ({newClientsNumber, isEditMode}: {
                     width={'sm'}
                 />
                 <RenField meta={ISSUES.properties.contactInfo} hidden={isCustomer} disabled/>
+                <RenField
+                    meta={ISSUES.properties.customerComments}
+                    multiline
+                    width={'sm'}
+                    disabled
+                />
                 <RenField meta={ISSUES.properties.status} disabled/>
             </Form>
         );
@@ -207,6 +219,13 @@ export default ({newClientsNumber, isEditMode}: {
                     width={'sm'}/>
             <RenField meta={ISSUES.properties.contactInfo}
                         multiline={true} width={'sm'} hidden={isCustomer} />
+            <RenField
+                meta={ISSUES.properties.customerComments}
+                label={isCustomer ? 'Комментарии' : null}
+                multiline
+                width={'sm'}
+                disabled={!isCustomer}
+            />
             <RenField meta={ISSUES.properties.status} customOptions={isITDepartment ? StatusesListIT.map(s => ({ value: s, label: s })) : null}/>
             <RenField meta={ISSUES.properties.estimationsStatus}
                         width={'sm'} hidden={isITDepartment} />
