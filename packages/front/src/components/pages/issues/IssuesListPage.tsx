@@ -44,6 +44,9 @@ import IssueStatusCellEditor from './CellEditors/IssueStatusCellEditor';
 import IssueSelectCellEditor from './CellEditors/IssueSelectCellEditor';
 import {
     ClockCircleOutlined,
+    DownOutlined,
+    FilterFilled,
+    FilterOutlined,
     GlobalOutlined,
     UpOutlined
 } from '@ant-design/icons';
@@ -413,15 +416,16 @@ export default () => {
     };
 
     const renderToolbar = isUserEstimator ? (
-            <Space>
+            <Space style={{ padding: '0 20px', maxWidth: '100%', overflowX: 'auto' }}>
                 <StatusFilterSelector
                     list={estimationStatusesList}
                     colorMap={estimationsStatusesColorsMap}
                     statuses={statuses}
-                    setStatuses={setStatuses}/>
+                    setStatuses={setStatuses}
+                />
             </Space>
         ) : (
-            <Space>
+            <Space style={{ padding: '0 20px', maxWidth: '100%', overflowX: 'auto' }}>
                 <Checkbox checked={outdated}
                           onChange={e => setOutdated(e.target.checked)}>Просроченные</Checkbox>
                 <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
@@ -451,6 +455,7 @@ export default () => {
     );
 
     const [isMapOpen, setIsMapOpen] = useState(false);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(true);
     const [mapData, setMapData] = useState(rowData);
 
     useEffect(() => {
@@ -471,8 +476,11 @@ export default () => {
                     <IssuesMap issues={mapData} />
                 )}
                 <Divider plain>
-                    <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? <UpOutlined /> : <GlobalOutlined /> }</Button>
+                    <Button onClick={() => setIsMapOpen(!isMapOpen)}>{isMapOpen ? <UpOutlined style={{ color: '#0398fc' }} /> : <GlobalOutlined /> }</Button>
+                    <div style={{ display: 'inline-block', width: 20 }} />
+                    <Button onClick={() => setIsFiltersOpen(!isFiltersOpen)}>{isFiltersOpen ? <FilterFilled style={{ color: '#0398fc' }} /> : <FilterOutlined /> }</Button>
                 </Divider>
+                {isFiltersOpen && (renderToolbar)}
                 {
                     currentItemId ? (
                         <IssueModal
@@ -495,7 +503,6 @@ export default () => {
                         setMapData(displayedRows);
                     }}
                     headerHeight={MAP_DIVIDER_HEIGHT}
-                    toolbar={renderToolbar}
                     rowData={rowData}
                     resource={ISSUES}
                     columnDefs={columns}

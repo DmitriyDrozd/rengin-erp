@@ -170,6 +170,8 @@ export const ExpensesListPage = () => {
     const renderToolbar = (
         <Space>
             <StatusFilterSelector
+                maxTagCount={"responsive"}
+                minWidth={400}
                 list={estimationStatusesList}
                 colorMap={estimationsStatusesColorsMap}
                 statuses={statuses}
