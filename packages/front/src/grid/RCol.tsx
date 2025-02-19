@@ -40,6 +40,10 @@ export const useAllColumns = <
     }
 
     const clientsNumberCol: ColDef<Item, string,RID, Fields> = {
+        filter: 'agSetColumnFilter',
+        filterParams: {
+            applyMiniFilterWhileTyping: true,
+        },
         headerName:'Номер',
         field: res.clientsNumberProp,
         sourceResourceName: res.clientsNumberProp,
