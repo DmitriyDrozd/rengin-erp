@@ -39,6 +39,7 @@ import CancelButton from '../components/elements/CancelButton';
 import { mapColumnStateToDefs } from '../utils/gridUtils';
 import useCurrentUser from '../hooks/useCurrentUser';
 import { isUserCustomer } from '../utils/userUtils';
+import { ShortcutHint } from './components/GridShortcutHint';
 
 
 const getItems = (
@@ -441,6 +442,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
                         value={searchText}
                         onChange={onSearchTextChanged}
                     />
+                    {mode !== GRID_MODES.off && <ShortcutHint />}
                     {mode === GRID_MODES.delete && renderDeleteModeToolBar()}
                     {mode === GRID_MODES.export && renderExportModeToolBar()}
                     {mode === GRID_MODES.settleItems && renderAddToModeToolBar()}
