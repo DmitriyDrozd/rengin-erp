@@ -44,7 +44,6 @@ import IssueStatusCellEditor from './CellEditors/IssueStatusCellEditor';
 import IssueSelectCellEditor from './CellEditors/IssueSelectCellEditor';
 import {
     ClockCircleOutlined,
-    DownOutlined,
     FilterFilled,
     FilterOutlined,
     GlobalOutlined,
