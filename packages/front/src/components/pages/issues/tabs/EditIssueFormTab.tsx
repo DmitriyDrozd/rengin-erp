@@ -122,6 +122,7 @@ export default ({newClientsNumber, isEditMode}: {
                     width={'sm'}
                 />
                 <RenField
+                    disabled
                     meta={ISSUES.properties.customerComments}
                     label='Комментарии'
                     multiline
@@ -131,6 +132,7 @@ export default ({newClientsNumber, isEditMode}: {
                       width={'sm'} defaultValue={currentUser.clientsEngineerUserId} disabled/>
                 <RenField meta={ISSUES.properties.managerUserId} disabled width={'sm'} hidden={!isEditMode}/>
                 <RenField meta={ISSUES.properties.status} disabled/>
+                <RenField meta={ISSUES.properties.detalization} hidden={!isITDepartment} width={'sm'}/>
             </Form>
         );
     }
@@ -224,7 +226,7 @@ export default ({newClientsNumber, isEditMode}: {
                 label={isCustomer ? 'Комментарии' : null}
                 multiline
                 width={'sm'}
-                disabled={!isCustomer}
+                disabled={isCustomer}
             />
             <RenField meta={ISSUES.properties.status} customOptions={isITDepartment ? StatusesListIT.map(s => ({ value: s, label: s })) : null}/>
             <RenField meta={ISSUES.properties.estimationsStatus}
@@ -235,7 +237,7 @@ export default ({newClientsNumber, isEditMode}: {
             }}/>
             <RenField meta={ISSUES.properties.paymentType} hidden={!isITDepartment} width={'sm'}/>
             <RenField meta={ISSUES.properties.paymentStatus} hidden={!isITDepartment} width={'sm'}/>
-            <RenField meta={ISSUES.properties.detalization} hidden={!isITDepartment} width={'sm'}/>
+            <RenField meta={ISSUES.properties.detalization} hidden={!isITDepartment || !isCustomer} width={'sm'}/>
             <FinanceFooter issue={editor.item}/>
         </Form>);
 }
