@@ -45,13 +45,14 @@ export default (props: {
     }[],
     defaultValue?: any,
     customProperties?: any,
+    Renderer?: React.FC<any>,
 }) => {
     const { hidden, ...restProps } = props;
 
     return hidden ? null : <RenField {...restProps} />
 }
 
-export const RenField = ({label, meta, disabled, customOptions, defaultValue, immutable, customProperties, createButton}: {
+export const RenField = ({label, meta, disabled, customOptions, defaultValue, immutable, customProperties, createButton, Renderer}: {
     label?: string,
     meta: AnyMeta,
     disabled?: boolean,
@@ -63,6 +64,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
     defaultValue?: any,
     customProperties?: any,
     createButton?: JSX.Element,
+    Renderer?: React.FC,
 }) => {
     const [itemToFocus, setItemToFocus] = useState(null);
     const editorProperty = useContextEditorProperty(meta.name);
@@ -91,6 +93,16 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
     }, [error]);
 
     const renderInputControl = () => {
+        if (Renderer) {
+            return (
+                <Renderer 
+                    value={value} 
+                    handleChange={updateItemProperty}
+                    disabled={disabled}
+                    {...customProperties}
+                />
+            );
+        }
 
         if ((property.immutable || immutable) && mode === 'edit') {
             let text = value;

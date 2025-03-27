@@ -32,6 +32,7 @@ import LEGALS from 'iso/src/store/bootstrap/repos/legals';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import { statusesList, StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
 import { SimpleCreateSiteButton } from '../../../elements/formElements/simpleCreateSiteButton';
+import { CommentsLine } from '../../../elements/CommentsLine';
 
 
 const {Text} = Typography;
@@ -151,7 +152,16 @@ export default ({newClientsNumber, isEditMode}: {
                     disabled
                     width={'sm'}
                 />
-                <RenField meta={ISSUES.properties.contactInfo} hidden={isCustomer} disabled/>
+                <RenField
+                    meta={ISSUES.properties.contactInfo} 
+                    hidden={isCustomer} 
+                    disabled
+                    Renderer={CommentsLine}
+                    customProperties={{
+                        item: editor.item,
+                        user: currentUser,
+                    }}
+                />
                 <RenField
                     meta={ISSUES.properties.customerComments}
                     multiline
@@ -219,8 +229,15 @@ export default ({newClientsNumber, isEditMode}: {
                       width={'sm'}/>
             <RenField meta={ISSUES.properties.estimatorUserId} hidden={isITDepartment}
                     width={'sm'}/>
-            <RenField meta={ISSUES.properties.contactInfo}
-                        multiline={true} width={'sm'} hidden={isCustomer} />
+            <RenField
+                meta={ISSUES.properties.contactInfo}
+                hidden={isCustomer}
+                Renderer={CommentsLine}
+                customProperties={{
+                    item: editor.item,
+                    user: currentUser,
+                }}
+            />
             <RenField
                 meta={ISSUES.properties.customerComments}
                 label={isCustomer ? 'Комментарии' : null}

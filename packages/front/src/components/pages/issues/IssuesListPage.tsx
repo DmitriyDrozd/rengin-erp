@@ -54,8 +54,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useCustomerFilter, useMonthFilter } from './IssuesTableFilters';
 import { dateColumnGetter } from './CellEditors/DateCellEditor';
-import { textColumnGetter } from './CellEditors/TextCellEditor';
 import { onArchiveExport } from './export-archive/utils';
+import { CommentsCell } from '../../elements/CommentsLine';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -153,7 +153,6 @@ export default () => {
     const dispatch = useDispatch();
     const [cols, colMap] = useAllColumns(ISSUES);
     const getDateColumn = dateColumnGetter(dispatch);
-    const getTextColumn = textColumnGetter(dispatch);
 
     const statusColumn = {
         field: 'status',
@@ -173,7 +172,7 @@ export default () => {
         },
         cellEditor: IssueStatusCellEditor,
         cellEditorParams: {
-            values: (params) => [params.data.status, 'sd'],// ['Новая','В работе','Выполнена','Отменена','Приостановлена'],
+            values: (params) => [params.data.status, 'sd'],
             valueListGap: 0,
         },
         cellRenderer: (props: {
@@ -182,7 +181,14 @@ export default () => {
             getStatusTag(props.data)
     };
 
-    const contactInfoColumn = {...getTextColumn('contactInfo'), width: 400, columnToRemove: isCustomer };
+    const contactInfoColumn = {
+        field: "contactInfo",
+        fieldName:"contactInfo",
+        headerName: 'Комментарии',
+        width: 400,
+        columnToRemove: isCustomer,
+        cellRenderer: CommentsCell,
+    };
 
     const engineerColumns = [
         {...colMap.clickToEditCol, headerName: 'id'},

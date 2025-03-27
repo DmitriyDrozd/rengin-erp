@@ -5,6 +5,7 @@ import { Days } from 'iso/src/utils';
 import React, { FC } from 'react';
 import PanelRGrid from '../../../../grid/PanelRGrid';
 import { useAllColumns } from '../../../../grid/RCol';
+import { CommentsCell } from '../../../elements/CommentsLine';
 
 interface IDashboardIssuesList {
     gridRef: React.RefObject<AgGridReact>,
@@ -23,7 +24,14 @@ export const DashboardIssuesList: FC<IDashboardIssuesList> = ({ gridRef, rowData
         {...colMap.brandId, width: 150},
         {...colMap.siteId, width: 250},
         {...colMap.description, width: 250},
-        {...colMap.contactInfo, width: 100},
+        {
+            ...colMap.contactInfo,
+            width: 150, 
+            cellRenderer: CommentsCell,
+            headerName: 'Комментарии', 
+            field: "contactInfo", 
+            fieldName:"contactInfo",
+        },
         {...colMap.plannedDate, cellRenderer: (props) => Days.toDayString(props.data?.plannedDate)},
         {...colMap.completedDate, cellRenderer: (props) => Days.toDayString(props.data?.completedDate), width: 115},
         {...colMap.managerUserId, width: 130},

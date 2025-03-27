@@ -127,7 +127,6 @@ const EDITABLE_CELLS_ID = [
     'plannedDate',
     'workStartedDate',
     'completedDate',
-    'contactInfo',
 ];
 
 export const getDisplayedGridRows = (api) => {
