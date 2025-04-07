@@ -1,15 +1,32 @@
 import { createResource } from '../core/createResource';
 import { valueTypes } from '../core/valueTypes';
+import { departmentList } from '../enumsList';
 
 export const employeeRoleEnum = {
     'техник': 'техник',
+    'техник ИТ': 'техник ИТ',
+    'техник Сервис': 'техник Сервис',
     'ответственный инженер': 'ответственный инженер',
+    'бригадир СМР': 'бригадир СМР',
+};
+
+export const employeeSearchTypeEnum = {
+    urgent: 'срочный',
+    current: 'текущий'
 };
 
 export const employeeRoleTypes = [
+    employeeRoleEnum['бригадир СМР'],
     employeeRoleEnum.техник,
+    employeeRoleEnum['техник ИТ'],
+    employeeRoleEnum['техник Сервис'],
     employeeRoleEnum['ответственный инженер'],
 ] as const;
+
+export const employeeSearchTypes = [
+    employeeSearchTypeEnum.urgent,
+    employeeSearchTypeEnum.current,
+]
 
 export const getItemNameWithContacts = (item) => {
     const lastName = item.lastname ? `${item.lastname} ` : '';
@@ -26,12 +43,18 @@ const employeesRaw = createResource('employee', {
         headerName: 'Организация',
         linkedResourceName: 'BRANDS'
     }),
-    lastname: valueTypes.string({colDef: {width: 250}, headerName: 'Фамилия'},),
-    name: valueTypes.string({required: true, colDef: {width: 250}, headerName: 'Имя'},),
+    name: valueTypes.string({required: true, colDef: {width: 250}, headerName: 'ФИО'},),
     title: valueTypes.string({headerName: 'Должность', colDef: {width: 200}}),
-    email: valueTypes.string({headerName: 'E-mail', toLowerCase: true, colDef: {width: 250}}),
+    // email: valueTypes.string({headerName: 'E-mail', toLowerCase: true, colDef: {width: 250}}),
     phone: valueTypes.string({headerName: 'Номер телефона', toLowerCase: true, colDef: {width: 250}}),
-    clientsEmployeeNumber: valueTypes.string({headerName: 'Номер', required: true, unique: true}),
+    city: valueTypes.string({headerName: 'Город'}),
+    region: valueTypes.string({headerName: 'Регион'}),
+    department: valueTypes.enum({ headerName: 'Отдел', enum: departmentList }),
+    sourceLink: valueTypes.string({headerName: 'Ссылка на источник'}),
+    timezone: valueTypes.string({headerName: 'Часовой пояс от НСК'}),
+    searchType: valueTypes.enum({enum: employeeSearchTypes, headerName: 'Категория поиска'}),
+    managerComment: valueTypes.text({headerName: 'Комментарий от менеджера'}),
+    employeeComment: valueTypes.text({headerName: 'Комментарий от сотрудника'}),
     removed: valueTypes.boolean({select: false, colDef: false, internal: true}),
 }, {
     getItemName: getItemNameWithContacts,

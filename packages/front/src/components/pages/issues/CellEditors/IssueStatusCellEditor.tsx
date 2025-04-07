@@ -5,7 +5,7 @@ import {CellEditorProps} from "../../../../grid/RGrid";
 import {Select} from "antd";
 import {BaseSelectRef} from "rc-select";
 import {optionsFromValuesList} from "../../../form/RenFormSelect";
-import {IssueVO, Status, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
+import {IssueVO, Status, statusesList, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
 import useRole from "../../../../hooks/useRole";
 import {useDispatch, useSelector} from "react-redux";
 import {Days} from "iso";
@@ -53,10 +53,15 @@ export default forwardRef((props:CellEditorProps<typeof ISSUES, string> , ref) =
     return (
         <Select
             options={optionsFromValuesList(ISSUES.properties.status.enum).map( o => {
-                if(role === 'менеджер') {
+                if (role === 'менеджер') {
                     const availableStatuses  = statusesRulesForManager[issue.status]
                     o.disabled = !availableStatuses.includes(o.value)
                 }
+
+                if (!o.disabled && o.value === statusesList[2] && !issue.techUserId) {
+                    o.disabled = true;
+                }
+                
                 return o
             })}
             placeholder={'Статус не указан'}

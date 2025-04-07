@@ -11,22 +11,23 @@ import { EMPLOYEES } from 'iso/src/store/bootstrap';
 import {
     EmployeeVO,
     employeeRoleEnum,
+    employeeRoleTypes,
 } from 'iso/src/store/bootstrap/repos/employees';
-import React from 'react';
+import React, { useState } from 'react';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import AppLayout from '../../app/AppLayout';
 import { AntdIcons } from '../../elements/AntdIcons';
 import { getNav } from '../../getNav';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import EditEmployeeModal from './EmployeeModal';
+import Switch from 'antd/es/switch';
 
-const employeesRoles = [
-    employeeRoleEnum.техник,
-    employeeRoleEnum['ответственный инженер'],
-];
 const roleFilterColorMap = {
     [employeeRoleEnum.техник]: 'green',
     [employeeRoleEnum['ответственный инженер']]: 'blue',
+    [employeeRoleEnum['техник ИТ']]: 'darkgreen',
+    [employeeRoleEnum['техник Сервис']]: 'orange',
+    [employeeRoleEnum['бригадир СМР']]: 'grey',
 }
 
 const BottomBar = () => {
@@ -44,8 +45,11 @@ const BottomBar = () => {
 export default () => {
     const ledger = useLedger();
     const list = ledger.employees.list;
-    const [filter, setFilter] = useLocalStorageState('employeeRoleFilter', employeesRoles);
-    const rowData = list.filter(item => filter.includes(item.role));
+    const [filter, setFilter] = useLocalStorageState('employeeRoleFilter', employeeRoleTypes);
+    const [isInternalEmployees, setIsInternalEmployees] = useState(true);
+    const rowData = list
+        .filter(item => filter.includes(item.role))
+        .filter(item => isInternalEmployees ? !item.brandId : true);
 
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const [cols, colMap] = useAllColumns(EMPLOYEES);
@@ -55,11 +59,17 @@ export default () => {
         {...colMap.clientsNumberCol},
         {...colMap.role, width: 200},
         {...colMap.brandId, width: 150},
-        {...colMap.lastname, width: 150},
+        {...colMap.managerComment, width: 150},
+        {...colMap.employeeComment, width: 150},
         {...colMap.name, width: 150},
         {...colMap.title, width: 200},
-        {...colMap.email, width: 180},
         {...colMap.phone, width: 150},
+        {...colMap.city, width: 150},
+        {...colMap.region, width: 150},
+        {...colMap.department, width: 150},
+        {...colMap.searchType, width: 150},
+        {...colMap.sourceLink, width: 150},
+        {...colMap.timezone, width: 150},
     ] as ColDef<EmployeeVO>[];
 
     return (
@@ -72,13 +82,20 @@ export default () => {
             }}
         >
             <div>
-                {currentItemId && <EditEmployeeModal roles={employeesRoles} id={currentItemId}/>}
+                {currentItemId && <EditEmployeeModal roles={employeeRoleTypes} id={currentItemId}/>}
                 <PanelRGrid
                     fullHeight
                     toolbar={(
                         <Space>
+                            <Switch 
+                                title='отображаемые сотрудники'
+                                value={isInternalEmployees}
+                                checkedChildren="внутренние" 
+                                unCheckedChildren="все"
+                                onChange={setIsInternalEmployees}
+                            />
                             <StatusFilterSelector
-                                list={employeesRoles}
+                                list={employeeRoleTypes}
                                 colorMap={roleFilterColorMap}
                                 statuses={filter}
                                 setStatuses={setFilter}/>

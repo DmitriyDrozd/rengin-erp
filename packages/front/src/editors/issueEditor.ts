@@ -1,4 +1,4 @@
-import {ISSUES, IssueVO, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
+import {ISSUES, IssueVO, statusesList, statusesRulesForManager} from "iso/src/store/bootstrap/repos/issues";
 import {buildEditor} from "iso/src/store/bootstrap/buildEditor";
 import {
     clientsEngineerUserId,
@@ -27,10 +27,16 @@ export const issuesEditor =  buildEditor(ISSUES,{
         getParams: ({value,property,state,role,currentUserId,item}) => {
             return {
                 options:optionsFromValuesList(ISSUES.properties.status.enum).map( o => {
-                    if(role === 'менеджер') {
-                        const availableStatuses  = statusesRulesForManager[item.status]
-                        o.disabled = !availableStatuses.includes(o.value)
+                    if (role === 'менеджер') {
+                        const availableStatuses = statusesRulesForManager[item.status];
+                        o.disabled = !availableStatuses.includes(o.value);
                     }
+
+                    // Статус выполнено не может быть проставлен пока не назначен исполнитель. 
+                    if (!o.disabled && o.value === statusesList[2] && !item.techUserId) {
+                        o.disabled = true;
+                    }
+
                     return o
                 })
             }
