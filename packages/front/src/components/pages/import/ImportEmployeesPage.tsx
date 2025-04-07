@@ -20,22 +20,34 @@ import ImportCard from '../../elements/ImportCard';
 
 interface IEmployee {
     role: string,
-    lastname: string,
     name: string,
     clientsBrandNumber: string,
     title: string,
-    email: string,
     phone: string,
+    city: string,
+    region: string,
+    department: string,
+    sourceLink: string,
+    timezone: string,
+    searchType: string,
+    managerComment: string,
+    employeeComment: string,
 }
 
 export const importIssuesXlsxCols = [
     'role',
-    'lastname',
     'name',
     'clientsBrandNumber',
     'title',
-    'email',
     'phone',
+    'city',
+    'region',
+    'department',
+    'sourceLink',
+    'timezone',
+    'searchType',
+    'managerComment',
+    'employeeComment',
 ] as const;
 type Datum = Record<typeof importIssuesXlsxCols[number], any>
 
@@ -46,14 +58,20 @@ function* importEmployeesSaga(data: Datum[]) {
     let ledger: ReturnType<typeof selectLedger> = yield* select(selectLedger);
 
     function* getOrCreateEmployee({
-                                      role,
-                                      lastname,
-                                      name,
-                                      clientsBrandNumber,
-                                      title,
-                                      email,
-                                      phone,
-                                  }: IEmployee) {
+                                    role,
+                                    name,
+                                    clientsBrandNumber,
+                                    title,
+                                    phone,
+                                    city,
+                                    region,
+                                    department,
+                                    sourceLink,
+                                    timezone,
+                                    searchType,
+                                    managerComment,
+                                    employeeComment,
+                                }: IEmployee) {
         const byQueryGetter = yield* byQueryGetters();
 
         // @ts-ignore
@@ -67,14 +85,20 @@ function* importEmployeesSaga(data: Datum[]) {
             const clientsEmployeeNumber = generateClientsNumber(ledger.employees.list, 'clientsEmployeeNumber');
             const newEmployee = {
                 role,
-                lastname,
                 name,
-                email,
                 phone,
                 title,
                 clientsEmployeeNumber,
                 [EMPLOYEES.idProp]: generateGuid(),
                 brandId: brand?.brandId,
+                city,
+                region,
+                department,
+                sourceLink,
+                timezone,
+                searchType,
+                managerComment,
+                employeeComment,
             };
 
             console.log(`Employee not found, create one`, newEmployee.clientsEmployeeNumber);
@@ -88,12 +112,18 @@ function* importEmployeesSaga(data: Datum[]) {
         const d = data[i];
         yield getOrCreateEmployee({
             role: d.role,
-            lastname: d.lastname,
             name: d.name,
             clientsBrandNumber: String(d.clientsBrandNumber),
             title: d.title,
-            email: d.email,
             phone: d.phone,
+            city: d.city,
+            region: d.region,
+            department: d.department,
+            sourceLink: d.sourceLink,
+            timezone: d.timezone,
+            searchType: d.searchType,
+            managerComment: d.managerComment,
+            employeeComment: d.employeeComment,
         });
     }
 
