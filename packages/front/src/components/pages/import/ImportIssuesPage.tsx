@@ -185,9 +185,7 @@ const getImportIssuesSaga = ({ newIssues, invalidIssues, duplicatedIssues }: { n
             });
         }
 
-        if (newIssues.length) {
-            yield* put(ISSUES.actions.addedBatch(newIssues));
-        }
+        yield* put(ISSUES.actions.addedBatch(newIssues));
     }
 
     return importIssuesSaga;
