@@ -11,6 +11,7 @@ import {
     EMPLOYEES,
     EXPENSES,
     TASKS,
+    NOTIFICATIONS,
 } from './bootstrap/index';
 
 export const ducks  = {
@@ -23,6 +24,7 @@ export const ducks  = {
     EMPLOYEES,
     EXPENSES,
     TASKS,
+    NOTIFICATIONS,
 }
 export {metaDuck}
 

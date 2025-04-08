@@ -11,6 +11,7 @@ import {routerDuck, RouterState} from './ducks/routerDuck';
 import {loadingDuck} from './ducks/loadingDuck';
 import {Preferences, preferencesDuck} from './ducks/preferencesDuck';
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
+import { NotificationVO } from 'iso/src/store/bootstrap/repos/notifications';
 
 export type DeepReadonly<T> = T extends any[]
     ? DeepReadonlyArray<T[number]>
@@ -72,4 +73,11 @@ export const selectCurrentUser = (state: FrontState): UserVO => {
     const user = USERS.selectUserByEmail(email as any as string)(state)
 
     return user as any as UserVO
+}
+
+export const selectUserNotifications = (userId: string) => (state: FrontState): NotificationVO[] => {
+    const notifications: NotificationVO[] = state.app.bootstrap.notifications;
+    const userNotifications = notifications.filter(notification => notification.destination === userId);
+
+    return userNotifications;
 }

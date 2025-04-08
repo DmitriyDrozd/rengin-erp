@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom'
 import {getNav} from '../getNav'
 import React from 'react'
 import ExitButton from '../elements/ExitButton'
+import Badge from 'antd/es/badge'
 
 const { useToken } = theme;
 const items: MenuProps['items'] = [
@@ -46,25 +47,30 @@ export default () => {
         borderRadius: token.borderRadiusLG,
         boxShadow: token.boxShadowSecondary,
     };
-    return <Dropdown trigger={['hover']}
 
-                     dropdownRender={(menu) => (
-                         <div style={contentStyle}>
-                             {menu}
-                             <Divider style={{ margin: 0 }} />
-                             <Space style={{ padding: 8 }}>
-                                <ExitButton/>
-                             </Space>
-                         </div>
-                     )}
-    >
-        <Link to={getNav().userEdit({userId:currentUser.userId})}>
-            <Space>
-                <Typography.Text type={'secondary'}>{currentUser.role}</Typography.Text>
-                <UserPic userId={currentUser.userId}/>
-                {currentUser.email}
-                <DownOutlined />
-            </Space>
-        </Link>
-    </Dropdown>
+    return (
+        <Dropdown
+            trigger={['hover']}
+            dropdownRender={(menu) => (
+                <div style={contentStyle}>
+                    {menu}
+                    <Divider style={{ margin: 0 }} />
+                    <Space style={{ padding: 8 }}>
+                        <ExitButton/>
+                    </Space>
+                </div>
+            )}
+        >
+            <Link to={getNav().userEdit({userId:currentUser.userId})}>
+                <Space>
+                    <Typography.Text type={'secondary'}>{currentUser.role}</Typography.Text>
+                    <Badge count={2}>
+                        <UserPic userId={currentUser.userId}/>
+                    </Badge>
+                    {currentUser.email}
+                    <DownOutlined />
+                </Space>
+            </Link>
+        </Dropdown>
+    )
 }

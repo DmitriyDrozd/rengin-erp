@@ -1,4 +1,5 @@
 import {
+    BellOutlined,
     DownOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
@@ -30,6 +31,7 @@ import { getNav } from '../getNav';
 import HeadLogo from '../app/HeadLogo';
 import { AntdIcons } from '../elements/AntdIcons';
 import useUI from '../../hooks/common/useUI';
+import Badge from 'antd/es/badge';
 
 // const {useToken} = theme;
 
@@ -37,12 +39,16 @@ import useUI from '../../hooks/common/useUI';
 const TopProfileDropDown = (props: DropDownProps) => {
     const dispatch = useFrontDispatch();
     const history = useHistory();
+    const {newNotifications} = useCurrentUser();
 
     const onConfirmExit = async () => {
-
-        dispatch(uiDuck.actions.logout(undefined));
-        history.replace(getNav().login({}));
-        window.location.reload();
+        if (confirm('Вы точно желаете выйти из системы?')) {
+            dispatch(uiDuck.actions.logout(undefined));
+            history.replace(getNav().login({}));
+            window.location.reload();
+        } else {
+            return;
+        }
     };
     return (
         <Dropdown
@@ -50,6 +56,19 @@ const TopProfileDropDown = (props: DropDownProps) => {
             {...props}
             menu={{
                 items: [
+                    {
+                        onClick: () => { alert('показ уведомлений') },
+                        key: 'notifications',
+                        icon: (
+                            <Badge dot={newNotifications.length > 0}>
+                                <BellOutlined />
+                            </Badge>
+                        ),
+                        label: 'Уведомления'
+                    },
+                    {
+                        type: 'divider',
+                    },
                     {
                         onClick: () => {
                             onConfirmExit();
@@ -77,7 +96,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
         layout: 'mix',
         splitMenus: false
     };
-    const {currentUser} = useCurrentUser();
+    const {currentUser, newNotifications} = useCurrentUser();
     const userAvatarURL = useFrontSelector(USERS.selectAvatar(currentUser.userId));
 
     const history = useHistory();
@@ -99,11 +118,19 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                 icon: <AntdIcons.ArrowDownOutlined/>,
                 src: userAvatarURL,
                 size: 'small',
-                title: <Typography.Link><Typography.Text
-                    type={'success'}>{currentUser.role}</Typography.Text> {currentUser.email}</Typography.Link>,
-                render: (props, dom) =>
-                    <TopProfileDropDown {...props}><Space>{dom}<a
-                        href={'#'}><DownOutlined/></a></Space></TopProfileDropDown>
+                shape: 'square',
+                title: (
+                    <Typography.Link>
+                        <Typography.Text type={'success'}>{currentUser.role}</Typography.Text> {currentUser.email}
+                    </Typography.Link>
+                ),
+                render: (props, dom) => (
+                    <TopProfileDropDown {...props}>
+                        <Space>
+                            <Badge count={newNotifications.length}>{dom}</Badge><a href={'#'}><DownOutlined/></a>
+                        </Space>
+                    </TopProfileDropDown>
+                )
             }}
             menuFooterRender={(props) => {
                 if (props?.collapsed) return undefined;
@@ -114,7 +141,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
                             paddingBlockStart: 12
                         }}
                     >
-                        <div>© 2024 rengindesk.ru</div>
+                        <div>© 2025 rengindesk.ru</div>
                     </div>
                 );
             }}

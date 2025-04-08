@@ -9,6 +9,7 @@ import SUBS from "./repos/subs";
 import BRANDS from "./repos/brands";
 import LEGALS from "./repos/legals";
 import EMPLOYEES from "./repos/employees";
+import NOTIFICATIONS from './repos/notifications';
 type C = typeof CONTRACTS
 type S = typeof SITES
 type U = typeof USERS
@@ -19,9 +20,10 @@ type L = typeof LEGALS
 type E = typeof EMPLOYEES
 type Ex = typeof EXPENSES
 type Ts = typeof TASKS
+type N = typeof NOTIFICATIONS
 USERS.rid ='user'
 USERS.idProp = 'userId'
-type Any = C|S|U|I|Su|B|L|E|Ex|Ts
+type Any = C|S|U|I|Su|B|L|E|Ex|Ts|N
 const a : Any = {} as Any
 
 //.idProp()//.properties.userId
@@ -34,4 +36,5 @@ export {
     EMPLOYEES,
     EXPENSES,
     TASKS,
+    NOTIFICATIONS,
 }
