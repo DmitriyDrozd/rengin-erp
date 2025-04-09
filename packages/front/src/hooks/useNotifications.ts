@@ -54,7 +54,7 @@ export const useNotifications = (userId?: string) => {
         if (pendingNotifications.length === 0) {
             return;
         } 
-
+        
         const toDelete = pendingNotifications.map(n => n.notificationId);
         dispatch(NOTIFICATIONS.actions.removedBatch(toDelete));
     }
@@ -62,7 +62,6 @@ export const useNotifications = (userId?: string) => {
     const discardSingle = (query: { [queryKey: string]: any }) => {
         const queryKey = Object.keys(query)[0];
         const toDelete = userNotifications.filter(n => n.createdBy === userId && n[queryKey] === query[queryKey]).map(n => n.notificationId);
-        debugger;
         
         // removedBatch т.к. одно и то же уведомление могло предназначаться нескольким адресатам
         dispatch(NOTIFICATIONS.actions.removedBatch(toDelete));
@@ -92,8 +91,8 @@ export const useNotifications = (userId?: string) => {
         userNotifications,
         createNotification,
         createNotifications,
-        sendAllPending,
         discardAllPending,
+        sendAllPending,
         discardSingle,
         sendNotification,
         markAsRead,

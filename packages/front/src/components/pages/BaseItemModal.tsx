@@ -51,7 +51,7 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
 
             history.replace(itemPath)
         } else {
-            onBack();
+            history.goBack();
         }
     };
 
@@ -70,8 +70,7 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
         if (editor.mode == 'edit') {
             onSave();
         } else {
-            notifications.discardAllPending();
-            history.goBack();
+            onBack();
         }
     };
 

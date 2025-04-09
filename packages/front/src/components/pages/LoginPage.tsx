@@ -41,7 +41,6 @@ export default () => {
 
     const [loading, setLoading] = useState(false);
 
-
     const onSubmit = async (e) => {
 
         e.preventDefault();
@@ -56,9 +55,8 @@ export default () => {
         try {
             const api = await getRestApi();
             const response = await api.login(params);
+
             if (response) {
-
-
                 if (params.remember) {
                     appStorage.setItem('credentials', params);
                 } else {
@@ -66,21 +64,19 @@ export default () => {
                 }
                 //  store.rusSaga(loginSaga, history)
                 dispatch(uiDuck.actions.loginRequested(params));
-
             } else {
-
                 const data = await response.json();
 
                 dispatch(uiDuck.actions.unbusy('Login'));
                 notify.error({message: 'Неверный логин/пароль'});
-
-
             }
         } catch (e) {
             dispatch(uiDuck.actions.unbusy('Login'));
+            setLoading(false);
             notify.error({message: 'Не удалось авторизоваться'});
-
+            return;
         }
+
         await sleep(120000);
         setLoading(false);
     };

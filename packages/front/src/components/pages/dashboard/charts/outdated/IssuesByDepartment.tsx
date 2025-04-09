@@ -60,7 +60,6 @@ export const IssuesByDepartment = (
             ]);
         }
     }
-    debugger;
 
     data = data.flat();
 
