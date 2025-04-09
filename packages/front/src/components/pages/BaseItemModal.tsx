@@ -12,6 +12,7 @@ import CancelButton from '../elements/CancelButton';
 import { sleep } from '@sha/utils';
 import { useContextEditor } from './chapter-modal/useEditor';
 import { layoutPropsModalForm } from '../form/ModalForm';
+import { useNotifications } from '../../hooks/useNotifications';
 
 
 const formItemLayout = {
@@ -34,10 +35,12 @@ interface IssueModalProps {
 export default ({children, title, restrictedAccess}: IssueModalProps) => {
     const editor = useContextEditor();
     const history = useHistory();
+    const notifications = useNotifications();
     const modalTitle = title || editor.resource.getItemName(editor.item);
 
     const onSave = async () => {
         editor.save();
+        notifications.sendAllPending();
 
         if (editor.mode === 'create') {
             await sleep(100);
@@ -59,14 +62,17 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     };
 
     const onBack = () => {
+        notifications.discardAllPending();
         history.goBack();
     };
 
     const onCancel = () => {
-        if (editor.mode == 'edit')
+        if (editor.mode == 'edit') {
             onSave();
-        else
+        } else {
+            notifications.discardAllPending();
             history.goBack();
+        }
     };
 
     const buttons = [

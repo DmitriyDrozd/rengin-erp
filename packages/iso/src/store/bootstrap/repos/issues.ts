@@ -185,6 +185,7 @@ const issuesRaw = createResource('issue', {
             headerName: 'Комментарии',
             properties: {
                 author: valueTypes.string({}),
+                authorId: valueTypes.string({}),
                 date: valueTypes.date({}),
                 message: valueTypes.string({required: true}),
                 status: valueTypes.enum({enum: statusesList}),

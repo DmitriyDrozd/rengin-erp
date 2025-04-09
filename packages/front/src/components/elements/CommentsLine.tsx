@@ -7,14 +7,20 @@ import dayjs from "dayjs";
 import { IssueVO, statusesColorsMap } from "iso/src/store/bootstrap/repos/issues";
 import { UserVO } from "iso/src/store/bootstrap/repos/users";
 import { GENERAL_DATE_FORMAT } from "iso/src/utils/date-utils";
-import { remove } from "ramda";
+import { remove, uniq } from "ramda";
 import { FC, useState } from "react";
 import * as Icons from '@ant-design/icons';
 import Button from "antd/es/button";
+import { useNotifications } from "../../hooks/useNotifications";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import NOTIFICATIONS, { NotificationType, NotificationVO } from "iso/src/store/bootstrap/repos/notifications";
+import { uuid } from "blinkdb";
+import { generateGuid } from "@sha/random";
 
 type Comment = {
     author?: string,
-    date?: string,
+    authorId?: string,
+    date?: Date,
     message: string,
     status?: string,
 };
@@ -33,15 +39,22 @@ const getCommentLabel = (comment: Comment, isUsersComment: boolean) => {
         return '';
     }
 
-    return `${isUsersComment ? 'Я' : comment.author}, ${comment.date ? dayjs(comment.date, GENERAL_DATE_FORMAT) : ''}`;
+    return `${isUsersComment ? 'Я' : comment.author}, ${comment.date ? dayjs(comment.date).format(GENERAL_DATE_FORMAT) : ''}`;
 }
 
 export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, item, disabled}) => {
     const [newComment, setNewComment] = useState('');
+    const { currentUser } = useCurrentUser();
+    const { createNotifications, discardSingle } = useNotifications(currentUser.userId);
+    const notificationDestinations = Array.isArray(value) 
+        ? uniq(value.map(c => c.authorId)).filter(authorId => authorId !== currentUser.userId)
+        : [];
 
     const handleRemoveComment = (index: number) => {
+        const removingComment = Array.isArray(value) ? { ...value[index] } : null;
         const result = remove(index, 1, value);
 
+        discardSingle({ timestamp: removingComment.date });
         handleChange(result);
     }
 
@@ -85,6 +98,7 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
     }
 
     const handleAddComment = () => {
+        const timestamp = new Date();
         const prevValue: Comment[] = value 
             ? Array.isArray(value) 
                 ? value 
@@ -93,10 +107,21 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
 
         const result: Comment[] = [...prevValue, {
             author: getAuthorName(user),
-            date: dayjs().format(GENERAL_DATE_FORMAT),
+            authorId: user.userId,
+            date: timestamp,
             message: newComment,
             status: item.status,
         }];
+
+        createNotifications(notificationDestinations.map((destination: string): Partial<NotificationVO> => ({
+            destination,
+            timestamp,
+            createdBy: currentUser.userId,
+            title: 'Новый комментарий',
+            message: newComment.slice(0, 100),
+            type: NotificationType.default,
+            createdLink: `/app/in/issues/${item.issueId}`,
+        })));
 
         handleChange(result);
         setNewComment('');

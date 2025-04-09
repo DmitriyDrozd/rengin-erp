@@ -3,7 +3,8 @@ import { valueTypes } from '../core/valueTypes';
 
 export const NotificationStatus = {
     new: 'Новая',
-    done: 'Просмотрено'
+    done: 'Просмотрено',
+    pending: 'Подготовка к отправке',
 }
 
 export const notificationStatusList = [NotificationStatus.new, NotificationStatus.done];
@@ -23,7 +24,7 @@ const notificationsRaw = createResource('notification', {
         message: valueTypes.text({headerName: 'Содержимое', required: true}),
         type: valueTypes.enum({headerName: 'Тип', enum: notificationTypeList}),
         
-        createdAt: valueTypes.date({headerName: 'Дата создания', required: true}),
+        timestamp: valueTypes.date({headerName: 'Дата создания', required: true}),
         createdBy: valueTypes.string({headerName: 'Автор', required: true}),
         createdLink: valueTypes.string({headerName: 'Ссылка на первоисточник'}),
         
