@@ -33,15 +33,13 @@ import { AntdIcons } from '../elements/AntdIcons';
 import useUI from '../../hooks/common/useUI';
 import Badge from 'antd/es/badge';
 
-// const {useToken} = theme;
-
 
 const TopProfileDropDown = (props: DropDownProps) => {
     const dispatch = useFrontDispatch();
     const history = useHistory();
     const {newNotifications} = useCurrentUser();
 
-    const onConfirmExit = async () => {
+    const onConfirmExit = () => {
         if (confirm('Вы точно желаете выйти из системы?')) {
             dispatch(uiDuck.actions.logout(undefined));
             history.replace(getNav().login({}));
@@ -50,6 +48,11 @@ const TopProfileDropDown = (props: DropDownProps) => {
             return;
         }
     };
+
+    const onGoToNotifications = () => {
+        history.push(getNav().profile());
+    }
+
     return (
         <Dropdown
             trigger={['click']}
@@ -57,7 +60,7 @@ const TopProfileDropDown = (props: DropDownProps) => {
             menu={{
                 items: [
                     {
-                        onClick: () => { alert('показ уведомлений') },
+                        onClick: onGoToNotifications,
                         key: 'notifications',
                         icon: (
                             <Badge dot={newNotifications.length > 0}>
@@ -80,7 +83,6 @@ const TopProfileDropDown = (props: DropDownProps) => {
                     },
                 ],
             }}
-
         >
             {props.children}
         </Dropdown>

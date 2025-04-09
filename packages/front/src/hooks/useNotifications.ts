@@ -10,7 +10,7 @@ export const useNotifications = (userId?: string) => {
     const currentUserId = userId || currentUser.userId;
     const userNotifications: NotificationVO[] = useFrontSelector(NOTIFICATIONS.selectEq({ createdBy: currentUserId }));
     const pendingNotifications = userNotifications.filter(n => n.status === NotificationStatus.pending);
-    
+
     /**
      * Подготовить уведомление к отправке
      * @param notification 

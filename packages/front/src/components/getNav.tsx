@@ -28,6 +28,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import { TasksListPage } from './pages/tasks/TasksListPage';
 import UsersChapter from './pages/users/UsersListPage';
 import EmployeesChapter from './pages/employees/EmployeesListPage';
+import ProfilePage from './pages/ProfilePage';
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -52,6 +53,7 @@ export const getNav = moize(() => {
         login: buildNav('/app/login', LoginPage),
         forgot: buildNav('/app/forgot', ForgotPasswordPage),
         start: buildNav('/app/in/start', StartPage),
+        profile: buildNav('/app/in/profile', ProfilePage),
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),
         usersList: buildNav('/app/in/users', UsersChapter),
         backup: buildNav('/app/in/backup', BackupPage),

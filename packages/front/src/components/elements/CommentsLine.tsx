@@ -13,9 +13,7 @@ import * as Icons from '@ant-design/icons';
 import Button from "antd/es/button";
 import { useNotifications } from "../../hooks/useNotifications";
 import useCurrentUser from "../../hooks/useCurrentUser";
-import NOTIFICATIONS, { NotificationType, NotificationVO } from "iso/src/store/bootstrap/repos/notifications";
-import { uuid } from "blinkdb";
-import { generateGuid } from "@sha/random";
+import { NotificationType, NotificationVO } from "iso/src/store/bootstrap/repos/notifications";
 
 type Comment = {
     author?: string,
@@ -117,10 +115,10 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
             destination,
             timestamp,
             createdBy: currentUser.userId,
-            title: 'Новый комментарий',
-            message: newComment.slice(0, 100),
+            title: 'Комментарий',
+            message: newComment,
             type: NotificationType.default,
-            createdLink: `/app/in/issues/${item.issueId}`,
+            createdLink: location.pathname + location.hash,
         })));
 
         handleChange(result);
