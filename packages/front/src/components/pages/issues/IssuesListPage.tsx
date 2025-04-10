@@ -55,7 +55,7 @@ import { Link } from 'react-router-dom';
 import { useCustomerFilter, useMonthFilter } from './IssuesTableFilters';
 import { dateColumnGetter } from './CellEditors/DateCellEditor';
 import { onArchiveExport } from './export-archive/utils';
-import { CommentsCell } from '../../elements/CommentsLine';
+import { getCommentsCell } from '../../elements/CommentsLine';
 
 const getEstimationStatusTag = (data: IssueVO) => {
     const { estimationsStatus } = data;
@@ -187,7 +187,7 @@ export default () => {
         headerName: 'Комментарии',
         width: 400,
         columnToRemove: isCustomer,
-        cellRenderer: CommentsCell,
+        cellRenderer: getCommentsCell('contactInfo'),
     };
 
     const engineerColumns = [

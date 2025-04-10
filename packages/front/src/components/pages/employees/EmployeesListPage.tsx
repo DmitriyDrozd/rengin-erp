@@ -21,6 +21,8 @@ import { getNav } from '../../getNav';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import EditEmployeeModal from './EmployeeModal';
 import Switch from 'antd/es/switch';
+import { getCommentsCell } from '../../elements/CommentsLine';
+import { Days } from 'iso';
 
 const roleFilterColorMap = {
     [employeeRoleEnum.техник]: 'green',
@@ -54,13 +56,27 @@ export default () => {
     const currentItemId = window.location.hash === '' ? undefined : window.location.hash.slice(1);
     const [cols, colMap] = useAllColumns(EMPLOYEES);
 
+    const currentNovosibTime = Days.getNovosibTime();
+
     const columns: ColDef<EmployeeVO>[] = [
         {...colMap.clickToEditCol},
         {...colMap.clientsNumberCol},
         {...colMap.role, width: 200},
         {...colMap.brandId, width: 150},
-        {...colMap.managerComment, width: 150},
-        {...colMap.employeeComment, width: 150},
+        {
+            width: 150, 
+            cellRenderer: getCommentsCell('managerComment'), 
+            field: "managerComment",
+            fieldName:"managerComment",
+            headerName: 'Комментарий от менеджера'
+        },
+        {
+            width: 150, 
+            cellRenderer: getCommentsCell('employeeComment'), 
+            field: "employeeComment",
+            fieldName:"employeeComment",
+            headerName: 'Комментарий от сотрудника'
+        },
         {...colMap.name, width: 150},
         {...colMap.title, width: 200},
         {...colMap.phone, width: 150},
@@ -69,7 +85,21 @@ export default () => {
         {...colMap.department, width: 150},
         {...colMap.searchType, width: 150},
         {...colMap.sourceLink, width: 150},
-        {...colMap.timezone, width: 150},
+        {
+            ...colMap.timezone, 
+            width: 150,
+            cellRenderer: (props) => {
+                if (!props.data.timezone) {
+                    return '';
+                }
+
+                const value = Number(props.data.timezone);
+                const method = value > 0 ? 'add' : 'subtract';
+                const shiftedTime = currentNovosibTime[method](Math.abs(value), 'h');
+
+                return <span>{props.data.timezone}: <b>{shiftedTime.format('HH:mm')}</b></span>
+            }
+        },
     ] as ColDef<EmployeeVO>[];
 
     return (

@@ -5,7 +5,7 @@ import { Days } from 'iso/src/utils';
 import React, { FC } from 'react';
 import PanelRGrid from '../../../../grid/PanelRGrid';
 import { useAllColumns } from '../../../../grid/RCol';
-import { CommentsCell } from '../../../elements/CommentsLine';
+import { getCommentsCell } from '../../../elements/CommentsLine';
 
 interface IDashboardIssuesList {
     gridRef: React.RefObject<AgGridReact>,
@@ -27,7 +27,7 @@ export const DashboardIssuesList: FC<IDashboardIssuesList> = ({ gridRef, rowData
         {
             ...colMap.contactInfo,
             width: 150, 
-            cellRenderer: CommentsCell,
+            cellRenderer: getCommentsCell('contactInfo'),
             headerName: 'Комментарии', 
             field: "contactInfo", 
             fieldName:"contactInfo",

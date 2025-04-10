@@ -4,7 +4,7 @@ import Space from "antd/es/space";
 import Timeline from "antd/es/timeline";
 import Typography from "antd/es/typography";
 import dayjs from "dayjs";
-import { IssueVO, statusesColorsMap } from "iso/src/store/bootstrap/repos/issues";
+import { IssueVO, statusesColorsMap, statusesList } from "iso/src/store/bootstrap/repos/issues";
 import { UserVO } from "iso/src/store/bootstrap/repos/users";
 import { GENERAL_DATE_FORMAT } from "iso/src/utils/date-utils";
 import { remove, uniq } from "ramda";
@@ -27,8 +27,12 @@ interface CommentsLineProps {
     value: Comment[] | string,
     handleChange: (comments: Comment[]) => void,
     user: UserVO,
-    item: IssueVO,
+    item?: IssueVO,
     disabled: boolean,
+    notificationOptions?: {
+        type?: string,
+        title?: string,
+    }
 };
 
 const getAuthorName = (user: UserVO) => `${user.name} ${user.lastname}`;
@@ -40,7 +44,7 @@ const getCommentLabel = (comment: Comment, isUsersComment: boolean) => {
     return `${isUsersComment ? 'Я' : comment.author}, ${comment.date ? dayjs(comment.date).format(GENERAL_DATE_FORMAT) : ''}`;
 }
 
-export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, item, disabled}) => {
+export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, item, disabled, notificationOptions}) => {
     const [newComment, setNewComment] = useState('');
     const { currentUser } = useCurrentUser();
     const { createNotifications, discardSingle } = useNotifications(currentUser.userId);
@@ -108,16 +112,16 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
             authorId: user.userId,
             date: timestamp,
             message: newComment,
-            status: item.status,
+            status: item?.status || statusesList[0],
         }];
 
         createNotifications(notificationDestinations.map((destination: string): Partial<NotificationVO> => ({
             destination,
             timestamp,
             createdBy: currentUser.userId,
-            title: 'Комментарий',
+            title: notificationOptions?.title || 'Комментарий',
             message: newComment,
-            type: NotificationType.default,
+            type: notificationOptions?.type || NotificationType.default,
             createdLink: location.pathname + location.hash,
         })));
 
@@ -145,19 +149,22 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
 };
 
 export const CommentsCell = (props) => {
-    const { contactInfo } = props.data || {};
+    const comments = props.data ? props.data[props.propKey] : null;
 
-    if (!contactInfo) {
+    if (!comments) {
         return null;
     }
 
-    if (Array.isArray(contactInfo)) {
-        const lastMessage = contactInfo[contactInfo.length - 1]?.message;
+    if (Array.isArray(comments)) {
+        const commentsCount = comments.length - 1;
+        const lastMessage = comments[commentsCount]?.message;
 
-        return contactInfo.length > 1 
-            ? `(всего: ${contactInfo.length}) ${contactInfo[contactInfo.length - 1]?.message}`
+        return comments.length > 1 
+            ? `(всего: ${comments.length}) ${lastMessage}`
             : lastMessage;
     }
 
-    return contactInfo
-}
+    return comments;
+};
+
+export const getCommentsCell = (propKey: string) => (props) => <CommentsCell {...props} propKey={propKey} />

@@ -13,6 +13,12 @@ export const isUserCustomer = (user: UserVO) => {
     return !isRenginInternal && !isDeveloper;
 }
 
+export const isDirectorRole = (user: UserVO) => {
+    const { role } = user;
+
+    return role === roleEnum['руководитель'] || isDepartmentHead(user);
+}
+
 export const isManagementRole = (user: UserVO) => {
     const { role } = user;
 

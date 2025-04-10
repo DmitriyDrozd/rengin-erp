@@ -28,6 +28,34 @@ export const employeeSearchTypes = [
     employeeSearchTypeEnum.current,
 ]
 
+export const timeZonesByNvsbOptions = [
+    { label: '-5 Калининградский', value: '-5' },
+    { label: '-4 Московский', value: '-4'},
+    { label: '-3 Самарский', value: '-3'},
+    { label: '-2 Екатеринбургский', value: '-2'},
+    { label: '-1 Омский', value: '-1'},
+    { label: '0 Красноярский', value: '0'},
+    { label: '+1 Иркутский', value: '+1'},
+    { label: '+2 Якутский', value: '+2'},
+    { label: '+3 Владивостокский', value: '+3'},
+    { label: '+4 Магаданский', value: '+4'},
+    { label: '+5 Камчатский', value: '+5'},
+];
+
+export const timeZonesByNvsb = [
+    timeZonesByNvsbOptions[0].value,
+    timeZonesByNvsbOptions[1].value,
+    timeZonesByNvsbOptions[2].value,
+    timeZonesByNvsbOptions[3].value,
+    timeZonesByNvsbOptions[4].value,
+    timeZonesByNvsbOptions[5].value,
+    timeZonesByNvsbOptions[6].value,
+    timeZonesByNvsbOptions[7].value,
+    timeZonesByNvsbOptions[8].value,
+    timeZonesByNvsbOptions[9].value,
+    timeZonesByNvsbOptions[10].value,
+]
+
 export const getItemNameWithContacts = (item) => {
     const lastName = item.lastname ? `${item.lastname} ` : '';
     const name = item.name;
@@ -51,7 +79,7 @@ const employeesRaw = createResource('employee', {
     region: valueTypes.string({headerName: 'Регион'}),
     department: valueTypes.enum({ headerName: 'Отдел', enum: departmentList }),
     sourceLink: valueTypes.string({headerName: 'Ссылка на источник'}),
-    timezone: valueTypes.string({headerName: 'Часовой пояс от НСК'}),
+    timezone: valueTypes.enum({enum: timeZonesByNvsb, customOptions: timeZonesByNvsbOptions, headerName: 'Часовой пояс от НСК'}),
     searchType: valueTypes.enum({enum: employeeSearchTypes, headerName: 'Категория поиска'}),
     managerComment: valueTypes.text({headerName: 'Комментарий от менеджера'}),
     employeeComment: valueTypes.text({headerName: 'Комментарий от сотрудника'}),

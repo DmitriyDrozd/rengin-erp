@@ -1,8 +1,9 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { IssueVO } from '../store/bootstrap/repos/issues';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isToday from 'dayjs/plugin/isToday';
 import isBetween from 'dayjs/plugin/isBetween';
+
+import { IssueVO } from '../store/bootstrap/repos/issues';
 import { ExpenseVO } from '../store/bootstrap/repos/expenses';
 
 type ConfigType = string | Date | Dayjs | null | undefined
@@ -162,3 +163,9 @@ export const isEstimationInPeriod = (period: Period) => (estimation: ExpenseVO) 
 
 export const toDayString = (d: ConfigType) =>
     d ? asDayOrToday(d).toString() : 'Дата не указана';
+
+export const getNovosibTime = () => {
+    const date = new Date();
+    const utc0 = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    return dayjs(utc0).add(7, 'h');
+}

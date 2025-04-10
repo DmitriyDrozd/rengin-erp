@@ -17,6 +17,10 @@ import {
 import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 import { chunkHandler } from '../../../utils/chunkUtils';
+import useCurrentUser from '../../../hooks/useCurrentUser';
+import { isDirectorRole } from '../../../utils/userUtils';
+import { CommentsLine } from '../../elements/CommentsLine';
+import RenField from '../../form/RenField';
 
 const roleMap = {
     [employeeRoleEnum['техник']]: 'techUserId',
@@ -32,9 +36,12 @@ const rolesSites = SITES.rolesProps;
 const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
     const ledger = useLedger();
     const useEditorData = useEditor(employeesditor, id);
+    const { currentUser } = useCurrentUser();
+    const isDirector = isDirectorRole(currentUser);
     const isEditMode = useEditorData.mode === 'edit';
+
     const {removed, employeeId, clientsEmployeeNumber, ...propsToRender} = EMPLOYEES.properties;
-    const list = [clientsEmployeeNumber, ...Array.from(Object.values(propsToRender))].filter(i => !!i);
+    const list = [clientsEmployeeNumber, ...Array.from(Object.values(propsToRender))].filter(i => !!i && !i.headerName.includes('Комментарий'));
 
     const [addingModes, setAddingModes] = useState({
         issues: false,
@@ -96,6 +103,23 @@ const EditEmployeeModal = ({roles, id}: { roles: string[], id: string }) => {
         <EditorContext.Provider value={useEditorData}>
             <BaseEditModal>
                 <GenericRenFields list={list}/>
+                <RenField
+                    meta={EMPLOYEES.properties.managerComment}
+                    hidden={!isDirector} // todo: add ManagerOfEmployees role here
+                    Renderer={CommentsLine}
+                    customProperties={{
+                        user: currentUser,
+                        title: 'Комментарий от менеджера'
+                    }}
+                />
+                <RenField
+                    meta={EMPLOYEES.properties.employeeComment}
+                    Renderer={CommentsLine}
+                    customProperties={{
+                        user: currentUser,
+                        title: 'Комментарий от сотрудника'
+                    }}
+                />
                 <ProCard tabs={{type: 'card', cardProps: { bodyStyle: { padding: 0 }} }}>
                     {
                         showSites && (

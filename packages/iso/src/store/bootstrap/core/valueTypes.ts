@@ -102,8 +102,8 @@ const arrayOfMeta = <Extra extends {linkedResourceName: ResourceName}>(extra: Pa
 
 export type TupleElement = string
 
-const enumMeta = <Tuple extends TupleElement[]>(extra: Partial<Meta<'enum', Tuple[number]>> & {enum: Readonly<[...Tuple]>} ) =>
-    ({...extra, type: 'enum' as 'enum'}) as Meta<'enum', Tuple[number]> & {enum: Readonly<[...Tuple]>}
+const enumMeta = <Tuple extends TupleElement[]>(extra: Partial<Meta<'enum', Tuple[number]>> & {enum: Readonly<[...Tuple]>, customOptions?: Readonly<{ label: string; value: string; }[]>} ) =>
+    ({...extra, type: 'enum' as 'enum'}) as Meta<'enum', Tuple[number]> & {enum: Readonly<[...Tuple]>, customOptions?: Readonly<{ label: string; value: string; }[]>}
 
 export type EnumMeta = ReturnType<typeof enumMeta>
 export type InferredVOByMetaMap<P extends {[key in string]: PropMetas}> = Readonly<{
