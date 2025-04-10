@@ -20,6 +20,9 @@ import { chunkHandler } from '../../../utils/chunkUtils';
 
 const roleMap = {
     [employeeRoleEnum['техник']]: 'techUserId',
+    [employeeRoleEnum['техник ИТ']]: 'techUserId',
+    [employeeRoleEnum['техник Сервис']]: 'techUserId',
+    [employeeRoleEnum['бригадир СМР']]: 'techUserId',
     [employeeRoleEnum['ответственный инженер']]: 'clientsEngineerUserId',
 };
 
