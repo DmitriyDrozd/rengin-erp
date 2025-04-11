@@ -3,6 +3,7 @@ import { valueTypes } from '../core/valueTypes';
 import { Days } from '../../../utils';
 import {
     employeeRoleEnum,
+    employeeTechRoles,
     EmployeeVO
 } from './employees';
 import {
@@ -202,7 +203,7 @@ const issuesRaw = createResource('issue', {
             headerName: 'Техник',
             linkedResourceName: 'EMPLOYEES',
             defaultAsPropRef: 'siteId',
-            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => item.role === employeeRoleEnum['техник']),
+            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => employeeTechRoles.includes(item.role)),
         }),
         clientsEngineerUserId: valueTypes.itemOf({
             headerName: 'Отв. инженер',

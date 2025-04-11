@@ -3,7 +3,8 @@ import { PropRule } from 'iso/src/store/bootstrap/buildEditor';
 import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import {
     employeeRoleEnum,
-    EMPLOYEES
+    EMPLOYEES,
+    employeeTechRoles
 } from 'iso/src/store/bootstrap/repos/employees';
 import ISSUES from 'iso/src/store/bootstrap/repos/issues';
 
@@ -41,7 +42,7 @@ export const estimatorUserId: PropRule<{ estimatorUserId: typeof ISSUES.properti
 export const techUserId: PropRule<{ techUserId: typeof ISSUES.properties.techUserId }, any> = {
     getParams: ({item, state}) => {
         const brands = BRANDS.selectAll(state);
-        const techs = EMPLOYEES.selectAll(state).filter(m => m.role==='техник').map(brandMapper(brands));
+        const techs = EMPLOYEES.selectAll(state).filter(m => employeeTechRoles.includes(m.role)).map(brandMapper(brands));
 
         return {
             options: EMPLOYEES.asOptions(techs),

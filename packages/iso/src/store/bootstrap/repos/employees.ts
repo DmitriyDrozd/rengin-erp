@@ -10,6 +10,13 @@ export const employeeRoleEnum = {
     'бригадир СМР': 'бригадир СМР',
 };
 
+export const employeeTechRoles = [
+    employeeRoleEnum.техник,
+    employeeRoleEnum['техник ИТ'],
+    employeeRoleEnum['техник Сервис'],
+    employeeRoleEnum['бригадир СМР']
+]
+
 export const employeeSearchTypeEnum = {
     urgent: 'срочный',
     current: 'текущий'

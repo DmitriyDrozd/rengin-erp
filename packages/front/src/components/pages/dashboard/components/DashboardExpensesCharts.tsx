@@ -7,7 +7,7 @@ import { IssueVO } from "iso/src/store/bootstrap/repos/issues";
 import { FC, useEffect, useState } from "react"
 import useLedger from "../../../../hooks/useLedger";
 import { DefaultOptionType } from "antd/es/select";
-import { employeeRoleEnum } from "iso/src/store/bootstrap/repos/employees";
+import { employeeRoleEnum, employeeTechRoles } from "iso/src/store/bootstrap/repos/employees";
 import { roleEnum } from "iso/src/store/bootstrap/repos/users";
 import { departmentOptions, SUBJ_FILTER, typeOptions, TYPES } from "./helpers";
 import { ExpensesChart } from '../charts/ExpensesChart';
@@ -34,7 +34,7 @@ export const DashboardExpensesCharts: FC<DashboardExpensesChartsProps> = ({
 
         switch (type) {
             case TYPES.tech: {
-                const techs = ledger.employees.list.filter(e => e.role === employeeRoleEnum['техник']);
+                const techs = ledger.employees.list.filter(e => employeeTechRoles.includes(e.role));
 
                 _subjectOptions = techs.map(t => ({
                     label: `${t.name} ${t.lastname || ''}`,

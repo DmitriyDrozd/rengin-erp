@@ -2,6 +2,7 @@ import {createResource} from '../core/createResource'
 import {valueTypes} from '../core/valueTypes'
 import {
     employeeRoleEnum,
+    employeeTechRoles,
     EmployeeVO
 } from './employees';
 import {LegalVO} from './legals'
@@ -58,7 +59,7 @@ export const siteResourceRaw = createResource('site',{
         techUserId: valueTypes.itemOf({
             headerName: 'Техник',
             linkedResourceName:'EMPLOYEES',
-            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => item.role === employeeRoleEnum['техник']),
+            filterLinkedResourceItems: (list: EmployeeVO[]) => list.filter(item => employeeTechRoles.includes(item.role)),
         }),
         clientsEngineerUserId: valueTypes.itemOf({
             headerName:'Отв. инженер',
