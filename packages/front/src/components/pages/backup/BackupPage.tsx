@@ -26,6 +26,7 @@ export const BackupPage = () => {
     const [backups, setBackups] = useState([]);
     const [selectedBackup, setSelectedBackup] = useState('');
     const options = backups
+        .reverse()
         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
         .map(b => ({ value: b, label: b }));
 

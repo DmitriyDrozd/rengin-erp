@@ -49,7 +49,7 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
     const { currentUser } = useCurrentUser();
     const { createNotifications, discardSingle } = useNotifications(currentUser.userId);
     const notificationDestinations = Array.isArray(value) 
-        ? uniq(value.map(c => c.authorId)).filter(authorId => authorId !== currentUser.userId)
+        ? uniq(value.map(c => c.authorId)).filter(authorId => authorId && authorId !== currentUser.userId)
         : [];
 
     const handleRemoveComment = (index: number) => {
