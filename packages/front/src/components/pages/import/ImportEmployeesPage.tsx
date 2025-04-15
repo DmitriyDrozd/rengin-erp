@@ -104,12 +104,10 @@ const getImportEmployeeSaga = ({ newItems, invalidItems, duplicatedItems }: { ne
     
                 console.log(`Employee not found, create one`, newEmployee.clientsEmployeeNumber);
                 newItems.push(R.reject(R.anyPass([R.isEmpty, R.isNil]))(newEmployee));
-                debugger;
             } else {
                 duplicatedItems.push({ clientsNumber: foundEmployee.clientsEmployeeNumber });
             }
     
-            debugger;
             return foundEmployee;
         }
     
