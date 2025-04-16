@@ -373,7 +373,7 @@ export default () => {
                         const isManagerInDepartment = departmentManagersIds.includes(i.managerUserId);
                         const isEstimatorInDepartment = departmentManagersIds.includes(i.estimatorUserId);
 
-                        return isManagerInDepartment || isEstimatorInDepartment;
+                        return !i.managerUserId || !i.estimatorUserId || isManagerInDepartment || isEstimatorInDepartment;
                     })
                 : outdatedIssues;
             break;
