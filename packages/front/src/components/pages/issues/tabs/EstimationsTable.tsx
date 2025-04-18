@@ -129,7 +129,6 @@ export default () => {
     const onCellEditingStopped = (e: RowEditingStoppedEvent) => {
         let items: Array<ExpenseItem> = [];
         gridRef.current.api.forEachNode(function (node) {
-
             items.push(node.data);
         });
         setRowData(items);
@@ -158,9 +157,14 @@ export default () => {
             </ProForm.Item>
         );
     };
+    
     const onBtExport = useCallback(() => {
         gridRef.current!.api.exportDataAsExcel();
     }, []);
+
+    const handleAddRow = () => {
+        setRowData([{}, ...rowData]);
+    }
 
     return (
         <div>{
@@ -191,7 +195,7 @@ export default () => {
                             importedItemsFound={'позиций в смете'}
                         ></ImportTableButton>
 
-                            <Button type={'primary'} onClick={() => setRowData([...rowData, {}])}>Добавить
+                            <Button type={'primary'} onClick={handleAddRow}>Добавить
                                 строку</Button></>
                         : <Typography.Text type={'danger'}>Ваша роль {currentUser.role}, нельзя редактировать смету</Typography.Text>
                     }

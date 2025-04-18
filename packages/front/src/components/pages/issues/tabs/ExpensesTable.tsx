@@ -157,8 +157,8 @@ export default (props) => {
 
         const expenseItems = clone(item.expenses || []);
         const expensesUpdate = [
-            ...expenseItems,
             newItem,
+            ...expenseItems,
         ];
 
         setRowData(expensesUpdate, newItem);
