@@ -79,7 +79,7 @@ const getImportEmployeeSaga = ({ newItems, invalidItems, duplicatedItems }: { ne
             const brand = yield* byQueryGetter.brandByClientsNumber(clientsBrandNumber, false);
     
             const foundEmployee = ledger.employees.list.find((employee) => {
-                return role === employee.role && name === employee.name && phone === employee.phone && title === employee.title;
+                return role == employee.role && name == employee.name && phone == employee.phone && title == employee.title;
             });
     
             if (!foundEmployee) {
