@@ -113,8 +113,11 @@ const getImportEmployeeSaga = ({ newItems, invalidItems, duplicatedItems }: { ne
     
         for (let i = 0; i < data.length; i++) {
             const d = data[i];
+            const role = d.role?.trim();
+            const timezone = d.timezone?.toString();
+
             yield getOrCreateEmployee({
-                role: d.role,
+                role,
                 name: d.name,
                 clientsBrandNumber: String(d.clientsBrandNumber),
                 title: d.title,
@@ -123,7 +126,7 @@ const getImportEmployeeSaga = ({ newItems, invalidItems, duplicatedItems }: { ne
                 region: d.region,
                 department: d.department,
                 sourceLink: d.sourceLink,
-                timezone: d.timezone,
+                timezone,
                 searchType: d.searchType,
                 managerComment: d.managerComment,
                 employeeComment: d.employeeComment,
