@@ -103,6 +103,10 @@ export default () => {
 
     const isAllSitesHasGeo = allSites.every(site => !!site.geoPosition);
     const visibleSites = allSites.filter(site => {
+        if (!site.managerUserId) {
+            return true;
+        }
+
         const isSiteFromITDepartment = ITDepartmentUserIDs.includes(site.managerUserId);
         
         return isITDepartment ? isSiteFromITDepartment : !isSiteFromITDepartment;
