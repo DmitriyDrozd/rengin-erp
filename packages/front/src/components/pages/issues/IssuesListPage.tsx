@@ -370,9 +370,9 @@ export default () => {
 
             dataForUser = userDepartment
                 ? outdatedIssues.filter((i: IssueVO) => {
-                        if (!i.managerUserId || !i.estimatorUserId) {
-                            return true;
-                        }
+                        // if (!i.managerUserId || !i.estimatorUserId) {
+                        //     return true;
+                        // }
                         
                         const isManagerInDepartment = departmentManagersIds.includes(i.managerUserId);
                         const isEstimatorInDepartment = departmentManagersIds.includes(i.estimatorUserId);
