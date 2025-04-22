@@ -50,19 +50,6 @@ const getItems = (
     isSelectRowsAvailable = false
 ): MenuProps['items'] =>
     [
-        // {
-        //     label: 'Сохранить',
-        //     icon: <AntdIcons.SaveFilled/>,
-        //     key: 'save'
-        // },
-        // {
-        //     label: 'Назначенные мне',
-        //     icon: <AntdIcons.EyeInvisibleFilled/>,
-        //     key: 'hide'
-        // },
-        // {
-        //     type: 'divider'
-        // },
         isAddItemsAvailable &&
         {
             label: 'Добавить к',
@@ -154,6 +141,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onShowAllItems,
         onCancelClick,
         selectRowsProps,
+        href,
         ...props
     }: RGridProps<RID, Fields> & {
         isCreateButtonDisabled?: boolean,
@@ -171,6 +159,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         onShowAllItems?(): void,
         onCancelClick?(): void,
         selectRowsProps?: { icon: ReactElement, onClick(selectedIds: string[]): void, label: string },
+        href?: string,
     }) => {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -270,7 +259,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
             return;
         }
 
-        const url = getCrudPathname(resource).edit(e.data[resource.idProp]);
+        const url = getCrudPathname(resource, href).edit(e.data[resource.idProp]);
         history.push(url);
     };
 
@@ -359,24 +348,25 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const { currentUser } = useCurrentUser();
     const role = currentUser.role;
 
+    const getDropdownMenu = (ddMenuItems) => (
+        <Dropdown menu={{
+            items: ddMenuItems,
+            onClick: e => {
+                onMenuClick(e.key);
+            }
+        }}>
+            <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
+        </Dropdown>
+    );
+
     const renderStandardToolBar = () => {
         const menuItems = getItems(!!onExportArchive, !!onAddToItems, !!onRemoveFromItems, !isNotRoleSensitive, !!selectRowsProps);
         const estimatorMenuItems = getItems(!!onExportArchive, false, false, false, false);
-        const getDropdownMenu = (ddMenuItems) => (
-            <Dropdown menu={{
-                items: ddMenuItems,
-                onClick: e => {
-                    onMenuClick(e.key);
-                }
-            }}>
-                <Button icon={<AntdIcons.SettingOutlined/>} type={'text'}/>
-            </Dropdown>
-        );
 
         const getFullToolBar = (isCustomerRole: boolean = false) => (
             <>
                 {!isCreateButtonDisabled && (
-                    <CrudCreateButton resource={resource} defaultProps={createItemProps}/>
+                    <CrudCreateButton resource={resource} defaultProps={createItemProps} href={href}/>
                 )}
                 {!isCustomerRole && getDropdownMenu(menuItems)}
             </>

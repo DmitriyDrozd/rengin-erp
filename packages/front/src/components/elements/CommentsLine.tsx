@@ -69,7 +69,7 @@ export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, 
 
             return {
                 children: (
-                    <Space direction="vertical">
+                    <Space direction="vertical" key={index}>
                         {
                             commentLabel && (
                                 <Space>

@@ -27,8 +27,8 @@ import IssuesListPage from './pages/issues/IssuesListPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import { TasksListPage } from './pages/tasks/TasksListPage';
 import UsersChapter from './pages/users/UsersListPage';
-import EmployeesChapter from './pages/employees/EmployeesListPage';
 import ProfilePage from './pages/ProfilePage';
+import { EmployeesBlacklist, EmployeesChapter, EmployeesChecked, EmployeesProvided } from './pages/employees/EmployeesByCategory';
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -58,9 +58,16 @@ export const getNav = moize(() => {
         usersList: buildNav('/app/in/users', UsersChapter),
         backup: buildNav('/app/in/backup', BackupPage),
 
-        employeesList: buildNav('/app/in/employees', EmployeesChapter),
-        employeesCreate: buildNav('/app/in/employees/create', EmployeesChapter),
-        employeesEdit: buildNav('/app/in/employees/:employeeId', EmployeesChapter),
+        // employeesList: buildNav('/app/in/employees', EmployeesChapter),
+        employeesListProvided: buildNav('/app/in/employees/provided', EmployeesProvided),
+        employeesListChecked: buildNav('/app/in/employees/checked', EmployeesChecked),
+        employeesListBlacklist: buildNav('/app/in/employees/blacklist', EmployeesBlacklist),
+
+        employeesCreate: buildNav('/app/in/employees/provided/create', EmployeesChapter),
+
+        employeesEditProvided: buildNav('/app/in/employees/provided/:employeeId', EmployeesProvided),
+        employeesEditChecked: buildNav('/app/in/employees/checked/:employeeId', EmployeesChecked),
+        employeesEditBlacklist: buildNav('/app/in/employees/blacklist/:employeeId', EmployeesBlacklist),
 
         brandsList: buildNav('/app/in/brands', BrandsChapter),
 

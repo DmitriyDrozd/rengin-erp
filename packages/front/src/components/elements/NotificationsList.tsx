@@ -23,6 +23,15 @@ const doneStyle = {
     }
 }
 
+const doneWarningStyle = {
+    ...doneStyle,
+    color: '#fff1f0'
+}
+
+const warningStyle = {
+    background: '#ffccc7',
+}
+
 const defaultStyle = {
 }
 
@@ -31,6 +40,10 @@ const styleMap = {
         [NotificationStatus.new]: defaultStyle,
         [NotificationStatus.done]: doneStyle,
     },
+    [NotificationType.warning]: {
+        [NotificationStatus.new]: warningStyle,
+        [NotificationStatus.done]: doneWarningStyle,
+    }
 };
 
 

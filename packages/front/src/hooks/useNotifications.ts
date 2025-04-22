@@ -16,7 +16,14 @@ export const useNotifications = (userId?: string) => {
      * @param notification 
      */
     const createNotification = (notification: Partial<NotificationVO>) => {
-        const created: NotificationVO = { ...notification, status: NotificationStatus.pending, [NOTIFICATIONS.idProp]: generateGuid() } as NotificationVO;
+        const created: NotificationVO = {
+            createdBy: currentUser.userId,
+            timestamp: new Date(),
+            createdLink: location.pathname + location.hash,
+            ...notification, 
+            status: NotificationStatus.pending, 
+            [NOTIFICATIONS.idProp]: generateGuid() 
+        } as NotificationVO;
 
         dispatch(NOTIFICATIONS.actions.added(created));
     };
@@ -26,7 +33,9 @@ export const useNotifications = (userId?: string) => {
      * @param notifications 
      */
     const createNotifications = (notifications: Partial<NotificationVO>[]) => {
-        const created: NotificationVO[] = notifications.map(n => ({ 
+        const created: NotificationVO[] = notifications.map(n => ({
+            createdBy: currentUser.userId,
+            timestamp: new Date(),
             ...n, 
             status: NotificationStatus.pending, 
             [NOTIFICATIONS.idProp]: generateGuid() 

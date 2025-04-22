@@ -15,12 +15,14 @@ export const roleEnum = {
     'менеджер':'менеджер',
     'сметчик':'сметчик',
     'инженер':'ответственный инженер',
+    'staffManager': 'менеджер по поиску специалистов',
 }
 export const roleTypes = [
     roleEnum.руководитель,
     roleEnum.менеджер,
     roleEnum.сметчик,
-    roleEnum.инженер
+    roleEnum.инженер,
+    roleEnum.staffManager
 ] as const
 
 export type RoleType = typeof roleTypes[number];
@@ -116,7 +118,7 @@ export const getAbbrName = (user) =>  {
     return getPart(0)+getPart(1)+ getPart(2)
 }
 export const ROLES_COLORS = ['red','blue','purple','green','black']
-export const ROLES = ['admin','manager','booker','engineer','worker'] as const
+export const ROLES = ['admin','manager','booker','engineer','worker','staffManager'] as const
 export type Role = typeof ROLES[number]
 
 export const defaultAdminUser = {

@@ -26,10 +26,10 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
         label
     }: CrudCreateButtonProps<RID, Fields>) => {
         const pathRes = usePathnameResource();
-        let url = href || getCrudPathname(pathRes.resource).create();
+        let url = getCrudPathname(pathRes.resource, href).create();
 
-        if (resource)
-            url = getCrudPathname(resource).create(defaultProps);
+        if (!!resource)
+            url = getCrudPathname(resource, href).create(defaultProps);
 
         const history = useHistory();
 

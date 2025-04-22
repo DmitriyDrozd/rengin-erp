@@ -13,7 +13,7 @@ import {
     employeeRoleEnum,
     employeeRoleTypes,
 } from 'iso/src/store/bootstrap/repos/employees';
-import React, { useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import useLocalStorageState from '../../../hooks/useLocalStorageState';
 import AppLayout from '../../app/AppLayout';
 import { AntdIcons } from '../../elements/AntdIcons';
@@ -32,7 +32,11 @@ const roleFilterColorMap = {
     [employeeRoleEnum['бригадир СМР']]: 'grey',
 }
 
-const BottomBar = () => {
+const BottomBar = (isImportDisabled?: boolean) => {
+    if (isImportDisabled) {
+        return null;
+    }
+    
     return (
         <Space>
             <Link to={getNav().importEmployees}>
@@ -44,12 +48,28 @@ const BottomBar = () => {
     );
 };
 
-export default () => {
+interface EmployeesListPageProps {
+    title?: string,
+    href?: string,
+    panelProps?: unknown,
+    isImportDisabled?: boolean,
+    categoryFilter?: (employee: EmployeeVO) => boolean,
+};
+
+const EmployeesListPage: FC<EmployeesListPageProps> = ({ 
+    title = 'Сотрудники',
+    href,
+    panelProps = {},
+    isImportDisabled = false,
+    categoryFilter = (employee) => true,
+}) => {
     const ledger = useLedger();
     const list = ledger.employees.list;
     const [filter, setFilter] = useLocalStorageState('employeeRoleFilter', employeeRoleTypes);
     const [isInternalEmployees, setIsInternalEmployees] = useState(true);
+    const isProvidedPage = href === 'provided';
     const rowData = list
+        .filter(categoryFilter)
         .filter(item => filter.includes(item.role))
         .filter(item => isInternalEmployees ? !item.brandId : true);
 
@@ -102,6 +122,25 @@ export default () => {
         },
     ] as ColDef<EmployeeVO>[];
 
+    const toolbar = (
+        <Space>
+            <Switch 
+                title='отображаемые сотрудники'
+                value={isInternalEmployees}
+                checkedChildren="внутренние" 
+                unCheckedChildren="все"
+                onChange={setIsInternalEmployees}
+            />
+            <StatusFilterSelector
+                list={employeeRoleTypes}
+                colorMap={roleFilterColorMap}
+                statuses={filter}
+                setStatuses={setFilter}/>
+        </Space>
+    );
+
+    const bottomBar = useMemo(() => () => BottomBar(isImportDisabled), [isImportDisabled]);
+
     return (
         <AppLayout
             hidePageContainer
@@ -112,32 +151,21 @@ export default () => {
             }}
         >
             <div>
-                {currentItemId && <EditEmployeeModal roles={employeeRoleTypes} id={currentItemId}/>}
+                {currentItemId && <EditEmployeeModal roles={employeeRoleTypes} id={currentItemId} isProvidedPage={isProvidedPage}/>}
                 <PanelRGrid
                     fullHeight
-                    toolbar={(
-                        <Space>
-                            <Switch 
-                                title='отображаемые сотрудники'
-                                value={isInternalEmployees}
-                                checkedChildren="внутренние" 
-                                unCheckedChildren="все"
-                                onChange={setIsInternalEmployees}
-                            />
-                            <StatusFilterSelector
-                                list={employeeRoleTypes}
-                                colorMap={roleFilterColorMap}
-                                statuses={filter}
-                                setStatuses={setFilter}/>
-                        </Space>
-                    )}
+                    toolbar={toolbar}
                     columnDefs={columns}
-                    title={'Сотрудники'}
+                    title={title}
                     resource={EMPLOYEES}
                     rowData={rowData}
-                    BottomBar={BottomBar}
+                    BottomBar={bottomBar}
+                    href={href}
+                    {...panelProps}
                 />
             </div>
         </AppLayout>
     );
 }
+
+export default EmployeesListPage;

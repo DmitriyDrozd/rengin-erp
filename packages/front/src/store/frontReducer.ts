@@ -3,7 +3,7 @@ import {combineReducers} from 'redux'
 import {History} from 'history'
 import {Bootstrap, bootstrapDuck} from 'iso/src/store/bootstrapDuck';
 import {uiDuck, UIState} from './ducks/uiDuck';
-import {default as USERS, UserVO} from 'iso/src/store/bootstrap/repos/users';
+import {roleEnum, default as USERS, UserVO} from 'iso/src/store/bootstrap/repos/users';
 import {connectionDuck, metaDuck, StoreMeta} from 'iso/src/store';
 import {ConnectionState} from 'iso/src/store/sse/sseConnectionDuck';
 import frontConfigDuck, {FrontConfig} from './ducks/frontConfigDuck';
@@ -12,6 +12,7 @@ import {loadingDuck} from './ducks/loadingDuck';
 import {Preferences, preferencesDuck} from './ducks/preferencesDuck';
 import {IssueVO} from "iso/src/store/bootstrap/repos/issues";
 import { NotificationStatus, NotificationVO } from 'iso/src/store/bootstrap/repos/notifications';
+import { isDepartmentHead } from '../utils/userUtils';
 
 export type DeepReadonly<T> = T extends any[]
     ? DeepReadonlyArray<T[number]>
@@ -83,4 +84,11 @@ export const selectUserNotifications = (userId: string) => (state: FrontState): 
     );
 
     return userNotifications;
+}
+
+export const selectUsersHeadOfUnit = (userId: string) => (state: FrontState): string | null => {
+    const users: UserVO[] = state.app.bootstrap.users;
+    const currentUser = users.find(u => u.userId === userId);
+    
+    return users.find(u => u.department === currentUser.department && u.role === roleEnum.руководитель && isDepartmentHead(u))?.userId || null;
 }

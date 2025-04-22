@@ -19,12 +19,12 @@ export type RCol<RID extends string, Fields extends AnyFieldsMeta, Prop extends 
 export const RCellRender = {
     ClickToEdit: <D,V>(props:RCellRenderProps<D,V>) => {
         const resource = props.colDef.resource
-        const url = getCrudPathname(resource).edit(props.value)
-            return (
-                <Link to={url}>
-                    <EditOutlined  />
-                </Link>
+        const url = getCrudPathname(resource).edit(props.value);
 
-            )
+        return (
+            <Link to={url}>
+                <EditOutlined  />
+            </Link>
+        )
     }
 }

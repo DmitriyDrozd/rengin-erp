@@ -22,6 +22,18 @@ export const employeeSearchTypeEnum = {
     current: 'текущий'
 };
 
+export const employeeCategories = {
+    provided: 'предварительный поиск',
+    checked: 'проверенный',
+    blacklist: 'в черном списке',
+};
+
+export const employeeCategoriesList = [
+    employeeCategories.provided,
+    employeeCategories.checked,
+    employeeCategories.blacklist,
+] as const;
+
 export const employeeRoleTypes = [
     employeeRoleEnum['бригадир СМР'],
     employeeRoleEnum.техник,
@@ -90,6 +102,8 @@ const employeesRaw = createResource('employee', {
     searchType: valueTypes.enum({enum: employeeSearchTypes, headerName: 'Категория поиска'}),
     managerComment: valueTypes.text({headerName: 'Комментарий от менеджера'}),
     employeeComment: valueTypes.text({headerName: 'Комментарий от сотрудника'}),
+    category: valueTypes.enum({enum: employeeCategoriesList, headerName: 'Категория'}),
+    isPendingCategory: valueTypes.boolean({headerName: 'Ожидает перевода'}),
     removed: valueTypes.boolean({select: false, colDef: false, internal: true}),
 }, {
     getItemName: getItemNameWithContacts,

@@ -17,7 +17,6 @@ export default <RID extends string, Fields extends AnyFieldsMeta>({resource,id,o
     }
     return <Popconfirm
         title="Удаление"
-
         description="Вы уверениы что хотите удалить записи?"
         okText="Удалить"
         cancelText="Отмена"

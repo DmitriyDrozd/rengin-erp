@@ -75,10 +75,10 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     };
 
     const buttons = [
-        <DeleteButton onDeleted={onDelete}/>,
-        <CancelButton onCancel={onBack} disabled={!editor.hasChanges}/>,
+        <DeleteButton onDeleted={onDelete} key="delete"/>,
+        <CancelButton onCancel={onBack} disabled={!editor.hasChanges} key="cancel"/>,
         <Button type={'primary'} disabled={!editor.hasChanges || !editor.isValid} icon={<AntdIcons.SaveOutlined/>}
-                onClick={onSave}>Сохранить</Button>
+                onClick={onSave} key="save">Сохранить</Button>
     ];
 
     const actions = restrictedAccess ? [buttons[1], buttons[2]] : [...buttons];

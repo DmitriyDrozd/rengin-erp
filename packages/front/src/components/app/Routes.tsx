@@ -2,9 +2,14 @@ import * as Icons from '@ant-design/icons';
 import {
     AppstoreOutlined,
     BarChartOutlined,
+    BulbOutlined,
     CalendarOutlined,
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    HeartOutlined,
     MailOutlined,
-    ReconciliationOutlined
+    ReconciliationOutlined,
+    TeamOutlined
 } from '@ant-design/icons';
 import React from 'react'
 import {
@@ -17,7 +22,8 @@ const RolesMap = {
     admin: roleEnum['руководитель'],
     estimator: roleEnum['сметчик'],
     engineer: roleEnum['инженер'],
-    manager: roleEnum['менеджер']
+    manager: roleEnum['менеджер'],
+    staffManager: roleEnum.staffManager,
 } as const;
 
 type TRoute = {
@@ -69,15 +75,31 @@ export default (user) => {
             roles: [RolesMap.admin, RolesMap.manager],
         },
         {
-            path: "/app/in/employees",
-            name: "Сотрудники",
-            roles: [RolesMap.admin],
-        },
-        {
             path: "/app/in/import-sites",
             name: "Импорт",
             roles: [RolesMap.admin],
         }
+    ].filter(roleFilter).map(mapFiltered);
+
+    const routesEmployees: TRoute[] = [
+        {
+            path: "/app/in/employees/provided",
+            name: "Предварительный поиск",
+            icon: <Icons.UsergroupAddOutlined />,
+            roles: [RolesMap.admin, RolesMap.staffManager],
+        },
+        {
+            path: "/app/in/employees/checked",
+            name: "Проверенные специалисты",
+            icon: <HeartOutlined />,
+            roles: [RolesMap.admin, RolesMap.staffManager],
+        },
+        {
+            path: "/app/in/employees/blacklist",
+            name: "Черный список",
+            icon: <CloseCircleOutlined />, 
+            roles: [RolesMap.admin, RolesMap.staffManager],
+        },
     ].filter(roleFilter).map(mapFiltered);
 
     const routes: TRoute[] = [
@@ -111,6 +133,13 @@ export default (user) => {
             icon: <AppstoreOutlined />,
             routes: routesDictionaries,
             roles: [RolesMap.admin, RolesMap.manager],
+        },
+        {
+            path: "/app/in/employees",
+            name: "Сотрудники",
+            icon: <TeamOutlined />,
+            routes: routesEmployees,
+            roles: [RolesMap.admin, RolesMap.staffManager],
         },
         {
             path: "/app/in/users",
