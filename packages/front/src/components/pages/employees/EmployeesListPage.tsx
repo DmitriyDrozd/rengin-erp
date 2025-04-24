@@ -53,6 +53,7 @@ interface EmployeesListPageProps {
     href?: string,
     panelProps?: unknown,
     isImportDisabled?: boolean,
+    isRestrictedAccess?: boolean,
     categoryFilter?: (employee: EmployeeVO) => boolean,
 };
 
@@ -61,6 +62,7 @@ const EmployeesListPage: FC<EmployeesListPageProps> = ({
     href,
     panelProps = {},
     isImportDisabled = false,
+    isRestrictedAccess = false,
     categoryFilter = (employee) => true,
 }) => {
     const ledger = useLedger();
@@ -155,7 +157,7 @@ const EmployeesListPage: FC<EmployeesListPageProps> = ({
                     <EditEmployeeModal 
                         id={currentItemId} 
                         isProvidedPage={isProvidedPage} 
-                        isRestrictedAccess={isImportDisabled}
+                        isRestrictedAccess={isRestrictedAccess}
                     />
                 )}
                 <PanelRGrid

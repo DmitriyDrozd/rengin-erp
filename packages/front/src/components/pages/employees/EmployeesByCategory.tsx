@@ -9,14 +9,14 @@ export const EmployeesChapter: FC<never> = () => <EmployeesListPage />;
 export const EmployeesProvided: FC<any> = () => {
     const { currentUser } = useCurrentUser();
     const filter = (e: EmployeeVO) => e.isPendingCategory || e.category === employeeCategories.provided;
-    const isImportDisabled = !isUserStaffManager(currentUser);
+    const isRestrictedAccess = !isUserStaffManager(currentUser);
 
     return (
         <EmployeesListPage
             title="Предварительный поиск"
             href='provided'
             categoryFilter={filter}
-            isImportDisabled={isImportDisabled}
+            isRestrictedAccess={isRestrictedAccess}
         />
     )
 }
