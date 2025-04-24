@@ -33,6 +33,7 @@ import BRANDS from 'iso/src/store/bootstrap/repos/brands';
 import { statusesList, StatusesListIT } from 'iso/src/store/bootstrap/repos/issues';
 import { SimpleCreateSiteButton } from '../../../elements/formElements/simpleCreateSiteButton';
 import { CommentsLine } from '../../../elements/CommentsLine';
+import { FormBlacklistNotification } from '../../employees/FormBlacklistNotification';
 
 
 const {Text} = Typography;
@@ -227,6 +228,7 @@ export default ({newClientsNumber, isEditMode}: {
             />
             <RenField meta={ISSUES.properties.techUserId} label={isITDepartment ? 'Исполнитель' : null}
                       width={'sm'}/>
+            <FormBlacklistNotification techUserId={editor.item.techUserId} />
             <RenField meta={ISSUES.properties.estimatorUserId} hidden={isITDepartment}
                     width={'sm'}/>
             <RenField

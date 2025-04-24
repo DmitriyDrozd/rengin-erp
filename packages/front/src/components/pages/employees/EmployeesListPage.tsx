@@ -151,7 +151,13 @@ const EmployeesListPage: FC<EmployeesListPageProps> = ({
             }}
         >
             <div>
-                {currentItemId && <EditEmployeeModal roles={employeeRoleTypes} id={currentItemId} isProvidedPage={isProvidedPage}/>}
+                {currentItemId && (
+                    <EditEmployeeModal 
+                        id={currentItemId} 
+                        isProvidedPage={isProvidedPage} 
+                        isRestrictedAccess={isImportDisabled}
+                    />
+                )}
                 <PanelRGrid
                     fullHeight
                     toolbar={toolbar}

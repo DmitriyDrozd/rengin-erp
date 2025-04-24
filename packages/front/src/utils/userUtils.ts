@@ -1,4 +1,5 @@
 import { departmentList } from 'iso/src/store/bootstrap/enumsList';
+import { employeeCategories, EmployeeVO } from 'iso/src/store/bootstrap/repos/employees';
 import {
     roleEnum,
     UserVO
@@ -37,4 +38,20 @@ export const isDepartmentHead = (user: UserVO) => {
 
 export const isCustomerHead = (user: UserVO) => {
     return isUserCustomer(user) && isDepartmentHead(user);
+}
+
+export const isUserStaffManager = (user: UserVO) => {
+    return user.role === roleEnum.staffManager;
+}
+
+/**
+ * EMPLOYEES
+ */
+
+export const isEmployeeBlacklisted = (employee?: EmployeeVO) => {
+    if (!employee) {
+        return false;
+    }
+
+    return !employee.isPendingCategory && employee.category === employeeCategories.blacklist;
 }

@@ -67,7 +67,7 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     };
 
     const onCancel = () => {
-        if (editor.mode == 'edit') {
+        if (editor.mode == 'edit' && !restrictedAccess) {
             onSave();
         } else {
             onBack();
@@ -75,9 +75,9 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
     };
 
     const buttons = [
-        <DeleteButton onDeleted={onDelete} key="delete"/>,
+        <DeleteButton onDeleted={onDelete} disabled={restrictedAccess} key="delete"/>,
         <CancelButton onCancel={onBack} disabled={!editor.hasChanges} key="cancel"/>,
-        <Button type={'primary'} disabled={!editor.hasChanges || !editor.isValid} icon={<AntdIcons.SaveOutlined/>}
+        <Button type={'primary'} disabled={restrictedAccess || !editor.hasChanges || !editor.isValid} icon={<AntdIcons.SaveOutlined/>}
                 onClick={onSave} key="save">Сохранить</Button>
     ];
 

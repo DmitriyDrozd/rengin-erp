@@ -40,7 +40,7 @@ const roleMap = {
 const rolesIssues = ISSUES.rolesProps;
 const rolesSites = SITES.rolesProps;
 
-const EditEmployeeModal = ({roles, id, isProvidedPage}: { roles: string[], id: string, isProvidedPage: boolean }) => {
+const EditEmployeeModal = ({id, isProvidedPage, isRestrictedAccess}: { id: string, isProvidedPage: boolean, isRestrictedAccess: boolean }) => {
     const ledger = useLedger();
     const useEditorData = useEditor(employeesditor, id);
     const { currentUser, headOfUnitId } = useCurrentUser();
@@ -161,6 +161,10 @@ const EditEmployeeModal = ({roles, id, isProvidedPage}: { roles: string[], id: s
         setIsPendingSent(false);
     }
 
+    useEffect(() => {
+        useEditorData.save();
+    }, [isPendingSent]);
+
     const actionsButtons = isProvidedPage && (
         <Space>
             <Button color="cyan" onClick={handleMoveToChecked}>В список проверенных</Button>
@@ -204,7 +208,7 @@ const EditEmployeeModal = ({roles, id, isProvidedPage}: { roles: string[], id: s
 
     return (
         <EditorContext.Provider value={useEditorData}>
-            <BaseEditModal>
+            <BaseEditModal restrictedAccess={isRestrictedAccess}>
                 {badgeText && badgeColor && (
                     <Tag color={badgeColor}>{badgeText}</Tag>
                 )}

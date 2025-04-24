@@ -37,6 +37,7 @@ import GlobalOutlined from '@ant-design/icons/lib/icons/GlobalOutlined';
 import UpOutlined from '@ant-design/icons/lib/icons/UpOutlined';
 import { isUserIT } from '../../../utils/userUtils';
 import { departmentList } from 'iso/src/store/bootstrap/enumsList';
+import { FormBlacklistNotification } from '../employees/FormBlacklistNotification';
 
 const RESOURCE = SITES;
 
@@ -260,23 +261,28 @@ export default () => {
                             rules={[{required: true}]}
                             disabled={isViewMode}
                         />
-                        {geoCoordinates && !item.geoPosition && (
-                            <div className="ant-form-item">
-                                <div className="ant-row ant-form-item-row">
-                                    <div className="ant-col ant-col-6 ant-form-item-label">
-                                        <Typography.Text>Предложенные координаты: </Typography.Text>
-                                    </div>
-                                    <div className="ant-col ant-col-18 ant-form-item-control">
-                                        <CellRendererWithCopy value={geoCoordinates}/>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                         <ProFormText
                             {...fieldMetaToProProps(RESOURCE, 'geoPosition')}
                             placeholder={isLoadingGeo && 'Загрузка координат...'}
                             disabled={isViewMode || !isAddressProvided}
                         />
+                        {geoCoordinates && !item.geoPosition && (
+                            <div className="ant-form-item">
+                                <div className="ant-row ant-form-item-row" style={{ display: 'flex' }}>
+                                    <div className="ant-col ant-col-6 ant-form-item-label" style={{ 
+                                            flex: '0 0 25%', 
+                                            maxWidth: '25%', 
+                                            textAlign: 'end',
+                                            paddingRight: 8,
+                                        }}>
+                                        <Typography.Text>Предложенные координаты: </Typography.Text>
+                                    </div>
+                                    <div className="ant-col ant-col-18 ant-form-item-control" style={{ flex: '1 1 0' }}>
+                                        <CellRendererWithCopy value={geoCoordinates}/>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <ProFormText
                             {...fieldMetaToProProps(RESOURCE, 'KPP')}
                             disabled={isViewMode}
@@ -308,6 +314,7 @@ export default () => {
                             label={isITDepartment ? 'Исполнитель' : 'Техник'}
                             placeholder={isITDepartment ? 'Исполнитель' : 'Техник'}
                         />
+                        <FormBlacklistNotification techUserId={item.techUserId}/>
                         <ProFormTextArea
                             disabled={isViewMode}
                             {...fieldMetaToProProps(RESOURCE, 'contactInfo')}
