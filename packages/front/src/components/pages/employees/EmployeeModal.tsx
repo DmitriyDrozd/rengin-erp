@@ -18,7 +18,7 @@ import BaseEditModal from '../BaseItemModal';
 import GenericRenFields from '../../form/GenericRenFields';
 import { chunkHandler } from '../../../utils/chunkUtils';
 import useCurrentUser from '../../../hooks/useCurrentUser';
-import { isDirectorRole } from '../../../utils/userUtils';
+import { isDirectorRole, isManagementRole, isUserStaffManager } from '../../../utils/userUtils';
 import { CommentsLine } from '../../elements/CommentsLine';
 import RenField from '../../form/RenField';
 import Space from 'antd/es/space';
@@ -215,7 +215,7 @@ const EditEmployeeModal = ({id, isProvidedPage, isRestrictedAccess}: { id: strin
                 <GenericRenFields list={list}/>
                 <RenField
                     meta={EMPLOYEES.properties.managerComment}
-                    hidden={!isDirector} // todo: add ManagerOfEmployees role here
+                    hidden={!isDirector && !isManagementRole(currentUser) && !isUserStaffManager(currentUser)} // todo: add ManagerOfEmployees role here
                     Renderer={CommentsLine}
                     customProperties={{
                         user: currentUser,

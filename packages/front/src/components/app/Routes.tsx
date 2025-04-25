@@ -86,19 +86,19 @@ export default (user) => {
             path: "/app/in/employees/provided",
             name: "Предварительный поиск",
             icon: <Icons.UsergroupAddOutlined />,
-            roles: [RolesMap.admin, RolesMap.staffManager],
+            roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
         },
         {
             path: "/app/in/employees/checked",
             name: "Проверенные специалисты",
             icon: <HeartOutlined />,
-            roles: [RolesMap.admin, RolesMap.staffManager],
+            roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
         },
         {
             path: "/app/in/employees/blacklist",
             name: "Черный список",
             icon: <CloseCircleOutlined />, 
-            roles: [RolesMap.admin, RolesMap.staffManager],
+            roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
         },
     ].filter(roleFilter).map(mapFiltered);
 
@@ -139,7 +139,7 @@ export default (user) => {
             name: "Сотрудники",
             icon: <TeamOutlined />,
             routes: routesEmployees,
-            roles: [RolesMap.admin, RolesMap.staffManager],
+            roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
         },
         {
             path: "/app/in/users",
