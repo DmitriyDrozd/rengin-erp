@@ -7,17 +7,18 @@ export type Verb = typeof RESOURCE_VERBS[number]
 
 export default () => {
     const { pathname } = useLocation();
-    const resource = RESOURCES_LIST.find(r => pathname.toLowerCase().includes(r.collection.toLowerCase()));
+    const path = pathname.toLowerCase();
+    const resource = RESOURCES_LIST.find(r => path.includes(r.collection.toLowerCase()));
 
     if (!resource) {
-        throw new Error('Resource for page ' + pathname + ' is not found');
+        throw new Error('Resource for page ' + path + ' is not found');
     }
 
     const id = pathname.split('/').pop();
     const item = useSelector(resource.selectById(id));
-    const verb: Verb = pathname.endsWith(resource.collection)
+    const verb: Verb = path.endsWith(resource.collection.toLowerCase())
         ? 'LIST'
-        : pathname.endsWith('create')
+        : path.endsWith('create')
             ? 'CREATE'
             : 'EDIT';
 

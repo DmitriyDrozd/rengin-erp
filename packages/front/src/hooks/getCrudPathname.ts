@@ -12,7 +12,7 @@ const CRUD_NAV_ITEMS = [
 const root = '/app/in/';
 
 export default <RID extends string, Fields extends AnyFieldsMeta>(resource:Resource<RID,Fields>, href?: string) => {
-    const resourceHref = href ? `${resource.collection}/${href}` : resource.collection;
+    const resourceHref = href ? `${resource.collection}/${href}` : resource.collection.toLowerCase();
     const collectionRef = root + resourceHref;
 
     return {
