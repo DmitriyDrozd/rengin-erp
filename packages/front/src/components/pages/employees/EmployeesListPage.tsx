@@ -101,6 +101,7 @@ const EmployeesListPage: FC<EmployeesListPageProps> = ({
         },
         {...colMap.name, width: 150},
         {...colMap.title, width: 200},
+        {...colMap.specialization, width: 200},
         {...colMap.phone, width: 150},
         {...colMap.city, width: 150},
         {...colMap.region, width: 150},

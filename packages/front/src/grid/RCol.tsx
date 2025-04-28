@@ -2,7 +2,7 @@ import {ColDef} from 'ag-grid-community'
 import {AnyFieldsMeta, ItemWithId, Resource} from 'iso/src/store/bootstrap/core/createResource'
 import { CellRendererWithCopy } from '../components/elements/CellRendererWithCopy';
 import {RCellRender} from './RCellRender'
-import {isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
+import {isArrayOfMeta, isItemOfMeta} from 'iso/src/store/bootstrap/core/valueTypes'
 import {getRes} from 'iso/src/store/bootstrap/resourcesList'
 import useFrontSelector from '../hooks/common/useFrontSelector'
 import {CellClassRules, ValueGetterFunc} from 'ag-grid-community/dist/lib/entities/colDef'
@@ -76,28 +76,31 @@ export const useAllColumns = <
             filter:true,
             width: 120
         }
-       if(fieldMeta.type === 'date') {
-           function dateFormatter(params) {
-               const value = params.data[property]
-               var date = new Date(value);
 
-               if (value) {
-                   const year = date.getFullYear()
-                   const month = (date.getMonth()+1).toString().padStart(2,'0');
-                   const day = date.getDate().toString().padStart(2,'0');
-                    return `${day}-${month}-${year}`;
-               }
-               return undefined
+        if (fieldMeta.type === 'date') {
+            function dateFormatter(params) {
+                const value = params.data[property]
+                var date = new Date(value);
+
+                if (value) {
+                    const year = date.getFullYear()
+                    const month = (date.getMonth()+1).toString().padStart(2,'0');
+                    const day = date.getDate().toString().padStart(2,'0');
+                        return `${day}-${month}-${year}`;
+                }
+                return undefined
            }
+
            colInit.valueFormatter = dateFormatter
            colInit.width = 100
            // colInit. = 'dateString'
         }
-        if(isItemOfMeta(fieldMeta)){
-            const RES = getRes(fieldMeta.linkedResourceName)
 
-            const cellClassRules:CellClassRules<Item> = {}
-            if(fieldMeta.required) {
+        if (isItemOfMeta(fieldMeta)) {
+            const RES = getRes(fieldMeta.linkedResourceName);
+            const cellClassRules:CellClassRules<Item> = {};
+
+            if (fieldMeta.required) {
                 cellClassRules['grid-cell-required'] = params => params.data[params.colDef.field]=== undefined
             }
 
@@ -105,21 +108,54 @@ export const useAllColumns = <
                 ...colInit,
                 cellClassRules,
                 valueGetter: (params => {
+                    const id = params.data[params.colDef.field];
 
-
-                    const id = params.data[params.colDef.field]
                     try {
-                        const it = RES.selectById(id)(state)
-                        return RES.getItemName(it)
-                    } catch (e){
-                        console.error(e)
-                        console.error(res.rid, params,params.colDef.field)
-                        return id ? 'Удалён '+id : 'Не указан'
+                        const it = RES.selectById(id)(state);
+                        return RES.getItemName(it);
+                    } catch (e) {
+                        console.error(e);
+                        console.error(res.rid, params, params.colDef.field);
+                        return id ? 'Удалён ' + id : 'Не указан';
                     }
 
                 }) as ValueGetterFunc<Item, Item[K]>
-            } as ColDef
+            } as unknown as ColDef;
         }
+
+        if (isArrayOfMeta(fieldMeta)) {
+            const RES = getRes(fieldMeta.linkedResourceName);
+            const cellClassRules:CellClassRules<Item> = {};
+
+            if (fieldMeta.required) {
+                cellClassRules['grid-cell-required'] = params => params.data[params.colDef.field]=== undefined
+            }
+
+            return {
+                ...colInit,
+                cellClassRules,
+                valueGetter: (params => {
+                    const ids = params.data[params.colDef.field];
+
+                    if (!ids || ids.length == 0) {
+                        return '';
+                    }
+
+                    try {
+                        return ids.map(id => {
+                            const item = RES.selectById(id)(state);
+                            return RES.getItemName(item);
+                        }).join(', ');
+                    } catch (e) {
+                        console.error(e);
+                        console.error(res.rid, params, params.colDef.field);
+                        return ids ? 'Удалён ' + ids : '';
+                    }
+
+                }) as ValueGetterFunc<Item, Item[K]>
+            } as unknown as ColDef;
+        }
+
         return colInit
     }
 
