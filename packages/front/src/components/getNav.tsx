@@ -29,6 +29,7 @@ import { TasksListPage } from './pages/tasks/TasksListPage';
 import UsersChapter from './pages/users/UsersListPage';
 import ProfilePage from './pages/ProfilePage';
 import { EmployeesBlacklist, EmployeesChapter, EmployeesChecked, EmployeesProvided } from './pages/employees/EmployeesByCategory';
+import WorkTypesChapter from './pages/employees/WorkTypeChapter';
 
 
 type RouteRenderProps<RPath extends RoutePath> = RouteComponentProps<ExtractRouteParams<RPath>>
@@ -68,6 +69,10 @@ export const getNav = moize(() => {
         employeesEditProvided: buildNav('/app/in/employees/provided/:employeeId', EmployeesProvided),
         employeesEditChecked: buildNav('/app/in/employees/checked/:employeeId', EmployeesChecked),
         employeesEditBlacklist: buildNav('/app/in/employees/blacklist/:employeeId', EmployeesBlacklist),
+
+        workTypesList: buildNav('/app/in/worktypes', WorkTypesChapter),
+        workTypesCreate: buildNav('/app/in/worktypes/create', WorkTypesChapter),
+        workTypesEdit: buildNav('/app/in/worktypes/:worktypeId', WorkTypesChapter),
 
         brandsList: buildNav('/app/in/brands', BrandsChapter),
 

@@ -125,6 +125,7 @@ const buildMetaFactory =<MType extends MetaType, TSType = string>()=> {
 export type StringMeta = Meta<'string',string> & {toLowerCase?: boolean}
 
 export type ItemOfMeta= ReturnType<typeof itemOfMeta >
+export type ArrayOfMeta= ReturnType<typeof arrayOfMeta >
 
 export type DateMeta= ReturnType<typeof dateMeta >
 /*Meta<'itemOf', string> & {
@@ -135,6 +136,8 @@ export const isEnumMeta = (value: unknown): value is EnumMeta =>
     value && (value as any).type === 'enum'
 export const isItemOfMeta = (value: unknown): value is ItemOfMeta =>
     value && (value as any).type === 'itemOf'
+export const isArrayOfMeta = (value: unknown): value is ArrayOfMeta =>
+    value && ((value as any).type === 'arrayOf')
 
 const valueTypes = {
     date: dateMeta,

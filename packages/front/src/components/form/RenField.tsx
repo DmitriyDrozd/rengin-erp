@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import {
     AnyMeta,
+    isArrayOfMeta,
     isItemOfMeta
 } from 'iso/src/store/bootstrap/core/valueTypes';
 import React, {
@@ -30,6 +31,7 @@ import {
 } from 'iso/src/store/bootstrap/resourcesList';
 import { useISOState } from 'iso/src/ISOState';
 import './RenField.css';
+import getMaxTagPlaceholder from '../elements/MaxTagPlaceholder';
 
 const {Text, Link} = Typography;
 
@@ -117,9 +119,14 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                 <Text type="success">{text}</Text>
             );
         }
-        if (isItemOfMeta(property)) {
+
+        const isMeta = isItemOfMeta(property) || isArrayOfMeta(property);
+
+        if (isMeta) {
             const { linkedResourceName } = property;
             const resource = RESOURCES_MAP[linkedResourceName];
+            const isMultiple = isArrayOfMeta(property);
+            const options = customOptions || params.options;
 
             return (
                 <Select
@@ -136,7 +143,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                         updateItemProperty(e);
                     }}
                     style={{minWidth: '200px'}}
-                    options={customOptions || params.options}
+                    options={options}
                     dropdownRender={(menu) => (
                         <>
                             {menu}
@@ -148,6 +155,8 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                             </Space>
                         </>
                     )}
+                    maxTagPlaceholder={isMultiple ? getMaxTagPlaceholder() : null}
+                    mode={isMultiple ? 'multiple' : null} 
                     {...sharedProps}
                 />);
         }

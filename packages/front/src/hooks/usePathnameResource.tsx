@@ -7,7 +7,7 @@ export type Verb = typeof RESOURCE_VERBS[number]
 
 export default () => {
     const { pathname } = useLocation();
-    const resource = RESOURCES_LIST.find(r => pathname.includes(r.collection));
+    const resource = RESOURCES_LIST.find(r => pathname.toLowerCase().includes(r.collection.toLowerCase()));
 
     if (!resource) {
         throw new Error('Resource for page ' + pathname + ' is not found');

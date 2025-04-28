@@ -100,6 +100,11 @@ export default (user) => {
             icon: <CloseCircleOutlined />, 
             roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
         },
+        {
+            path: "/app/in/worktypes",
+            name: "Типы работ",
+            roles: [RolesMap.admin, RolesMap.staffManager, RolesMap.manager],
+        },
     ].filter(roleFilter).map(mapFiltered);
 
     const routes: TRoute[] = [

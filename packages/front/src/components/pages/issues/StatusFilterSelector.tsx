@@ -1,10 +1,10 @@
 import {Space, Tag} from "antd";
 import Select from "antd/es/select";
-import Tooltip from "antd/es/tooltip";
 import {
     statusesColorsMap,
     statusesList
 } from 'iso/src/store/bootstrap/repos/issues';
+import getMaxTagPlaceholder from "../../elements/MaxTagPlaceholder";
 
 export type StatusFilterProps = {
     list?: string[],
@@ -38,14 +38,6 @@ const tagRenderer: () => TagRender = (colorMap) => (props) => {
 export default ({list = statusesList, statuses, setStatuses, colorMap = statusesColorsMap, maxTagCount = 1, minWidth = 200}: StatusFilterProps) => {
     const tagRender = tagRenderer(colorMap);
     const options = list.map(item => ({ label: item, value: item }));
-    const maxTagPlaceholder = (omittedValues) => (
-        <Tooltip
-            styles={{ root: { pointerEvents: 'none' } }}
-            title={omittedValues.map(({ label }) => label).join(', ')}
-        >
-        <span>+{omittedValues.length} отображаемых</span>
-        </Tooltip>
-    );
 
     return (
         <Space size={[0, 8]} wrap>
@@ -58,7 +50,7 @@ export default ({list = statusesList, statuses, setStatuses, colorMap = statuses
                 value={statuses}
                 tagRender={tagRender}
                 onChange={setStatuses}
-                maxTagPlaceholder={maxTagPlaceholder} 
+                maxTagPlaceholder={getMaxTagPlaceholder({ label: 'отображаемых' })} 
             />
         </Space>
     )

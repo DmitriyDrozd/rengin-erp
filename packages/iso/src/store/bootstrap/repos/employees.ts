@@ -104,6 +104,10 @@ const employeesRaw = createResource('employee', {
     employeeComment: valueTypes.text({headerName: 'Комментарий от сотрудника'}),
     category: valueTypes.enum({enum: employeeCategoriesList, headerName: 'Категория'}),
     isPendingCategory: valueTypes.boolean({headerName: 'Ожидает перевода'}),
+    specialization: valueTypes.arrayOf({
+        headerName: 'Типы работ',
+        linkedResourceName: 'LIST_WORK_TYPES',
+    }),
     removed: valueTypes.boolean({select: false, colDef: false, internal: true}),
 }, {
     getItemName: getItemNameWithContacts,

@@ -1,5 +1,6 @@
 import {
     EXPENSES,
+    LIST_WORK_TYPES,
     NOTIFICATIONS,
     TASKS
 } from './index';
@@ -30,6 +31,7 @@ export const RESOURCES_MAP = {
     EXPENSES,
     TASKS,
     NOTIFICATIONS,
+    LIST_WORK_TYPES,
 }
 export type {Resource} from './core/createResource'
 export type ResourcesMap = typeof RESOURCES_MAP
@@ -50,7 +52,8 @@ export type UnionRes =
     typeof SUBS|
     typeof EXPENSES|
     typeof TASKS|
-    typeof NOTIFICATIONS
+    typeof NOTIFICATIONS|
+    typeof LIST_WORK_TYPES
 
 export const RESOURCES_LIST = [
     USERS,
@@ -64,6 +67,7 @@ export const RESOURCES_LIST = [
     EXPENSES,
     TASKS,
     NOTIFICATIONS,
+    LIST_WORK_TYPES,
 ] as const
 
 
@@ -79,6 +83,7 @@ export const getResourcesByNames = () => ({
     expenses: EXPENSES,
     tasks: TASKS,
     notifications: NOTIFICATIONS,
+    workTypes: LIST_WORK_TYPES,
 })
 
 export const getLinkedItem = <RID extends string, Fields extends AnyFieldsMeta>(rName:  keyof typeof RESOURCES_MAP, id: string) => {
@@ -93,7 +98,8 @@ export type ResourceByRID<RID extends keyof typeof RESOURCES_MAP> = RID extends 
 const ResourceNames =  [
     'USERS',
     'BRANDS',
-    'LEGALS','SITES',
+    'LEGALS',
+    'SITES',
     'CONTRACTS',
     'SUBS',
     'ISSUES',
@@ -101,6 +107,7 @@ const ResourceNames =  [
     'EXPENSES',
     'TASKS',
     'NOTIFICATIONS',
+    'LIST_WORK_TYPES',
 ] as const
 export type ResourceName=   typeof ResourceNames[number]
 
