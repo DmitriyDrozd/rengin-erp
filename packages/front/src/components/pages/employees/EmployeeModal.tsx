@@ -46,6 +46,7 @@ const EditEmployeeModal = ({id, isProvidedPage, isRestrictedAccess}: { id: strin
     const { currentUser, headOfUnitId } = useCurrentUser();
     const isDirector = isDirectorRole(currentUser);
     const isEditMode = useEditorData.mode === 'edit';
+    const providedPageHref = isProvidedPage ? 'provided' : null;
     const isProvidedStatus = useEditorData.item.category === employeeCategories.provided 
         || (useEditorData.item.category === employeeCategories.blacklist && useEditorData.item.isPendingCategory);
 
@@ -162,7 +163,9 @@ const EditEmployeeModal = ({id, isProvidedPage, isRestrictedAccess}: { id: strin
     }
 
     useEffect(() => {
-        useEditorData.save();
+        if (isEditMode) {
+            useEditorData.save();
+        }
     }, [isPendingSent]);
 
     const actionsButtons = isProvidedPage && (
@@ -208,14 +211,14 @@ const EditEmployeeModal = ({id, isProvidedPage, isRestrictedAccess}: { id: strin
 
     return (
         <EditorContext.Provider value={useEditorData}>
-            <BaseEditModal restrictedAccess={isRestrictedAccess}>
+            <BaseEditModal restrictedAccess={isRestrictedAccess} href={providedPageHref}>
                 {badgeText && badgeColor && (
                     <Tag color={badgeColor}>{badgeText}</Tag>
                 )}
                 <GenericRenFields list={list}/>
                 <RenField
                     meta={EMPLOYEES.properties.managerComment}
-                    hidden={!isDirector && !isManagementRole(currentUser) && !isUserStaffManager(currentUser)} // todo: add ManagerOfEmployees role here
+                    hidden={!isDirector && !isManagementRole(currentUser) && !isUserStaffManager(currentUser)}
                     Renderer={CommentsLine}
                     customProperties={{
                         user: currentUser,

@@ -29,10 +29,11 @@ const formItemLayout = {
 interface IssueModalProps {
     children: React.ReactNode,
     title?: string,
-    restrictedAccess?: boolean
+    restrictedAccess?: boolean,
+    href?: string,
 }
 
-export default ({children, title, restrictedAccess}: IssueModalProps) => {
+export default ({children, title, restrictedAccess, href}: IssueModalProps) => {
     const editor = useContextEditor();
     const history = useHistory();
     const notifications = useNotifications();
@@ -47,7 +48,7 @@ export default ({children, title, restrictedAccess}: IssueModalProps) => {
 
             const { resource, item } = editor;
             const itemId = item[resource.idProp];
-            const itemPath = getCrudPathname(resource).edit(itemId);
+            const itemPath = getCrudPathname(resource, href).edit(itemId);
 
             history.replace(itemPath)
         } else {
