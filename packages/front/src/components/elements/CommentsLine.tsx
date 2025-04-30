@@ -6,7 +6,7 @@ import Typography from "antd/es/typography";
 import dayjs from "dayjs";
 import { IssueVO, statusesColorsMap, statusesList } from "iso/src/store/bootstrap/repos/issues";
 import { UserVO } from "iso/src/store/bootstrap/repos/users";
-import { GENERAL_DATE_FORMAT } from "iso/src/utils/date-utils";
+import { FORMAT_DAY, GENERAL_DATE_FORMAT } from "iso/src/utils/date-utils";
 import { remove, uniq } from "ramda";
 import { FC, useState } from "react";
 import * as Icons from '@ant-design/icons';
@@ -14,6 +14,7 @@ import Button from "antd/es/button";
 import { useNotifications } from "../../hooks/useNotifications";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { NotificationType, NotificationVO } from "iso/src/store/bootstrap/repos/notifications";
+import { ProcessCellForExportParams } from "ag-grid-community/dist/lib/interfaces/exportParams";
 
 type Comment = {
     author?: string,
@@ -168,3 +169,19 @@ export const CommentsCell = (props) => {
 };
 
 export const getCommentsCell = (propKey: string) => (props) => <CommentsCell {...props} propKey={propKey} />
+export const checkIfCommentsCell = (params: ProcessCellForExportParams<any, any>) => {
+    return params.value?.[0]?.message;
+}
+export const getCommentsExcelCell = (comments?: Comment[] | string): string => {
+    if (!comments) {
+        return '';
+    } else {
+        if (Array.isArray(comments)) {
+            return comments.map((comment: Comment) => {
+                return `[${comment.author}. ${dayjs(comment.date).format(FORMAT_DAY)}]: ${comment.message}`
+            }).join('; ');
+        }
+
+        return comments;
+    }
+}

@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { AnyFieldsMeta } from 'iso/src/store/bootstrap/core/createResource';
 import getCrudPathname from '../hooks/getCrudPathname';
 import useLocalStorageState from '../hooks/useLocalStorageState';
-import RGrid, { RGridProps } from './RGrid';
+import RGrid, { excelExportParams, RGridProps } from './RGrid';
 import {
     Button,
     Dropdown,
@@ -401,7 +401,7 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     };
 
     const onBtExport = useCallback(() => {
-        innerGridRef.current!.api.exportDataAsExcel();
+        innerGridRef.current!.api.exportDataAsExcel(excelExportParams);
     }, []);
 
     return <>

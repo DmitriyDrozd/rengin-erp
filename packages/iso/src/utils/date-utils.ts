@@ -8,6 +8,7 @@ import { ExpenseVO } from '../store/bootstrap/repos/expenses';
 
 type ConfigType = string | Date | Dayjs | null | undefined
 
+export const FORMAT_DAY = 'DD-MM-YYYY';
 export const GENERAL_DATE_FORMAT = 'DD-MM-YYYY HH:mm:ss';
 export const FORMAT_MONTH_YEAR = 'MMMM YYYY';
 

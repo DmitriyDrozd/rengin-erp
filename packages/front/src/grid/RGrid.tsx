@@ -22,6 +22,8 @@ import {
     USERS
 } from 'iso/src/store/bootstrap';
 import { Meta } from 'iso/src/store/bootstrap/core/valueTypes';
+import { ExcelExportParams, ProcessCellForExportParams } from 'ag-grid-enterprise';
+import { checkIfCommentsCell, getCommentsExcelCell } from '../components/elements/CommentsLine';
 
 export type ResVal = typeof USERS | typeof ISSUES
 
@@ -52,6 +54,16 @@ const checkBoxColProps = {
     headerCheckboxSelection: true,
     checkboxSelection: true,
 };
+
+export const excelExportParams: ExcelExportParams = {
+    processCellCallback(params: ProcessCellForExportParams<any, any>) {
+        if (checkIfCommentsCell(params)) {
+            return getCommentsExcelCell(params.value);
+        }
+
+        return params.formatValue(params.value);
+    }
+}
 
 export default React.forwardRef(<RID extends string, Fields extends AnyFieldsMeta>({columnDefs, fullHeight, headerHeight = 0, ...props}: RGridProps<RID, Fields>, ref: React.ForwardedRef<any>) => {
     /* const onFilterTextBoxChanged = useCallback(() => {
