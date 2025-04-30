@@ -150,7 +150,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                             <Divider style={{margin: '8px 0'}}/>
                             <Space style={{padding: '0 8px 4px'}}>
                                 {createButton ? createButton : (
-                                    <CreateButton type="text" label="Добавить" resource={resource} />
+                                    <CreateButton type="text" label="Добавить" resource={resource} href={customProperties?.href}/>
                                 )}
                             </Space>
                         </>

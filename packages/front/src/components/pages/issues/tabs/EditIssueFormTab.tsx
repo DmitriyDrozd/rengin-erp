@@ -225,12 +225,20 @@ export default ({newClientsNumber, isEditMode}: {
                 meta={ISSUES.properties.clientsEngineerUserId}
                 width={'sm'}
                 label={isITDepartment ? 'Ответственный' : null}
+                customProperties={{ href: 'provided' }}
             />
-            <RenField meta={ISSUES.properties.techUserId} label={isITDepartment ? 'Исполнитель' : null}
-                      width={'sm'}/>
+            <RenField
+                meta={ISSUES.properties.techUserId} 
+                label={isITDepartment ? 'Исполнитель' : null}
+                width={'sm'}
+                customProperties={{ href: 'provided' }}
+            />
             <FormBlacklistNotification techUserId={editor.item.techUserId} />
-            <RenField meta={ISSUES.properties.estimatorUserId} hidden={isITDepartment}
-                    width={'sm'}/>
+            <RenField 
+                meta={ISSUES.properties.estimatorUserId} 
+                hidden={isITDepartment}
+                width={'sm'}
+            />
             <RenField
                 meta={ISSUES.properties.contactInfo}
                 hidden={isCustomer}
