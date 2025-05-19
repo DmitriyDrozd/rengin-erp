@@ -21,6 +21,7 @@ const BRANDS_RAW = createResource('brand',{
         }),
         clientsBrandNumber: valueTypes.string({headerName:'Номер', required: true, unique: true}),
         removed: valueTypes.boolean({select: false, colDef: false,internal:true}),
+        desiredResolutionTerm: valueTypes.number({ headerName: 'Срок выполнения заявок' })
     },
     {
         nameProp: 'brandName',

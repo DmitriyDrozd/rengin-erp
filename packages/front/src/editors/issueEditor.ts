@@ -10,6 +10,7 @@ import {optionsFromValuesList} from "../components/form/RenFormSelect";
 import {Days} from "iso";
 import LEGALS from "iso/src/store/bootstrap/repos/legals";
 import {SITES} from "iso/src/store/bootstrap";
+import BRANDS from "iso/src/store/bootstrap/repos/brands";
 
 const countExpenses = (expenses: IssueVO['expenses']) =>
     expenses.reduce((prev, item)=> prev+(isNaN(Number(item.amount)) ? 0: Number(item.amount)), 0)
@@ -42,10 +43,10 @@ export const issuesEditor =  buildEditor(ISSUES,{
             }
         },
         getUpdate: ({value,role,item}) => {
-            if(value === 'В работе') {
-                return ({...item,'workStartedDate': Days.today(), status: value})
-            } else if(value === 'Выполнена') {
-                return {...item,'completedDate': Days.today(), status: value}
+            if (value === 'Выполнена') {
+                const completedDate = item.completedDate || Days.today();
+
+                return {...item, completedDate, status: value}
             }
 
             return ({...item, status: value})
@@ -62,9 +63,24 @@ export const issuesEditor =  buildEditor(ISSUES,{
         })
     },
     brandId: {
-        getUpdate: ({item , value}) =>{
+        getUpdate: ({item , value, state}) => {
+            const desiredResolutionTerm = value ? BRANDS.selectById(value)(state).desiredResolutionTerm : null;
+            let plannedDate = item.plannedDate;
+            
+            if (desiredResolutionTerm && desiredResolutionTerm > 0) {
+                plannedDate = Days.today().add(desiredResolutionTerm, 'day').toDate().toISOString();
+            }
+
             return (value !== item.brandId) ?
-                {...item, siteId: undefined, legalId: undefined, contractId: undefined, subId: undefined, brandId: value}
+                {
+                    ...item, 
+                    siteId: undefined, 
+                    legalId: undefined, 
+                    contractId: undefined, 
+                    subId: undefined,
+                    brandId: value,
+                    plannedDate,
+                }
                 : item
         }
     },

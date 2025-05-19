@@ -25,17 +25,16 @@ export default () => {
         {...colMap.address, width: 250},
         {...colMap.web, width: 100},
         {...colMap.managerUserId, width: 120},
+        {...colMap.desiredResolutionTerm, width: 100},
         {
             colId: 'sitesCalc',
-            field: 'brandId',
             headerName: 'Объекты',
             editable: false,
-            width: 100,
+            width: 150,
             valueGetter: (params => ledger.sites.list.filter(s => s.brandId === params.data.brandId).length) as ValueGetterFunc<BrandVO, string>
         },
         {
             colId: 'legalsCals',
-            field: 'brandId',
             headerName: 'Юр. лица',
             editable: false,
             width: 120,
@@ -43,7 +42,6 @@ export default () => {
         },
         {
             colId: 'issuesCalc',
-            field: 'brandId',
             headerName: 'Всего заявок',
             editable: false,
             width: 150,
