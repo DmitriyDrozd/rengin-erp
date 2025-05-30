@@ -32,6 +32,15 @@ const warningStyle = {
     background: '#ffccc7',
 }
 
+const feedbackStyle = {
+    background: '#a3c5ff'
+}
+
+const doneFeedbackStyle = {
+    ...doneStyle,
+    color: "#d9e6fc"
+}
+
 const defaultStyle = {
 }
 
@@ -43,6 +52,10 @@ const styleMap = {
     [NotificationType.warning]: {
         [NotificationStatus.new]: warningStyle,
         [NotificationStatus.done]: doneWarningStyle,
+    },
+    [NotificationType.feedback]: {
+        [NotificationStatus.new]: feedbackStyle,
+        [NotificationStatus.done]: doneFeedbackStyle,
     }
 };
 

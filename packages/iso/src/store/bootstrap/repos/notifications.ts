@@ -14,9 +14,16 @@ export const NotificationType = {
     warning: 'warning',
     error: 'error',
     info: 'info',
+    feedback: 'feedback',
 }
 
-export const notificationTypeList = [NotificationType.default, NotificationType.warning, NotificationType.error, NotificationType.info];
+export const notificationTypeList = [
+    NotificationType.default,
+    NotificationType.warning,
+    NotificationType.error,
+    NotificationType.info,
+    NotificationType.feedback
+];
 
 const notificationsRaw = createResource('notification', {
         clientsNotificationNumber: valueTypes.string({headerName: 'Номер нотификации', select: false, internal: true}),

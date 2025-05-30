@@ -5,8 +5,8 @@ import { NotificationStatus, NotificationVO } from 'iso/src/store/bootstrap/repo
 
 export default (): { currentUser: UserVO, notifications: NotificationVO[], newNotifications: NotificationVO[], headOfUnitId: string | null } => {
     const currentUser = useFrontSelector(selectCurrentUser) as UserVO;
-    const headOfUnitId = useFrontSelector(selectUsersHeadOfUnit(currentUser.userId));
-    const notifications = useFrontSelector(selectUserNotifications(currentUser.userId)) as NotificationVO[];
+    const headOfUnitId = useFrontSelector(selectUsersHeadOfUnit(currentUser?.userId));
+    const notifications = useFrontSelector(selectUserNotifications(currentUser?.userId)) as NotificationVO[];
     const newNotifications = notifications.filter(n => n.status === NotificationStatus.new);
 
     return {

@@ -15,6 +15,7 @@ import { ImportEmployeesPage } from './pages/import/ImportEmployeesPage';
 
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import FeedbackPage from './pages/FeedbackPage';
 import StartPage from './pages/StartPage';
 import BrandsChapter from './pages/brands/BrandsChapter.js';
 import LegalsChapter from './pages/clients/LegalsChapter';
@@ -53,6 +54,7 @@ export const getNav = moize(() => {
         index: buildNav('/', () => <div></div>),
         login: buildNav('/app/login', LoginPage),
         forgot: buildNav('/app/forgot', ForgotPasswordPage),
+        feedback: buildNav('/app/feedback', FeedbackPage),
         start: buildNav('/app/in/start', StartPage),
         profile: buildNav('/app/in/profile', ProfilePage),
         // issuesList: buildNav('/app/in/issues',ContractsListPage ),

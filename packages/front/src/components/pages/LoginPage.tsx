@@ -15,8 +15,6 @@ import {
 } from 'antd/es/layout/layout';
 import * as React from 'react';
 import { useState } from 'react';
-import { useHistory } from 'react-router';
-import useFrontStore from '../../hooks/common/useFrontStore';
 import useFrontDispatch from '../../hooks/common/useFrontDispatch';
 import { appStorage } from 'iso';
 import { uiDuck } from '../../store/ducks/uiDuck';
@@ -29,14 +27,18 @@ import { AntdIcons } from '../elements/AntdIcons';
 import useUI from '../../hooks/common/useUI';
 import { sleep } from '@sha/utils';
 
+const headerHeight = 84;
+const footerHeight = 50;
+const contentMinHeight = `calc(100vh - ${headerHeight + footerHeight}px)`;
+
 export default () => {
     const [notify, contextHolder] = notification.useNotification();
 
     const dispatch = useFrontDispatch();
     const ui = useUI();
 
-    const [email, setEmail] = useState(window.location.hostname === 'localhost' ? 'drozd.dzmitryi@gmail.com' : undefined);
-    const [password, setPassword] = useState(window.location.hostname === 'localhost' ? '123456' : undefined);
+    const [email, setEmail] = useState(undefined);
+    const [password, setPassword] = useState(undefined);
     const [remember, setRemember] = useState(false);
 
     const [loading, setLoading] = useState(false);
@@ -46,12 +48,12 @@ export default () => {
         e.preventDefault();
 
         if (!password) {
-
             return;
         }
+
         const params = {password, email, remember, pathname: window.location.pathname};
-        const body = JSON.stringify(params);
         setLoading(true);
+
         try {
             const api = await getRestApi();
             const response = await api.login(params);
@@ -85,13 +87,13 @@ export default () => {
         <Spin spinning={loading || ui.busy.length !== 0}>
             <Layout style={{ backgroundImage: 'linear-gradient(160deg, rgba(0,158,253,0.7) 0%, rgba(14,235,249,0.3) 62%, rgba(42,245,185,0.7) 100%)' }}>
                 <Header style={{
-                    height: 84,
+                    height: headerHeight,
                     background: 'rgba(0,21,41,0.5)'
                 }}>
                     <HeadLogo textColor="#fff" style={{ width: 220, height: 84 }}/>
                 </Header>
                 <Content>
-                    <Row type="flex" justify="center" align="middle" style={{minHeight: 'calc(100vh - 84px)'}}>
+                    <Row type="flex" justify="center" align="middle" style={{minHeight: contentMinHeight}}>
                         <Card
                             title={'Авторизация'}
                             style={{ borderRadius: 12, overflow: 'hidden' }}
@@ -142,6 +144,14 @@ export default () => {
 
                             </Form>
                         </Card>
+                    </Row>
+                    <Row type="flex" justify="end" align="middle" style={{minHeight: footerHeight}}>
+                        {/* <Link to={getNav().feedback} style={{ color: 'black', fontSize: 16 }}>
+                            <Space style={{ gap: 12, paddingRight: 24 }} >
+                                <FileProtectOutlined size={24}/>
+                                Жалобы и предложения
+                            </Space>
+                        </Link> */}
                     </Row>
                 </Content>
             </Layout>
