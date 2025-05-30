@@ -133,3 +133,4 @@ dist
 # Config files
 ./packages/front/.app-config.yml
 ./packages/service/.app-config.yml
+.vscode/sessions.json
