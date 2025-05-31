@@ -2,8 +2,8 @@ import Card from "antd/es/card"
 import { Col } from "antd/es/grid";
 import { Row } from "antd/es/grid";
 import { NotificationStatus, NotificationType, NotificationVO } from "iso/src/store/bootstrap/repos/notifications"
-import { FC } from "react";
-import { Link, useHistory } from 'react-router-dom'
+import { FC, useState } from "react";
+import { useHistory } from 'react-router-dom'
 import { useNotifications } from "../../hooks/useNotifications";
 import Typography from "antd/es/typography";
 import dayjs from "dayjs";
@@ -25,7 +25,7 @@ const doneStyle = {
 
 const doneWarningStyle = {
     ...doneStyle,
-    color: '#fff1f0'
+    background: '#fff1f0'
 }
 
 const warningStyle = {
@@ -38,7 +38,7 @@ const feedbackStyle = {
 
 const doneFeedbackStyle = {
     ...doneStyle,
-    color: "#d9e6fc"
+    background: "#d9e6fc"
 }
 
 const defaultStyle = {
@@ -66,18 +66,32 @@ interface SingleNotificationProps {
     onRead: () => void;
 }
 
+const getIsFeedback = (item: NotificationVO): boolean => item.type === NotificationType.feedback;
+
 const SingleNotification: FC<SingleNotificationProps> = ({ author, item, onRead }) => {
     const createdAtLabel = dayjs(item.timestamp).format(GENERAL_DATE_FORMAT);
     const createdByLabel = author ? `от ${author}, ` : '';
-
-    const style = styleMap[item.type][item.status];
+    
+    const style = {
+        paddingTop: 12,
+        ...styleMap[item.type][item.status]
+    };
+    const isFeedback = getIsFeedback(item);
     const isNew = item.status === NotificationStatus.new;
-    const badgeLabel = isNew ? 'Новое' : null;
+    const isBadgeVisible = isFeedback || isNew;
+    const badgeLabel = isNew ? 'Новое' : isFeedback ? 'Жалобы и предложения' : null;
 
     return (
         <Row gutter={[16,16]} style={{marginBottom: '16px', marginTop: '16px'}}>
             <Col style={{ minWidth: '50%' }}>
-                <Badge.Ribbon style={{ visibility: isNew ? 'visible' : 'hidden' }} text={badgeLabel} color="green">
+                <Badge.Ribbon
+                    style={{ 
+                        visibility: isBadgeVisible ? 'visible' : 'hidden',
+                    }} 
+                    text={badgeLabel} 
+                    color="green"
+                    placement={isFeedback ? 'start' : 'start'}
+                >
                     <Card
                         hoverable
                         extra={<Typography.Text style={{ paddingRight: 30 }} color="grey">{createdByLabel}{createdAtLabel}</Typography.Text>}
@@ -92,6 +106,8 @@ const SingleNotification: FC<SingleNotificationProps> = ({ author, item, onRead 
         </Row>
     )
 }
+
+const DISPLAYED_NOTIFICATIONS_COUNT = 10;
 
 export const NotificationsList: FC = () => {
     const ledger = useLedger();
@@ -109,12 +125,28 @@ export const NotificationsList: FC = () => {
         if (notification.status === NotificationStatus.new) {
             markAsRead(notification);
         }
-        
-        history.push(notification.createdLink);
+
+        const isFeedback = getIsFeedback(notification);
+
+        if (!isFeedback) {
+            history.push(notification.createdLink);
+        }
     };
 
     const newNotificationsToDisplay = newNotifications.reverse();
-    const readNotificationsToDisplay = notifications.reverse().filter(n => n.status === NotificationStatus.done);
+
+    const readNotifications = notifications
+        .reverse()
+        .filter(n => n.status === NotificationStatus.done);
+    const [readNotificationsDisplayCount, setReadNotificationsDisplayCount] = useState(Math.min(DISPLAYED_NOTIFICATIONS_COUNT, readNotifications.length));
+    const readNotificationsToDisplay = readNotifications.slice(0, readNotificationsDisplayCount);
+    const isAllReadNotificationsDisplayed = readNotificationsDisplayCount === readNotifications.length;
+
+    const handleLoadMoreReadNotifications = () => {
+        const newCount = Math.min(readNotificationsDisplayCount + DISPLAYED_NOTIFICATIONS_COUNT, readNotifications.length);
+        setReadNotificationsDisplayCount(newCount);
+    };
+
 
     const [messageApi, contextHolder] = message.useMessage();
     const handleReadAll = () => {
@@ -159,6 +191,9 @@ export const NotificationsList: FC = () => {
                     key={index} 
                     onRead={handleReadNotification(notification)} 
                 />)
+            )}
+            {!isAllReadNotificationsDisplayed && (
+                <Button onClick={handleLoadMoreReadNotifications}>Показать еще</Button>
             )}
         </>
     )

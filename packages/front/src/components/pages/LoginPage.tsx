@@ -26,6 +26,8 @@ import { getNav } from '../getNav';
 import { AntdIcons } from '../elements/AntdIcons';
 import useUI from '../../hooks/common/useUI';
 import { sleep } from '@sha/utils';
+import Space from 'antd/es/space';
+import FileProtectOutlined from '@ant-design/icons/lib/icons/FileProtectOutlined';
 
 const headerHeight = 84;
 const footerHeight = 50;
@@ -146,12 +148,12 @@ export default () => {
                         </Card>
                     </Row>
                     <Row type="flex" justify="end" align="middle" style={{minHeight: footerHeight}}>
-                        {/* <Link to={getNav().feedback} style={{ color: 'black', fontSize: 16 }}>
+                        <Link to={getNav().feedback} style={{ color: 'black', fontSize: 16 }}>
                             <Space style={{ gap: 12, paddingRight: 24 }} >
                                 <FileProtectOutlined size={24}/>
                                 Жалобы и предложения
                             </Space>
-                        </Link> */}
+                        </Link>
                     </Row>
                 </Content>
             </Layout>

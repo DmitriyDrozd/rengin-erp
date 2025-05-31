@@ -77,11 +77,20 @@ export const useNotifications = (userId?: string) => {
     }
 
     /**
+     * Возвращает событие добавления уведомления
+     * @param notification 
+     * @returns 
+     */
+    const getSendNotificationEvent = (notification: NotificationVO) => {
+        return NOTIFICATIONS.actions.added({ ...notification, status: NotificationStatus.new, [NOTIFICATIONS.idProp]: generateGuid() });
+    }
+
+    /**
      * Отправить уведомление
      * @param notification 
      */
     const sendNotification = (notification: NotificationVO) => {
-        dispatch(NOTIFICATIONS.actions.added({ ...notification, status: NotificationStatus.new, [NOTIFICATIONS.idProp]: generateGuid() }));
+        dispatch(getSendNotificationEvent(notification));
     }
 
     /**
@@ -103,6 +112,7 @@ export const useNotifications = (userId?: string) => {
         discardAllPending,
         sendAllPending,
         discardSingle,
+        getSendNotificationEvent,
         sendNotification,
         markAsRead,
     }

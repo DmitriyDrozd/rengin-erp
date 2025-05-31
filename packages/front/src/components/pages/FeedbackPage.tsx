@@ -23,6 +23,10 @@ import { useNotifications } from '../../hooks/useNotifications';
 import Result from 'antd/es/result';
 import { getNav } from '../getNav';
 import { Link } from 'react-router-dom';
+import getRestApi from 'iso/src/getRestApi';
+import Spin from 'antd/es/spin';
+import LoadingOutlined from '@ant-design/icons/lib/icons/LoadingOutlined';
+import { NotificationType } from 'iso/src/store/bootstrap/repos/notifications';
 
 const headerHeight = 84;
 const contentMinHeight = `calc(100vh - ${headerHeight}px)`;
@@ -54,20 +58,28 @@ const App = () => {
 
     const [isAnonymous, setIsAnonymous] = useState(true);
     const [isFeedbackSent, setIsFeedbackSent] = useState<boolean|string>(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const onFinish = (values: IFeedbackFormProps) => {
-        const author = values.anonymous ? 'аноним' : values.name;
+    const onFinish = async (values: IFeedbackFormProps) => {
+        const author = isAnonymous ? 'аноним' : values.name;
         const message = `Тема: ${values.title}. Описание: ${values.description}. Отправитель - ${author}`;
 
-        notifications.sendNotification({
+        const event = notifications.getSendNotificationEvent({
             createdBy: 'feedback',
             timestamp: new Date(),
             createdLink: location.pathname + location.hash,
             title: 'Сообщение с формы жалоб и предложений',
             message: message,
             destination: FEEDBACK_CONSUMER_ID,
+            type: NotificationType.feedback,
         });
 
+        setIsLoading(true);
+        
+        const api = await getRestApi();
+        await api.pushCommands(event);
+
+        setIsLoading(false);
         setIsFeedbackSent(values.category);
     };
 
@@ -94,69 +106,69 @@ const App = () => {
 
     const getFormContent = () => (
         <Form
-                            name="feedback"
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            initialValues={{ isAnonymous: true }}
-                            onFinish={onFinish}
-                            autoComplete="off"
-                        >
-                            <Form.Item
-                                label="Категория"
-                                name="category"
-                                initialValue='complaint'
-                            >
-                                <Select
-                                    options={categoryOptions}
-                                />
-                            </Form.Item>
+            name="feedback"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            initialValues={{ isAnonymous: true }}
+            onFinish={onFinish}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Категория"
+                name="category"
+                initialValue='complaint'
+            >
+                <Select
+                    options={categoryOptions}
+                />
+            </Form.Item>
 
-                            <Form.Item
-                                label="Тема"
-                                name="title"
-                                rules={[{ required: true, message: 'Опишите проблему' }]}
-                            >
-                                <TextArea placeholder='Тема'/>
-                            </Form.Item>
+            <Form.Item
+                label="Тема"
+                name="title"
+                rules={[{ required: true, message: 'Опишите проблему' }]}
+            >
+                <TextArea placeholder='Тема'/>
+            </Form.Item>
 
-                            <Form.Item
-                                label="Предложение"
-                                name="description"
-                                rules={[{ required: false, message: 'Предложите своё видение решения проблемы' }]}
-                            >
-                                <TextArea placeholder='Предложение'/>
-                            </Form.Item>
+            <Form.Item
+                label="Предложение"
+                name="description"
+                rules={[{ required: false, message: 'Предложите своё видение решения проблемы' }]}
+            >
+                <TextArea placeholder='Предложение'/>
+            </Form.Item>
 
-                            <Form.Item label="Отправить анонимно" name="anonymous" valuePropName="checked" initialValue="checked">
-                                <Switch defaultChecked onChange={setIsAnonymous}/>
-                                    <Space style={{ paddingTop: 12, color: '#555' }}>
-                                        <SafetyOutlined style={{ fontSize: 24 }}/> 
-                                        <Typography style={{ opacity: 0.8, maxWidth: '70%' }}>
-                                            Мы не собираем информацию, 
-                                            с помощью которой можно определить отправителя.
-                                            В случае необходимости обратной связи
-                                            отключите переключатель и оставьте ваше ФИО ниже
-                                        </Typography>
-                                    </Space>
-                            </Form.Item>
+            <Form.Item label="Отправить анонимно" name="anonymous" valuePropName="checked" initialValue="checked">
+                <Switch defaultChecked onChange={setIsAnonymous}/>
+                    <Space style={{ paddingTop: 12, color: '#555' }}>
+                        <SafetyOutlined style={{ fontSize: 24 }}/> 
+                        <Typography style={{ opacity: 0.8, maxWidth: '70%' }}>
+                            Мы не собираем информацию, 
+                            с помощью которой можно определить отправителя.
+                            В случае необходимости обратной связи
+                            отключите переключатель и оставьте ваше ФИО ниже
+                        </Typography>
+                    </Space>
+            </Form.Item>
 
-                            <Form.Item
-                                label="ФИО"
-                                name="name"
-                                rules={[{ required: false, message: 'Укажите, как вас зовут' }]}
-                                hidden={isAnonymous}
-                            >
-                                <Input
-                                    placeholder='Ваше ФИО'
-                                />
-                            </Form.Item>
+            <Form.Item
+                label="ФИО"
+                name="name"
+                rules={[{ required: false, message: 'Укажите, как вас зовут' }]}
+                hidden={isAnonymous}
+            >
+                <Input
+                    placeholder='Ваше ФИО'
+                />
+            </Form.Item>
 
-                            <Form.Item style={{ paddingTop: 24 }} wrapperCol={{ offset: 8, span: 16 }}>
-                                <Button type="primary" htmlType="submit">
-                                    Отправить
-                                </Button>
-                            </Form.Item>
-                            </Form>
+            <Form.Item style={{ paddingTop: 24 }} wrapperCol={{ offset: 8, span: 16 }}>
+                <Button type="primary" htmlType="submit">
+                    Отправить
+                </Button>
+            </Form.Item>
+        </Form>
     )
 
     const content = isFeedbackSent !== false ? getResultContent() : getFormContent();
@@ -173,7 +185,9 @@ const App = () => {
             <Content>
                 <Row type="flex" justify="center" align="middle" style={{minHeight: contentMinHeight}}>
                     <Card title={'Жалобы и предложения'} style={{ borderRadius: 12, minWidth: '30%' }}>
-                        {content}
+                        {isLoading ? (
+                            <Spin indicator={<LoadingOutlined spin />} size="large" tip="Отправка"/>
+                        ) : content}
                     </Card>
                 </Row>
             </Content>
