@@ -24,7 +24,8 @@ import {
     Divider,
     Select,
     Space,
-    Tag
+    Tag,
+    Typography
 } from 'antd';
 import { NewValueParams } from 'ag-grid-community/dist/lib/entities/colDef';
 import {
@@ -440,7 +441,7 @@ export default () => {
                 <StatusFilterSelector statuses={statuses} setStatuses={setStatuses}/>
                 {monthFRFilterOptions.length && (
                     <Space>
-                        Дата ФР
+                        <Typography>Дата ФР</Typography>
                         <Select
                             allowClear
                             style={{ width: 150 }}
@@ -449,7 +450,7 @@ export default () => {
                             value={monthFRFilter} 
                             onChange={setMonthFRFilter}
                         />
-                        Заказчик
+                        <Typography>Заказчик</Typography>
                         <Select
                             allowClear
                             style={{ width: 150 }}

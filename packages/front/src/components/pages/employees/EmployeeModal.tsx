@@ -22,11 +22,10 @@ import { isDirectorRole, isManagementRole, isUserStaffManager } from '../../../u
 import { CommentsLine } from '../../elements/CommentsLine';
 import RenField from '../../form/RenField';
 import Space from 'antd/es/space';
-import { Divider } from 'antd/lib';
+import { Divider } from 'antd/es';
 import Button from 'antd/es/button';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { NotificationType } from 'iso/src/store/bootstrap/repos/notifications';
-import Badge from 'antd/es/badge';
 import Tag from 'antd/es/tag';
 
 const roleMap = {

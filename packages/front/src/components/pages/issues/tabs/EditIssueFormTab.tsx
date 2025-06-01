@@ -17,7 +17,6 @@ import React, {
 import { useSelector } from 'react-redux';
 import CONTRACTS, { ContractVO } from 'iso/src/store/bootstrap/repos/contracts';
 
-import 'dayjs/locale/ru';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import {
     isManagementRole,

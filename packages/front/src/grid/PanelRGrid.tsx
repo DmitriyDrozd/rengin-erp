@@ -245,8 +245,8 @@ export default <RID extends string, Fields extends AnyFieldsMeta>(
     const innerGridRef = gridRef || useRef<AgGridReact>(null);
 
     const onColumnStateChanged = (ag: any) => {
-        const newColumnOrder: string[] = ag.columnApi.columnModel.displayedColumns.map(({ colId }: { colId: string }) => colId);
-        const newColumnState = ag.columnApi.getColumnState();
+        const newColumnOrder: string[] = ag.api.getAllDisplayedColumns().map(({ colId }: { colId: string }) => colId);
+        const newColumnState = ag.api.getColumnState();
         const orderedColumnState = newColumnOrder.map(columnId => newColumnState.find(({ colId }: { colId: string }) => colId === columnId));
 
         setColumnState(orderedColumnState);

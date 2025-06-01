@@ -1,7 +1,9 @@
 import {
     BellOutlined,
     DownOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    MoonOutlined,
+    SunOutlined
 } from '@ant-design/icons';
 import type {
     PageContainerProps,
@@ -32,12 +34,15 @@ import HeadLogo from '../app/HeadLogo';
 import { AntdIcons } from '../elements/AntdIcons';
 import useUI from '../../hooks/common/useUI';
 import Badge from 'antd/es/badge';
+import Switch from 'antd/es/switch';
+import { useTheme } from '../../hooks/useTheme';
 
 
 const TopProfileDropDown = (props: DropDownProps) => {
     const dispatch = useFrontDispatch();
     const history = useHistory();
     const {newNotifications} = useCurrentUser();
+    const { isDarkMode, setIsDarkMode } = useTheme();
 
     const onConfirmExit = () => {
         if (confirm('Вы точно желаете выйти из системы?')) {
@@ -54,38 +59,46 @@ const TopProfileDropDown = (props: DropDownProps) => {
     }
 
     return (
-        <Dropdown
-            trigger={['click']}
-            {...props}
-            menu={{
-                items: [
-                    {
-                        onClick: onGoToNotifications,
-                        key: 'notifications',
-                        icon: (
-                            <Badge dot={newNotifications.length > 0}>
-                                <BellOutlined />
-                            </Badge>
-                        ),
-                        label: 'Уведомления'
-                    },
-                    {
-                        type: 'divider',
-                    },
-                    {
-                        onClick: () => {
-                            onConfirmExit();
+        <>
+            <Switch
+                value={isDarkMode}
+                checkedChildren={<MoonOutlined />}
+                unCheckedChildren={<SunOutlined />}
+                onChange={setIsDarkMode}
+            />
+            <Dropdown
+                trigger={['click']}
+                {...props}
+                menu={{
+                    items: [
+                        {
+                            onClick: onGoToNotifications,
+                            key: 'notifications',
+                            icon: (
+                                <Badge dot={newNotifications.length > 0}>
+                                    <BellOutlined />
+                                </Badge>
+                            ),
+                            label: 'Уведомления'
                         },
-                        danger: true,
-                        key: 'logout',
-                        icon: <LogoutOutlined/>,
-                        label: 'Выйти',
-                    },
-                ],
-            }}
-        >
-            {props.children}
-        </Dropdown>
+                        {
+                            type: 'divider',
+                        },
+                        {
+                            onClick: () => {
+                                onConfirmExit();
+                            },
+                            danger: true,
+                            key: 'logout',
+                            icon: <LogoutOutlined/>,
+                            label: 'Выйти',
+                        },
+                    ],
+                }}
+            >
+                {props.children}
+            </Dropdown>
+        </>
     );
 };
 export default ({proLayout, children, hidePageContainer, ...props}: PageContainerProps & {
@@ -100,6 +113,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
     };
     const {currentUser, newNotifications} = useCurrentUser();
     const userAvatarURL = useFrontSelector(USERS.selectAvatar(currentUser.userId));
+    const { navTheme } = useTheme();
 
     const history = useHistory();
     const pathname = history.location.pathname;
@@ -108,6 +122,7 @@ export default ({proLayout, children, hidePageContainer, ...props}: PageContaine
 
     return (
         <ProLayout
+            navTheme={navTheme}
             breakpoint={false}
             loading={ui.busy.length !== 0}
             {...routes(currentUser)}

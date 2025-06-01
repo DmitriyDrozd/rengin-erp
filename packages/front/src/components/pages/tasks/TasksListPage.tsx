@@ -26,7 +26,7 @@ import {
 import { AntdIcons } from '../../elements/AntdIcons';
 import StatusFilterSelector from '../issues/StatusFilterSelector';
 import { TasksModal } from './TasksModal';
-import Typography from 'antd/lib/typography';
+import Typography from 'antd/es/typography';
 
 const getTaskStatusTag = (data: TaskVO) => {
     const {taskStatus} = data;

@@ -9,7 +9,6 @@ import React, {
     useMemo,
 } from 'react';
 
-import 'dayjs/locale/ru';
 import RenField from '../../../form/RenField';
 import {
     useContextEditor,

@@ -26,7 +26,6 @@ export const useGrid = <T,>(props: RGridProps<T>) => {
                 defaultColDef={defaultColDef}
                 rowData={rowData}
                 columnDefs={columnDefs}
-                onColumnEverythingChanged={}
             >
 
             </AgGridReact>

@@ -144,7 +144,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                     }}
                     style={{minWidth: '200px'}}
                     options={options}
-                    dropdownRender={(menu) => (
+                    popupRender={(menu) => (
                         <>
                             {menu}
                             <Divider style={{margin: '8px 0'}}/>
@@ -171,7 +171,7 @@ export const RenField = ({label, meta, disabled, customOptions, defaultValue, im
                     onChange={updateItemProperty}
                     style={{minWidth: '200px'}}
                     options={customOptions || params.options}
-                    dropdownRender={(menu) => (
+                    popupRender={(menu) => (
                         <>
                             {menu}
 

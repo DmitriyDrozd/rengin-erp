@@ -51,7 +51,7 @@ export default () => {
     return (
         <Dropdown
             trigger={['hover']}
-            dropdownRender={(menu) => (
+            popupRender={(menu) => (
                 <div style={contentStyle}>
                     {menu}
                     <Divider style={{ margin: 0 }} />

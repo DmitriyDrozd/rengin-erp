@@ -14,6 +14,15 @@ window['ducks'] = ducks
 
 window['axios'] = axios
 
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { 
+    AllEnterpriseModule
+ } from 'ag-grid-enterprise';
+
+ModuleRegistry.registerModules([ 
+    AllCommunityModule, 
+    AllEnterpriseModule,
+]);
 
 const div = document.getElementById('root') as HTMLDivElement
 

@@ -37,12 +37,13 @@ import useCurrentUser from '../../../../hooks/useCurrentUser';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { ProForm } from '@ant-design/pro-components';
 import { isUserIT } from '../../../../utils/userUtils';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const countEstimations = (expenses: IssueVO['estimations']) =>
     expenses.reduce((prev, item) => prev + (isNaN(Number(item.amount)) ? 0 : Number(item.amount)), 0);
 
 export default () => {
-
+    const { theme } = useTheme();
     const {currentUser} = useCurrentUser();
     const canEdit = currentUser.role === roleEnum['руководитель']
         || currentUser.role === roleEnum['сметчик']
@@ -175,6 +176,7 @@ export default () => {
             {renderEstimationsStatus('estimationsStatus')}
             <div className="ag-theme-alpine" style={gridStyle}>
                 <AgGridReact
+                    theme={theme}
                     localeText={AG_GRID_LOCALE_RU}
                     ref={gridRef}
                     rowData={rowData}

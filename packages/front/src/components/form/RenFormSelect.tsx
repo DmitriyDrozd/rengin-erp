@@ -37,7 +37,7 @@ export default ({value,onValueChange, label, options, placeholder,disabled, styl
                      }}
                      style={{minWidth:'200px',...style}}
                      options={options}
-                     dropdownRender={(menu) => (
+                     popupRender={(menu) => (
                          <>
                              {menu}
                              <Divider style={{ margin: '8px 0' }} />

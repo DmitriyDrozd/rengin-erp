@@ -102,8 +102,8 @@ export default {
     totalRows: 'Всего строк',
     totalAndFilteredRows: 'Строки',
     more: 'многих',
-    to: 'из',
-    of: 'по',
+    to: 'по',
+    of: 'из',
     page: 'Страница',
     nextPage: 'Следующая страница',
     lastPage: 'Последняя страница',
@@ -264,4 +264,10 @@ export default {
     ariaRowSelectAll: 'Нажмите ПРОБЕЛ, чтобы переключить выделение всех строк',
     ariaSearch: 'Поиск',
     ariaSearchFilterValues: 'Поиск значений по фильтру',
+    
+    blank: 'Пустое',
+    notBlank: 'Непустое',
+    pageSizeSelectorLabel: "Показывать по",
+    before: 'До',
+    after: 'После',
 }

@@ -1,6 +1,6 @@
 import 'ag-grid-enterprise';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+// import 'ag-grid-community/styles/ag-grid.css';
+// import 'ag-grid-community/styles/ag-theme-alpine.css';
 //import './rengin-theme.css'
 import {
     AgGridReact,
@@ -8,7 +8,6 @@ import {
 } from 'ag-grid-react';
 import React, { useMemo } from 'react';
 import AG_GRID_LOCALE_RU from './locale.ru';
-
 
 import {
     AnyFieldsMeta,
@@ -24,6 +23,7 @@ import {
 import { Meta } from 'iso/src/store/bootstrap/core/valueTypes';
 import { ExcelExportParams, ProcessCellForExportParams } from 'ag-grid-enterprise';
 import { checkIfCommentsCell, getCommentsExcelCell } from '../components/elements/CommentsLine';
+import { useTheme } from '../hooks/useTheme';
 
 export type ResVal = typeof USERS | typeof ISSUES
 
@@ -80,20 +80,23 @@ export default React.forwardRef(<RID extends string, Fields extends AnyFieldsMet
     const decreaseHeight = (fullHeight ? 144 : 244) + headerHeight;
     const height = fullHeight ? `calc(100vh - ${decreaseHeight}px)` : `calc(100vh - ${decreaseHeight}px)`;
 
-    return <>
+    const { theme } = useTheme();
+
+    return (
         <div
             className="ag-theme-alpine"
             style={{height, width: '100%'}}
         >
             <AgGridReact<ItemWithId<RID, Fields>>
+                theme={theme}
                 ref={ref}
                 localeText={localeText}
                 columnDefs={columnDefs}
                 defaultColDef={{resizable: true, sortable: true}}
-                enableRangeSelection={true}
+                cellSelection={true}
                 allowContextMenuWithControlKey={true}
                 {...props}
             />
         </div>
-    </>;
+    );
 });

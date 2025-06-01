@@ -39,9 +39,11 @@ import { useCanManage } from '../../../../hooks/useCanManage';
 import useCurrentUser from '../../../../hooks/useCurrentUser';
 import { useContextEditor } from '../../chapter-modal/useEditor';
 import { isUserIT } from '../../../../utils/userUtils';
+import { useTheme } from '../../../../hooks/useTheme';
 
 
 export default (props) => {
+    const { theme } = useTheme();
     const {currentUser} = useCurrentUser();
     const {errors, item, getRenFieldProps, updateItemProperty, updateItemProperties, params, editor, hasChanges, resource, rules} = useContextEditor(ISSUES);
     const isITDepartment = isUserIT(currentUser);
@@ -185,6 +187,7 @@ export default (props) => {
     const onBtExport = useCallback(() => {
         gridRef.current!.api.exportDataAsExcel();
     }, []);
+
     return (<div>
         {
             canEdit
@@ -193,6 +196,7 @@ export default (props) => {
         }
         <div className="ag-theme-alpine" style={gridStyle}>
             <AgGridReact
+                theme={theme}
                 localeText={AG_GRID_LOCALE_RU}
                 ref={gridRef}
                 rowData={rowData}

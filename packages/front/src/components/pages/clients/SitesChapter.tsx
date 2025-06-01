@@ -31,7 +31,7 @@ import {
 } from 'react-redux';
 import PanelRGrid, { getDisplayedGridRows } from '../../../grid/PanelRGrid';
 import Typography from 'antd/es/typography';
-import Divider from 'antd/lib/divider';
+import Divider from 'antd/es/divider';
 import { SitesMap } from './SitesMap';
 import GlobalOutlined from '@ant-design/icons/lib/icons/GlobalOutlined';
 import UpOutlined from '@ant-design/icons/lib/icons/UpOutlined';

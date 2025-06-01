@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isToday from 'dayjs/plugin/isToday';
 import isBetween from 'dayjs/plugin/isBetween';
+import 'dayjs/locale/ru';
 
 import { IssueVO } from '../store/bootstrap/repos/issues';
 import { ExpenseVO } from '../store/bootstrap/repos/expenses';
