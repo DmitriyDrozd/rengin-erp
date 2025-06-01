@@ -3,6 +3,7 @@ import { colorSchemeDarkBlue, iconSetAlpine, themeAlpine } from "ag-grid-enterpr
 import theme from 'antd/es/theme';
 import React from "react";
 import useLocalStorageState from "./useLocalStorageState";
+import { ColorScheme } from "@vis.gl/react-google-maps";
 
 const { darkAlgorithm } = theme;
 const alpineTheme = themeAlpine.withPart(iconSetAlpine);
@@ -13,14 +14,16 @@ export const ThemeContext = React.createContext({
     algorithm: null,
     navTheme: null,
     agGridTheme: null,
+    mapTheme: null,
  });
 
 const getAlgorithm = (isDarkMode: boolean) => isDarkMode ? darkAlgorithm : undefined;
 const getNavTheme = (isDarkMode: boolean) => isDarkMode ? 'realDark' : 'light';
 const getAgGridTheme = (isDarkMode: boolean) => isDarkMode ? alpineTheme.withPart(colorSchemeDarkBlue) : alpineTheme;
+const getMapTheme = (isDarkMode: boolean) => isDarkMode ? ColorScheme.DARK : ColorScheme.LIGHT;
 
 export const useTheme = () => {
-    const { isDarkMode, setIsDarkMode, algorithm, navTheme, agGridTheme } = useContext(ThemeContext);
+    const { isDarkMode, setIsDarkMode, algorithm, navTheme, agGridTheme, mapTheme } = useContext(ThemeContext);
 
     return {
         algorithm,
@@ -28,6 +31,7 @@ export const useTheme = () => {
         theme: agGridTheme,
         isDarkMode,
         setIsDarkMode,
+        mapTheme,
     };
 }
 
@@ -39,11 +43,14 @@ export const createThemeHook = (defaultIsDarkMode: boolean) => {
     const [navTheme, setNavTheme] = useState(getNavTheme(defaultIsDarkMode));
     // Grid
     const [agGridTheme, setAgGridTheme] = useState(getAgGridTheme(defaultIsDarkMode));
+    // Google map
+    const [mapTheme, setMapTheme] = useState(getMapTheme(defaultIsDarkMode));
 
     useEffect(() => {
         setAlgorithm({ algorithm: getAlgorithm(isDarkMode) });
         setNavTheme(getNavTheme(isDarkMode));
         setAgGridTheme(getAgGridTheme(isDarkMode));
+        setMapTheme(getMapTheme(isDarkMode));
     }, [isDarkMode]);
 
     return {
@@ -52,5 +59,6 @@ export const createThemeHook = (defaultIsDarkMode: boolean) => {
         algorithm,
         navTheme,
         agGridTheme,
+        mapTheme,
     }
 }

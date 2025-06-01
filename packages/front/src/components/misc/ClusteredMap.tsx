@@ -13,6 +13,7 @@ import {MarkerClusterer} from '@googlemaps/markerclusterer';
 import { createRoot } from 'react-dom/client';
 import { ISSUES_LIST_MAP_ID } from '../../env';
 import { CellRendererWithCopy } from '../elements/CellRendererWithCopy';
+import { useTheme } from '../../hooks/useTheme';
 
 type Point = google.maps.LatLngLiteral & {key: string};
 
@@ -68,6 +69,7 @@ interface IClusteredMapProps {
 }
 
 export const ClusteredMap: FC<IClusteredMapProps> = ({ points, sourceTitle }) => {
+    const { mapTheme } = useTheme();
     const map = useMap();
     const clusterer = useRef<MarkerClusterer | null>(null);
     const [isReady, setIsReady] = useState(false);
@@ -93,12 +95,14 @@ export const ClusteredMap: FC<IClusteredMapProps> = ({ points, sourceTitle }) =>
 
     return (
         <Map
+            reuseMaps
             style={{width: '100%', height: '70vh'}}
             defaultCenter={{lat: 57.94783560310071, lng: 75.93371350345065}}
             defaultZoom={4}
             gestureHandling={'greedy'}
             disableDefaultUI={false}
             mapId={ISSUES_LIST_MAP_ID}
+            colorScheme={mapTheme}
         />
     )
 }
