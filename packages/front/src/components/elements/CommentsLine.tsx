@@ -33,7 +33,8 @@ interface CommentsLineProps {
     notificationOptions?: {
         type?: string,
         title?: string,
-    }
+    },
+    destinations?: string[],
 };
 
 const getAuthorName = (user: UserVO) => `${user.name} ${user.lastname}`;
@@ -45,12 +46,12 @@ const getCommentLabel = (comment: Comment, isUsersComment: boolean) => {
     return `${isUsersComment ? 'Я' : comment.author}, ${comment.date ? dayjs(comment.date).format(GENERAL_DATE_FORMAT) : ''}`;
 }
 
-export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, item, disabled, notificationOptions}) => {
+export const CommentsLine: FC<CommentsLineProps> = ({value, handleChange, user, item, disabled, notificationOptions, destinations = []}) => {
     const [newComment, setNewComment] = useState('');
     const { currentUser } = useCurrentUser();
     const { createNotifications, discardSingle } = useNotifications(currentUser.userId);
     const notificationDestinations = Array.isArray(value) 
-        ? uniq(value.map(c => c.authorId)).filter(authorId => authorId && authorId !== currentUser.userId)
+        ? uniq([...destinations, ...value.map(c => c.authorId)]).filter(authorId => authorId && authorId !== currentUser.userId)
         : [];
 
     const handleRemoveComment = (index: number) => {

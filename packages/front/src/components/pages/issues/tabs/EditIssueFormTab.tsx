@@ -160,6 +160,7 @@ export default ({newClientsNumber, isEditMode}: {
                     customProperties={{
                         item: editor.item,
                         user: currentUser,
+                        destinations: [editor.item.managerUserId],
                     }}
                 />
                 <RenField
@@ -245,6 +246,7 @@ export default ({newClientsNumber, isEditMode}: {
                 customProperties={{
                     item: editor.item,
                     user: currentUser,
+                    destinations: [editor.item.managerUserId],
                 }}
             />
             <RenField

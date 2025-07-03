@@ -136,7 +136,6 @@ export const NotificationsList: FC = () => {
     const newNotificationsToDisplay = newNotifications.reverse();
 
     const readNotifications = notifications
-        .reverse()
         .filter(n => n.status === NotificationStatus.done);
     const [readNotificationsDisplayCount, setReadNotificationsDisplayCount] = useState(Math.min(DISPLAYED_NOTIFICATIONS_COUNT, readNotifications.length));
     const readNotificationsToDisplay = readNotifications.slice(0, readNotificationsDisplayCount);
